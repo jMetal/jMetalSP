@@ -1,4 +1,4 @@
-# jMetalSP: A framework for Big Data Optimization with multi-objective metaheuristicss
+# jMetalSP: A framework for Big Data Optimization with multi-objective metaheuristics
 
 ## This site is under construction
 
