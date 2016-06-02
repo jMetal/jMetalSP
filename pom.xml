@@ -10,6 +10,29 @@
   <name>jmetalsp</name>
   <url>http://maven.apache.org</url>
 
+  <licenses>
+    <license>
+      <name>GNU Lesser General Public License</name>
+      <url>http://www.gnu.org/licenses/lgpl.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <name>Antonio J. Nebro</name>
+      <email>antonio@lcc.uma.es</email>
+      <organization>University of Malaga</organization>
+      <organizationUrl>http://www.uma.es</organizationUrl>
+    </developer>
+    <developer>
+      <name>Cristobal Barba</name>
+      <email>cbarba@lcc.uma.es</email>
+      <organization>University of Malaga</organization>
+      <organizationUrl>http://www.uma.es</organizationUrl>
+    </developer>
+  </developers>
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spark.version>1.6.1</spark.version>
@@ -21,7 +44,6 @@
     <module>jmetalsp-algorithm</module>
     <module>jmetalsp-application</module>
   </modules>
-
 
   <build>
     <plugins>
