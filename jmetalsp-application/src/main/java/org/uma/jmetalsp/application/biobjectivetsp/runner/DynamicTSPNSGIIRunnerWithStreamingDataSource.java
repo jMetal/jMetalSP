@@ -15,7 +15,7 @@ import org.uma.jmetalsp.util.spark.SparkRuntime;
 import java.io.IOException;
 
 /**
- * Created by ajnebro on 22/4/16.
+ * Created by ajnebro on 22/4/16 .
  */
 public class DynamicTSPNSGIIRunnerWithStreamingDataSource {
   public static void main(String[] args) throws IOException, InterruptedException {
