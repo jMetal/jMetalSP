@@ -19,6 +19,7 @@ import org.uma.jmetal.measure.impl.BasicMeasure;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.JMetalException;
+import org.uma.jmetal.util.JMetalLogger;
 import org.uma.jmetalsp.algorithm.DynamicAlgorithm;
 import org.uma.jmetalsp.consumer.AlgorithmDataConsumer;
 
@@ -71,7 +72,7 @@ public class SimpleSolutionListConsumer implements AlgorithmDataConsumer {
 
     @Override synchronized public void measureGenerated(List<S> solutions) {
       if ((counter % 1 == 0)) {
-        //JMetalLogger.logger.info("Front number: " + counter+ ". Number of solutions: " + solutions.size()); ;
+        JMetalLogger.logger.info("Front number: " + counter+ ". Number of solutions: " + solutions.size()); ;
       }
       counter ++ ;
     }
