@@ -10,6 +10,7 @@
 //
 //  You should have received a copy of the GNU Lesser General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 package org.uma.jmetalsp.algorithm;
 
 import org.uma.jmetal.algorithm.multiobjective.nsgaii.NSGAII;
@@ -20,10 +21,9 @@ import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.SelectionOperator;
 import org.uma.jmetal.solution.Solution;
+import org.uma.jmetal.util.SolutionListUtils;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
-import org.uma.jmetalsp.algorithm.DynamicAlgorithm;
 import org.uma.jmetalsp.problem.DynamicProblem;
-import org.uma.jmetalsp.util.SolutionListRestarter;
 
 import java.util.List;
 
@@ -40,7 +40,6 @@ public class DynamicNSGAII<S extends Solution<?>>
     extends NSGAII<S>
     implements DynamicAlgorithm<List<S>> {
 
-  private SolutionListRestarter<S> restarter ;
   private int completedIterations ;
   protected SimpleMeasureManager measureManager ;
   protected BasicMeasure<List<S>> solutionListMeasure ;
@@ -48,7 +47,6 @@ public class DynamicNSGAII<S extends Solution<?>>
   public DynamicNSGAII(DynamicProblem<S, ?> problem, int maxEvaluations, int populationSize, CrossoverOperator<S> crossoverOperator, MutationOperator<S> mutationOperator, SelectionOperator<List<S>, S> selectionOperator, SolutionListEvaluator<S> evaluator) {
     super(problem, maxEvaluations, populationSize, crossoverOperator, mutationOperator, selectionOperator, evaluator);
 
-    restarter = new SolutionListRestarter<>() ;
     completedIterations = 0 ;
 
     solutionListMeasure = new BasicMeasure<>() ;
@@ -71,7 +69,7 @@ public class DynamicNSGAII<S extends Solution<?>>
 
       solutionListMeasure.push(getPopulation()) ;
       
-      restarter.restart(getPopulation(), getDynamicProblem(), 100);
+      SolutionListUtils.restart(getPopulation(), getDynamicProblem(), 100);
       evaluator.evaluate(getPopulation(), getDynamicProblem()) ;
 
       initProgress();
@@ -82,7 +80,7 @@ public class DynamicNSGAII<S extends Solution<?>>
 
   @Override protected void updateProgress() {
     if (getDynamicProblem().hasTheProblemBeenModified()) {
-      restarter.restart(getPopulation(), getDynamicProblem(), 100);
+      SolutionListUtils.restart(getPopulation(), getDynamicProblem(), 100);
 
       evaluator.evaluate(getPopulation(), getDynamicProblem()) ;
       getDynamicProblem().reset();
