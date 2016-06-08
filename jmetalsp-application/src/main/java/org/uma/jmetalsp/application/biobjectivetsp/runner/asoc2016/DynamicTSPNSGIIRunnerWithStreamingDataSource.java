@@ -1,4 +1,4 @@
-package org.uma.jmetalsp.application.biobjectivetsp.runner;
+package org.uma.jmetalsp.application.biobjectivetsp.runner.asoc2016;
 
 import org.uma.jmetalsp.application.biobjectivetsp.algorithm.DynamicNSGAIIBuilder;
 import org.uma.jmetalsp.application.biobjectivetsp.algorithm.DynamicTSPNSGAII;
