@@ -47,7 +47,7 @@ public class MultiobjectiveTSPBuilderParsed implements ProblemBuilder {
     try {
       BufferedReader br = null;
       if(!isHDFS) {
-        new BufferedReader(new FileReader(file));
+        br = new BufferedReader(new FileReader(file));
       }else{
         br = hdfsUtil.getBufferedReaderHDFS(file);
       }
