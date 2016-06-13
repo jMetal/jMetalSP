@@ -41,12 +41,11 @@ There are 3 different ways to get jMetal 5.1-SNAPSHOT:
 Add a Maven dependence. For example, if your want to use some of the classes in `jmetal-core`, you just have to add this dependence to the `pom.xml` file of your project:  
 <!--- #![Maven dependence](resources/mavenDependence.png) -->
 ```
-    <dependency>
-      <groupId>org.uma.jmetal</groupId>
-      <artifactId>jmetal-core</artifactId>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
-
+<dependency>
+  <groupId>org.uma.jmetal</groupId>
+  <artifactId>jmetal-core</artifactId>
+  <version>1.0-SNAPSHOT</version>
+</dependency>
 ```
 
 * Download directly from the main website [https://github.com/jMetal/jMetal](https://github.com/jMetal/jMetal).
