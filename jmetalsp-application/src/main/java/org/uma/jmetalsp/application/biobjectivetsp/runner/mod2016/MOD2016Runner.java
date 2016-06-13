@@ -1,5 +1,6 @@
 package org.uma.jmetalsp.application.biobjectivetsp.runner.mod2016;
 
+import java.io.File;
 import org.uma.jmetalsp.application.JMetalSPApplication;
 import org.uma.jmetalsp.application.biobjectivetsp.algorithm.DynamicNSGAIIBuilder;
 import org.uma.jmetalsp.application.biobjectivetsp.algorithm.DynamicTSPNSGAII;
@@ -20,19 +21,38 @@ import java.io.IOException;
 public class MOD2016Runner {
 
   public static void main(String[] args) throws IOException, InterruptedException {
+    if (args == null || args.length < 3) {
+      System.out.println("Provide the path to the initial file, updates and output:");
+      System.out.println("    MOD2016Runner <initial file> <updates directory> <output directory>");
+      System.out.println("");
+      System.out.println("The initial file should be the output of ParseLinkSpeedQuery.");
+      System.out.println("The updates directory should be the path where the updates are generated.");
+      return;
+    } else {
+        File input = new File(args[0]);
+        if (!input.exists() || !input.isFile()) {
+            System.err.println("Error reading input file.");
+            return;
+        }
+        File updatedir = new File(args[1]);
+        if (!updatedir.exists() || !updatedir.isDirectory()) {
+            System.err.println("Error reading update directory.");
+            return;
+        }
+    }
     JMetalSPApplication<
             MultiobjectiveTSPUpdateData,
             DynamicMultiobjectiveTSP,
             DynamicTSPNSGAII> application = new JMetalSPApplication<>();
     StreamingConfigurationTSP streamingConfigurationTSP= new StreamingConfigurationTSP();
-    streamingConfigurationTSP.initializeDirectoryTSP("/biobjectivetsp/data2");
-    String fileName= "/biobjectivetsp/initialDataFile.txt";
+    streamingConfigurationTSP.initializeDirectoryTSP(args[1]);
+    String fileName= args[0];
     application
             .setSparkRuntime(new SparkRuntime(1))
             .setProblemBuilder(new MultiobjectiveTSPBuilderParsed(fileName))
             .setAlgorithmBuilder(new DynamicNSGAIIBuilder())
             .addAlgorithmDataConsumer(new SimpleSolutionListConsumer())
-            .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("/consumer/jMetalSP1"))
+            .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer(args[2]))
             .addStreamingDataSource(new StreamingDirectoryTSP(streamingConfigurationTSP))
             .run();
   }
