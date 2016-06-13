@@ -16,7 +16,7 @@ This section will include all the needed documentation to understand and reprodu
 
 Note: All the work was done using the versions stated below. We cannot guarantee the correct behaviour with newer of future versions.
 
-* `jMetal 5.0` - the new version 5 of jMetal framework which can be found here: http://jmetal.github.io/jMetal/
+* `jMetal 5.1-SNAPSHOT` - the current development version of jMetal framework which can be found here: [https://github.com/jMetal/jMetal](https://github.com/jMetal/jMetal)
 * `jMetalSP 1.0` - which can be downloaded directly cloning the current repository.
 * `Apache Spark 1.6.1` - http://spark.apache.org/downloads.html
 * `Apache Maven 3.3.9` - https://maven.apache.org/download.cgi
@@ -32,15 +32,24 @@ First dependencies that should be installed are (preferably in the following ord
 
 #### jMetal
 
-There are 3 different ways to get jMetal:
+There are 3 different ways to get jMetal 5.1-SNAPSHOT:
 
-* It can be found in the [Central Repository](http://search.maven.org/):
-![jMetal in Central Repository](resources/centralRepository.png)
+<!--- * It can be found in the [Central Repository](http://search.maven.org/):
+#![jMetal in Central Repository](resources/centralRepository.png)
+-->
 
-Here you can get the Maven dependence you need. For example, if your want to use some of the classes in `jmetal-core`, you just have to add this dependence to the `pom.xml` file of your project:  
-![Maven dependence](resources/mavenDependence.png)
+Add a Maven dependence. For example, if your want to use some of the classes in `jmetal-core`, you just have to add this dependence to the `pom.xml` file of your project:  
+<!--- #![Maven dependence](resources/mavenDependence.png) -->
+```
+    <dependency>
+      <groupId>org.uma.jmetal</groupId>
+      <artifactId>jmetal-core</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
 
-* Download directly from the main website http://jmetal.github.io/jMetal/.
+```
+
+* Download directly from the main website [https://github.com/jMetal/jMetal](https://github.com/jMetal/jMetal).
 
 * Use git to clone its repository:
 ```
