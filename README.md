@@ -22,7 +22,7 @@ Note: All the work was done using the versions stated below. We cannot guarantee
 * `Apache Maven 3.3.9` - https://maven.apache.org/download.cgi
 * `Java Development Kit 7` or newer - http://www.oracle.com/technetwork/es/java/javase/downloads/jdk7-downloads-1880260.html
 
-### Instalation
+### Installation
 
 First dependencies that should be installed are (preferably in the following order):
 
@@ -35,10 +35,10 @@ First dependencies that should be installed are (preferably in the following ord
 There are 3 different ways to get jMetal:
 
 * It can be found in the [Central Repository](http://search.maven.org/):
-![jMetal in Central Repository](https://github.com/jMetal/jMetalUserManual/blob/master/figures/centralRepository.png)
+![jMetal in Central Repository](resources/centralRepository.png)
 
 Here you can get the Maven dependence you need. For example, if your want to use some of the classes in `jmetal-core`, you just have to add this dependence to the `pom.xml` file of your project:
-![Maven dependence](https://github.com/jMetal/jMetalUserManual/blob/master/figures/mavenDependence.png)
+![Maven dependence](resources/mavenDependence.png)
 
 * Download directly from the main website http://jmetal.github.io/jMetal/.
 
@@ -51,7 +51,7 @@ Once you have the source code, you use you favourite IDE to import (Eclipse) or 
 
 #### jMetalSP
 
-jMetalSP can be obtanined also cloning the current repository:
+jMetalSP can be obtained also cloning the current repository:
 ```
 git clone https://github.com/jMetal/jMetal.git
 ```
@@ -120,7 +120,7 @@ Now everything is prepared to run the problem and get the results using the real
 
 ### Understanding the results
 
-The algoritm will generate 100 different results for the problem in each iteration.  
-Each iteration will generate the two files stated below in the ouput directory, where the question mark will be replaced by the number of iteration:
+The algorithm will generate 100 different results for the problem in each iteration.  
+Each iteration will generate the two files stated below in the output directory, where the question mark will be replaced by the number of iteration:
 * `FUN?.tsv`: Each line contains the cost (time) and distance of each solution, one per line.
 * `VAR?.tsv`: Each line contains one solution to the problem, represented as the list of nodes that forms the path.
