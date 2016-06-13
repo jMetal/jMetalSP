@@ -37,7 +37,7 @@ There are 3 different ways to get jMetal:
 * It can be found in the [Central Repository](http://search.maven.org/):
 ![jMetal in Central Repository](resources/centralRepository.png)
 
-Here you can get the Maven dependence you need. For example, if your want to use some of the classes in `jmetal-core`, you just have to add this dependence to the `pom.xml` file of your project:
+Here you can get the Maven dependence you need. For example, if your want to use some of the classes in `jmetal-core`, you just have to add this dependence to the `pom.xml` file of your project:  
 ![Maven dependence](resources/mavenDependence.png)
 
 * Download directly from the main website http://jmetal.github.io/jMetal/.
