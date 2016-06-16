@@ -35,7 +35,7 @@ public class JMetalSPApplication<
   public JMetalSPApplication() {
     this.streamingDataSourceList = null;
     this.algorithmDataConsumerList = null ;
-    sparkRuntime = new SparkRuntime(1) ;
+    this.sparkRuntime = null ;
   }
 
   public JMetalSPApplication setProblemBuilder(ProblemBuilder<P> problemBuilder) {
