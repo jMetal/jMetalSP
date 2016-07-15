@@ -1,6 +1,6 @@
 # jMetalSP: A framework for Big Data Optimization with multi-objective metaheuristics
 
-**jMetalSP** is a software platform for dynamic multi-objective Big Data Optimization. It combines the features of the [jMetal framework](http://jmetal.github.io/jMetal/) for multi-objective optimization with metaheuristics with the [Apache Spark](http://spark.apache.org/) cluster computing system.
+**jMetalSP** is a software platform for dynamic multi-objective Big Data Optimization. It combines the features of the [jMetal](http://jmetal.github.io/jMetal/) multi-objective optimization framework with the [Apache Spark](http://spark.apache.org/) cluster computing system. jMetal provides the optimization infrastructure for implementing both the Big Data optimization problems and the dynamic metaheuristic to solve them; Spark allows to manage the streaming data sources, allowing to effectively use the computing power of Hadoop clusters when processing large amounts of data.
 
 ## This site is under construction
 
