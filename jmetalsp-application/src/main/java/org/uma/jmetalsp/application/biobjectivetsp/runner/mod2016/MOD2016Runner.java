@@ -19,7 +19,7 @@ import java.io.IOException;
  * Created by cris on 08/06/2016.
  */
 public class MOD2016Runner {
-
+  
   public static void main(String[] args) throws IOException, InterruptedException {
     if (args == null || args.length < 3) {
       System.out.println("Provide the path to the initial file, updates and output:");
@@ -29,31 +29,33 @@ public class MOD2016Runner {
       System.out.println("The updates directory should be the path where the updates are generated.");
       return;
     } else {
-        File input = new File(args[0]);
-        if (!input.exists() || !input.isFile()) {
-            System.err.println("Error reading input file.");
-            return;
-        }
-        File updatedir = new File(args[1]);
-        if (!updatedir.exists() || !updatedir.isDirectory()) {
-            System.err.println("Error reading update directory.");
-            return;
-        }
+      File input = new File(args[0]);
+      if (!input.exists() || !input.isFile()) {
+        System.err.println("Error reading input file.");
+        return;
+      }
+      File updatedir = new File(args[1]);
+      if (!updatedir.exists() || !updatedir.isDirectory()) {
+        System.err.println("Error reading update directory.");
+        return;
+      }
     }
     JMetalSPApplication<
-            MultiobjectiveTSPUpdateData,
-            DynamicMultiobjectiveTSP,
-            DynamicTSPNSGAII> application = new JMetalSPApplication<>();
+        MultiobjectiveTSPUpdateData,
+        DynamicMultiobjectiveTSP,
+        DynamicTSPNSGAII> application = new JMetalSPApplication<>();
+    
     StreamingConfigurationTSP streamingConfigurationTSP= new StreamingConfigurationTSP();
     streamingConfigurationTSP.initializeDirectoryTSP(args[1]);
     String fileName= args[0];
+    
     application
-            .setSparkRuntime(new SparkRuntime(1))
-            .setProblemBuilder(new MultiobjectiveTSPBuilderParsed(fileName))
-            .setAlgorithmBuilder(new DynamicNSGAIIBuilder())
-            .addAlgorithmDataConsumer(new SimpleSolutionListConsumer())
-            .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer(args[2]))
-            .addStreamingDataSource(new StreamingDirectoryTSP(streamingConfigurationTSP))
-            .run();
+        .setSparkRuntime(new SparkRuntime(1))
+        .setProblemBuilder(new MultiobjectiveTSPBuilderParsed(fileName))
+        .setAlgorithmBuilder(new DynamicNSGAIIBuilder())
+        .addAlgorithmDataConsumer(new SimpleSolutionListConsumer())
+        .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer(args[2]))
+        .addStreamingDataSource(new StreamingDirectoryTSP(streamingConfigurationTSP))
+        .run();
   }
 }
