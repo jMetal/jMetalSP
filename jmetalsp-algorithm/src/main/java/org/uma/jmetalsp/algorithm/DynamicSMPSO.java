@@ -27,7 +27,7 @@ import org.uma.jmetalsp.problem.DynamicProblem;
 import java.util.List;
 
 /**
- * TODO
+ * TODO  To be implemented
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class DynamicSMPSO
