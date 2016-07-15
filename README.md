@@ -7,7 +7,7 @@ The architecture of jMetal is depicted in the following UML class diagram:
 
 ![jMetalSP architecture](resources/jMetalSPUML.png)
 
-A `jMetalSPApplicatin` is composed of: 
+A `jMetalSPApplication` is composed of: 
 * An instance of the`ProblemBuilder` class, which creates an instance of the `DynamicProblem` to be solved.
 * An instance of the`ProblemBuilder` class to create the `DynamicAlgorithm`.
 * One or more `StreamingDataSource` objects, which process the incoming data and as a result they change make some change in the `DynamicProblem`.
@@ -19,6 +19,17 @@ A `jMetalSPApplicatin` is composed of:
 It will contain the sources of the jMetalSP project that have been used in these works:
 * José A. Cordero, Antonio J. Nebro, Juan J. Durillo, José García-Nieto, Ismael Navas-Delgado, José F. Aldana-Montes: "Dynamic Multi-Objective Optimization With jMetal and Spark: a Case Study". Accepted in MOD 2016.
 * Cristóbal Barba-González, Antonio J. Nebro, José A. Cordero, José García-Nieto, Juan J. Durillo, Ismael Navas-Delgado, José F. Aldana-Montes. "JMetalSP: a Framework for Dynamic Multi-Objective Big Data Optimization". Submitted to Applied Soft Computing.
+
+The implementation of jMetalSP applies Java generics to ensure that all the componentes are compatible. The declaration of the [`jMetalSPApplication`](https://github.com/jMetal/jMetalSP/blob/master/jmetalsp-core/src/main/java/org/uma/jmetalsp/application/JMetalSPApplication.java) class is the following:
+```java
+public class JMetalSPApplication<
+    D extends UpdateData,
+    P extends DynamicProblem<? extends Solution<?>, D>,
+    A extends DynamicAlgorithm<?>> {
+  ...
+}
+```
+
 
 ## MOD 2016 Problem
 
