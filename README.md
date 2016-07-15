@@ -60,6 +60,9 @@ There are two papers about jMetalSP:
 * José A. Cordero, Antonio J. Nebro, Juan J. Durillo, José García-Nieto, Ismael Navas-Delgado, José F. Aldana-Montes: "Dynamic Multi-Objective Optimization With jMetal and Spark: a Case Study". Accepted in [MOD 2016](http://www.taosciences.it/mod/).
 * Cristóbal Barba-González, Antonio J. Nebro, José A. Cordero, José García-Nieto, Juan J. Durillo, Ismael Navas-Delgado, José F. Aldana-Montes. "JMetalSP: a Framework for Dynamic Multi-Objective Big Data Optimization". Submitted to Applied Soft Computing.
 
+## Project Status
+This current version of the project is the first complete implementation of the proposed architecture. It is fully usable, but we must still test it in deep. After that our plan is to provide the first release, which will be a Maven project that will be available at the Central Repository.
+
 
 ## Description of the Problem in the MOD 2016 Paper
 
