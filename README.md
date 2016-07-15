@@ -34,7 +34,7 @@ public class JMetalSPApplication<
 ```
 This way, by using generics the Java compiler can check that all the components fit together. 
 
-As an example, the [jMetalSP application](https://github.com/jMetal/jMetalSP/blob/master/jmetalsp-application/src/main/java/org/uma/jmetalsp/application/biobjectivetsp/runner/mod2016/MOD2016Runner.java) used in the paper to be presented in MOD 2016 is configured in this way:
+As an example, the [jMetalSP application](https://github.com/jMetal/jMetalSP/blob/master/jmetalsp-application/src/main/java/org/uma/jmetalsp/application/biobjectivetsp/runner/mod2016/MOD2016Runner.java) used in the paper to be presented in MOD 2016 (which solves a dynamic version of the bi-objective TSP problem with a dynamic variant of NSGA-II) is configured in this way:
 ```java
     JMetalSPApplication<
             MultiobjectiveTSPUpdateData,
