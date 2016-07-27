@@ -40,9 +40,10 @@ public class DynamicSMPSO
   protected SimpleMeasureManager measureManager ;
   protected BasicMeasure<List<DoubleSolution>> solutionListMeasure ;
   private SolutionListEvaluator<DoubleSolution> evaluator;
-
+  private DynamicProblem<DoubleSolution,?> problem;
   public DynamicSMPSO(DynamicProblem<DoubleSolution,?> problem, int swarmSize, BoundedArchive<DoubleSolution> leaders, MutationOperator<DoubleSolution> mutationOperator, int maxIterations, double r1Min, double r1Max, double r2Min, double r2Max, double c1Min, double c1Max, double c2Min, double c2Max, double weightMin, double weightMax, double changeVelocity1, double changeVelocity2, SolutionListEvaluator<DoubleSolution> evaluator) {
     super((DoubleProblem) problem, swarmSize, leaders, mutationOperator, maxIterations, r1Min, r1Max, r2Min, r2Max, c1Min, c1Max, c2Min, c2Max, weightMin, weightMax, changeVelocity1, changeVelocity2, evaluator);
+    this.problem=problem;
     completedIterations = 0 ;
     this.evaluator=evaluator;
     solutionListMeasure = new BasicMeasure<>() ;
@@ -68,7 +69,7 @@ public class DynamicSMPSO
 
   @Override
   public DynamicProblem<?, ?> getDynamicProblem() {
-      return ( DynamicProblem<?, ?>)super.getProblem() ;
+      return problem ;
   }
 
   @Override
