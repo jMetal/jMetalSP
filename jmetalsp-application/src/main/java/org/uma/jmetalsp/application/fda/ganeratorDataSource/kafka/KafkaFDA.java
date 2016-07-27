@@ -10,7 +10,7 @@ import java.util.Properties;
  * Created by cris on 27/07/2016.
  */
 public class KafkaFDA extends Thread {
-  private final KafkaProducer<Integer, Integer> producer;
+  private final KafkaProducer<Integer, String> producer;
   private final String topic;
   private final int waitTime;
 
@@ -22,17 +22,19 @@ public class KafkaFDA extends Thread {
     props.put("bootstrap.servers", aux);
     props.put("client.id", "TSPProducer");
     props.put("key.serializer", "org.apache.kafka.common.serialization.IntegerSerializer");
-    props.put("value.serializer", "org.apache.kafka.common.serialization.IntegerSerializer");
-    producer = new KafkaProducer<Integer, Integer>(props);
+    props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+    producer = new KafkaProducer<Integer, String>(props);
   }
 
   public void run() {
-    int messageNo = 1;
+    int messageNoAux = 1;
+
     while (true) {
+      String messageNo =messageNoAux+"";
       long startTime = System.currentTimeMillis();
-      producer.send(new ProducerRecord<Integer, Integer>(topic, messageNo, messageNo),
-              new CallBack(startTime, messageNo, messageNo));
-      messageNo++;
+      producer.send(new ProducerRecord<Integer, String>(topic, messageNoAux, messageNo),
+              new CallBack(startTime, messageNoAux, messageNo));
+      messageNoAux++;
       try {
 
         Thread.sleep(waitTime);
@@ -48,9 +50,9 @@ public class KafkaFDA extends Thread {
 class CallBack implements Callback {
   private long startTime;
   private int key;
-  private int message;
+  private String message;
 
-  public CallBack(long startTime, int key, int message) {
+  public CallBack(long startTime, int key, String message) {
     this.startTime = startTime;
     this.key = key;
     this.message = message;

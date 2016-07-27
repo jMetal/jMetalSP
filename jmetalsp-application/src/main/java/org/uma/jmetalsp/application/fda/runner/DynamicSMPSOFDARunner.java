@@ -29,17 +29,18 @@ public class DynamicSMPSOFDARunner {
             FDA1,
             DynamicSMPSO> application = new JMetalSPApplication<>();
     StreamingConfigurationFDA streamingConfigurationFDA= new StreamingConfigurationFDA();
-     String kafkaServer="master.bd.khaos.uma.es";
-    int kafkaPort=6667;
+     String kafkaServer="localhost";
+    int kafkaPort=2181;
+    int kafkaPortServidor=9092;
     String kafkaTopic="fdadata";
 
     //Kafka
-    KafkaFDA producerKafka = new KafkaFDA(5000, kafkaTopic,kafkaServer,kafkaPort);
+    KafkaFDA producerKafka = new KafkaFDA(5000, kafkaTopic,kafkaServer,kafkaPortServidor);
     producerKafka.start();
 
     streamingConfigurationFDA.initializeKafka(kafkaServer,kafkaPort,kafkaTopic);
     application
-            .setSparkRuntime(new SparkRuntime(1))
+            .setSparkRuntime(new SparkRuntime(20))
             .setProblemBuilder(new FDA1ProblemBuilder(100,2))
             //  .setProblemBuilder(new MultiobjectiveTSPBuilderFromFiles("/home/hdfs/tsp/kroA100.tsp", "/home/hdfs/tsp/kroB100.tsp"))
             .setAlgorithmBuilder(new DynamicSMPSOBuilder(new FDA1(),new CrowdingDistanceArchive<DoubleSolution>(100)))
