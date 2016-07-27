@@ -37,7 +37,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spark.version>1.6.1</spark.version>
-    <jmetal.version>5.1-SNAPSHOT</jmetal.version>
+    <jmetal.version>5.2-SNAPSHOT</jmetal.version>
   </properties>
 
   <modules>

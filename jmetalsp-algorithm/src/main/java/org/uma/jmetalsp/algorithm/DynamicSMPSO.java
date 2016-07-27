@@ -15,10 +15,12 @@ package org.uma.jmetalsp.algorithm;
 
 import org.uma.jmetal.algorithm.multiobjective.smpso.SMPSO;
 import org.uma.jmetal.measure.MeasureManager;
+import org.uma.jmetal.measure.impl.BasicMeasure;
 import org.uma.jmetal.measure.impl.SimpleMeasureManager;
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.problem.DoubleProblem;
 import org.uma.jmetal.solution.DoubleSolution;
+import org.uma.jmetal.util.SolutionListUtils;
 import org.uma.jmetal.util.archive.BoundedArchive;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetalsp.algorithm.DynamicAlgorithm;
@@ -31,13 +33,21 @@ import java.util.List;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class DynamicSMPSO
-    extends SMPSO
-    implements DynamicAlgorithm<List<DoubleSolution>> {
+        extends SMPSO
+        implements DynamicAlgorithm<List<DoubleSolution>> {
 
+  private int completedIterations ;
   protected SimpleMeasureManager measureManager ;
+  protected BasicMeasure<List<DoubleSolution>> solutionListMeasure ;
+  private SolutionListEvaluator<DoubleSolution> evaluator;
 
-  public DynamicSMPSO(DoubleProblem problem, int swarmSize, BoundedArchive<DoubleSolution> leaders, MutationOperator<DoubleSolution> mutationOperator, int maxIterations, double r1Min, double r1Max, double r2Min, double r2Max, double c1Min, double c1Max, double c2Min, double c2Max, double weightMin, double weightMax, double changeVelocity1, double changeVelocity2, SolutionListEvaluator<DoubleSolution> evaluator) {
-    super(problem, swarmSize, leaders, mutationOperator, maxIterations, r1Min, r1Max, r2Min, r2Max, c1Min, c1Max, c2Min, c2Max, weightMin, weightMax, changeVelocity1, changeVelocity2, evaluator);
+  public DynamicSMPSO(DynamicProblem<DoubleSolution,?> problem, int swarmSize, BoundedArchive<DoubleSolution> leaders, MutationOperator<DoubleSolution> mutationOperator, int maxIterations, double r1Min, double r1Max, double r2Min, double r2Max, double c1Min, double c1Max, double c2Min, double c2Max, double weightMin, double weightMax, double changeVelocity1, double changeVelocity2, SolutionListEvaluator<DoubleSolution> evaluator) {
+    super((DoubleProblem) problem, swarmSize, leaders, mutationOperator, maxIterations, r1Min, r1Max, r2Min, r2Max, c1Min, c1Max, c2Min, c2Max, weightMin, weightMax, changeVelocity1, changeVelocity2, evaluator);
+    completedIterations = 0 ;
+    this.evaluator=evaluator;
+    solutionListMeasure = new BasicMeasure<>() ;
+    measureManager = new SimpleMeasureManager() ;
+    measureManager.setPushMeasure("currentPopulation", solutionListMeasure);
   }
 
   @Override
@@ -55,13 +65,27 @@ public class DynamicSMPSO
     return measureManager ;
   }
 
+
   @Override
-  public DynamicProblem getDynamicProblem() {
-    return null;
+  public DynamicProblem<?, ?> getDynamicProblem() {
+      return ( DynamicProblem<?, ?>)super.getProblem() ;
   }
 
   @Override
   public int getCompletedIterations() {
-    return 0;
+    return completedIterations ;
+  }
+
+
+  @Override
+    protected void updateProgress() {
+    if (getDynamicProblem().hasTheProblemBeenModified()) {
+      SolutionListUtils.restart(this.getResult(), (DoubleProblem)getDynamicProblem(), 100);
+      evaluator.evaluate(this.getResult(),(DoubleProblem) getDynamicProblem()) ;
+      getDynamicProblem().reset();
+    }
+    int cont= this.getIterations();
+    this.setIterations(cont+this.getSwarmSize());
+    completedIterations ++ ;
   }
 }

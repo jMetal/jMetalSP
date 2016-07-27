@@ -105,7 +105,13 @@
             <type>jar</type>
         </dependency>
 
+
         <!---MOD 2016-->
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka_2.10</artifactId>
+            <version>0.9.0.0</version>
+        </dependency>
     </dependencies>
 
 </project>
