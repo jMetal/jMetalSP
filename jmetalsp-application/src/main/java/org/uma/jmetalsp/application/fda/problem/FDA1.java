@@ -6,13 +6,15 @@ import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetalsp.problem.DynamicProblem;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Created by cris on 19/07/2016.
  */
-public class FDA1 extends AbstractDoubleProblem implements DynamicProblem<DoubleSolution, FDAUpdateData> {
+public class FDA1 extends AbstractDoubleProblem implements DynamicProblem<DoubleSolution, FDAUpdateData>,Serializable {
 
   private double time;
   private boolean theProblemHasBeenModified;
@@ -58,9 +60,11 @@ public class FDA1 extends AbstractDoubleProblem implements DynamicProblem<Double
 
   @Override
   public void evaluate(DoubleSolution solution) {
-
+    //Logger.getGlobal().info("FDA1---Evaluate -----------------> ");
     int numberOfVariables = getNumberOfVariables();
+    //Logger.getGlobal().info("FDA1---Evaluate --------numberOfVariables---------> " +numberOfVariables);
     int numberOfObjectives = getNumberOfObjectives() ;
+    //Logger.getGlobal().info("FDA1---Evaluate -------numberOfObjectives----------> " +numberOfObjectives);
     if(numberOfObjectives==2) {
       double f;
       double[] x = new double[numberOfVariables];
@@ -79,6 +83,8 @@ public class FDA1 extends AbstractDoubleProblem implements DynamicProblem<Double
       double h = 1 - Math.sqrt(f / g);
       solution.setObjective(0, f);
       solution.setObjective(1, h * g);
+      //Logger.getGlobal().info("FDA1---Evaluate ---------------f--> "+f);
+      //Logger.getGlobal().info("FDA1---Evaluate ---------------h*g--> "+h*g);
     }
   }
   /*

@@ -4,12 +4,14 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.RecordMetadata;
+
+import java.io.Serializable;
 import java.util.Properties;
 
 /**
  * Created by cris on 27/07/2016.
  */
-public class KafkaFDA extends Thread {
+public class KafkaFDA extends Thread implements Serializable{
   private final KafkaProducer<Integer, String> producer;
   private final String topic;
   private final int waitTime;
@@ -38,8 +40,9 @@ public class KafkaFDA extends Thread {
       try {
 
         Thread.sleep(waitTime);
+        System.out.println("Enviado "+messageNoAux);
       } catch (Exception e) {
-
+        e.printStackTrace();
       }
 
     }
@@ -47,7 +50,7 @@ public class KafkaFDA extends Thread {
 
 }
 
-class CallBack implements Callback {
+class CallBack implements Callback,Serializable {
   private long startTime;
   private int key;
   private String message;

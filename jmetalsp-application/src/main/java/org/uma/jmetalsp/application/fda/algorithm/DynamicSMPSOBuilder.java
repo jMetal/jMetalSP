@@ -16,10 +16,12 @@ import org.uma.jmetalsp.algorithm.AlgorithmBuilder;
 import org.uma.jmetalsp.algorithm.DynamicSMPSO;
 import org.uma.jmetalsp.application.fda.problem.FDA1;
 
+import java.io.Serializable;
+
 /**
  * Created by cris on 27/07/2016.
  */
-public class DynamicSMPSOBuilder implements AlgorithmBuilder<DynamicSMPSO,FDA1> {
+public class DynamicSMPSOBuilder implements AlgorithmBuilder<DynamicSMPSO,FDA1>,Serializable {
   @Override
   public DynamicSMPSO build(FDA1 problem) {
 
@@ -61,8 +63,8 @@ public class DynamicSMPSOBuilder implements AlgorithmBuilder<DynamicSMPSO,FDA1> 
     this.problem = problem;
     this.leaders = leaders;
 
-    swarmSize = 100;
-    maxIterations = 250;
+    swarmSize = 10;
+    maxIterations = 10;
 
     r1Max = 1.0;
     r1Min = 0.0;

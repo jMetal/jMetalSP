@@ -11,10 +11,12 @@ import org.apache.spark.streaming.kafka.KafkaUtils;
 import org.uma.jmetal.solution.DoubleSolution;
 
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.logging.Logger;
 
 import kafka.serializer.StringDecoder;
 import org.uma.jmetalsp.application.fda.problem.FDAUpdateData;
@@ -27,7 +29,7 @@ import scala.Tuple2;
 /**
  * Created by cris on 20/07/2016.
  */
-public class StreamingKafkaFDA implements StreamingDataSource<FDAUpdateData> {
+public class StreamingKafkaFDA implements StreamingDataSource<FDAUpdateData>,Serializable {
   private HashMap<String, String> kafkaParams ;
   private HashSet<String> topicsSet;
   private StreamingConfigurationFDA streamingConfigurationFDA;
@@ -76,6 +78,7 @@ public class StreamingKafkaFDA implements StreamingDataSource<FDAUpdateData> {
       @Override
       public void call(JavaRDD<FDAUpdateData> mapJavaRDD) throws Exception {
         List<FDAUpdateData> dataList = mapJavaRDD.collect();
+          //Logger.getGlobal().info("StreaminfKafkaFDA---DataList -----------------> "+dataList.size());
         for (FDAUpdateData data : dataList) {
           problem.update(data);
         }
