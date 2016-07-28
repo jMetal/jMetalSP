@@ -63,8 +63,8 @@ public class DynamicSMPSOBuilder implements AlgorithmBuilder<DynamicSMPSO,FDA1>,
     this.problem = problem;
     this.leaders = leaders;
 
-    swarmSize = 10;
-    maxIterations = 10;
+    swarmSize = 100;
+    maxIterations = 250;
 
     r1Max = 1.0;
     r1Min = 0.0;
