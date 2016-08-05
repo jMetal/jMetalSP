@@ -39,8 +39,9 @@ public class DynamicSMPSOFDARunner {
     //producerKafka.start();
 
     streamingConfigurationFDA.initializeKafka(kafkaServer,kafkaPort,kafkaTopic);
+
     application
-            .setSparkRuntime(new SparkRuntime(5))
+            .setSparkRuntime(new SparkRuntime(2))
             .setProblemBuilder(new FDA1ProblemBuilder(100,2))
             //  .setProblemBuilder(new MultiobjectiveTSPBuilderFromFiles("/home/hdfs/tsp/kroA100.tsp", "/home/hdfs/tsp/kroB100.tsp"))
             .setAlgorithmBuilder(new DynamicSMPSOBuilder(new FDA1(),new CrowdingDistanceArchive<DoubleSolution>(100)))

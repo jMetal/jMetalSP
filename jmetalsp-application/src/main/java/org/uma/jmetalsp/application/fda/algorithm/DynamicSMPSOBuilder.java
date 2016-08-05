@@ -8,6 +8,7 @@ import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
 import org.uma.jmetal.problem.DoubleProblem;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.archive.BoundedArchive;
+import org.uma.jmetal.util.archive.impl.CrowdingDistanceArchive;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetal.util.pseudorandom.JMetalRandom;
@@ -25,7 +26,29 @@ public class DynamicSMPSOBuilder implements AlgorithmBuilder<DynamicSMPSO,FDA1>,
   @Override
   public DynamicSMPSO build(FDA1 problem) {
 
-    return new DynamicSMPSO(problem, swarmSize, leaders,  mutationOperator, maxIterations,  r1Min,  r1Max,  r2Min,  r2Max,
+      this.leaders=  new CrowdingDistanceArchive<DoubleSolution>(100);
+      swarmSize = 100;
+      maxIterations = 250;
+
+      r1Max = 1.0;
+      r1Min = 0.0;
+      r2Max = 1.0;
+      r2Min = 0.0;
+      c1Max = 2.5;
+      c1Min = 1.5;
+      c2Max = 2.5;
+      c2Min = 1.5;
+      weightMax = 0.1;
+      weightMin = 0.1;
+      changeVelocity1 = -1;
+      changeVelocity2 = -1;
+
+      mutationOperator = new PolynomialMutation(1.0/problem.getNumberOfVariables(), 20.0) ;
+      evaluator = new SequentialSolutionListEvaluator<DoubleSolution>() ;
+
+      this.variant = SMPSOBuilder.SMPSOVariant.SMPSO ;
+
+      return new DynamicSMPSO(problem, swarmSize, leaders,  mutationOperator, maxIterations,  r1Min,  r1Max,  r2Min,  r2Max,
             c1Min,  c1Max,  c2Min,  c2Max,  weightMin,  weightMax,  changeVelocity1,  changeVelocity2, evaluator);
   }
 

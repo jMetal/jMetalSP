@@ -38,7 +38,7 @@ public class StreamingKafkaFDA implements StreamingDataSource<FDAUpdateData>,Ser
     this.streamingConfigurationFDA= streamingConfigurationFDA;
     this.kafkaParams=streamingConfigurationFDA.getKafkaParams();
     this.topicsSet = new HashSet<>(Arrays.asList(streamingConfigurationFDA.getKafkaTopics().split(",")));
-
+    Logger.getGlobal().info("StramingKafka---Constructor ---------------");
   }
   @Override
   public void setProblem(DynamicProblem<?, FDAUpdateData> problem) {
@@ -47,6 +47,7 @@ public class StreamingKafkaFDA implements StreamingDataSource<FDAUpdateData>,Ser
 
   @Override
   public void start(JavaStreamingContext context) {
+    Logger.getGlobal().info("StramingKafka---Star ---------------");
     JavaPairInputDStream<String, String> messages;
     messages = KafkaUtils.createDirectStream(
             context,
@@ -60,7 +61,7 @@ public class StreamingKafkaFDA implements StreamingDataSource<FDAUpdateData>,Ser
     JavaDStream<String> lines = messages.map(new Function<Tuple2<String, String>, String>() {
       @Override
       public String call(Tuple2<String, String> tuple2) {
-
+        Logger.getGlobal().info("StramingKafka---messages ---------------tuple2._2()--> "+tuple2._2());
         return tuple2._2();
       }
     });
@@ -69,6 +70,7 @@ public class StreamingKafkaFDA implements StreamingDataSource<FDAUpdateData>,Ser
             lines.map(new Function<String, FDAUpdateData>() {
               @Override
               public FDAUpdateData call(String s) throws Exception {
+                Logger.getGlobal().info("StramingKafka---routeUpdates ---------------time--> "+Integer.valueOf(s));
                 FDAUpdateData data = new FDAUpdateData( Integer.valueOf(s));
                 return data;
               }
@@ -78,8 +80,9 @@ public class StreamingKafkaFDA implements StreamingDataSource<FDAUpdateData>,Ser
       @Override
       public void call(JavaRDD<FDAUpdateData> mapJavaRDD) throws Exception {
         List<FDAUpdateData> dataList = mapJavaRDD.collect();
-          //Logger.getGlobal().info("StreaminfKafkaFDA---DataList -----------------> "+dataList.size());
+        //Logger.getGlobal().info("StreaminfKafkaFDA---DataList -----------------> "+dataList.size());
         for (FDAUpdateData data : dataList) {
+          Logger.getGlobal().info("StreaminfKafkaFDA---DataList -----------------> "+data.getTime());
           problem.update(data);
         }
       }
