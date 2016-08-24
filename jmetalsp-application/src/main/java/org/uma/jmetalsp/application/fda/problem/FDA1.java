@@ -50,7 +50,7 @@ public class FDA1 extends AbstractDoubleProblem implements DynamicProblem<Double
 
   @Override
   public void reset() {
-    Logger.getGlobal().info("FDA1---RESET -----------------> ");
+    Logger.getGlobal().info("------------------FDA1---RESET -----------------> "+time);
     theProblemHasBeenModified = false ;
   }
 

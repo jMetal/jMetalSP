@@ -44,7 +44,7 @@ public class DynamicSMPSOFDARunner {
             .setSparkRuntime(new SparkRuntime(2))
             .setProblemBuilder(new FDA1ProblemBuilder(100,2))
             //  .setProblemBuilder(new MultiobjectiveTSPBuilderFromFiles("/home/hdfs/tsp/kroA100.tsp", "/home/hdfs/tsp/kroB100.tsp"))
-            .setAlgorithmBuilder(new DynamicSMPSOBuilder(new FDA1(),new CrowdingDistanceArchive<DoubleSolution>(100)))
+            .setAlgorithmBuilder(new DynamicSMPSOBuilder(new CrowdingDistanceArchive<DoubleSolution>(100)))
             .addAlgorithmDataConsumer(new SimpleSolutionListConsumer())
             .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("/Users/cristobal/Documents/tesis/fda"))
             .addStreamingDataSource(new StreamingKafkaFDA(streamingConfigurationFDA))

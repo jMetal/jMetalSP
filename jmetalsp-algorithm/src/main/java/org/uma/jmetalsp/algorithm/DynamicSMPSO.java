@@ -91,6 +91,7 @@ public class DynamicSMPSO
     int cont= this.getIterations();
     this.setIterations(cont+this.getSwarmSize());
     completedIterations ++ ;
+    updateLeadersDensityEstimator();
   }
 
   @Override
@@ -103,11 +104,18 @@ public class DynamicSMPSO
 
       SolutionListUtils.restart(super.getSwarm(),(DoubleProblem) getDynamicProblem(), 100);
       //Logger.getGlobal().info("DynamicSMSPO---isStoppingConditionReached -----------------> se ha alcanzado" +super.getSwarm().size());
+      /**
+       *  swarm = createInitialSwarm() ;
+       swarm = evaluateSwarm(swarm);
+       initializeVelocity(swarm);
+       initializeParticlesMemory(swarm) ;
+       initializeLeader(swarm) ;
+       initProgress();
+       */
+      evaluator.evaluate(super.getSwarm(), (DoubleProblem)getDynamicProblem()) ;
       initializeVelocity(super.getSwarm());
       initializeParticlesMemory(super.getSwarm()) ;
       initializeLeader(super.getSwarm()) ;
-      evaluator.evaluate(super.getSwarm(), (DoubleProblem)getDynamicProblem()) ;
-
       initProgress();
       completedIterations++;
     }

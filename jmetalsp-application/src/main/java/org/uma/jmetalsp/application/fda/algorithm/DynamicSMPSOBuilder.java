@@ -42,7 +42,7 @@ public class DynamicSMPSOBuilder implements AlgorithmBuilder<DynamicSMPSO,FDA1>,
       weightMin = 0.1;
       changeVelocity1 = -1;
       changeVelocity2 = -1;
-
+      this.problem = problem;
       mutationOperator = new PolynomialMutation(1.0/problem.getNumberOfVariables(), 20.0) ;
       evaluator = new SequentialSolutionListEvaluator<DoubleSolution>() ;
 
@@ -82,11 +82,11 @@ public class DynamicSMPSOBuilder implements AlgorithmBuilder<DynamicSMPSO,FDA1>,
 
   private SMPSOBuilder.SMPSOVariant variant ;
 
-  public DynamicSMPSOBuilder(DoubleProblem problem, BoundedArchive<DoubleSolution> leaders) {
-    this.problem = problem;
+  public DynamicSMPSOBuilder( BoundedArchive<DoubleSolution> leaders) {
+
     this.leaders = leaders;
 
-    swarmSize = 100;
+    /*swarmSize = 100;
     maxIterations = 250;
 
     r1Max = 1.0;
@@ -105,7 +105,7 @@ public class DynamicSMPSOBuilder implements AlgorithmBuilder<DynamicSMPSO,FDA1>,
     mutationOperator = new PolynomialMutation(1.0/problem.getNumberOfVariables(), 20.0) ;
     evaluator = new SequentialSolutionListEvaluator<DoubleSolution>() ;
 
-    this.variant = SMPSOBuilder.SMPSOVariant.SMPSO ;
+    this.variant = SMPSOBuilder.SMPSOVariant.SMPSO ;*/
 
   }
 
