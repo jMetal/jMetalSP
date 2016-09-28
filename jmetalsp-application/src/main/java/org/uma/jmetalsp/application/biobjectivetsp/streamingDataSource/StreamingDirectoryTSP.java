@@ -59,7 +59,6 @@ public class StreamingDirectoryTSP implements StreamingDataSource<Multiobjective
    */
   @Override
   public void start(JavaStreamingContext streamingContext) {
-   // JMetalLogger.logger.info("Starting StreamingDirectoryTSP ......"); ;
     JavaDStream<String> lines = streamingContext.textFileStream(dataDirectoryName);
 
     JavaDStream<MultiobjectiveTSPUpdateData> routeUpdates =

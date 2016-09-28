@@ -14,8 +14,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-
-
 /**
  *
  * @author Jose Andres
@@ -34,14 +32,14 @@ public class ParseLinkSpeedQuery {
     private List<ParsedNode> pnodes;
     private Map<Integer, ParsedNode> hashnodes;
     private Map<Integer, Integer> nodeDistances;
-
+    
     /**
      * “NY Traffic client
      * @param args
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
-
+        
         if (args == null || args.length < 2) {
             System.out.println("Provide the path to generate the output files:");
             System.out.println("    ParseLinkSpeedQuery <initial file path> <updates file path>");
@@ -51,7 +49,7 @@ public class ParseLinkSpeedQuery {
         ParseLinkSpeedQuery parser = new ParseLinkSpeedQuery();
         parser.initialize();
         parser.generateOutput();
-
+        
         if (args[0].equalsIgnoreCase("-print")) {
             // Example
             //parser.printCoordinatesForSolution("12 32 30 73 69 10 92 53 56 57 5 27 48 51 46 79 75 15 13 70 21 8 9 83 22 42 20 19 88 1 84 82 29 38 41 36 39 2 11 91 16 14 37 18 17 59 90 60 61 67 40 66 65 24 25 62 64 63 74 89 26 31 28 33 34 7 3 4 87 86 47 23 35 76 6 50 44 43 45 68 72 71 0 85 80 55 52 78 54 77 58 49 81");
@@ -60,7 +58,7 @@ public class ParseLinkSpeedQuery {
         }
         
         parser.generateOutputFile(args[0]);
-
+        
         int update = 0;
         
         while (true) {
@@ -104,7 +102,7 @@ public class ParseLinkSpeedQuery {
                 }
                 inputLine = inputLine.replace("\"", "");
                 String[] fields = inputLine.split("\t");
-
+                
                 try {
                     int id = Integer.parseInt(fields[FIELD_ID]);
                     if (hashnodes.containsKey(id)) {
@@ -128,7 +126,7 @@ public class ParseLinkSpeedQuery {
                             node.setTravelTime(newtime);
                             node.setCostUpdated(true);
                         }
-
+                        
                         if (node.isCostUpdated() || node.isDistanceUpdated()) {
                             System.out.println("Updated " + node.getId() + ": " + node.getDistance() + "," + newtime);
                             updates++;
@@ -149,9 +147,9 @@ public class ParseLinkSpeedQuery {
     
     private void addManualEdges() {
         int[][] addnodes = new int[][]{ {450, 338},
-                                        {385, 417},
-                                        {298, 126},
-                                        {129, 168}};
+            {385, 417},
+            {298, 126},
+            {129, 168}};
         
         for (int[] node : addnodes) {
             hashnodes.get(node[0]).addNode(hashnodes.get(node[1]));
@@ -183,7 +181,7 @@ public class ParseLinkSpeedQuery {
                     fields[FIELD_POLYLINE],
                     fields[FIELD_NAME],
                     GoogleDecode.decode(fields[FIELD_POLYLINE]));
-
+                
                 // If distances are not cached, call the Google Service
                 if (nodeDistances == null) {
                     Integer dist1 = GoogleDecode.getDistance(pnode.getCoords().get(0), pnode.getCoords().get(pnode.getCoords().size()-1));
@@ -205,17 +203,17 @@ public class ParseLinkSpeedQuery {
         in.close();
     }
     private Integer min(Integer data1,Integer data2){
-    	Integer result=null;
-    	if(data1!=null &&data2!=null){
-    		int aux1=data1.intValue();
-    		int aux2=data2.intValue();
-    		if(aux1<=aux2){
-    			result= data1;
-    		}else{
-    			result=data2;
-    		}
-    	}
-    	return result;
+        Integer result=null;
+        if(data1!=null &&data2!=null){
+            int aux1=data1.intValue();
+            int aux2=data2.intValue();
+            if(aux1<=aux2){
+                result= data1;
+            }else{
+                result=data2;
+            }
+        }
+        return result;
     }
     
     private void generateGraph() {
@@ -234,7 +232,7 @@ public class ParseLinkSpeedQuery {
             }
         }
     }
-
+    
     private int removeIsolatedNodes() {
         Iterator<ParsedNode> itr = pnodes.iterator();
         int count = 0;

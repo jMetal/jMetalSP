@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 /**
- * Created by cris on 20/07/2016.
+ * @author Cristóbal Barba <cbarba@lcc.uma.es>
  */
 public class StreamingConfigurationFDA implements StreamingConfiguration,Serializable {
   private HashMap<String, String> kafkaParams ;

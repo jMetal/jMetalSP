@@ -1,7 +1,5 @@
 package  org.uma.jmetalsp.application.fda.runner;
 
-
-
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.archive.impl.CrowdingDistanceArchive;
 import org.uma.jmetalsp.algorithm.DynamicSMPSO;
@@ -20,7 +18,7 @@ import org.uma.jmetalsp.util.spark.SparkRuntime;
 import java.io.IOException;
 
 /**
- * Created by cris on 20/07/2016.
+ * @author Cristóbal Barba <cbarba@lcc.uma.es>
  */
 public class DynamicSMPSOFDARunner {
   public static void main(String[] args) throws IOException, InterruptedException {
@@ -29,7 +27,7 @@ public class DynamicSMPSOFDARunner {
             FDA1,
             DynamicSMPSO> application = new JMetalSPApplication<>();
     StreamingConfigurationFDA streamingConfigurationFDA= new StreamingConfigurationFDA();
-     String kafkaServer="master.bd.khaos.uma.es";
+    String kafkaServer="localhost";
     int kafkaPort=6667;
     String kafkaTopic="fdadata";
 

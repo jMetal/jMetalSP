@@ -1,6 +1,5 @@
 package  org.uma.jmetalsp.application.fda.streamingDataSource;
 
-
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.VoidFunction;
@@ -23,9 +22,8 @@ import org.uma.jmetalsp.problem.DynamicProblem;
 import org.uma.jmetalsp.streamingdatasource.StreamingDataSource;
 import scala.Tuple2;
 
-
 /**
- * Created by cris on 20/07/2016.
+ * @author Cristóbal Barba <cbarba@lcc.uma.es>
  */
 public class StreamingKafkaFDA implements StreamingDataSource<FDAUpdateData> {
   private HashMap<String, String> kafkaParams ;
