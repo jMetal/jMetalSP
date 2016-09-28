@@ -27,22 +27,29 @@ public class DynamicSMPSOFDARunner {
             FDA1,
             DynamicSMPSO> application = new JMetalSPApplication<>();
     StreamingConfigurationFDA streamingConfigurationFDA= new StreamingConfigurationFDA();
-    String kafkaServer="localhost";
-    int kafkaPort=6667;
+
+//    String kafkaServer="localhost";
+//    int kafkaPort=6667;
+
+     String kafkaServer="localhost";
+    int kafkaPort=2181;
+    int kafkaPortServidor=9092;
+
     String kafkaTopic="fdadata";
 
     //Kafka
-    KafkaFDA producerKafka = new KafkaFDA(5000, kafkaTopic,kafkaServer,kafkaPort);
-    producerKafka.start();
+    //KafkaFDA producerKafka = new KafkaFDA(5000, kafkaTopic,kafkaServer,kafkaPortServidor);
+    //producerKafka.start();
 
     streamingConfigurationFDA.initializeKafka(kafkaServer,kafkaPort,kafkaTopic);
+
     application
-            .setSparkRuntime(new SparkRuntime(1))
+            .setSparkRuntime(new SparkRuntime(2))
             .setProblemBuilder(new FDA1ProblemBuilder(100,2))
             //  .setProblemBuilder(new MultiobjectiveTSPBuilderFromFiles("/home/hdfs/tsp/kroA100.tsp", "/home/hdfs/tsp/kroB100.tsp"))
-            .setAlgorithmBuilder(new DynamicSMPSOBuilder(new FDA1(),new CrowdingDistanceArchive<DoubleSolution>(100)))
+            .setAlgorithmBuilder(new DynamicSMPSOBuilder(new CrowdingDistanceArchive<DoubleSolution>(100)))
             .addAlgorithmDataConsumer(new SimpleSolutionListConsumer())
-            .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("/opt/consumer/jMetalSP1"))
+            .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("/Users/cristobal/Documents/tesis/fda"))
             .addStreamingDataSource(new StreamingKafkaFDA(streamingConfigurationFDA))
             // .addStreamingDataSource(new StreamingKafkaTSP(streamingConfigurationTSP1))
             .run();

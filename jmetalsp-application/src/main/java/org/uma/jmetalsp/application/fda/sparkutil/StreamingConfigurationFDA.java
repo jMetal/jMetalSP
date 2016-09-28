@@ -25,7 +25,7 @@ public class StreamingConfigurationFDA implements StreamingConfiguration,Seriali
   public void initializeKafka(String kafkaServer,int kafkaPort,String kafkaTopics){
     this.kafkaTopics=kafkaTopics;
     kafkaParams = new HashMap<>();
-    // kafkaParams.put("metadata.broker.list", brokers);//desde fuera de la misma maquina falla la conexion debida a esa linea
+    kafkaParams.put("metadata.broker.list", "localhost:9092");//desde fuera de la misma maquina falla la conexion debida a esa linea
     kafkaParams.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer+":"+kafkaPort );//"master.bd.khaos.uma.es:6667"
     kafkaParams.put(ConsumerConfig.GROUP_ID_CONFIG, "StreamingKafkaFDA");
     kafkaParams.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");

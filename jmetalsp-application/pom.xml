@@ -106,11 +106,11 @@
         </dependency>
 
 
-        <!---MOD 2016-->
+        <!---MOD 2016 v. 0.9.0.0-->
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka_2.10</artifactId>
-            <version>0.9.0.0</version>
+            <version>0.8.2.1</version>
         </dependency>
     </dependencies>
 
