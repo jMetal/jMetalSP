@@ -91,7 +91,6 @@ public class DynamicSMPSO
     this.setIterations(cont+this.getSwarmSize());
     completedIterations ++ ;
     updateLeadersDensityEstimator();
-    //super.updateProgress();
   }
 
   @Override
