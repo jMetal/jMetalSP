@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.Serializable;
 
 /**
- * Created by cris on 20/07/2016.
+ * @author Cristóbal Barba <cbarba@lcc.uma.es>
  */
 public class FDA1ProblemBuilder implements ProblemBuilder,Serializable {
   private  int numberOfVariables;

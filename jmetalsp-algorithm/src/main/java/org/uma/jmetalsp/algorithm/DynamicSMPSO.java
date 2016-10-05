@@ -23,11 +23,10 @@ import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.SolutionListUtils;
 import org.uma.jmetal.util.archive.BoundedArchive;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
-import org.uma.jmetalsp.algorithm.DynamicAlgorithm;
 import org.uma.jmetalsp.problem.DynamicProblem;
 
 import java.util.List;
-import java.util.logging.Logger;
+
 
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
@@ -80,37 +79,26 @@ public class DynamicSMPSO
 
   @Override
     protected void updateProgress() {
-    //Logger.getGlobal().info("DynamicSMSPO---updateProgress -----------------> ");
     if (getDynamicProblem().hasTheProblemBeenModified()) {
-      //Logger.getGlobal().info("DynamicSMSPO---updateProgress -----------------> problem has been modificated");
-      SolutionListUtils.restart(this.getResult(), (DoubleProblem)getDynamicProblem(), 100);
-      evaluator.evaluate(this.getResult(),(DoubleProblem) getDynamicProblem()) ;
+      SolutionListUtils.restart(this.getSwarm(), (DoubleProblem)getDynamicProblem(), 100);
+      evaluator.evaluate(this.getSwarm(),(DoubleProblem) getDynamicProblem()) ;
+      initializeVelocity(super.getSwarm());
+      initializeParticlesMemory(super.getSwarm()) ;
+      initializeLeader(super.getSwarm()) ;
       getDynamicProblem().reset();
     }
     int cont= this.getIterations();
     this.setIterations(cont+this.getSwarmSize());
     completedIterations ++ ;
     updateLeadersDensityEstimator();
+    //super.updateProgress();
   }
 
   @Override
   protected boolean isStoppingConditionReached() {
-    //Logger.getGlobal().info("DynamicSMSPO---isStoppingConditionReached -----------------> ");
-     // Logger.getGlobal().info("DynamicSMSPO---super.getSwarm() -----------------> "+super.getSwarm().size());
-    if (super.getIterations() >= super.getMaxIterations()) {
-      //Logger.getGlobal().info("DynamicSMSPO---isStoppingConditionReached -----------------> se ha alcanzado");
-      solutionListMeasure.push(super.getSwarm()) ;
-
+      if (super.getIterations() >= super.getMaxIterations()) {
+      solutionListMeasure.push(super.getResult()) ;
       SolutionListUtils.restart(super.getSwarm(),(DoubleProblem) getDynamicProblem(), 100);
-      //Logger.getGlobal().info("DynamicSMSPO---isStoppingConditionReached -----------------> se ha alcanzado" +super.getSwarm().size());
-      /**
-       *  swarm = createInitialSwarm() ;
-       swarm = evaluateSwarm(swarm);
-       initializeVelocity(swarm);
-       initializeParticlesMemory(swarm) ;
-       initializeLeader(swarm) ;
-       initProgress();
-       */
       evaluator.evaluate(super.getSwarm(), (DoubleProblem)getDynamicProblem()) ;
       initializeVelocity(super.getSwarm());
       initializeParticlesMemory(super.getSwarm()) ;
@@ -121,14 +109,4 @@ public class DynamicSMPSO
     return false;
   }
 
-    @Override
-    protected void updateVelocity(List<DoubleSolution> swarm) {
-        try {
-            super.updateVelocity(swarm);
-        }catch (Exception e){
-            Logger.getGlobal().info("Pete updateVelocity!!!!!!!!!!!!!!-----");
-            Logger.getGlobal().info(e.getMessage());
-            Logger.getGlobal().info(e.toString());
-        }
-    }
 }

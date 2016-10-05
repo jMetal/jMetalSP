@@ -25,11 +25,9 @@ import java.io.Serializable;
 public class DynamicSMPSOBuilder implements AlgorithmBuilder<DynamicSMPSO,FDA1>,Serializable {
   @Override
   public DynamicSMPSO build(FDA1 problem) {
-
       this.leaders=  new CrowdingDistanceArchive<DoubleSolution>(100);
       swarmSize = 100;
       maxIterations = 250;
-
       r1Max = 1.0;
       r1Min = 0.0;
       r2Max = 1.0;
@@ -81,33 +79,6 @@ public class DynamicSMPSOBuilder implements AlgorithmBuilder<DynamicSMPSO,FDA1>,
   private SolutionListEvaluator<DoubleSolution> evaluator;
 
   private SMPSOBuilder.SMPSOVariant variant ;
-
-  public DynamicSMPSOBuilder( BoundedArchive<DoubleSolution> leaders) {
-
-    this.leaders = leaders;
-
-    /*swarmSize = 100;
-    maxIterations = 250;
-
-    r1Max = 1.0;
-    r1Min = 0.0;
-    r2Max = 1.0;
-    r2Min = 0.0;
-    c1Max = 2.5;
-    c1Min = 1.5;
-    c2Max = 2.5;
-    c2Min = 1.5;
-    weightMax = 0.1;
-    weightMin = 0.1;
-    changeVelocity1 = -1;
-    changeVelocity2 = -1;
-
-    mutationOperator = new PolynomialMutation(1.0/problem.getNumberOfVariables(), 20.0) ;
-    evaluator = new SequentialSolutionListEvaluator<DoubleSolution>() ;
-
-    this.variant = SMPSOBuilder.SMPSOVariant.SMPSO ;*/
-
-  }
 
   /* Getters */
   public int getSwarmSize() {
