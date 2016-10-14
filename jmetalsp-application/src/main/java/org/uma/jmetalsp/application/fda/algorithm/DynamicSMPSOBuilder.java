@@ -1,8 +1,6 @@
 package org.uma.jmetalsp.application.fda.algorithm;
 
-import org.uma.jmetal.algorithm.multiobjective.smpso.SMPSO;
 import org.uma.jmetal.algorithm.multiobjective.smpso.SMPSOBuilder;
-import org.uma.jmetal.algorithm.multiobjective.smpso.SMPSOMeasures;
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
 import org.uma.jmetal.problem.DoubleProblem;
@@ -15,19 +13,20 @@ import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 import org.uma.jmetal.util.pseudorandom.PseudoRandomGenerator;
 import org.uma.jmetalsp.algorithm.AlgorithmBuilder;
 import org.uma.jmetalsp.algorithm.DynamicSMPSO;
-import org.uma.jmetalsp.application.fda.problem.FDA1;
+import org.uma.jmetalsp.application.fda.problem.fda1.FDA1;
+import org.uma.jmetalsp.application.fda.problem.fda2.FDA2;
 
 import java.io.Serializable;
 
 /**
  * Created by cris on 27/07/2016.
  */
-public class DynamicSMPSOBuilder implements AlgorithmBuilder<DynamicSMPSO,FDA1>,Serializable {
+public class DynamicSMPSOBuilder implements AlgorithmBuilder<DynamicSMPSO,FDA2>,Serializable {
   @Override
-  public DynamicSMPSO build(FDA1 problem) {
+  public DynamicSMPSO build(FDA2 problem) {
       this.leaders=  new CrowdingDistanceArchive<DoubleSolution>(100);
       swarmSize = 100;
-      maxIterations = 250;
+      maxIterations = 250000;
       r1Max = 1.0;
       r1Min = 0.0;
       r2Max = 1.0;

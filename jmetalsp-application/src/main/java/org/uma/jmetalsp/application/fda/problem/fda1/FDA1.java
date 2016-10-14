@@ -1,8 +1,9 @@
-package org.uma.jmetalsp.application.fda.problem;
+package org.uma.jmetalsp.application.fda.problem.fda1;
 
 import org.uma.jmetal.problem.impl.AbstractDoubleProblem;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.JMetalException;
+import org.uma.jmetalsp.application.fda.problem.FDAUpdateData;
 import org.uma.jmetalsp.problem.DynamicProblem;
 
 
@@ -74,7 +75,7 @@ public class FDA1 extends AbstractDoubleProblem implements DynamicProblem<Double
   }
 
   /**
-   * Returns the value of the ZDT1 function G.
+   * Returns the value of the FDA1 function G.
    *
    * @param solution Solution
    */

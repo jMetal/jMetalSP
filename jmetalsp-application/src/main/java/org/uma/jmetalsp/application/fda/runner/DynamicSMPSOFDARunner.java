@@ -1,11 +1,13 @@
 package  org.uma.jmetalsp.application.fda.runner;
 
+import org.uma.jmetal.util.pseudorandom.impl.MersenneTwisterGenerator;
 import org.uma.jmetalsp.algorithm.DynamicSMPSO;
 import org.uma.jmetalsp.application.JMetalSPApplication;
 import org.uma.jmetalsp.application.fda.algorithm.DynamicSMPSOBuilder;
-import org.uma.jmetalsp.application.fda.problem.FDA1;
-import org.uma.jmetalsp.application.fda.problem.FDA1ProblemBuilder;
+import org.uma.jmetalsp.application.fda.problem.fda1.FDA1;
+import org.uma.jmetalsp.application.fda.problem.fda1.FDA1ProblemBuilder;
 import org.uma.jmetalsp.application.fda.problem.FDAUpdateData;
+import org.uma.jmetalsp.application.fda.problem.fda2.FDA2ProblemBuilder;
 import org.uma.jmetalsp.application.fda.sparkutil.StreamingConfigurationFDA;
 import org.uma.jmetalsp.application.fda.streamingDataSource.StreamingKafkaFDA;
 import org.uma.jmetalsp.consumer.impl.LocalDirectoryOutputConsumer;
@@ -32,10 +34,10 @@ public class DynamicSMPSOFDARunner {
     streamingConfigurationFDA.initializeKafka(kafkaServer,kafkaPort,kafkaTopic);
     application
             .setSparkRuntime(new SparkRuntime(2))
-            .setProblemBuilder(new FDA1ProblemBuilder(100,2))
-            .setAlgorithmBuilder(new DynamicSMPSOBuilder())
+            .setProblemBuilder(new FDA2ProblemBuilder(31,2))
+            .setAlgorithmBuilder(new DynamicSMPSOBuilder().setRandomGenerator(new MersenneTwisterGenerator()))
             .addAlgorithmDataConsumer(new SimpleSolutionListConsumer())
-            .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("/Users/cristobal/Documents/tesis/fda"))
+            .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("/Users/cristobal/Documents/tesis/fda2"))
             .addStreamingDataSource(new StreamingKafkaFDA(streamingConfigurationFDA))
             .run();
   }

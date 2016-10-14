@@ -31,7 +31,7 @@ public class SparkRuntime {
     streamingContext = new JavaStreamingContext(sparkConf, Durations.seconds(this.duration)) ;
   }
 
-  public void start() {
+  public void start() throws InterruptedException {
     //JMetalLogger.logger.info("Starting Spark jMetalSP runtime. Duration: " + duration);
     streamingContext.start();
     streamingContext.awaitTermination();

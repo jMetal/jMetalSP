@@ -80,14 +80,10 @@ public class DynamicSMPSO
   @Override
     protected void updateProgress() {
     if (getDynamicProblem().hasTheProblemBeenModified()) {
-      SolutionListUtils.restart(this.getSwarm(), (DoubleProblem)getDynamicProblem(), 100);
-      evaluator.evaluate(this.getSwarm(),(DoubleProblem) getDynamicProblem()) ;
-      initializeVelocity(super.getSwarm());
-      initializeParticlesMemory(super.getSwarm()) ;
-      initializeLeader(super.getSwarm()) ;
+      restart();
       getDynamicProblem().reset();
     }
-    int cont= this.getIterations();
+    int cont= getIterations();
     this.setIterations(cont+this.getSwarmSize());
     completedIterations ++ ;
     updateLeadersDensityEstimator();
@@ -95,17 +91,22 @@ public class DynamicSMPSO
 
   @Override
   protected boolean isStoppingConditionReached() {
-      if (super.getIterations() >= super.getMaxIterations()) {
-      solutionListMeasure.push(super.getResult()) ;
-      SolutionListUtils.restart(super.getSwarm(),(DoubleProblem) getDynamicProblem(), 100);
-      evaluator.evaluate(super.getSwarm(), (DoubleProblem)getDynamicProblem()) ;
-      initializeVelocity(super.getSwarm());
-      initializeParticlesMemory(super.getSwarm()) ;
-      initializeLeader(super.getSwarm()) ;
-      initProgress();
+      if (getIterations() >= getMaxIterations()) {
+      solutionListMeasure.push(getResult()) ;
+      restart();
       completedIterations++;
     }
     return false;
   }
 
+  private void restart(){
+    SolutionListUtils.restart(getSwarm(), (DoubleProblem)getDynamicProblem(), 100);
+    //setSwarm(createInitialSwarm());
+    SolutionListUtils.removeSolutionsFromList(getResult(),getResult().size());
+    evaluator.evaluate(getSwarm(),(DoubleProblem) getDynamicProblem()) ;
+    initializeVelocity(getSwarm());
+    initializeParticlesMemory(getSwarm()) ;
+    initializeLeader(getSwarm()) ;
+    initProgress();
+  }
 }

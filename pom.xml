@@ -80,6 +80,16 @@
       <version>${jmetal.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.uma.jmetal</groupId>
+      <artifactId>jmetal-exec</artifactId>
+      <version>${jmetal.version}</version>
+    </dependency>
+      <dependency>
+          <groupId>org.uma.jmetal</groupId>
+          <artifactId>jmetal-problem</artifactId>
+          <version>${jmetal.version}</version>
+      </dependency>
+    <dependency>
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-streaming_2.10</artifactId>
       <version>${spark.version}</version>
