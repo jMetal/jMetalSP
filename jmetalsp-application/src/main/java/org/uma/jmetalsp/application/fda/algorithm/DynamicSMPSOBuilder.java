@@ -15,15 +15,16 @@ import org.uma.jmetalsp.algorithm.AlgorithmBuilder;
 import org.uma.jmetalsp.algorithm.DynamicSMPSO;
 import org.uma.jmetalsp.application.fda.problem.fda1.FDA1;
 import org.uma.jmetalsp.application.fda.problem.fda2.FDA2;
+import org.uma.jmetalsp.application.fda.problem.fda3.FDA3;
 
 import java.io.Serializable;
 
 /**
  * Created by cris on 27/07/2016.
  */
-public class DynamicSMPSOBuilder implements AlgorithmBuilder<DynamicSMPSO,FDA2>,Serializable {
+public class DynamicSMPSOBuilder implements AlgorithmBuilder<DynamicSMPSO,FDA3>,Serializable {
   @Override
-  public DynamicSMPSO build(FDA2 problem) {
+  public DynamicSMPSO build(FDA3 problem) {
       this.leaders=  new CrowdingDistanceArchive<DoubleSolution>(100);
       swarmSize = 100;
       maxIterations = 250000;
