@@ -9,6 +9,7 @@ import org.uma.jmetalsp.application.fda.problem.fda1.FDA1ProblemBuilder;
 import org.uma.jmetalsp.application.fda.problem.FDAUpdateData;
 import org.uma.jmetalsp.application.fda.problem.fda2.FDA2ProblemBuilder;
 import org.uma.jmetalsp.application.fda.problem.fda3.FDA3ProblemBuilder;
+import org.uma.jmetalsp.application.fda.problem.fda4.FDA4ProblemBuilder;
 import org.uma.jmetalsp.application.fda.sparkutil.StreamingConfigurationFDA;
 import org.uma.jmetalsp.application.fda.streamingDataSource.StreamingKafkaFDA;
 import org.uma.jmetalsp.consumer.impl.LocalDirectoryOutputConsumer;
@@ -35,10 +36,10 @@ public class DynamicSMPSOFDARunner {
     streamingConfigurationFDA.initializeKafka(kafkaServer,kafkaPort,kafkaTopic);
     application
             .setSparkRuntime(new SparkRuntime(2))
-            .setProblemBuilder(new FDA3ProblemBuilder(30,2))
+            .setProblemBuilder(new FDA4ProblemBuilder(12,3))
             .setAlgorithmBuilder(new DynamicSMPSOBuilder().setRandomGenerator(new MersenneTwisterGenerator()))
             .addAlgorithmDataConsumer(new SimpleSolutionListConsumer())
-            .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("/Users/cristobal/Documents/tesis/fda/fda3"))
+            .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("/Users/cristobal/Documents/tesis/fda/fda4"))
             .addStreamingDataSource(new StreamingKafkaFDA(streamingConfigurationFDA))
             .run();
   }
