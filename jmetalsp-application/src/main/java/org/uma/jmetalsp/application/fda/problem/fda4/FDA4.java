@@ -58,7 +58,7 @@ public class FDA4 extends AbstractDoubleProblem implements DynamicProblem<Double
   @Override
   public void evaluate(DoubleSolution solution) {
     double[] f = new double[getNumberOfObjectives()];
-    double g = this.evalG(solution, M);
+    double g = this.evalG(solution, M-1);
     f[0] = this.evalF1(solution, g);
     f[1] = evalFK(solution,g,2);
     f[2] = evalFM(solution,g);
@@ -70,8 +70,8 @@ public class FDA4 extends AbstractDoubleProblem implements DynamicProblem<Double
   private double evalF1(DoubleSolution solution,double g){
     double f=1.0d +g;
     double mult=1.0d;
-    for (int i = 1; i < M-1; i++) {
-      mult*=Math.cos((solution.getVariableValue(i-1)*Math.PI)/2.0d);
+    for (int i = 1; i <= M-1; i++) {
+      mult*=Math.cos(solution.getVariableValue(i-1)*Math.PI/2.0d);
     }
     return f*mult;
   }
@@ -79,8 +79,8 @@ public class FDA4 extends AbstractDoubleProblem implements DynamicProblem<Double
     double f= 1.0d + g;
     double mult=1.0d;
     double aux=Math.sin((solution.getVariableValue(M-k)*Math.PI)/2.0d);
-    for (int i = 1; i < M-k; i++) {
-      mult*=Math.cos((solution.getVariableValue(i-1)*Math.PI)/2.0d);
+    for (int i = 1; i <= M-k; i++) {
+      mult*=Math.cos(solution.getVariableValue(i-1)*Math.PI/2.0d);
     }
     mult*=aux;
     return f*mult;
@@ -95,7 +95,7 @@ public class FDA4 extends AbstractDoubleProblem implements DynamicProblem<Double
   private double evalG(DoubleSolution solution,int limitInf) {
     double g = 0.0d;
     double Gt=Math.abs(Math.sin(0.5d*Math.PI*time));
-    for (int i = 0; i < solution.getNumberOfVariables(); i++) {
+    for (int i = limitInf; i < solution.getNumberOfVariables(); i++) {
       g += Math.pow((solution.getVariableValue(i)-Gt), 2.0d);
     }
     return g;
@@ -103,7 +103,7 @@ public class FDA4 extends AbstractDoubleProblem implements DynamicProblem<Double
 
   private double evalFM(DoubleSolution solution,double g){
     double fm = 1.0d+g;
-    fm *= Math.sin((solution.getVariableValue(0)*Math.PI)/2);
+    fm *= Math.sin(solution.getVariableValue(0)*Math.PI/2);
     return fm;
   }
 }
