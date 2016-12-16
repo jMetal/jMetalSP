@@ -99,6 +99,7 @@ public class DynamicMOCell<S extends Solution<?>>
     }
     evaluations += getMaxPopulationSize() ;
     completedIterations ++ ;
+    currentIndividual=(currentIndividual+1)%getMaxPopulationSize();
   }
 
   @Override
