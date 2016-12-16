@@ -11,4 +11,5 @@ import org.uma.jmetalsp.problem.DynamicProblem;
 public interface DynamicAlgorithm<Result> extends Algorithm<Result>, Measurable {
   DynamicProblem<?, ?> getDynamicProblem() ;
   int getCompletedIterations() ;
+  void stopTheAlgorithm() ;
 }

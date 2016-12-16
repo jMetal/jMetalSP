@@ -14,7 +14,6 @@
 package org.uma.jmetalsp.algorithm;
 
 import org.uma.jmetal.algorithm.multiobjective.mocell.MOCell;
-import org.uma.jmetal.algorithm.multiobjective.nsgaii.NSGAII;
 import org.uma.jmetal.measure.MeasureManager;
 import org.uma.jmetal.measure.impl.BasicMeasure;
 import org.uma.jmetal.measure.impl.SimpleMeasureManager;
@@ -46,6 +45,7 @@ public class DynamicMOCell<S extends Solution<?>>
   private int completedIterations ;
   protected SimpleMeasureManager measureManager ;
   protected BasicMeasure<List<S>> solutionListMeasure ;
+  private boolean stopAtTheEndOfTheCurrentIteration = false ;
 
   public DynamicMOCell(DynamicProblem<S, ?> problem,
                        int maxEvaluations,
@@ -87,7 +87,12 @@ public class DynamicMOCell<S extends Solution<?>>
       initProgress();
       completedIterations++;
     }
-    return false;
+    return stopAtTheEndOfTheCurrentIteration;
+  }
+
+  @Override
+  public void stopTheAlgorithm() {
+    stopAtTheEndOfTheCurrentIteration = true ;
   }
 
   @Override protected void updateProgress() {

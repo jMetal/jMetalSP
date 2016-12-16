@@ -26,6 +26,7 @@ import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetalsp.problem.DynamicProblem;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * Class implementing a dynamic version of NSGA-II. Most of the code of the original NSGA-II is
@@ -43,6 +44,7 @@ public class DynamicNSGAII<S extends Solution<?>>
   private int completedIterations ;
   protected SimpleMeasureManager measureManager ;
   protected BasicMeasure<List<S>> solutionListMeasure ;
+  private boolean stopAtTheEndOfTheCurrentIteration = false ;
 
   public DynamicNSGAII(DynamicProblem<S, ?> problem, int maxEvaluations, int populationSize, CrossoverOperator<S> crossoverOperator, MutationOperator<S> mutationOperator, SelectionOperator<List<S>, S> selectionOperator, SolutionListEvaluator<S> evaluator) {
     super(problem, maxEvaluations, populationSize, crossoverOperator, mutationOperator, selectionOperator, evaluator);
@@ -75,7 +77,12 @@ public class DynamicNSGAII<S extends Solution<?>>
       initProgress();
       completedIterations++;
     }
-    return false;
+    return stopAtTheEndOfTheCurrentIteration ;
+  }
+
+  @Override
+  public void stopTheAlgorithm() {
+    stopAtTheEndOfTheCurrentIteration = true ;
   }
 
   @Override protected void updateProgress() {
