@@ -1,38 +1,42 @@
-package org.uma.jmetalsp.application.fda.problem.fda2;
+package org.uma.jmetalsp.problem.fda.fda3;
 
 import org.uma.jmetal.problem.impl.AbstractDoubleProblem;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.JMetalException;
-import org.uma.jmetalsp.application.fda.problem.FDAUpdateData;
 import org.uma.jmetalsp.problem.DynamicProblem;
+import org.uma.jmetalsp.problem.fda.FDAUpdateData;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * @author Cristóbal Barba <cbarba@lcc.uma.es>
  */
-public class FDA2 extends AbstractDoubleProblem implements DynamicProblem<DoubleSolution, FDAUpdateData>,Serializable {
+public class FDA3 extends AbstractDoubleProblem implements DynamicProblem<DoubleSolution, FDAUpdateData>,Serializable {
 
   private double time;
   private boolean theProblemHasBeenModified;
-
-  public FDA2(){
-    this(31,2);
+  private final int limitInfI = 0;
+  private final int limitSupI = 1;
+  private final int limitInfII = 1;
+  public FDA3(){
+    this(30,2);
   }
-  public FDA2(Integer numberOfVariables, Integer numberOfObjectives) throws JMetalException {
+  public FDA3(Integer numberOfVariables, Integer numberOfObjectives) throws JMetalException {
     setNumberOfVariables(numberOfVariables);
     setNumberOfObjectives(numberOfObjectives);
-    setName("FDA2");
+    setName("FDA3");
 
     List<Double> lowerLimit = new ArrayList<>(getNumberOfVariables());
     List<Double> upperLimit = new ArrayList<>(getNumberOfVariables());
 
-    lowerLimit.add(0.0);
-    upperLimit.add(1.0);
-    for (int i = 1; i < getNumberOfVariables(); i++) {
+    for (int i = limitInfI; i < limitSupI; i++) {
+      lowerLimit.add(0.0);
+      upperLimit.add(1.0);
+    }
+
+    for (int i = limitInfII; i < getNumberOfVariables(); i++) {
       lowerLimit.add(-1.0);
       upperLimit.add(1.0);
     }
@@ -61,41 +65,49 @@ public class FDA2 extends AbstractDoubleProblem implements DynamicProblem<Double
   @Override
   public void evaluate(DoubleSolution solution) {
     double[] f = new double[getNumberOfObjectives()];
-    f[0] = solution.getVariableValue(0);
-    double g = this.evalG(solution,1,(solution.getNumberOfVariables()/2)+1);
+    f[0] = this.evalF(solution, limitInfI, limitSupI);
+    double g = this.evalG(solution, limitInfII);
     double h = this.evalH(f[0], g);
-    f[1] = g*h;//1-Math.sqrt(f[0]);
+    f[1] = g*h;
     solution.setObjective(0, f[0]);
     solution.setObjective(1, f[1]);
   }
 
+  private double evalF(DoubleSolution solution,int limitInf,int limitSup){
+    double f=0.0d;
+    double aux = 2.0d*Math.sin(0.5d*Math.PI*time);
+    double Ft= Math.pow(10.0d,aux);
+    for (int i = limitInf; i < limitSup; i++) {
+      f+=Math.pow(solution.getVariableValue(i),Ft);
+    }
+    return f;
+  }
+
+
   /**
-   * Returns the value of the FDA2 function G.
+   * Returns the value of the FDA3 function G.
    *
    * @param solution Solution
    */
-  private double evalG(DoubleSolution solution,int limitInf,int limitSup) {
+  private double evalG(DoubleSolution solution,int limitInf) {
 
-    double g = 0.0;
-    for (int i = limitInf; i < limitSup; i++) {
-      g += Math.pow(solution.getVariableValue(i), 2.0);
+    double g = 0.0d;
+    double Gt=Math.abs(Math.sin(0.5d*Math.PI*time));
+    for (int i = limitInf; i < solution.getNumberOfVariables(); i++) {
+      g += Math.pow((solution.getVariableValue(i)-Gt), 2.0);
     }
-    for (int i = limitSup; i < solution.getNumberOfVariables(); i++) {
-      g += Math.pow((solution.getVariableValue(i) +1.0), 2.0);
-    }
-    g = g + 1.0;
+    g = g + 1.0 + Gt;
     return g;
   }
 
   /**
-   * Returns the value of the FDA function H.
+   * Returns the value of the FDA3 function H.
    *
    * @param f First argument of the function H.
    * @param g Second argument of the function H.
    */
   private  double evalH(double f, double g) {
-    double HT= 0.2 + 4.8*Math.pow(time,2.0);
-    double h = 1.0 - Math.pow((f / g),HT);
+    double h = 1.0d - Math.sqrt(f / g);
     return h;
   }
 }

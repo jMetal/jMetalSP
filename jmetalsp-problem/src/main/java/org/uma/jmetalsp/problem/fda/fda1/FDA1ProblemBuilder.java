@@ -1,4 +1,4 @@
-package org.uma.jmetalsp.application.fda.problem.fda1;
+package org.uma.jmetalsp.problem.fda.fda1;
 
 import org.uma.jmetalsp.problem.DynamicProblem;
 import org.uma.jmetalsp.problem.ProblemBuilder;

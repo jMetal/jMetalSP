@@ -1,10 +1,10 @@
-package org.uma.jmetalsp.application.fda.problem.fda5;
+package org.uma.jmetalsp.problem.fda.fda5;
 
 import org.uma.jmetal.problem.impl.AbstractDoubleProblem;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.JMetalException;
-import org.uma.jmetalsp.application.fda.problem.FDAUpdateData;
 import org.uma.jmetalsp.problem.DynamicProblem;
+import org.uma.jmetalsp.problem.fda.FDAUpdateData;
 
 import java.io.Serializable;
 import java.util.ArrayList;

@@ -15,12 +15,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.logging.Logger;
 
 import kafka.serializer.StringDecoder;
-import org.uma.jmetalsp.application.fda.problem.FDAUpdateData;
 import org.uma.jmetalsp.application.fda.sparkutil.StreamingConfigurationFDA;
 import org.uma.jmetalsp.problem.DynamicProblem;
+import org.uma.jmetalsp.problem.fda.FDAUpdateData;
 import org.uma.jmetalsp.streamingdatasource.StreamingDataSource;
 import scala.Tuple2;
 

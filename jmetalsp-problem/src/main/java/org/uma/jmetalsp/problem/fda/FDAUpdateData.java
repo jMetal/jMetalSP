@@ -1,4 +1,4 @@
-package  org.uma.jmetalsp.application.fda.problem;
+package org.uma.jmetalsp.problem.fda;
 
 
 import java.io.Serializable;

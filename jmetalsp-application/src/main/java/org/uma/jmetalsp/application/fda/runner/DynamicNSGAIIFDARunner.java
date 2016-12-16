@@ -1,20 +1,16 @@
 package org.uma.jmetalsp.application.fda.runner;
 
-
-
-
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetalsp.algorithm.DynamicNSGAII;
 import org.uma.jmetalsp.application.JMetalSPApplication;
 import org.uma.jmetalsp.application.fda.algorithm.DynamicNSGAIIBuilder;
-import org.uma.jmetalsp.application.fda.problem.fda1.FDA1;
-import org.uma.jmetalsp.application.fda.problem.fda1.FDA1ProblemBuilder;
-import org.uma.jmetalsp.application.fda.problem.FDAUpdateData;
-import org.uma.jmetalsp.application.fda.problem.fda2.FDA2ProblemBuilder;
 import org.uma.jmetalsp.application.fda.sparkutil.StreamingConfigurationFDA;
 import org.uma.jmetalsp.application.fda.streamingDataSource.StreamingKafkaFDA;
 import org.uma.jmetalsp.consumer.impl.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.consumer.impl.SimpleSolutionListConsumer;
+import org.uma.jmetalsp.problem.fda.FDAUpdateData;
+import org.uma.jmetalsp.problem.fda.fda1.FDA1;
+import org.uma.jmetalsp.problem.fda.fda2.FDA2ProblemBuilder;
 import org.uma.jmetalsp.util.spark.SparkRuntime;
 
 import java.io.IOException;

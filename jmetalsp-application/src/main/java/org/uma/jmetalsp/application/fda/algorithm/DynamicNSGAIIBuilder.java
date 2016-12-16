@@ -11,8 +11,7 @@ import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetalsp.algorithm.AlgorithmBuilder;
 import org.uma.jmetalsp.algorithm.DynamicNSGAII;
-import org.uma.jmetalsp.application.fda.problem.fda1.FDA1;
-import org.uma.jmetalsp.application.fda.problem.fda2.FDA2;
+import org.uma.jmetalsp.problem.fda.fda2.FDA2;
 
 import java.util.List;
 

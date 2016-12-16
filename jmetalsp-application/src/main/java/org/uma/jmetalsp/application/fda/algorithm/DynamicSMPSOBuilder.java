@@ -13,11 +13,7 @@ import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 import org.uma.jmetal.util.pseudorandom.PseudoRandomGenerator;
 import org.uma.jmetalsp.algorithm.AlgorithmBuilder;
 import org.uma.jmetalsp.algorithm.DynamicSMPSO;
-import org.uma.jmetalsp.application.fda.problem.fda1.FDA1;
-import org.uma.jmetalsp.application.fda.problem.fda2.FDA2;
-import org.uma.jmetalsp.application.fda.problem.fda3.FDA3;
-import org.uma.jmetalsp.application.fda.problem.fda4.FDA4;
-import org.uma.jmetalsp.application.fda.problem.fda5.FDA5;
+import org.uma.jmetalsp.problem.fda.fda5.FDA5;
 
 import java.io.Serializable;
 
