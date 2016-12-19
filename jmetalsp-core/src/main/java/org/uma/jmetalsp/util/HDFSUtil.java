@@ -21,7 +21,7 @@ import java.util.logging.Logger;
  */
 public class HDFSUtil {
   public static final String FS_DEFAULT = "fs.defaultFS";
-  public static final String HDFS_IP = "master.khaos.uma.es";
+  public static final String HDFS_IP = "master.semantic.khaos.uma.es";
   public static final int HDFS_PORT = 8020;
   private static final Logger log = Logger.getAnonymousLogger();
   private static HDFSUtil instance = null;
@@ -30,8 +30,10 @@ public class HDFSUtil {
   private static String hdfsIp = HDFS_IP;
   private static int port = HDFS_PORT;
 
-  private HDFSUtil() {
+  private HDFSUtil(String auxIp, int auxPort) {
     conf = new Configuration();
+    hdfsIp=auxIp;
+    port=auxPort;
     String defaultName = "hdfs://" + hdfsIp + ":" + port;
     log.info(defaultName);
     conf.set("fs.defaultFS", defaultName);
@@ -39,7 +41,7 @@ public class HDFSUtil {
 
   public static HDFSUtil getInstance(String hdfs, int portAux) {
     if (instance == null || (hdfsIp != hdfs) || port != portAux) {
-      instance = new HDFSUtil();
+      instance = new HDFSUtil(hdfs,portAux);
       hdfsIp = hdfs;
       port = portAux;
     }

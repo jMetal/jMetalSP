@@ -82,7 +82,7 @@ public class DynamicSMPSO
   @Override
     protected void updateProgress() {
     if (getDynamicProblem().hasTheProblemBeenModified()) {
-      restart();
+      restart(100);
       getDynamicProblem().reset();
     }
     int cont= getIterations();
@@ -95,7 +95,7 @@ public class DynamicSMPSO
   protected boolean isStoppingConditionReached() {
       if (getIterations() >= getMaxIterations()) {
       solutionListMeasure.push(getResult()) ;
-      restart();
+      restart(100);
       completedIterations++;
     }
     return stopAtTheEndOfTheCurrentIteration;
@@ -105,9 +105,9 @@ public class DynamicSMPSO
   public void stopTheAlgorithm() {
     stopAtTheEndOfTheCurrentIteration = true ;
   }
-
-  private void restart(){
-    SolutionListUtils.restart(getSwarm(), (DoubleProblem)getDynamicProblem(), 100);
+  @Override
+  public void restart(int percentageOfSolutionsToRemove){
+    SolutionListUtils.restart(getSwarm(), (DoubleProblem)getDynamicProblem(), percentageOfSolutionsToRemove);
     //setSwarm(createInitialSwarm());
     SolutionListUtils.removeSolutionsFromList(getResult(),getResult().size());
     evaluator.evaluate(getSwarm(),(DoubleProblem) getDynamicProblem()) ;

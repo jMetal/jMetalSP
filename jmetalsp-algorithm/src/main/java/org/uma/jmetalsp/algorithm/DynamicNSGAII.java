@@ -71,7 +71,7 @@ public class DynamicNSGAII<S extends Solution<?>>
 
       solutionListMeasure.push(getPopulation()) ;
       
-      SolutionListUtils.restart(getPopulation(), getDynamicProblem(), 100);
+      restart(100);
       evaluator.evaluate(getPopulation(), getDynamicProblem()) ;
 
       initProgress();
@@ -87,7 +87,7 @@ public class DynamicNSGAII<S extends Solution<?>>
 
   @Override protected void updateProgress() {
     if (getDynamicProblem().hasTheProblemBeenModified()) {
-      SolutionListUtils.restart(getPopulation(), getDynamicProblem(), 100);
+      restart(100);
 
       evaluator.evaluate(getPopulation(), getDynamicProblem()) ;
       getDynamicProblem().reset();
@@ -109,5 +109,10 @@ public class DynamicNSGAII<S extends Solution<?>>
   @Override
   public MeasureManager getMeasureManager() {
     return measureManager ;
+  }
+
+  @Override
+  public void restart(int percentageOfSolutionsToRemove) {
+    SolutionListUtils.restart(getPopulation(), getDynamicProblem(), percentageOfSolutionsToRemove);
   }
 }

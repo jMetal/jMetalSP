@@ -23,11 +23,16 @@ import org.uma.jmetal.operator.SelectionOperator;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.SolutionListUtils;
 import org.uma.jmetal.util.archive.BoundedArchive;
+import org.uma.jmetal.util.archive.impl.CrowdingDistanceArchive;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
+import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetal.util.neighborhood.Neighborhood;
+import org.uma.jmetal.util.neighborhood.impl.C9;
+import org.uma.jmetal.util.solutionattribute.impl.LocationAttribute;
 import org.uma.jmetalsp.problem.DynamicProblem;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Class implementing a dynamic version of MOCell. Most of the code of the original MOCell algorithm
@@ -77,15 +82,17 @@ public class DynamicMOCell<S extends Solution<?>>
   }
 
   @Override protected boolean isStoppingConditionReached() {
-    if (evaluations >= maxEvaluations) {
 
+    if (evaluations >= maxEvaluations) {
       solutionListMeasure.push(getPopulation()) ;
-      
-      SolutionListUtils.restart(getPopulation(), getDynamicProblem(), 100);
+
+     restart(100);
+      Logger.getGlobal().info("DynamicMOCell---isStoppingConditionReached -----3--------solutionListUtils.restart------------> "+getPopulation().size());
       evaluator.evaluate(getPopulation(), getDynamicProblem()) ;
 
       initProgress();
       completedIterations++;
+
     }
     return stopAtTheEndOfTheCurrentIteration;
   }
@@ -95,10 +102,19 @@ public class DynamicMOCell<S extends Solution<?>>
     stopAtTheEndOfTheCurrentIteration = true ;
   }
 
+  @Override
+  public void restart(int percentageOfSolutionsToRemove) {
+    SolutionListUtils.restart(getPopulation(), getDynamicProblem(), percentageOfSolutionsToRemove);
+    location = new LocationAttribute<>(getPopulation());
+    setPopulation(createInitialPopulation());
+
+    //neighborhood = new C9<S>((int)Math.sqrt(getPopulation().size()), (int)Math.sqrt(getPopulation().size())) ;
+    //archive = new CrowdingDistanceArchive<>(getPopulation().size()) ;
+  }
+
   @Override protected void updateProgress() {
     if (getDynamicProblem().hasTheProblemBeenModified()) {
-      SolutionListUtils.restart(getPopulation(), getDynamicProblem(), 100);
-
+     restart(100);
       evaluator.evaluate(getPopulation(), getDynamicProblem()) ;
       getDynamicProblem().reset();
     }
