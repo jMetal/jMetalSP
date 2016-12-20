@@ -44,9 +44,9 @@ public class DynamicTSPMOCellRunnerWithStreamingDataSource {
         .setAlgorithmBuilder(new DynamicMOCellBuilder())
         .addAlgorithmDataConsumer(new SimpleSolutionListConsumer())
         .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("/opt/consumer/jMetalSP1"))
-        .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("/opt/consumer/jMetalSP2"))
+        //.addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("/opt/consumer/jMetalSP2"))
         .addStreamingDataSource(new StreamingDirectoryTSP(streamingConfigurationTSP1))
-         .addStreamingDataSource(new StreamingKafkaTSP(streamingConfigurationTSP1))
+       //  .addStreamingDataSource(new StreamingKafkaTSP(streamingConfigurationTSP1))
         .run();
   }
 }

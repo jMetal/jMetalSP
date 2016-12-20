@@ -82,15 +82,9 @@ public class DynamicMOCell<S extends Solution<?>>
   }
 
   @Override protected boolean isStoppingConditionReached() {
-
     if (evaluations >= maxEvaluations) {
       solutionListMeasure.push(getPopulation()) ;
-
-     restart(100);
-      Logger.getGlobal().info("DynamicMOCell---isStoppingConditionReached -----3--------solutionListUtils.restart------------> "+getPopulation().size());
-      evaluator.evaluate(getPopulation(), getDynamicProblem()) ;
-
-      initProgress();
+      restart(100);
       completedIterations++;
 
     }
@@ -106,16 +100,16 @@ public class DynamicMOCell<S extends Solution<?>>
   public void restart(int percentageOfSolutionsToRemove) {
     SolutionListUtils.restart(getPopulation(), getDynamicProblem(), percentageOfSolutionsToRemove);
     location = new LocationAttribute<>(getPopulation());
-    setPopulation(createInitialPopulation());
-
+    evaluator.evaluate(getPopulation(), getDynamicProblem()) ;
+    initProgress();
+    //setPopulation(createInitialPopulation());
     //neighborhood = new C9<S>((int)Math.sqrt(getPopulation().size()), (int)Math.sqrt(getPopulation().size())) ;
     //archive = new CrowdingDistanceArchive<>(getPopulation().size()) ;
   }
 
   @Override protected void updateProgress() {
     if (getDynamicProblem().hasTheProblemBeenModified()) {
-     restart(100);
-      evaluator.evaluate(getPopulation(), getDynamicProblem()) ;
+      restart(100);
       getDynamicProblem().reset();
     }
     evaluations += getMaxPopulationSize() ;

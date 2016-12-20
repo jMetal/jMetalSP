@@ -24,16 +24,16 @@ public class DynamicTSPNSGIIRunnerWithStreamingDataSource {
         DynamicMultiobjectiveTSP,
         DynamicTSPNSGAII> application = new JMetalSPApplication<>();
     StreamingConfigurationTSP streamingConfigurationTSP1= new StreamingConfigurationTSP();
-    streamingConfigurationTSP1.initializeDirectoryTSP("/biobjectivetsp/data2");
+    streamingConfigurationTSP1.initializeDirectoryTSP("/tsp/data2");
     String kafkaServer="master.bd.khaos.uma.es";
     int kafkaPort=6667;
     String kafkaTopic="tspdata";
     streamingConfigurationTSP1.initializeKafka(kafkaServer,kafkaPort,kafkaTopic);
     //StreamingConfigurationTSP streamingConfigurationTSP2= new StreamingConfigurationTSP();
     // streamingConfigurationTSP2.initializeDirectoryTSP("/tsp/data3");
-    String hdfsIp="master.khaos.uma.es";
+    String hdfsIp="master.semantic.khaos.uma.es";
     int hdfsPort = 8020;
-    String fileName= "/biobjectivetsp/initialDataFile.txt";
+    String fileName= "/tsp/initialDataFile.txt";
     application
         .setSparkRuntime(new SparkRuntime(1))
         .setProblemBuilder(new MultiobjectiveTSPBuilderParsed(hdfsIp,hdfsPort,fileName))

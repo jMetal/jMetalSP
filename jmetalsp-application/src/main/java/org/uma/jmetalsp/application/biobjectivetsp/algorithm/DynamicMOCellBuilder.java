@@ -40,13 +40,10 @@ public class DynamicMOCellBuilder
     double crossoverProbability = 0.9 ;
     crossover = new PMXCrossover(crossoverProbability) ;
     int populationSize=100;
-    double mutationProbability = 0.2 ;
-    //double mutationProbability = 1.0 / problem.getNumberOfVariables() ;
+    double mutationProbability = 1.0 / problem.getNumberOfVariables() ;
     Neighborhood<PermutationSolution<Integer>> neighborhood=new C9((int)Math.sqrt(populationSize), (int)Math.sqrt(populationSize)) ;
     mutation = new PermutationSwapMutation<Integer>(mutationProbability) ;
-
     selection = new BinaryTournamentSelection<PermutationSolution<Integer>>(new RankingAndCrowdingDistanceComparator<PermutationSolution<Integer>>());
-
     algorithm = new DynamicMOCell(problem,25000,populationSize,new CrowdingDistanceArchive<DoubleSolution>(populationSize),
             neighborhood,crossover,mutation,selection, new SequentialSolutionListEvaluator<PermutationSolution<Integer>>() );
 
