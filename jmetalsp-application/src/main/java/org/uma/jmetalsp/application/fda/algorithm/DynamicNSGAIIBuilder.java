@@ -11,6 +11,7 @@ import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetalsp.algorithm.AlgorithmBuilder;
 import org.uma.jmetalsp.algorithm.DynamicNSGAII;
+import org.uma.jmetalsp.problem.fda.FDA;
 import org.uma.jmetalsp.problem.fda.fda2.FDA2;
 
 import java.util.List;
@@ -21,9 +22,9 @@ import java.util.List;
 public class DynamicNSGAIIBuilder
     implements AlgorithmBuilder<
         DynamicNSGAII<DoubleSolution>,
-        FDA2> {
+        FDA> {
     @Override
-    public DynamicNSGAII<DoubleSolution> build(FDA2 problem) {
+    public DynamicNSGAII<DoubleSolution> build(FDA problem) {
         DynamicNSGAII<DoubleSolution> algorithm;
         CrossoverOperator<DoubleSolution> crossover;
         MutationOperator<DoubleSolution> mutation;

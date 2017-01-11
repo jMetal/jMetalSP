@@ -1,5 +1,6 @@
 package org.uma.jmetalsp.problem.fda.fda1;
 
+import org.uma.jmetalsp.problem.fda.FDA;
 import org.uma.jmetalsp.problem.fda.FDAUpdateData;
 import org.uma.jmetal.problem.impl.AbstractDoubleProblem;
 import org.uma.jmetal.solution.DoubleSolution;
@@ -13,7 +14,7 @@ import java.util.List;
 /**
  * @author Cristóbal Barba <cbarba@lcc.uma.es>
  */
-public class FDA1 extends AbstractDoubleProblem implements DynamicProblem<DoubleSolution, FDAUpdateData>,Serializable {
+public class FDA1 extends AbstractDoubleProblem implements FDA,Serializable {
 
   private double time;
   private boolean theProblemHasBeenModified;

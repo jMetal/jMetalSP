@@ -1,4 +1,4 @@
-package org.uma.jmetalsp.application.fda.ganeratorDataSource.kafka;
+package org.uma.jmetalsp.application.fda.generatorDataSource.kafka;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;

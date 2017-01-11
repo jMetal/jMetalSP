@@ -33,7 +33,7 @@ public class DynamicTSPMOCellRunnerWithStreamingDataSource {
     streamingConfigurationTSP1.initializeKafka(kafkaServer,kafkaPort,kafkaTopic);
     //StreamingConfigurationTSP streamingConfigurationTSP2= new StreamingConfigurationTSP();
     // streamingConfigurationTSP2.initializeDirectoryTSP("/tsp/data3");
-    String hdfsIp="master.semantic.khaos.uma.es";
+    String hdfsIp="master.khaos.uma.es";
             //"master.khaos.uma.es";
     int hdfsPort = 8020;
     String fileName= "/tsp/initialDataFile.txt";

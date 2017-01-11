@@ -16,6 +16,7 @@ import org.uma.jmetal.util.neighborhood.impl.C9;
 import org.uma.jmetalsp.algorithm.AlgorithmBuilder;
 import org.uma.jmetalsp.algorithm.DynamicMOCell;
 import org.uma.jmetalsp.algorithm.DynamicNSGAII;
+import org.uma.jmetalsp.problem.fda.FDA;
 import org.uma.jmetalsp.problem.fda.fda2.FDA2;
 
 import java.util.List;
@@ -26,9 +27,9 @@ import java.util.List;
 public class DynamicMOCellBuilder
     implements AlgorithmBuilder<
         DynamicMOCell<DoubleSolution>,
-        FDA2> {
+        FDA> {
     @Override
-    public DynamicMOCell<DoubleSolution> build(FDA2 problem) {
+    public DynamicMOCell<DoubleSolution> build(FDA problem) {
       DynamicMOCell<DoubleSolution> algorithm;
         CrossoverOperator<DoubleSolution> crossover;
         MutationOperator<DoubleSolution> mutation;
@@ -45,7 +46,7 @@ public class DynamicMOCellBuilder
         int populationSize=100;
         selection = new BinaryTournamentSelection<DoubleSolution>(new RankingAndCrowdingDistanceComparator<DoubleSolution>());
       Neighborhood<DoubleSolution> neighborhood=new C9((int)Math.sqrt(populationSize), (int)Math.sqrt(populationSize)) ;
-      algorithm = new DynamicMOCell(problem,250000,100,new CrowdingDistanceArchive<DoubleSolution>(populationSize),
+      algorithm = new DynamicMOCell(problem,500000,100,new CrowdingDistanceArchive<DoubleSolution>(populationSize),
               neighborhood,crossover,mutation,selection, new SequentialSolutionListEvaluator<DoubleSolution>() );
 
 

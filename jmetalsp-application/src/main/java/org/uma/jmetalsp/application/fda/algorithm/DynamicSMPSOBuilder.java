@@ -13,6 +13,7 @@ import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 import org.uma.jmetal.util.pseudorandom.PseudoRandomGenerator;
 import org.uma.jmetalsp.algorithm.AlgorithmBuilder;
 import org.uma.jmetalsp.algorithm.DynamicSMPSO;
+import org.uma.jmetalsp.problem.fda.FDA;
 import org.uma.jmetalsp.problem.fda.fda5.FDA5;
 
 import java.io.Serializable;
@@ -20,9 +21,9 @@ import java.io.Serializable;
 /**
  * Created by cris on 27/07/2016.
  */
-public class DynamicSMPSOBuilder implements AlgorithmBuilder<DynamicSMPSO,FDA5>,Serializable {
+public class DynamicSMPSOBuilder implements AlgorithmBuilder<DynamicSMPSO,FDA>,Serializable {
   @Override
-  public DynamicSMPSO build(FDA5 problem) {
+  public DynamicSMPSO build(FDA problem) {
       this.leaders=  new CrowdingDistanceArchive<DoubleSolution>(100);
       swarmSize = 100;
       maxIterations = 40000;//250000
@@ -38,7 +39,7 @@ public class DynamicSMPSOBuilder implements AlgorithmBuilder<DynamicSMPSO,FDA5>,
       weightMin = 0.1;
       changeVelocity1 = -1;
       changeVelocity2 = -1;
-      this.problem = problem;
+      this.problem = (DoubleProblem) problem;
       mutationOperator = new PolynomialMutation(1.0/problem.getNumberOfVariables(), 20.0) ;
       evaluator = new SequentialSolutionListEvaluator<DoubleSolution>() ;
 

@@ -1,4 +1,4 @@
-package org.uma.jmetalsp.application.fda.ganeratorDataSource.kafka;
+package org.uma.jmetalsp.application.fda.generatorDataSource.kafka;
 
 /**
  * Created by cristobal on 28/7/16.
