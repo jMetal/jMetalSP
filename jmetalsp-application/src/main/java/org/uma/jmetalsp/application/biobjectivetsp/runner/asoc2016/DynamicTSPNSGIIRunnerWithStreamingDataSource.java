@@ -31,7 +31,7 @@ public class DynamicTSPNSGIIRunnerWithStreamingDataSource {
     streamingConfigurationTSP1.initializeKafka(kafkaServer,kafkaPort,kafkaTopic);
     //StreamingConfigurationTSP streamingConfigurationTSP2= new StreamingConfigurationTSP();
     // streamingConfigurationTSP2.initializeDirectoryTSP("/tsp/data3");
-    String hdfsIp="master.semantic.khaos.uma.es";
+    String hdfsIp="master.khaos.uma.es";
     int hdfsPort = 8020;
     String fileName= "/tsp/initialDataFile.txt";
     application
@@ -40,8 +40,8 @@ public class DynamicTSPNSGIIRunnerWithStreamingDataSource {
         //  .setProblemBuilder(new MultiobjectiveTSPBuilderFromFiles("/home/hdfs/tsp/kroA100.tsp", "/home/hdfs/tsp/kroB100.tsp"))
         .setAlgorithmBuilder(new DynamicNSGAIIBuilder())
         .addAlgorithmDataConsumer(new SimpleSolutionListConsumer())
-        .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("/opt/consumer/jMetalSP1"))
-        .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("/opt/consumer/jMetalSP2"))
+        .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("/opt/consumer/nsga2/jMetalSP1"))
+        //.addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("/opt/consumer/jMetalSP2"))
         .addStreamingDataSource(new StreamingDirectoryTSP(streamingConfigurationTSP1))
         // .addStreamingDataSource(new StreamingKafkaTSP(streamingConfigurationTSP1))
         .run();
