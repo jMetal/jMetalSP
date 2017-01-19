@@ -286,8 +286,6 @@
                 <type>jar</type>
             </dependency>
 
-
-            <!---MOD 2016 v. 0.9.0.0-->
             <dependency>
                 <groupId>org.apache.kafka</groupId>
                 <artifactId>kafka_2.10</artifactId>
