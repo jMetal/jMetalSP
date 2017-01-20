@@ -1,13 +1,10 @@
 package org.uma.jmetalsp.application.biobjectivetsp.algorithm;
 
-import org.uma.jmetal.algorithm.multiobjective.mocell.MOCellBuilder;
 import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.SelectionOperator;
 import org.uma.jmetal.operator.impl.crossover.PMXCrossover;
-import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
 import org.uma.jmetal.operator.impl.mutation.PermutationSwapMutation;
-import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
 import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.solution.PermutationSolution;
@@ -19,7 +16,7 @@ import org.uma.jmetal.util.neighborhood.impl.C9;
 import org.uma.jmetalsp.algorithm.AlgorithmBuilder;
 import org.uma.jmetalsp.algorithm.DynamicMOCell;
 
-import org.uma.jmetalsp.application.biobjectivetsp.problem.DynamicMultiobjectiveTSP;
+import org.uma.jmetalsp.problem.tsp.DynamicMultiobjectiveTSP;
 
 import java.util.List;
 

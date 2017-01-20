@@ -1,4 +1,4 @@
-package org.uma.jmetalsp.application.biobjectivetsp.problem;
+package org.uma.jmetalsp.problem.tsp;
 
 import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetalsp.problem.ProblemBuilder;

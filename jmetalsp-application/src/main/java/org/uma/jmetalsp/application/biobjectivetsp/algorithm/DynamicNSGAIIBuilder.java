@@ -2,7 +2,7 @@ package org.uma.jmetalsp.application.biobjectivetsp.algorithm;
 
 import org.uma.jmetalsp.algorithm.AlgorithmBuilder;
 import org.uma.jmetalsp.algorithm.DynamicNSGAII;
-import org.uma.jmetalsp.application.biobjectivetsp.problem.DynamicMultiobjectiveTSP;
+import org.uma.jmetalsp.problem.tsp.DynamicMultiobjectiveTSP;
 import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.SelectionOperator;

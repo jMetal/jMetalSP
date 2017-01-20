@@ -1,10 +1,9 @@
-package org.uma.jmetalsp.application.biobjectivetsp.problem;
+package org.uma.jmetalsp.problem.tsp;
 
 import org.uma.jmetal.problem.ConstrainedProblem;
 import org.uma.jmetal.problem.impl.AbstractIntegerPermutationProblem;
 import org.uma.jmetal.solution.PermutationSolution;
 import org.uma.jmetal.util.solutionattribute.impl.OverallConstraintViolation;
-import org.uma.jmetalsp.application.biobjectivetsp.updateData.MultiobjectiveTSPUpdateData;
 import org.uma.jmetalsp.problem.DynamicProblem;
 
 /**
