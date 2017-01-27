@@ -60,7 +60,7 @@ public class StreamingKafkaFDA implements StreamingDataSource<FDAUpdateData>,Ser
       }
     });
 
-    JavaDStream<FDAUpdateData> routeUpdates =
+    JavaDStream<FDAUpdateData> timeUpdates =
             lines.map(new Function<String, FDAUpdateData>() {
               @Override
               public FDAUpdateData call(String s) throws Exception {
@@ -69,7 +69,7 @@ public class StreamingKafkaFDA implements StreamingDataSource<FDAUpdateData>,Ser
               }
             });
 
-    routeUpdates.foreachRDD(new VoidFunction<JavaRDD<FDAUpdateData>>() {
+    timeUpdates.foreachRDD(new VoidFunction<JavaRDD<FDAUpdateData>>() {
       @Override
       public void call(JavaRDD<FDAUpdateData> mapJavaRDD) throws Exception {
         List<FDAUpdateData> dataList = mapJavaRDD.collect();

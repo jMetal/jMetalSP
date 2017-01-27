@@ -33,7 +33,7 @@ public class DynamicSMPSOFDAGeccoRunner {
     int kafkaPort=6667;
     String outputDirectoryName="/opt/consumer/smpso/";
     String kafkaTopic="fdadata";
-    String problemName="fda1";
+    String problemName="fda2";
     if (args !=null && args.length >3 ) {
       kafkaServer =args[0];
       kafkaPort=Integer.valueOf(args[1]);
@@ -52,7 +52,7 @@ public class DynamicSMPSOFDAGeccoRunner {
     //new FDA5ProblemBuilder(12,3)
     application
             .setSparkRuntime(new SparkRuntime(2))
-            .setProblemBuilder(new FDA5ProblemBuilder(12,3))
+            .setProblemBuilder(problemBuilder)
             .setAlgorithmBuilder(new DynamicSMPSOBuilder().setRandomGenerator(new MersenneTwisterGenerator()))
             .addAlgorithmDataConsumer(new SimpleSolutionListConsumer())
             .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer(outputDirectoryName))

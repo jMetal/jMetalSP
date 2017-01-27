@@ -29,9 +29,9 @@ public class DynamicNSGAIIFDAGeccoRunner {
     StreamingConfigurationFDA streamingConfigurationFDA= new StreamingConfigurationFDA();
     String kafkaServer="master.bd.khaos.uma.es";
     int kafkaPort=6667;
-    String outputDirectoryName="/opt/consumer/nsga/";
+    String outputDirectoryName="/opt/consumer/nsga2/";
     String kafkaTopic="fdadata";
-    String problemName="fda1";
+    String problemName="fda2";
     if (args !=null && args.length >3 ) {
       kafkaServer =args[0];
       kafkaPort=Integer.valueOf(args[1]);
@@ -51,7 +51,7 @@ public class DynamicNSGAIIFDAGeccoRunner {
 
     application
             .setSparkRuntime(new SparkRuntime(2))
-            .setProblemBuilder(new FDA2ProblemBuilder(31,2))
+            .setProblemBuilder(problemBuilder)
             //  .setProblemBuilder(new MultiobjectiveTSPBuilderFromFiles("/home/hdfs/tsp/kroA100.tsp", "/home/hdfs/tsp/kroB100.tsp"))
             .setAlgorithmBuilder(new DynamicNSGAIIBuilder())
             .addAlgorithmDataConsumer(new SimpleSolutionListConsumer())

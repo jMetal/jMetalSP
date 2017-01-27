@@ -46,7 +46,7 @@ public class DynamicMOCellBuilder
         int populationSize=100;
         selection = new BinaryTournamentSelection<DoubleSolution>(new RankingAndCrowdingDistanceComparator<DoubleSolution>());
       Neighborhood<DoubleSolution> neighborhood=new C9((int)Math.sqrt(populationSize), (int)Math.sqrt(populationSize)) ;
-      algorithm = new DynamicMOCell(problem,500000,100,new CrowdingDistanceArchive<DoubleSolution>(populationSize),
+      algorithm = new DynamicMOCell(problem,750000,100,new CrowdingDistanceArchive<DoubleSolution>(populationSize),
               neighborhood,crossover,mutation,selection, new SequentialSolutionListEvaluator<DoubleSolution>() );
 
 

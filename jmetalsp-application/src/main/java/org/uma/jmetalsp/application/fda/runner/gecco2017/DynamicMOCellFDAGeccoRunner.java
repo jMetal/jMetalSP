@@ -35,7 +35,7 @@ public class DynamicMOCellFDAGeccoRunner {
       int kafkaPort=6667;
       String outputDirectoryName="/opt/consumer/mocell/";
       String kafkaTopic="fdadata";
-      String problemName="fda1";
+      String problemName="fda2";
       if (args !=null && args.length >3 ) {
        kafkaServer =args[0];
        kafkaPort=Integer.valueOf(args[1]);
