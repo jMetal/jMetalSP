@@ -36,7 +36,6 @@ public class DynamicNSGAIIFDARunner {
       System.out.println("Provide the information to kafka and output:");
       System.out.println("    DynamicNSGAIIFDARunner <kafkaserver> <kafkaport> <kafkatopic> <problem-name> <output-directory-name>");
       System.out.println("");
-      return;
     }
     else {
       kafkaServer =args[0];

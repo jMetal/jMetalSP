@@ -37,7 +37,6 @@ public class DynamicTSPMOCellRunnerWithStreamingDataSource {
       System.out.println("");
       System.out.println("The initial file should be the output of ParseLinkSpeedQuery.");
       System.out.println("The updates directory should be the path where the updates are generated.");
-      return;
     }else{
       fileName=args[0];
       updateDirectory=args[1];

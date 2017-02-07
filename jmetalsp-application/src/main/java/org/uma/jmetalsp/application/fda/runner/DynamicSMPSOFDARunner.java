@@ -38,7 +38,6 @@ public class DynamicSMPSOFDARunner {
       System.out.println("Provide the information to kafka and output:");
       System.out.println("    DynamicSMPSOFDARunner <kafkaserver> <kafkaport> <kafkatopic> <problem-name> <output-directory-name>");
       System.out.println("");
-      return;
     }
     else {
       kafkaServer =args[0];

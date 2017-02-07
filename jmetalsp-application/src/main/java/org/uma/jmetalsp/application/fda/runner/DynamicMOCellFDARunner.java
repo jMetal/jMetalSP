@@ -29,8 +29,6 @@ public class DynamicMOCellFDARunner {
               FDA1,
               DynamicMOCell<DoubleSolution>> application = new JMetalSPApplication<>();
       StreamingConfigurationFDA streamingConfigurationFDA= new StreamingConfigurationFDA();
-      //String kafkaServer="localhost";
-      //int kafkaPort=2181;
       String kafkaServer="master.bd.khaos.uma.es";
       int kafkaPort=6667;
       String outputDirectoryName="/opt/consumer/mocell/";
@@ -40,7 +38,6 @@ public class DynamicMOCellFDARunner {
         System.out.println("Provide the information to kafka and output:");
         System.out.println("    DynamicMOCellFDARunner <kafkaserver> <kafkaport> <kafkatopic> <problem-name> <output-directory-name>");
         System.out.println("");
-        return;
       }
       else {
        kafkaServer =args[0];
