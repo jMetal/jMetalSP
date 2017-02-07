@@ -23,7 +23,7 @@ import org.apache.spark.streaming.api.java.JavaStreamingContext;
 import org.apache.spark.streaming.kafka.KafkaUtils;
 import org.uma.jmetal.solution.PermutationSolution;
 
-import org.uma.jmetalsp.application.biobjectivetsp.updateData.MultiobjectiveTSPUpdateData;
+import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPUpdateData;
 import org.uma.jmetalsp.problem.DynamicProblem;
 import org.uma.jmetalsp.streamingdatasource.StreamingDataSource;
 import scala.Tuple2;

@@ -8,7 +8,7 @@ import org.uma.jmetalsp.problem.DynamicProblem;
 import java.io.Serializable;
 
 /**
- * Created by cris on 09/01/2017.
+ * Cristóbal Barba <cbarba@lcc.uma.es>
  */
 public interface FDA extends DynamicProblem<DoubleSolution, FDAUpdateData>,Serializable {
 }
