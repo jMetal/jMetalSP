@@ -37,7 +37,7 @@ public class DynamicMOCellFDARunner {
       String kafkaTopic="fdadata";
       String problemName="fda2";
       if (args == null || args.length < 5) {
-        System.out.println("Provide the path to the initial file, updates and output:");
+        System.out.println("Provide the information to kafka and output:");
         System.out.println("    DynamicMOCellFDARunner <kafkaserver> <kafkaport> <kafkatopic> <problem-name> <output-directory-name>");
         System.out.println("");
         return;
