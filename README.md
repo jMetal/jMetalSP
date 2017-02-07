@@ -145,7 +145,7 @@ This data consists in a row per traffic camera, each column has a different mean
 * `Status`: Status of the road.
 * `DataAsOf`: Timestamp of the data.
 * `LinkPoints`: List of the GPS coordinates of this path, separated by commas. However this data is not always complete as it seems to be a limit in the number of characters of the field.
-* `EncodedPolyline`: The list of GPS coordinates, but encoded using the Google Encoded Polyline Format (https://developers.google.com/maps/documentation/utilities/polylinealgorithm). This format allows to include all the points encoded in a smaller string. The decoding is made in the class `org.uma.jmetalsp.application.biobjectivetsp.runner.mod2016.newyorktraffic.data.GoogleDecode`. The list of coordinates is used to generate the nodes and edges of the graph.
+* `EncodedPolyline`: The list of GPS coordinates, but encoded using the Google Encoded Polyline Format (https://developers.google.com/maps/documentation/utilities/polylinealgorithm). This format allows to include all the points encoded in a smaller string. The decoding is made in the class `org.uma.jmetalsp.application.biobjectivetsp.runner.newyorktraffic.data.GoogleDecode`. The list of coordinates is used to generate the nodes and edges of the graph.
 * `LinkName`: Name of the address of the camera.
 
 ### Generate the input files for the problem
@@ -154,7 +154,7 @@ Once all the dependencies are satisfied you should be able to execute with Java 
 
 For example:
 ```
-spark-submit --class org.uma.jmetalsp.application.biobjectivetsp.runner.mod2016.newyorktraffic.ParseLinkSpeedQuery --master local[1] jmetalsp-application-1.0-SNAPSHOT-jar-with-dependencies.jar ./nyfiles/initial.txt ./nyfiles/update?.txt
+spark-submit --class org.uma.jmetalsp.application.biobjectivetsp.runner.newyorktraffic.ParseLinkSpeedQuery --master local[1] jmetalsp-application-1.0-SNAPSHOT-jar-with-dependencies.jar ./nyfiles/initial.txt ./nyfiles/update?.txt
 ```
 
 This program will connect automatically to the URL[1], parse the data which is updated regularly, and output the following files:
@@ -166,7 +166,7 @@ This program will connect automatically to the URL[1], parse the data which is u
     * `Speed`: The average travel time for this path.
     * `Node ID`: An identifier of the path.
 
-- Note about the distance: The distance was originally obtained calling the `Google Maps Distance Matrix API` (https://developers.google.com/maps/documentation/distance-matrix/intro). However, as the free account allows only a limited number of queries and the distances will never vary, the distances have been hardcoded directly in the file. If you want to use it with a different dataset please be sure to remove the distances and add your own Google Key in the class `org.uma.jmetalsp.application.biobjectivetsp.runner.mod2016.newyorktraffic.data.GoogleDecode`.
+- Note about the distance: The distance was originally obtained calling the `Google Maps Distance Matrix API` (https://developers.google.com/maps/documentation/distance-matrix/intro). However, as the free account allows only a limited number of queries and the distances will never vary, the distances have been hardcoded directly in the file. If you want to use it with a different dataset please be sure to remove the distances and add your own Google Key in the class `org.uma.jmetalsp.application.biobjectivetsp.runner.newyorktraffic.data.GoogleDecode`.
  
 * `Update file`: The second argument is the path to generate the updates. Each several seconds the program will get the updates from the traffic and parse them again generating a new file which will include the differences in time and distance.  
 The files with the updates can be preserved using the character `?` in any part of the name to be replaced by the number of the update. For example, the path `./nyfiles/updates/update?.txt` will generate the files:

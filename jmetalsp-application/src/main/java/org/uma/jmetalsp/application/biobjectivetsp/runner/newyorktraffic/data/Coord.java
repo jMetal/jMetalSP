@@ -1,4 +1,4 @@
-package org.uma.jmetalsp.application.biobjectivetsp.runner.mod2016.newyorktraffic.data;
+package org.uma.jmetalsp.application.biobjectivetsp.runner.newyorktraffic.data;
 
 public class Coord {
     
