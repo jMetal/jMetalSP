@@ -1,15 +1,14 @@
 package org.uma.jmetalsp.problem.fda;
 
 
-import java.io.Serializable;
-import java.util.logging.Logger;
+import org.uma.jmetalsp.updatedata.repository.TimeUpdateData;
 
-import org.uma.jmetalsp.updatedata.UpdateData;
+import java.io.Serializable;
 
 /**
  * @author Cristóbal Barba <cbarba@lcc.uma.es>
  */
-public class FDAUpdateData implements UpdateData, Serializable {
+public class FDAUpdateData implements TimeUpdateData, Serializable {
   private double time=1.0d;
   private int tauT=5;
   private int nT=10;
