@@ -38,7 +38,7 @@ public class DynamicNSGAIIBuilder
 
     selection = new BinaryTournamentSelection<PermutationSolution<Integer>>(new RankingAndCrowdingDistanceComparator<PermutationSolution<Integer>>());
 
-    algorithm = new DynamicNSGAII(problem, 100, 100, crossover, mutation, selection,
+    algorithm = new DynamicNSGAII(problem, 100000, 100, crossover, mutation, selection,
         new SequentialSolutionListEvaluator<PermutationSolution<Integer>>()) ;
 
     return algorithm;

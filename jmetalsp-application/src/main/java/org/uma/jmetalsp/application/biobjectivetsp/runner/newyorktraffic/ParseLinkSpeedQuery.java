@@ -1,7 +1,7 @@
-package org.uma.jmetalsp.application.biobjectivetsp.runner.mod2016.newyorktraffic;
+package org.uma.jmetalsp.application.biobjectivetsp.runner.newyorktraffic;
 
-import org.uma.jmetalsp.application.biobjectivetsp.runner.mod2016.newyorktraffic.data.GoogleDecode;
-import org.uma.jmetalsp.application.biobjectivetsp.runner.mod2016.newyorktraffic.data.ParsedNode;
+import org.uma.jmetalsp.application.biobjectivetsp.runner.newyorktraffic.data.GoogleDecode;
+import org.uma.jmetalsp.application.biobjectivetsp.runner.newyorktraffic.data.ParsedNode;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

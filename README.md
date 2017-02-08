@@ -34,7 +34,7 @@ public class JMetalSPApplication<
 ```
 This way, by using generics the Java compiler can check that all the components fit together. 
 
-As an example, the [jMetalSP application](https://github.com/jMetal/jMetalSP/blob/master/jmetalsp-application/src/main/java/org/uma/jmetalsp/application/biobjectivetsp/runner/mod2016/MOD2016Runner.java) used in the paper to be presented in MOD 2016 (which solves a dynamic version of the bi-objective TSP problem with a dynamic variant of NSGA-II) is configured in this way:
+As an example, the [jMetalSP application](https://github.com/jMetal/jMetalSP/blob/master/jmetalsp-application/src/main/java/org/uma/jmetalsp/application/biobjectivetsp/runner/newyorktraffic/DynamicTSPNSGAIIRunner.java) used in the paper to be presented in MOD 2016 (which solves a dynamic version of the bi-objective TSP problem with a dynamic variant of NSGA-II) is configured in this way:
 ```java
     JMetalSPApplication<
             MultiobjectiveTSPUpdateData,
@@ -126,6 +126,7 @@ jMetalSP 1.0 is structured in three submodules:
 * `jmetalsp-core` : Classes of the core architecture plus utilities.
 * `jmetalsp-algorithm` : Implementations of metaheuristics.
 * `jmetalsp-application` : Implementations of problems, like the used in MOD2016.
+*  `jmetalsp-problems` :Implementations of problems
 
 ### New York's Traffic Data
 
@@ -145,16 +146,16 @@ This data consists in a row per traffic camera, each column has a different mean
 * `Status`: Status of the road.
 * `DataAsOf`: Timestamp of the data.
 * `LinkPoints`: List of the GPS coordinates of this path, separated by commas. However this data is not always complete as it seems to be a limit in the number of characters of the field.
-* `EncodedPolyline`: The list of GPS coordinates, but encoded using the Google Encoded Polyline Format (https://developers.google.com/maps/documentation/utilities/polylinealgorithm). This format allows to include all the points encoded in a smaller string. The decoding is made in the class `org.uma.jmetalsp.application.biobjectivetsp.runner.mod2016.newyorktraffic.data.GoogleDecode`. The list of coordinates is used to generate the nodes and edges of the graph.
+* `EncodedPolyline`: The list of GPS coordinates, but encoded using the Google Encoded Polyline Format (https://developers.google.com/maps/documentation/utilities/polylinealgorithm). This format allows to include all the points encoded in a smaller string. The decoding is made in the class `org.uma.jmetalsp.application.biobjectivetsp.runner.newyorktraffic.data.GoogleDecode`. The list of coordinates is used to generate the nodes and edges of the graph.
 * `LinkName`: Name of the address of the camera.
 
 ### Generate the input files for the problem
 
-Once all the dependencies are satisfied you should be able to execute with Java the class `org.uma.jmetalsp.application.biobjetivetsp.runner.mod2016.newyorktraffic.ParseLinkSpeedQuery`, providing two arguments with the paths where the initial problem will be generated, and the updates.
+Once all the dependencies are satisfied you should be able to execute with Java the class `org.uma.jmetalsp.application.biobjetivetsp.runner.newyorktraffic.newyorktraffic.ParseLinkSpeedQuery`, providing two arguments with the paths where the initial problem will be generated, and the updates.
 
 For example:
 ```
-spark-submit --class org.uma.jmetalsp.application.biobjectivetsp.runner.mod2016.newyorktraffic.ParseLinkSpeedQuery --master local[1] jmetalsp-application-1.0-SNAPSHOT-jar-with-dependencies.jar ./nyfiles/initial.txt ./nyfiles/update?.txt
+spark-submit --class org.uma.jmetalsp.application.biobjectivetsp.runner.newyorktraffic.ParseLinkSpeedQuery --master local[1] jmetalsp-application-1.0-SNAPSHOT-jar-with-dependencies.jar ./nyfiles/initial.txt ./nyfiles/update?.txt
 ```
 
 This program will connect automatically to the URL[1], parse the data which is updated regularly, and output the following files:
@@ -166,7 +167,7 @@ This program will connect automatically to the URL[1], parse the data which is u
     * `Speed`: The average travel time for this path.
     * `Node ID`: An identifier of the path.
 
-- Note about the distance: The distance was originally obtained calling the `Google Maps Distance Matrix API` (https://developers.google.com/maps/documentation/distance-matrix/intro). However, as the free account allows only a limited number of queries and the distances will never vary, the distances have been hardcoded directly in the file. If you want to use it with a different dataset please be sure to remove the distances and add your own Google Key in the class `org.uma.jmetalsp.application.biobjectivetsp.runner.mod2016.newyorktraffic.data.GoogleDecode`.
+- Note about the distance: The distance was originally obtained calling the `Google Maps Distance Matrix API` (https://developers.google.com/maps/documentation/distance-matrix/intro). However, as the free account allows only a limited number of queries and the distances will never vary, the distances have been hardcoded directly in the file. If you want to use it with a different dataset please be sure to remove the distances and add your own Google Key in the class `org.uma.jmetalsp.application.biobjectivetsp.runner.newyorktraffic.data.GoogleDecode`.
  
 * `Update file`: The second argument is the path to generate the updates. Each several seconds the program will get the updates from the traffic and parse them again generating a new file which will include the differences in time and distance.  
 The files with the updates can be preserved using the character `?` in any part of the name to be replaced by the number of the update. For example, the path `./nyfiles/updates/update?.txt` will generate the files:
@@ -178,7 +179,7 @@ If the question mark character is not included, the file will be replaced in eac
 
 ### Run the algorithm and solve the problem
 
-Now everything is prepared to run the problem and get the results using the real-time data parsed by the `ParseLinkSpeedQuery` class. The class to be executed is `org.uma.jmetalsp.application.biobjectivetsp.runner.mod2016.MOD2016Runner`, which has 3 parameters:
+Now everything is prepared to run the problem and get the results using the real-time data parsed by the `ParseLinkSpeedQuery` class. The class to be executed is `org.uma.jmetalsp.application.biobjectivetsp.runner.newyorktraffic.DynamicTSPNSGAIIRunner`, which has 3 parameters:
 
 * `Initial file`: the same initial file generated by `ParseLinkSpeedQuery`.
 * `Updates directory`: the path to the directory where the updates are generated by `ParseLinkSpeedQuery`.
@@ -190,3 +191,90 @@ The algorithm will generate 100 different results for the problem in each iterat
 Each iteration will generate the two files stated below in the output directory, where the question mark will be replaced by the number of iteration:
 * `FUN?.tsv`: Each line contains the cost (time) and distance of each solution, one per line.
 * `VAR?.tsv`: Each line contains one solution to the problem, represented as the list of nodes that forms the path.
+
+
+## Descripcion of the test in CEC 2017 paper
+
+### Introduction
+
+This section will include all the needed documentation to understand and 
+reproduce the results for the problem used in 
+the work "Design and Architecture of jMetalSP, a Framework for Dynamic Multi-Objective Optimization".
+ In revision in CEC 2017.
+ Requirements
+
+Note: All the work was done using the versions stated below. We cannot guarantee the correct behaviour with newer of future versions.
+
+jMetal 5.2 - the current development version of jMetal framework which can be found here: https://github.com/jMetal/jMetal
+jMetalSP 1.0 - which can be downloaded directly cloning the current repository.
+Apache Spark 2.0.0 - http://spark.apache.org/downloads.html
+Apache Maven 3.3.9 - https://maven.apache.org/download.cgi
+Apache Kafka  0.9.0.0 or newer - https://kafka.apache.org/downloads
+Java Development Kit 8 or newer - http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
+
+### Installation
+
+First dependencies that should be installed are (preferably in the following order):
+
+* Java Development Kit 8
+* Apache Maven 3.3.9
+* Apache Spark 2.0.0
+* Apache Kafka 0.9.0.0
+* jMetal 5.2
+
+There are 3 different ways to get jMetal 5.2:
+
+Add a Maven dependence. For example, if your want to use some of the classes in jmetal-core, you just have to add this dependence to the pom.xml file of your project:
+
+```
+<dependency>
+  <groupId>org.uma.jmetal</groupId>
+  <artifactId>jmetal-core</artifactId>
+  <version>5.2</version>
+</dependency>
+```
+Download directly from the main website https://github.com/jMetal/jMetal.
+
+Use git to clone its repository:
+
+git clone https://github.com/jMetal/jMetal.git
+Once you have the source code, you use you favourite IDE to import (Eclipse) or open (Intellij Idea) the project as a Maven project, or merely open it (Netbeans).
+
+### jMetalSP
+
+jMetalSP can be obtained also cloning the current repository:
+
+git clone https://github.com/jMetal/jMetal.git
+jMetalSP 1.0 is structured in three submodules:
+
+* `jmetalsp-core` : Classes of the core architecture plus utilities.
+* `jmetalsp-algorithm` : Implementations of metaheuristics.
+* `jmetalsp-application` : Implementations of runners, like the used in CEC2017.
+* `jmetalsp-problems`:Implementations of problems, such as FDAs
+
+### Generate the counter for FDA time
+
+Generate a counter for time formula in FDAs problems. 
+Execute class org.uma.jmetalsp.application.fda.generatorDataSource.kafka.GeneratoTimeKafka with the params
+* `time`:time delay in miliseconds
+* `topic`: name of the kafka channel where the producer will send its messages 
+* `host`:IP or host name of Kafka server
+* `port`: port of kafka server
+
+Run the algorithm and solve the problems
+Now everything is prepared to run the problems and get the results
+Execute org.uma.jmetalsp.application.fda.runner.DynamicNSGAIIFDACecRunner
+or
+Execute org.uma.jmetalsp.application.fda.runner.DynamicMOCellFDACecRunner
+or
+Execute org.uma.jmetalsp.application.fda.runner.DynamicSMPSOFDACecRunner
+with the arguments:
+* `host`:IP or host name of Kafka server
+* `port`: port of kafka server
+* `topic`: name of the kafka channel where consumer will read the messages
+* `problem`: name of the fda problem (fda1, fda2, fda3, fda4,fda5)
+* `path`:  the path to the directory where the output files will be saved
+
+
+ 
+
