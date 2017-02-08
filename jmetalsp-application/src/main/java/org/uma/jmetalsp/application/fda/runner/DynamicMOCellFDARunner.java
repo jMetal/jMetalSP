@@ -12,8 +12,6 @@ import org.uma.jmetalsp.problem.ProblemBuilder;
 import org.uma.jmetalsp.problem.fda.FDAUpdateData;
 import org.uma.jmetalsp.problem.fda.FDAUtil;
 import org.uma.jmetalsp.problem.fda.fda1.FDA1;
-import org.uma.jmetalsp.problem.fda.fda1.FDA1ProblemBuilder;
-import org.uma.jmetalsp.problem.fda.fda2.FDA2ProblemBuilder;
 import org.uma.jmetalsp.util.spark.SparkRuntime;
 
 import java.io.IOException;
@@ -54,7 +52,7 @@ public class DynamicMOCellFDARunner {
       streamingConfigurationFDA.initializeKafka(kafkaServer,kafkaPort,kafkaTopic);
       ProblemBuilder problemBuilder = FDAUtil.load(problemName);
       application
-              .setSparkRuntime(new SparkRuntime(2))
+              .setStreamingRuntime(new SparkRuntime(2))
               .setProblemBuilder(problemBuilder)
               .setAlgorithmBuilder(new DynamicMOCellBuilder())
               .addAlgorithmDataConsumer(new SimpleSolutionListConsumer())

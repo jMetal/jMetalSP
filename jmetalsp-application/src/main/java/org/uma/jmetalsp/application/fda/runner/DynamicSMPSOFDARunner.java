@@ -51,7 +51,7 @@ public class DynamicSMPSOFDARunner {
     ProblemBuilder problemBuilder = FDAUtil.load(problemName);
     streamingConfigurationFDA.initializeKafka(kafkaServer,kafkaPort,kafkaTopic);
     application
-            .setSparkRuntime(new SparkRuntime(2))
+            .setStreamingRuntime(new SparkRuntime(2))
             .setProblemBuilder(problemBuilder)
             .setAlgorithmBuilder(new DynamicSMPSOBuilder().setRandomGenerator(new MersenneTwisterGenerator()))
             .addAlgorithmDataConsumer(new SimpleSolutionListConsumer())

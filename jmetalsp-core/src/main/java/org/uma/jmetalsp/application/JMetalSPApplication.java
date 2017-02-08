@@ -1,6 +1,5 @@
 package org.uma.jmetalsp.application;
 
-import org.apache.spark.streaming.api.java.JavaStreamingContext;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetalsp.algorithm.AlgorithmBuilder;
@@ -9,8 +8,8 @@ import org.uma.jmetalsp.consumer.AlgorithmDataConsumer;
 import org.uma.jmetalsp.problem.DynamicProblem;
 import org.uma.jmetalsp.problem.ProblemBuilder;
 import org.uma.jmetalsp.streamingdatasource.StreamingDataSource;
+import org.uma.jmetalsp.streamingruntime.StreamingRuntime;
 import org.uma.jmetalsp.updatedata.UpdateData;
-import org.uma.jmetalsp.util.spark.SparkRuntime;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,14 +27,14 @@ public class JMetalSPApplication<
   private ProblemBuilder<P> problemBuilder;
   private List<StreamingDataSource<D>> streamingDataSourceList ;
   private List<AlgorithmDataConsumer> algorithmDataConsumerList ;
-  private SparkRuntime sparkRuntime ;
+  private StreamingRuntime streamingRuntime ;
 
   private P problem ;
   private A algorithm ;
   public JMetalSPApplication() {
     this.streamingDataSourceList = null;
     this.algorithmDataConsumerList = null ;
-    this.sparkRuntime = null ;
+    this.streamingRuntime = null ;
   }
 
   public JMetalSPApplication setProblemBuilder(ProblemBuilder<P> problemBuilder) {
@@ -69,8 +68,8 @@ public class JMetalSPApplication<
     return this ;
   }
 
-  public JMetalSPApplication setSparkRuntime(SparkRuntime sparkRuntime) {
-    this.sparkRuntime = sparkRuntime ;
+  public JMetalSPApplication setStreamingRuntime(StreamingRuntime runtime) {
+    this.streamingRuntime = runtime ;
 
     return this ;
   }
@@ -94,6 +93,10 @@ public class JMetalSPApplication<
     }
     algorithmThread.start() ;
 
+    streamingRuntime.startStreamingDataSources(streamingDataSourceList) ;
+    //startStreamingDatasSources();
+
+    /*
     JavaStreamingContext streamingContext = sparkRuntime.getStreamingContext() ;
 
     for (StreamingDataSource<D> streamingDataSource : streamingDataSourceList) {
@@ -103,6 +106,7 @@ public class JMetalSPApplication<
 
     streamingContext.start();
     streamingContext.awaitTermination();
+    */
 
     for (Thread consumerThread : consumerThreadList) {
       consumerThread.join();

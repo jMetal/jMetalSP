@@ -16,11 +16,16 @@ package org.uma.jmetalsp.util.spark;
 import org.apache.spark.SparkConf;
 import org.apache.spark.streaming.Durations;
 import org.apache.spark.streaming.api.java.JavaStreamingContext;
+import org.uma.jmetalsp.streamingdatasource.StreamingDataSource;
+import org.uma.jmetalsp.streamingruntime.StreamingRuntime;
+import org.uma.jmetalsp.updatedata.UpdateData;
+
+import java.util.List;
 
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class SparkRuntime {
+public class SparkRuntime<D extends UpdateData> implements StreamingRuntime<D> {
   private SparkConf sparkConf ;
   private JavaStreamingContext streamingContext ;
   private int duration ;
@@ -31,11 +36,31 @@ public class SparkRuntime {
     streamingContext = new JavaStreamingContext(sparkConf, Durations.seconds(this.duration)) ;
   }
 
-  public void start() throws InterruptedException {
-    //JMetalLogger.logger.info("Starting Spark jMetalSP runtime. Duration: " + duration);
+  public void start() {
     streamingContext.start();
-    streamingContext.awaitTermination();
+    try {
+      streamingContext.awaitTermination();
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
   }
+
+  @Override
+  public void startStreamingDataSources(List<StreamingDataSource<D>> streamingDataSourcesList) {
+    JavaStreamingContext streamingContext = this.streamingContext ;
+
+    for (StreamingDataSource<D> streamingDataSource : streamingDataSourcesList) {
+      streamingDataSource.start(streamingContext);
+    }
+
+    streamingContext.start();
+    try {
+      streamingContext.awaitTermination();
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+  }
+
 
   public JavaStreamingContext getStreamingContext() {
     return streamingContext ;

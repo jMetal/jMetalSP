@@ -54,7 +54,7 @@ public class DynamicTSPMOCellRunnerWithStreamingDataSource {
     // streamingConfigurationTSP2.initializeDirectoryTSP("/tsp/data3");
 
     application
-        .setSparkRuntime(new SparkRuntime(1))
+        .setStreamingRuntime(new SparkRuntime(1))
         .setProblemBuilder(new MultiobjectiveTSPBuilderParsed(hdfsIp,hdfsPort,fileName))
         //  .setProblemBuilder(new MultiobjectiveTSPBuilderFromFiles("/home/hdfs/tsp/kroA100.tsp", "/home/hdfs/tsp/kroB100.tsp"))
         .setAlgorithmBuilder(new DynamicMOCellBuilder())

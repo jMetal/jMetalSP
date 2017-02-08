@@ -50,7 +50,7 @@ public class DynamicTSPNSGIIRunnerWithStreamingDataSource {
     StreamingConfigurationTSP streamingConfigurationTSP1= new StreamingConfigurationTSP();
     streamingConfigurationTSP1.initializeDirectoryTSP(updateDirectory);
     application
-        .setSparkRuntime(new SparkRuntime(1))
+        .setStreamingRuntime(new SparkRuntime(1))
         .setProblemBuilder(new MultiobjectiveTSPBuilderParsed(hdfsIp,hdfsPort,fileName))
         //  .setProblemBuilder(new MultiobjectiveTSPBuilderFromFiles("/home/hdfs/tsp/kroA100.tsp", "/home/hdfs/tsp/kroB100.tsp"))
         .setAlgorithmBuilder(new DynamicNSGAIIBuilder())

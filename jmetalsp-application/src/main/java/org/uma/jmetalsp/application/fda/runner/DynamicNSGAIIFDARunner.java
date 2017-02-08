@@ -52,7 +52,7 @@ public class DynamicNSGAIIFDARunner {
     streamingConfigurationFDA.initializeKafka(kafkaServer,kafkaPort,kafkaTopic);
 
     application
-            .setSparkRuntime(new SparkRuntime(2))
+            .setStreamingRuntime(new SparkRuntime(2))
             .setProblemBuilder(problemBuilder)
             .setAlgorithmBuilder(new DynamicNSGAIIBuilder())
             .addAlgorithmDataConsumer(new SimpleSolutionListConsumer())

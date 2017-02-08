@@ -6,6 +6,6 @@ import org.uma.jmetalsp.algorithm.DynamicAlgorithm;
  * Created by ajnebro on 21/4/16.
  */
 public interface AlgorithmDataConsumer extends Runnable {
-  public void setAlgorithm(DynamicAlgorithm<?> algorithm) ;
+  void setAlgorithm(DynamicAlgorithm<?> algorithm) ;
   DynamicAlgorithm<?> getAlgorithm() ;
 }
