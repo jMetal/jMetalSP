@@ -12,14 +12,14 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package org.uma.jmetalsp.problem.tsp;
 
-import org.uma.jmetalsp.updatedata.UpdateData;
+import org.uma.jmetalsp.updatedata.repository.DoubleMatrixUpdateData;
 
 import java.io.Serializable;
 
 /**
  * Created by ajnebro on 19/4/16.
  */
-public class MultiobjectiveTSPUpdateData implements UpdateData, Serializable {
+public class MultiobjectiveTSPUpdateData implements DoubleMatrixUpdateData, Serializable {
   private int matrixID ;
   private int x ;
   private int y ;
