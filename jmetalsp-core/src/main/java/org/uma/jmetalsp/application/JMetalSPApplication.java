@@ -21,11 +21,12 @@ import java.util.List;
 public class JMetalSPApplication<
     D extends UpdateData,
     P extends DynamicProblem<? extends Solution<?>, D>,
-    A extends DynamicAlgorithm<?>> {
+    A extends DynamicAlgorithm<?>,
+		S extends StreamingDataSource<D>> {
 
   private AlgorithmBuilder<A, P> algorithmBuilder;
   private ProblemBuilder<P> problemBuilder;
-  private List<StreamingDataSource<D>> streamingDataSourceList ;
+  private List<S> streamingDataSourceList ;
   private List<AlgorithmDataConsumer> algorithmDataConsumerList ;
   private StreamingRuntime streamingRuntime ;
 
@@ -49,7 +50,7 @@ public class JMetalSPApplication<
     return this ;
   }
 
-  public JMetalSPApplication addStreamingDataSource(StreamingDataSource<D> streamingDataSource) {
+  public JMetalSPApplication addStreamingDataSource(S streamingDataSource) {
     if (streamingDataSourceList == null) {
       streamingDataSourceList = new ArrayList<>() ;
     }

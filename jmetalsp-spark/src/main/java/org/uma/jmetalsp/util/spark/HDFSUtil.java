@@ -1,4 +1,4 @@
-package org.uma.jmetalsp.util;
+package org.uma.jmetalsp.util.spark;
 
 /**
  * Created by cris on 20/04/2016.
@@ -15,6 +15,7 @@ import org.apache.hadoop.io.IOUtils;
 import java.io.*;
 import java.util.List;
 import java.util.logging.Logger;
+
 
 /**
  * Created by cris on 09/03/2016.

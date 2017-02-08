@@ -12,7 +12,6 @@ import org.uma.jmetalsp.problem.ProblemBuilder;
 import org.uma.jmetalsp.problem.fda.FDAUpdateData;
 import org.uma.jmetalsp.problem.fda.FDAUtil;
 import org.uma.jmetalsp.problem.fda.fda1.FDA1;
-import org.uma.jmetalsp.problem.fda.fda2.FDA2ProblemBuilder;
 import org.uma.jmetalsp.util.spark.SparkRuntime;
 
 import java.io.IOException;

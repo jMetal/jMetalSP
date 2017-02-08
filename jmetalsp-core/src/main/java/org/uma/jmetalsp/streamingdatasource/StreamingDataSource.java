@@ -12,7 +12,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package org.uma.jmetalsp.streamingdatasource;
 
-import org.apache.spark.streaming.api.java.JavaStreamingContext;
 import org.uma.jmetalsp.problem.DynamicProblem;
 import org.uma.jmetalsp.updatedata.UpdateData;
 
@@ -23,5 +22,5 @@ import java.io.Serializable;
  */
 public interface StreamingDataSource<D extends UpdateData> extends Serializable {
   public void setProblem(DynamicProblem<?, D> problem) ;
-  public void start(JavaStreamingContext context) ;
+  public void start() ;
 }
