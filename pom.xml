@@ -60,7 +60,7 @@
     <modules>
         <module>jmetalsp-core</module>
         <module>jmetalsp-algorithm</module>
-        <module>jmetalsp-application</module>
+       <!-- <module>jmetalsp-application</module>-->
         <module>jmetalsp-problem</module>
         <module>jmetalsp-spark</module>
     </modules>
