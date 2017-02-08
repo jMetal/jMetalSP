@@ -23,4 +23,10 @@ public class FDAUpdateData implements TimeUpdateData, Serializable {
   public double getTime() {
     return time;
   }
+
+  @Override
+  public double getTimeInterval() {
+    // TODO
+    return 0;
+  }
 }
