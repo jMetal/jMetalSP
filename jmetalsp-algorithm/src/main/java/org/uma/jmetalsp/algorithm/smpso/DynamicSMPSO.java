@@ -43,8 +43,16 @@ public class DynamicSMPSO
   private DynamicProblem<DoubleSolution,?> problem;
   private boolean stopAtTheEndOfTheCurrentIteration = false ;
 
-  public DynamicSMPSO(DynamicProblem<DoubleSolution,?> problem, int swarmSize, BoundedArchive<DoubleSolution> leaders, MutationOperator<DoubleSolution> mutationOperator, int maxIterations, double r1Min, double r1Max, double r2Min, double r2Max, double c1Min, double c1Max, double c2Min, double c2Max, double weightMin, double weightMax, double changeVelocity1, double changeVelocity2, SolutionListEvaluator<DoubleSolution> evaluator) {
-    super((DoubleProblem) problem, swarmSize, leaders, mutationOperator, maxIterations, r1Min, r1Max, r2Min, r2Max, c1Min, c1Max, c2Min, c2Max, weightMin, weightMax, changeVelocity1, changeVelocity2, evaluator);
+  public DynamicSMPSO(DynamicProblem<DoubleSolution,?> problem, int swarmSize, BoundedArchive<DoubleSolution> leaders,
+                      MutationOperator<DoubleSolution> mutationOperator,
+                      int maxIterations,
+                      double r1Min, double r1Max, double r2Min, double r2Max,
+                      double c1Min, double c1Max, double c2Min, double c2Max,
+                      double weightMin, double weightMax,
+                      double changeVelocity1, double changeVelocity2,
+                      SolutionListEvaluator<DoubleSolution> evaluator) {
+    super((DoubleProblem) problem, swarmSize, leaders, mutationOperator, maxIterations, r1Min, r1Max, r2Min, r2Max,
+				    c1Min, c1Max, c2Min, c2Max, weightMin, weightMax, changeVelocity1, changeVelocity2, evaluator);
     this.problem=problem;
     completedIterations = 0 ;
     this.evaluator=evaluator;
