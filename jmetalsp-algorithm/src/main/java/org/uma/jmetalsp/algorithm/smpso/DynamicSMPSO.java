@@ -11,7 +11,7 @@
 //  You should have received a copy of the GNU Lesser General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-package org.uma.jmetalsp.algorithm;
+package org.uma.jmetalsp.algorithm.smpso;
 
 import org.uma.jmetal.algorithm.multiobjective.smpso.SMPSO;
 import org.uma.jmetal.measure.MeasureManager;
@@ -23,6 +23,7 @@ import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.SolutionListUtils;
 import org.uma.jmetal.util.archive.BoundedArchive;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
+import org.uma.jmetalsp.algorithm.DynamicAlgorithm;
 import org.uma.jmetalsp.problem.DynamicProblem;
 
 import java.util.List;

@@ -1,7 +1,7 @@
 package  org.uma.jmetalsp.application.fda.sparkutil;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.uma.jmetalsp.util.spark.StreamingConfiguration;
+import org.uma.jmetalsp.spark.util.spark.StreamingConfiguration;
 import java.io.Serializable;
 import java.util.HashMap;
 

@@ -10,7 +10,7 @@ import java.util.List;
  * @author Antonio J. Nebro <ajnebro@uma.es>
  */
 public interface StreamingRuntime<D extends UpdateData, S extends StreamingDataSource<D>> {
-    void start() ;
+    //void start() ;
 
     void startStreamingDataSources(List<S> streamingDataSourceList);
 }

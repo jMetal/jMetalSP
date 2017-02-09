@@ -11,7 +11,7 @@
 //  You should have received a copy of the GNU Lesser General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-package org.uma.jmetalsp.algorithm;
+package org.uma.jmetalsp.algorithm.nsgaii;
 
 import org.uma.jmetal.algorithm.multiobjective.nsgaii.NSGAII;
 import org.uma.jmetal.measure.MeasureManager;
@@ -23,10 +23,10 @@ import org.uma.jmetal.operator.SelectionOperator;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.SolutionListUtils;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
+import org.uma.jmetalsp.algorithm.DynamicAlgorithm;
 import org.uma.jmetalsp.problem.DynamicProblem;
 
 import java.util.List;
-import java.util.function.Predicate;
 
 /**
  * Class implementing a dynamic version of NSGA-II. Most of the code of the original NSGA-II is
@@ -46,7 +46,11 @@ public class DynamicNSGAII<S extends Solution<?>>
   protected BasicMeasure<List<S>> solutionListMeasure ;
   private boolean stopAtTheEndOfTheCurrentIteration = false ;
 
-  public DynamicNSGAII(DynamicProblem<S, ?> problem, int maxEvaluations, int populationSize, CrossoverOperator<S> crossoverOperator, MutationOperator<S> mutationOperator, SelectionOperator<List<S>, S> selectionOperator, SolutionListEvaluator<S> evaluator) {
+  public DynamicNSGAII(DynamicProblem<S, ?> problem, int maxEvaluations, int populationSize,
+                       CrossoverOperator<S> crossoverOperator,
+                       MutationOperator<S> mutationOperator,
+                       SelectionOperator<List<S>, S> selectionOperator,
+                       SolutionListEvaluator<S> evaluator) {
     super(problem, maxEvaluations, populationSize, crossoverOperator, mutationOperator, selectionOperator, evaluator);
 
     completedIterations = 0 ;

@@ -10,7 +10,7 @@ import org.uma.jmetalsp.application.JMetalSPApplication;
 import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPUpdateData;
 import org.uma.jmetalsp.consumer.impl.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.consumer.impl.SimpleSolutionListConsumer;
-import org.uma.jmetalsp.util.spark.SparkRuntime;
+import org.uma.jmetalsp.spark.util.spark.SparkRuntime;
 
 import java.io.IOException;
 

@@ -11,7 +11,7 @@
 //  You should have received a copy of the GNU Lesser General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-package org.uma.jmetalsp.util.spark;
+package org.uma.jmetalsp.spark;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.streaming.Durations;
@@ -35,6 +35,7 @@ public class SparkRuntime<D extends UpdateData> implements StreamingRuntime<D, S
     streamingContext = new JavaStreamingContext(sparkConf, Durations.seconds(this.duration)) ;
   }
 
+  /*
   public void start() {
     streamingContext.start();
     try {
@@ -43,6 +44,7 @@ public class SparkRuntime<D extends UpdateData> implements StreamingRuntime<D, S
       e.printStackTrace();
     }
   }
+  */
 
   @Override
   public void startStreamingDataSources(List<SparkStreamingDataSource<D>> streamingDataSourcesList) {

@@ -5,7 +5,7 @@ import org.uma.jmetalsp.problem.DynamicProblem;
 /**
  * Created by ajnebro on 18/4/16.
  */
-public interface AlgorithmBuilder<
+public interface DynamicAlgorithmBuilder<
     A extends DynamicAlgorithm<?>,
     P extends DynamicProblem<?, ?>> {
 

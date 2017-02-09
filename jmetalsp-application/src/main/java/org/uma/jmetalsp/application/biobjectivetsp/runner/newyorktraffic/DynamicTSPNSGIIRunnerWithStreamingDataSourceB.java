@@ -17,7 +17,7 @@ import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPUpdateData;
 import org.uma.jmetalsp.consumer.AlgorithmDataConsumer;
 import org.uma.jmetalsp.consumer.impl.SimpleSolutionListConsumer;
 import org.uma.jmetalsp.streamingdatasource.StreamingDataSource;
-import org.uma.jmetalsp.util.spark.SparkRuntime;
+import org.uma.jmetalsp.spark.util.spark.SparkRuntime;
 
 import java.io.IOException;
 

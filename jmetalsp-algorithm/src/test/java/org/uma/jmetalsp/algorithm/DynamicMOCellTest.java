@@ -10,6 +10,7 @@ import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.archive.impl.CrowdingDistanceArchive;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetal.util.neighborhood.impl.C9;
+import org.uma.jmetalsp.algorithm.mocell.DynamicMOCell;
 import org.uma.jmetalsp.problem.DynamicProblem;
 import org.uma.jmetalsp.updatedata.UpdateData;
 

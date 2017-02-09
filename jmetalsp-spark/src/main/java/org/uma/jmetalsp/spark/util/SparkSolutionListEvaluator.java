@@ -1,4 +1,4 @@
-package org.uma.jmetalsp.util.spark;
+package org.uma.jmetalsp.spark.util;
 
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;

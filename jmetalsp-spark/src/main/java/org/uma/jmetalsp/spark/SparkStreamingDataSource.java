@@ -1,4 +1,4 @@
-package org.uma.jmetalsp.util.spark;
+package org.uma.jmetalsp.spark;
 
 import org.apache.spark.streaming.api.java.JavaStreamingContext;
 import org.uma.jmetalsp.streamingdatasource.StreamingDataSource;

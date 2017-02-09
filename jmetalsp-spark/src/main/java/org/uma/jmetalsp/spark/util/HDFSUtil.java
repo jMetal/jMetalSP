@@ -1,4 +1,4 @@
-package org.uma.jmetalsp.util.spark;
+package org.uma.jmetalsp.spark.util;
 
 /**
  * Created by cris on 20/04/2016.

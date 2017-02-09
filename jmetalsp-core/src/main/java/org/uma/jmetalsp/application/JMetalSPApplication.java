@@ -2,7 +2,7 @@ package org.uma.jmetalsp.application;
 
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.JMetalException;
-import org.uma.jmetalsp.algorithm.AlgorithmBuilder;
+import org.uma.jmetalsp.algorithm.DynamicAlgorithmBuilder;
 import org.uma.jmetalsp.algorithm.DynamicAlgorithm;
 import org.uma.jmetalsp.consumer.AlgorithmDataConsumer;
 import org.uma.jmetalsp.problem.DynamicProblem;
@@ -24,7 +24,7 @@ public class JMetalSPApplication<
     A extends DynamicAlgorithm<?>,
 		S extends StreamingDataSource<D>> {
 
-  private AlgorithmBuilder<A, P> algorithmBuilder;
+  private DynamicAlgorithmBuilder<A, P> algorithmBuilder;
   private ProblemBuilder<P> problemBuilder;
   private List<S> streamingDataSourceList ;
   private List<AlgorithmDataConsumer> algorithmDataConsumerList ;
@@ -44,7 +44,7 @@ public class JMetalSPApplication<
     return this ;
   }
 
-  public JMetalSPApplication setAlgorithmBuilder(AlgorithmBuilder<A, P> algorithmBuilder) {
+  public JMetalSPApplication setAlgorithmBuilder(DynamicAlgorithmBuilder<A, P> algorithmBuilder) {
     this.algorithmBuilder = algorithmBuilder;
 
     return this ;

@@ -20,6 +20,8 @@ public class FDAUpdateData implements TimeUpdateData, Serializable {
     this.nT=nT;
     time= (1.0d/(double)nT) * Math.floor((double)n/(double)tauT);
   }
+
+  @Override
   public double getTime() {
     return time;
   }
