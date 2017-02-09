@@ -9,10 +9,10 @@ import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAII;
 import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAIIBuilder;
 import org.uma.jmetalsp.application.JMetalSPApplication;
 import org.uma.jmetalsp.consumer.impl.LocalDirectoryOutputConsumer;
+import org.uma.jmetalsp.problem.DynamicProblem;
 import org.uma.jmetalsp.problem.fda.FDA;
 import org.uma.jmetalsp.problem.fda.FDAUpdateData;
-import org.uma.jmetalsp.problem.fda.fda1.FDA1;
-import org.uma.jmetalsp.problem.fda.fda1.FDA1ProblemBuilder;
+import org.uma.jmetalsp.problem.fda.fda2.FDA2;
 import org.uma.jmetalsp.streamingruntime.impl.DefaultRuntime;
 
 import java.io.IOException;
@@ -22,31 +22,24 @@ import java.io.IOException;
  */
 public class DynamicContinuousNSGAIIApplication {
 
-
 	public static void main(String[] args) throws IOException, InterruptedException {
 		JMetalSPApplication<FDAUpdateData, FDA, DynamicNSGAII<DoubleSolution>, StreamingFDAUpdateData> application;
 		application = new JMetalSPApplication<>();
 
+		DynamicProblem<DoubleSolution, FDAUpdateData> problem = new FDA2() ;
 		CrossoverOperator<DoubleSolution> crossover = new SBXCrossover(0.9, 20.0) ;
-		MutationOperator<DoubleSolution> mutation = new PolynomialMutation(1.0/20.0, 20.0) ;
+		MutationOperator<DoubleSolution> mutation = new PolynomialMutation(1.0/problem.getNumberOfVariables(), 20.0) ;
+
+		DynamicNSGAII<DoubleSolution> algorithm ;
+		algorithm = new DynamicNSGAIIBuilder<DoubleSolution, DynamicProblem<DoubleSolution, FDAUpdateData>>(crossover, mutation)
+						.build(problem) ;
 
 		application.setStreamingRuntime(new DefaultRuntime<FDAUpdateData, StreamingFDAUpdateData>())
-						.setProblemBuilder(new FDA1ProblemBuilder(20, 2))
-						.setAlgorithmBuilder(new DynamicNSGAIIBuilder<DoubleSolution, FDA1>(crossover, mutation))
-						.addStreamingDataSource(new StreamingFDAUpdateData())
+						.setProblem(problem)
+						.setAlgorithm(algorithm)
+						.addStreamingDataSource(new StreamingFDAUpdateData(problem))
 						.addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirectory"))
 						.run();
 
-
-	/*
-	      application
-					      .setStreamingRuntime(new DefautRuntime)
-					.setProblemBuilder(problemBuilder)
-              .setAlgorithmBuilder(new DynamicMOCellBuilder())
-					.addAlgorithmDataConsumer(new SimpleSolutionListConsumer())
-					.addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer(outputDirectoryName))
-					.addStreamingDataSource(new StreamingKafkaFDA(streamingConfigurationFDA))
-					.run();
-					*/
 	}
 }

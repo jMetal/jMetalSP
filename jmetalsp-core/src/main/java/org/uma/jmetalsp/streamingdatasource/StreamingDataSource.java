@@ -12,7 +12,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package org.uma.jmetalsp.streamingdatasource;
 
-import org.uma.jmetalsp.problem.DynamicProblem;
 import org.uma.jmetalsp.updatedata.UpdateData;
 
 import java.io.Serializable;
@@ -21,6 +20,6 @@ import java.io.Serializable;
  * Created by ajnebro on 18/4/16.
  */
 public interface StreamingDataSource<D extends UpdateData> extends Serializable {
-  public void setProblem(DynamicProblem<?, D> problem) ;
+  //public void setProblem(DynamicProblem<?, D> problem) ;
   public void start() ;
 }

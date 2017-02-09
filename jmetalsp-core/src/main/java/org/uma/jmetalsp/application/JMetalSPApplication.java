@@ -2,11 +2,9 @@ package org.uma.jmetalsp.application;
 
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.JMetalException;
-import org.uma.jmetalsp.algorithm.DynamicAlgorithmBuilder;
 import org.uma.jmetalsp.algorithm.DynamicAlgorithm;
 import org.uma.jmetalsp.consumer.AlgorithmDataConsumer;
 import org.uma.jmetalsp.problem.DynamicProblem;
-import org.uma.jmetalsp.problem.ProblemBuilder;
 import org.uma.jmetalsp.streamingdatasource.StreamingDataSource;
 import org.uma.jmetalsp.streamingruntime.StreamingRuntime;
 import org.uma.jmetalsp.updatedata.UpdateData;
@@ -24,8 +22,6 @@ public class JMetalSPApplication<
     A extends DynamicAlgorithm<?>,
 		S extends StreamingDataSource<D>> {
 
-  private DynamicAlgorithmBuilder<A, P> algorithmBuilder;
-  private ProblemBuilder<P> problemBuilder;
   private List<S> streamingDataSourceList ;
   private List<AlgorithmDataConsumer> algorithmDataConsumerList ;
   private StreamingRuntime streamingRuntime ;
@@ -38,14 +34,14 @@ public class JMetalSPApplication<
     this.streamingRuntime = null ;
   }
 
-  public JMetalSPApplication setProblemBuilder(ProblemBuilder<P> problemBuilder) {
-    this.problemBuilder = problemBuilder;
+  public JMetalSPApplication setProblem(P problem) {
+    this.problem = problem;
 
     return this ;
   }
 
-  public JMetalSPApplication setAlgorithmBuilder(DynamicAlgorithmBuilder<A, P> algorithmBuilder) {
-    this.algorithmBuilder = algorithmBuilder;
+  public JMetalSPApplication setAlgorithm(A algorithm) {
+    this.algorithm = algorithm;
 
     return this ;
   }
@@ -77,9 +73,6 @@ public class JMetalSPApplication<
 
   public void run() throws IOException, InterruptedException {
     fieldChecking() ;
-
-    problem = problemBuilder.build() ;
-    algorithm = algorithmBuilder.build(problem) ;
 
     for (AlgorithmDataConsumer consumer : algorithmDataConsumerList) {
       consumer.setAlgorithm(algorithm);
@@ -117,10 +110,10 @@ public class JMetalSPApplication<
   }
 
   private void fieldChecking() {
-    if (problemBuilder == null) {
-      throw new JMetalException("The problem builder is null") ;
-    } else if (algorithmBuilder == null) {
-      throw new JMetalException("The algorithm builder is null") ;
+    if (problem == null) {
+      throw new JMetalException("The problem is null") ;
+    } else if (algorithm == null) {
+      throw new JMetalException("The algorithm algorithm is null") ;
     } else if (algorithmDataConsumerList == null) {
       throw new JMetalException("The algorithm data consumer list is null") ;
     }

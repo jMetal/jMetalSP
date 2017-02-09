@@ -10,8 +10,7 @@ import org.uma.jmetalsp.streamingdatasource.StreamingDataSource;
 public class StreamingFDAUpdateData implements StreamingDataSource<FDAUpdateData> {
 	private DynamicProblem<?, FDAUpdateData> problem ;
 
-	@Override
-	public void setProblem(DynamicProblem<?, FDAUpdateData> problem) {
+	public StreamingFDAUpdateData(DynamicProblem<?, FDAUpdateData> problem) {
 		this.problem = problem ;
 	}
 
@@ -20,7 +19,7 @@ public class StreamingFDAUpdateData implements StreamingDataSource<FDAUpdateData
 		int counter = 0 ;
 		while (true) {
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(5000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
