@@ -12,7 +12,7 @@ import org.uma.jmetalsp.consumer.impl.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.problem.DynamicProblem;
 import org.uma.jmetalsp.problem.fda.FDA;
 import org.uma.jmetalsp.problem.fda.FDAUpdateData;
-import org.uma.jmetalsp.problem.fda.fda2.FDA2;
+import org.uma.jmetalsp.problem.fda.FDA2;
 import org.uma.jmetalsp.streamingruntime.impl.DefaultRuntime;
 
 import java.io.IOException;

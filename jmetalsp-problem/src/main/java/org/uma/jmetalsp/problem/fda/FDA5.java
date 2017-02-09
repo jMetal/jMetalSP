@@ -1,11 +1,8 @@
-package org.uma.jmetalsp.problem.fda.fda4;
+package org.uma.jmetalsp.problem.fda;
 
 import org.uma.jmetal.problem.impl.AbstractDoubleProblem;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.JMetalException;
-import org.uma.jmetalsp.problem.DynamicProblem;
-import org.uma.jmetalsp.problem.fda.FDA;
-import org.uma.jmetalsp.problem.fda.FDAUpdateData;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -14,18 +11,18 @@ import java.util.List;
 /**
  * @author Cristóbal Barba <cbarba@lcc.uma.es>
  */
-public class FDA4 extends AbstractDoubleProblem implements FDA,Serializable {
+public class FDA5 extends AbstractDoubleProblem implements FDA,Serializable {
 
   private double time;
   private boolean theProblemHasBeenModified;
   private final int M = 3;
-  public FDA4(){
+  public FDA5(){
     this(12,3);
   }
-  public FDA4(Integer numberOfVariables, Integer numberOfObjectives) throws JMetalException {
+  public FDA5(Integer numberOfVariables, Integer numberOfObjectives) throws JMetalException {
     setNumberOfVariables(numberOfVariables);
     setNumberOfObjectives(numberOfObjectives);
-    setName("FDA4");
+    setName("FDA5");
 
     List<Double> lowerLimit = new ArrayList<>(getNumberOfVariables());
     List<Double> upperLimit = new ArrayList<>(getNumberOfVariables());
@@ -60,36 +57,41 @@ public class FDA4 extends AbstractDoubleProblem implements FDA,Serializable {
   public void evaluate(DoubleSolution solution) {
     double[] f = new double[getNumberOfObjectives()];
     double g = this.evalG(solution, M-1);
-    f[0] = this.evalF1(solution, g);
-    f[1] = evalFK(solution,g,2);
-    f[2] = evalFM(solution,g);
+    double Ft= 1.0d+ 100.0d *Math.pow(Math.sin(0.5d*Math.PI*time),4.0d);
+    f[0] = this.evalF1(solution, g,Ft);
+    f[1] = evalFK(solution,g,2,Ft);
+    f[2] = evalFM(solution,g,Ft);
     for (int i = 0; i < solution.getNumberOfObjectives() ; i++) {
       solution.setObjective(i,f[i]);
     }
   }
 
-  private double evalF1(DoubleSolution solution,double g){
+  private double evalF1(DoubleSolution solution,double g,double Ft){
     double f=1.0d +g;
     double mult=1.0d;
     for (int i = 1; i <= M-1; i++) {
-      mult*=Math.cos(solution.getVariableValue(i-1)*Math.PI/2.0d);
+      double y_i= Math.pow(solution.getVariableValue(i-1),Ft);
+      mult*=Math.cos(y_i*Math.PI/2.0d);
     }
     return f*mult;
   }
-  private double evalFK(DoubleSolution solution,double g,int k){
+
+
+  private double evalFK(DoubleSolution solution,double g,int k,double Ft){
     double f= 1.0d + g;
     double mult=1.0d;
-    double aux=Math.sin((solution.getVariableValue(M-k)*Math.PI)/2.0d);
     for (int i = 1; i <= M-k; i++) {
-      mult*=Math.cos(solution.getVariableValue(i-1)*Math.PI/2.0d);
+      double y_i= Math.pow(solution.getVariableValue(i-1),Ft);
+      mult*=Math.cos(y_i*Math.PI/2.0d);
     }
-    mult*=aux;
+    double yy = Math.pow(solution.getVariableValue(M-k),Ft);
+    mult*= Math.sin(yy*Math.PI/2.0d);
     return f*mult;
   }
 
 
   /**
-   * Returns the value of the FDA4 function G.
+   * Returns the value of the FDA5 function G.
    *
    * @param solution Solution
    */
@@ -99,12 +101,13 @@ public class FDA4 extends AbstractDoubleProblem implements FDA,Serializable {
     for (int i = limitInf; i < solution.getNumberOfVariables(); i++) {
       g += Math.pow((solution.getVariableValue(i)-Gt), 2.0d);
     }
-    return g;
+    return g+Gt;
   }
 
-  private double evalFM(DoubleSolution solution,double g){
+  private double evalFM(DoubleSolution solution,double g,double Ft){
     double fm = 1.0d+g;
-    fm *= Math.sin(solution.getVariableValue(0)*Math.PI/2);
-    return fm;
+    double y_1= Math.pow(solution.getVariableValue(0),Ft);
+    double mult= Math.sin(y_1*Math.PI/2.0d);
+    return fm*mult;
   }
 }
