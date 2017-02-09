@@ -17,7 +17,7 @@ import org.uma.jmetalsp.problem.DynamicProblem;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class DynamicSMPSOBuilder<
-				P extends DynamicProblem<DoubleSolution, ?>> implements DynamicAlgorithmBuilder<DynamicMOCell<DoubleSolution>, P> {
+				P extends DynamicProblem<DoubleSolution, ?>> implements DynamicAlgorithmBuilder<DynamicSMPSO, P> {
 
 	private double c1Max;
 	private double c1Min;
@@ -34,8 +34,6 @@ public class DynamicSMPSOBuilder<
 
 	private int swarmSize;
 	private int maxIterations;
-
-	protected int archiveSize;
 
 	protected MutationOperator<DoubleSolution> mutationOperator;
 
@@ -62,7 +60,7 @@ public class DynamicSMPSOBuilder<
 		changeVelocity1 = -1;
 		changeVelocity2 = -1;
 
-		mutationOperator = new PolynomialMutation(1.0/100, 20.0) ;
+		this.mutationOperator = mutationOperator ;
 		evaluator = new SequentialSolutionListEvaluator<DoubleSolution>() ;
 	}
 
