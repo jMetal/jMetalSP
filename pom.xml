@@ -64,6 +64,7 @@
         <module>jmetalsp-problem</module>
         <module>jmetalsp-examples</module>
         <module>jmetalsp-spark</module>
+        <module>perception</module>
     </modules>
 
     <profiles>
