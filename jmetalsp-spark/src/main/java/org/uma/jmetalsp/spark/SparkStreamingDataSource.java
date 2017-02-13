@@ -7,6 +7,6 @@ import org.uma.jmetalsp.updatedata.UpdateData;
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public interface SparkStreamingDataSource<D extends UpdateData> extends StreamingDataSource<D>{
-	void setStreamingContext(JavaStreamingContext streamingContext) ;
+public abstract class SparkStreamingDataSource<D extends UpdateData> extends StreamingDataSource<D>{
+	abstract void setStreamingContext(JavaStreamingContext streamingContext) ;
 }

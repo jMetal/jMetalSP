@@ -14,12 +14,9 @@ package org.uma.jmetalsp.streamingdatasource;
 
 import org.uma.jmetalsp.updatedata.UpdateData;
 
-import java.io.Serializable;
-
 /**
  * Created by ajnebro on 18/4/16.
  */
-public interface StreamingDataSource<D extends UpdateData> extends Serializable {
-  //public void setProblem(DynamicProblem<?, D> problem) ;
-  public void start() ;
+public abstract class StreamingDataSource<D extends UpdateData> {
+  public abstract void start() ;
 }

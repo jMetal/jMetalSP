@@ -7,7 +7,7 @@ import org.uma.jmetalsp.streamingdatasource.StreamingDataSource;
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class StreamingFDAUpdateData implements StreamingDataSource<FDAUpdateData> {
+public class StreamingFDAUpdateData extends StreamingDataSource<FDAUpdateData> {
 	private DynamicProblem<?, FDAUpdateData> problem ;
 
 	public StreamingFDAUpdateData(DynamicProblem<?, FDAUpdateData> problem) {
