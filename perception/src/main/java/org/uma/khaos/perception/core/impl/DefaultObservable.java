@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DefaultObservable implements Observable{
+public class DefaultObservable implements Observable {
 	private Map<String, ObservableData<?>> observables ;
 
 	public DefaultObservable() {

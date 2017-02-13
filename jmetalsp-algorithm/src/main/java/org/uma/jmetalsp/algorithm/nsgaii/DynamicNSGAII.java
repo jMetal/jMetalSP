@@ -25,6 +25,10 @@ import org.uma.jmetal.util.SolutionListUtils;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetalsp.algorithm.DynamicAlgorithm;
 import org.uma.jmetalsp.problem.DynamicProblem;
+import org.uma.khaos.perception.core.Observable;
+import org.uma.khaos.perception.core.ObservableData;
+import org.uma.khaos.perception.core.impl.DefaultObservable;
+import org.uma.khaos.perception.core.impl.DefaultObservableData;
 
 import java.util.List;
 
@@ -46,6 +50,10 @@ public class DynamicNSGAII<S extends Solution<?>>
   protected BasicMeasure<List<S>> solutionListMeasure ;
   private boolean stopAtTheEndOfTheCurrentIteration = false ;
 
+	ObservableData<List<S>> solutionListObservable ;
+	ObservableData<Integer> numberOfIterationsObservable;
+	Observable observable ;
+
   public DynamicNSGAII(DynamicProblem<S, ?> problem, int maxEvaluations, int populationSize,
                        CrossoverOperator<S> crossoverOperator,
                        MutationOperator<S> mutationOperator,
@@ -58,6 +66,12 @@ public class DynamicNSGAII<S extends Solution<?>>
     solutionListMeasure = new BasicMeasure<>() ;
     measureManager = new SimpleMeasureManager() ;
     measureManager.setPushMeasure("currentPopulation", solutionListMeasure);
+
+	  solutionListObservable = new DefaultObservableData<>() ;
+	  numberOfIterationsObservable = new DefaultObservableData<>() ;
+	  observable = new DefaultObservable() ;
+	  observable.setObservableData("currentPopulation", solutionListObservable);
+	  observable.setObservableData("numberOfIterations", numberOfIterationsObservable);
   }
 
   @Override
@@ -72,6 +86,12 @@ public class DynamicNSGAII<S extends Solution<?>>
 
   @Override protected boolean isStoppingConditionReached() {
     if (evaluations >= maxEvaluations) {
+
+    	solutionListObservable.hasChanged() ;
+    	solutionListObservable.notifyObservers(getPopulation());
+	    numberOfIterationsObservable.hasChanged() ;
+	    numberOfIterationsObservable.notifyObservers(completedIterations);
+
 
       solutionListMeasure.push(getPopulation()) ;
       
