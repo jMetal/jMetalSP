@@ -13,15 +13,14 @@
 
 package org.uma.jmetalsp.consumer.impl;
 
-import org.uma.jmetal.measure.MeasureListener;
-import org.uma.jmetal.measure.MeasureManager;
-import org.uma.jmetal.measure.impl.BasicMeasure;
-import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetal.util.JMetalLogger;
 import org.uma.jmetalsp.algorithm.DynamicAlgorithm;
 import org.uma.jmetalsp.consumer.AlgorithmDataConsumer;
+import org.uma.khaos.perception.core.Observable;
+import org.uma.khaos.perception.core.ObservableData;
+import org.uma.khaos.perception.core.ObserverListener;
 
 import java.util.List;
 
@@ -29,15 +28,15 @@ import java.util.List;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class SimpleSolutionListConsumer implements AlgorithmDataConsumer {
-  private DynamicAlgorithm<?> dynamicAlgorithm ;
+  private DynamicAlgorithm<?, ?> dynamicAlgorithm ;
 
   @Override
-  public void setAlgorithm(DynamicAlgorithm<?> algorithm) {
+  public void setAlgorithm(DynamicAlgorithm<?,?> algorithm) {
     this.dynamicAlgorithm = algorithm ;
   }
 
   @Override
-  public DynamicAlgorithm<?> getAlgorithm() {
+  public DynamicAlgorithm<?,?> getAlgorithm() {
     return dynamicAlgorithm ;
   }
 
@@ -47,17 +46,17 @@ public class SimpleSolutionListConsumer implements AlgorithmDataConsumer {
       throw new JMetalException("The algorithm is null") ;
     }
 
-    MeasureManager measureManager = dynamicAlgorithm.getMeasureManager() ;
+    Observable observable = dynamicAlgorithm.getObservable() ;
 
-    if (measureManager == null) {
-      throw new JMetalException("Error capturing measure manager") ;
+    if (observable == null) {
+      throw new JMetalException("Error capturing observable") ;
     }
 
-    BasicMeasure<List<DoubleSolution>> solutionListMeasure =
-        (BasicMeasure<List<DoubleSolution>>) measureManager.<List<DoubleSolution>> getPushMeasure("currentPopulation");
+	  ObservableData<List<? extends Solution<?>>> listOfSolutions ;
+    listOfSolutions = (ObservableData<List<? extends Solution<?>>>) observable.getObservableData("currentPopulation");
+    listOfSolutions.register(new SolutionListListener<? extends Solution<?>>());
 
-    solutionListMeasure.register(new Listener());
-    while(true){
+	  while(true){
       try {
         Thread.sleep(1000000);
       } catch (InterruptedException e) {
@@ -66,15 +65,16 @@ public class SimpleSolutionListConsumer implements AlgorithmDataConsumer {
     }
   }
 
-  private static class Listener<S extends Solution<?>>
-      implements MeasureListener<List<S>> {
+	private static class SolutionListListener<S extends Solution<?>>
+      implements ObserverListener<List<S>> {
     private int counter = 0 ;
 
-    @Override synchronized public void measureGenerated(List<S> solutions) {
-      if ((counter % 1 == 0)) {
-        JMetalLogger.logger.info("Front number: " + counter+ ". Number of solutions: " + solutions.size()); ;
-      }
-      counter ++ ;
-    }
-  }
+		@Override
+		public synchronized void update(ObservableData<?> observable, List<S> solutionList) {
+			if ((counter % 1 == 0)) {
+				JMetalLogger.logger.info("Front number: " + counter+ ". Number of solutions: " + solutionList.size()); ;
+			}
+			counter ++ ;
+		}
+	}
 }

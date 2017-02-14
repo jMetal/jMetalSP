@@ -13,10 +13,12 @@
 package org.uma.jmetalsp.streamingdatasource;
 
 import org.uma.jmetalsp.updatedata.UpdateData;
+import org.uma.khaos.perception.core.Observable;
 
 /**
  * Created by ajnebro on 18/4/16.
  */
-public abstract class StreamingDataSource<D extends UpdateData> {
+public abstract class StreamingDataSource<D extends UpdateData> implements Observable {
   public abstract void start() ;
 }
+
