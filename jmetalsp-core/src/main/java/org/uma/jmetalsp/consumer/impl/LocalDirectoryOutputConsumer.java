@@ -46,7 +46,7 @@ public class LocalDirectoryOutputConsumer implements AlgorithmDataConsumer {
     this.outputDirectoryName = null ;
   }
 
-  private DynamicAlgorithm<?> dynamicAlgorithm ;
+  private DynamicAlgorithm<?,?> dynamicAlgorithm ;
 
   @Override
   public void setAlgorithm(DynamicAlgorithm<?> algorithm) {

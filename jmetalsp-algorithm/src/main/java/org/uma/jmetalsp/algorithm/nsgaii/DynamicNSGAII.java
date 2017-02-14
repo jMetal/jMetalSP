@@ -31,6 +31,7 @@ import org.uma.khaos.perception.core.impl.DefaultObservable;
 import org.uma.khaos.perception.core.impl.DefaultObservableData;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Class implementing a dynamic version of NSGA-II. Most of the code of the original NSGA-II is
@@ -41,37 +42,33 @@ import java.util.List;
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DynamicNSGAII<S extends Solution<?>>
+public class DynamicNSGAII<S extends Solution<?>, O extends Observable>
     extends NSGAII<S>
-    implements DynamicAlgorithm<List<S>> {
+    implements DynamicAlgorithm<List<S>, O> {
 
   private int completedIterations ;
-  protected SimpleMeasureManager measureManager ;
-  protected BasicMeasure<List<S>> solutionListMeasure ;
   private boolean stopAtTheEndOfTheCurrentIteration = false ;
 
 	ObservableData<List<S>> solutionListObservable ;
 	ObservableData<Integer> numberOfIterationsObservable;
-	Observable observable ;
+	O observable ;
 
   public DynamicNSGAII(DynamicProblem<S, ?> problem, int maxEvaluations, int populationSize,
                        CrossoverOperator<S> crossoverOperator,
                        MutationOperator<S> mutationOperator,
                        SelectionOperator<List<S>, S> selectionOperator,
-                       SolutionListEvaluator<S> evaluator) {
+                       SolutionListEvaluator<S> evaluator,
+                       O observable) {
     super(problem, maxEvaluations, populationSize, crossoverOperator, mutationOperator, selectionOperator, evaluator);
 
     completedIterations = 0 ;
 
-    solutionListMeasure = new BasicMeasure<>() ;
-    measureManager = new SimpleMeasureManager() ;
-    measureManager.setPushMeasure("currentPopulation", solutionListMeasure);
-
 	  solutionListObservable = new DefaultObservableData<>() ;
 	  numberOfIterationsObservable = new DefaultObservableData<>() ;
-	  observable = new DefaultObservable() ;
-	  observable.setObservableData("currentPopulation", solutionListObservable);
-	  observable.setObservableData("numberOfIterations", numberOfIterationsObservable);
+	  this.observable = observable ;
+
+	  solutionListObservable = (ObservableData<List<S>>) observable.getObservableData("currentPopulation");
+    numberOfIterationsObservable = (ObservableData<Integer>) observable.getObservableData("numberOfIterations");
   }
 
   @Override
@@ -92,9 +89,6 @@ public class DynamicNSGAII<S extends Solution<?>>
 	    numberOfIterationsObservable.hasChanged() ;
 	    numberOfIterationsObservable.notifyObservers(completedIterations);
 
-
-      solutionListMeasure.push(getPopulation()) ;
-      
       restart(100);
       evaluator.evaluate(getPopulation(), getDynamicProblem()) ;
 
@@ -131,8 +125,8 @@ public class DynamicNSGAII<S extends Solution<?>>
   }
 
   @Override
-  public MeasureManager getMeasureManager() {
-    return measureManager ;
+  public O getObservable() {
+    return this.observable ;
   }
 
   @Override

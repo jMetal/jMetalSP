@@ -28,6 +28,7 @@ import org.uma.jmetal.util.neighborhood.Neighborhood;
 import org.uma.jmetal.util.solutionattribute.impl.LocationAttribute;
 import org.uma.jmetalsp.algorithm.DynamicAlgorithm;
 import org.uma.jmetalsp.problem.DynamicProblem;
+import org.uma.khaos.perception.core.Observable;
 
 import java.util.List;
 
@@ -40,14 +41,15 @@ import java.util.List;
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DynamicMOCell<S extends Solution<?>>
+public class DynamicMOCell<S extends Solution<?>, O extends Observable>
     extends MOCell<S>
-    implements DynamicAlgorithm<List<S>> {
+    implements DynamicAlgorithm<List<S>, O> {
 
   private int completedIterations ;
   protected SimpleMeasureManager measureManager ;
   protected BasicMeasure<List<S>> solutionListMeasure ;
   private boolean stopAtTheEndOfTheCurrentIteration = false ;
+  private O observable ;
 
   public DynamicMOCell(DynamicProblem<S, ?> problem,
                        int maxEvaluations,
@@ -57,7 +59,8 @@ public class DynamicMOCell<S extends Solution<?>>
                        CrossoverOperator<S> crossoverOperator,
                        MutationOperator<S> mutationOperator,
                        SelectionOperator<List<S>, S> selectionOperator,
-                       SolutionListEvaluator<S> evaluator) {
+                       SolutionListEvaluator<S> evaluator,
+                       O observable) {
     super(problem, maxEvaluations, populationSize, archive, neighborhood, crossoverOperator, mutationOperator,
             selectionOperator, evaluator);
 
@@ -66,6 +69,7 @@ public class DynamicMOCell<S extends Solution<?>>
     solutionListMeasure = new BasicMeasure<>() ;
     measureManager = new SimpleMeasureManager() ;
     measureManager.setPushMeasure("currentPopulation", solutionListMeasure);
+    this.observable = observable ;
   }
 
   @Override
@@ -125,7 +129,7 @@ public class DynamicMOCell<S extends Solution<?>>
   }
 
   @Override
-  public MeasureManager getMeasureManager() {
-    return measureManager ;
+  public O getObservable() {
+    return this.observable ;
   }
 }

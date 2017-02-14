@@ -12,4 +12,6 @@ public interface ObservableData<Data> {
 	void setChanged() ;
 	boolean hasChanged() ;
 	void clearChanged() ;
+
+
 }

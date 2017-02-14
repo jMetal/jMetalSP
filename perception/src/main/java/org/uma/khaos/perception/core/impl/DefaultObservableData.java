@@ -55,4 +55,5 @@ public class DefaultObservableData<Data> implements ObservableData<Data> {
 	public void clearChanged() {
 		dataHasChanged = false ;
 	}
+
 }
