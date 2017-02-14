@@ -14,9 +14,6 @@
 package org.uma.jmetalsp.algorithm.nsgaii;
 
 import org.uma.jmetal.algorithm.multiobjective.nsgaii.NSGAII;
-import org.uma.jmetal.measure.MeasureManager;
-import org.uma.jmetal.measure.impl.BasicMeasure;
-import org.uma.jmetal.measure.impl.SimpleMeasureManager;
 import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.SelectionOperator;
@@ -25,13 +22,10 @@ import org.uma.jmetal.util.SolutionListUtils;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetalsp.algorithm.DynamicAlgorithm;
 import org.uma.jmetalsp.problem.DynamicProblem;
+import org.uma.jmetalsp.updatedata.repository.AlgorithmResultData;
 import org.uma.khaos.perception.core.Observable;
-import org.uma.khaos.perception.core.ObservableData;
-import org.uma.khaos.perception.core.impl.DefaultObservable;
-import org.uma.khaos.perception.core.impl.DefaultObservableData;
 
 import java.util.List;
-import java.util.function.Supplier;
 
 /**
  * Class implementing a dynamic version of NSGA-II. Most of the code of the original NSGA-II is
@@ -42,15 +36,13 @@ import java.util.function.Supplier;
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DynamicNSGAII<S extends Solution<?>, O extends Observable>
+public class DynamicNSGAII<S extends Solution<?>, O extends Observable<DynamicNSGAII.AlgorithmData>>
     extends NSGAII<S>
-    implements DynamicAlgorithm<List<S>, O> {
+    implements DynamicAlgorithm<List<S>, DynamicNSGAII.AlgorithmData> {
 
   private int completedIterations ;
   private boolean stopAtTheEndOfTheCurrentIteration = false ;
 
-	ObservableData<List<S>> solutionListObservable ;
-	ObservableData<Integer> numberOfIterationsObservable;
 	O observable ;
 
   public DynamicNSGAII(DynamicProblem<S, ?> problem, int maxEvaluations, int populationSize,
@@ -63,12 +55,7 @@ public class DynamicNSGAII<S extends Solution<?>, O extends Observable>
 
     completedIterations = 0 ;
 
-	  solutionListObservable = new DefaultObservableData<>() ;
-	  numberOfIterationsObservable = new DefaultObservableData<>() ;
-	  this.observable = observable ;
-
-	  solutionListObservable = (ObservableData<List<S>>) observable.getObservableData("currentPopulation");
-    numberOfIterationsObservable = (ObservableData<Integer>) observable.getObservableData("numberOfIterations");
+    this.observable = observable ;
   }
 
   @Override
@@ -84,10 +71,8 @@ public class DynamicNSGAII<S extends Solution<?>, O extends Observable>
   @Override protected boolean isStoppingConditionReached() {
     if (evaluations >= maxEvaluations) {
 
-    	solutionListObservable.hasChanged() ;
-    	solutionListObservable.notifyObservers(getPopulation());
-	    numberOfIterationsObservable.hasChanged() ;
-	    numberOfIterationsObservable.notifyObservers(completedIterations);
+      observable.hasChanged() ;
+      observable.notifyObservers(new AlgorithmData(getPopulation(), completedIterations, 0.0));
 
       restart(100);
       evaluator.evaluate(getPopulation(), getDynamicProblem()) ;
@@ -132,5 +117,32 @@ public class DynamicNSGAII<S extends Solution<?>, O extends Observable>
   @Override
   public void restart(int percentageOfSolutionsToRemove) {
     SolutionListUtils.restart(getPopulation(), getDynamicProblem(), percentageOfSolutionsToRemove);
+  }
+
+  public class AlgorithmData implements AlgorithmResultData {
+    private List<? extends Solution<?>> solutionList ;
+    private int numberOfIterations ;
+    private double computingTime ;
+
+    public AlgorithmData(List<? extends Solution<?>> solutionList, int numberOfIterations, double computingTime) {
+      this.solutionList = solutionList ;
+      this.computingTime = computingTime ;
+      this.numberOfIterations = numberOfIterations ;
+    }
+
+    @Override
+    public List<? extends Solution<?>> getSolutionList() {
+      return solutionList;
+    }
+
+    @Override
+    public double getRunningTime() {
+      return computingTime;
+    }
+
+    @Override
+    public int getIterations() {
+      return numberOfIterations;
+    }
   }
 }

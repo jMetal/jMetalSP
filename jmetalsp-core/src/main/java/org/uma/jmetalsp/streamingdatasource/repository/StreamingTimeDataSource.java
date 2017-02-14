@@ -6,11 +6,11 @@ import org.uma.jmetalsp.updatedata.repository.TimeUpdateData;
 /**
  * Created by khaosdev on 2/8/17.
  */
-public abstract class StreamingTimeDataSource extends StreamingDataSource<TimeUpdateData> {
+public interface StreamingTimeDataSource extends StreamingDataSource<TimeUpdateData> {
 
 	/**
 	 * Interval in milliseconds
 	 */
-	public abstract double getTimeInterval() ;
+	public double getTimeInterval() ;
 
 }

@@ -13,48 +13,42 @@
 
 package org.uma.jmetalsp.consumer.impl;
 
-import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.JMetalException;
-import org.uma.jmetal.util.JMetalLogger;
 import org.uma.jmetalsp.algorithm.DynamicAlgorithm;
 import org.uma.jmetalsp.consumer.AlgorithmDataConsumer;
+import org.uma.jmetalsp.updatedata.repository.AlgorithmResultData;
 import org.uma.khaos.perception.core.Observable;
-import org.uma.khaos.perception.core.ObservableData;
-import org.uma.khaos.perception.core.ObserverListener;
-
-import java.util.List;
+import org.uma.khaos.perception.core.Observer;
 
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class SimpleSolutionListConsumer implements AlgorithmDataConsumer {
-  private DynamicAlgorithm<?, ?> dynamicAlgorithm ;
+public class SimpleSolutionListConsumer implements AlgorithmDataConsumer<AlgorithmResultData> {
+  private DynamicAlgorithm<?, AlgorithmResultData> dynamicAlgorithm ;
 
   @Override
-  public void setAlgorithm(DynamicAlgorithm<?,?> algorithm) {
+  public void setAlgorithm(DynamicAlgorithm<?,AlgorithmResultData> algorithm) {
     this.dynamicAlgorithm = algorithm ;
   }
 
   @Override
-  public DynamicAlgorithm<?,?> getAlgorithm() {
+  public DynamicAlgorithm<?,AlgorithmResultData> getAlgorithm() {
     return dynamicAlgorithm ;
   }
 
-  @Override
+	@Override
+	public Observer<AlgorithmResultData> getObserver() {
+		return this;
+	}
+
+	@Override
   public void run() {
     if (dynamicAlgorithm == null) {
       throw new JMetalException("The algorithm is null") ;
     }
 
-    Observable observable = dynamicAlgorithm.getObservable() ;
+		dynamicAlgorithm.getObservable().register(this);
 
-    if (observable == null) {
-      throw new JMetalException("Error capturing observable") ;
-    }
-
-	  ObservableData<List<? extends Solution<?>>> listOfSolutions ;
-    listOfSolutions = (ObservableData<List<? extends Solution<?>>>) observable.getObservableData("currentPopulation");
-    listOfSolutions.register(new SolutionListListener<? extends Solution<?>>());
 
 	  while(true){
       try {
@@ -65,16 +59,9 @@ public class SimpleSolutionListConsumer implements AlgorithmDataConsumer {
     }
   }
 
-	private static class SolutionListListener<S extends Solution<?>>
-      implements ObserverListener<List<S>> {
-    private int counter = 0 ;
-
-		@Override
-		public synchronized void update(ObservableData<?> observable, List<S> solutionList) {
-			if ((counter % 1 == 0)) {
-				JMetalLogger.logger.info("Front number: " + counter+ ". Number of solutions: " + solutionList.size()); ;
-			}
-			counter ++ ;
-		}
+	@Override
+	public void update(Observable<AlgorithmResultData> observable, AlgorithmResultData algorithmResultData) {
+		System.out.println("Consumer: Number of solutions: " + algorithmResultData.getSolutionList().size()) ;
+		System.out.println("Consumer: Computed iterations: " + algorithmResultData.getIterations()) ;
 	}
 }

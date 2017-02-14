@@ -1,28 +1,59 @@
 package org.uma.khaos.perception.core.impl;
 
 import org.uma.khaos.perception.core.Observable;
-import org.uma.khaos.perception.core.ObservableData;
+import org.uma.khaos.perception.core.Observer;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DefaultObservable implements Observable {
-	private Map<String, ObservableData<?>> observables ;
+public class DefaultObservable<Data> implements Observable<Data> {
+	private Set<Observer<Data>> observers ;
+	private boolean dataHasChanged ;
 
-	public DefaultObservable() {
-		observables = new HashMap<>() ;
+	public DefaultObservable(){
+		observers = new HashSet<>() ;
+		dataHasChanged = false ;
 	}
 
 	@Override
-	public void setObservableData(String name, ObservableData<?> observableData) {
-		observables.put(name, observableData) ;
+	public void register(Observer<Data> observer) {
+		observers.add(observer) ;
 	}
 
 	@Override
-	public ObservableData<?> getObservableData(String name) {
-		return observables.get(name);
+	public void unregister(Observer<Data> observer) {
+		observers.remove(observer) ;
 	}
+
+	@Override
+	public void notifyObservers(Data data) {
+		if (dataHasChanged) {
+			observers.stream().forEach(observer -> observer.update(this, data));
+		}
+		clearChanged();
+	}
+
+	@Override
+	public int numberOfRegisteredObservers() {
+		return observers.size();
+	}
+
+	@Override
+	public void setChanged() {
+		dataHasChanged = true ;
+	}
+
+	@Override
+	public boolean hasChanged() {
+		return dataHasChanged ;
+	}
+
+	@Override
+	public void clearChanged() {
+		dataHasChanged = false ;
+	}
+
 }

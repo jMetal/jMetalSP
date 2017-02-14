@@ -3,7 +3,15 @@ package org.uma.khaos.perception.core;
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public interface Observable {
-	void setObservableData(String name, ObservableData<?> observableData) ;
-	ObservableData<?> getObservableData(String name) ;
+public interface Observable<Data> {
+	void register(Observer<Data> observer) ;
+	void unregister(Observer<Data> observer) ;
+
+	void notifyObservers(Data data);
+	int numberOfRegisteredObservers() ;
+	void setChanged() ;
+	boolean hasChanged() ;
+	void clearChanged() ;
+
+
 }

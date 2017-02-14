@@ -1,12 +1,14 @@
 package org.uma.jmetalsp.consumer;
 
 import org.uma.jmetalsp.algorithm.DynamicAlgorithm;
+import org.uma.jmetalsp.updatedata.UpdateData;
 import org.uma.khaos.perception.core.Observer;
 
 /**
  * Created by ajnebro on 21/4/16.
  */
-public interface AlgorithmDataConsumer extends Runnable, Observer {
-  void setAlgorithm(DynamicAlgorithm<?,?> algorithm) ;
-  DynamicAlgorithm<?,?> getAlgorithm() ;
+public interface AlgorithmDataConsumer<D extends UpdateData> extends Runnable, Observer<D> {
+  void setAlgorithm(DynamicAlgorithm<?,D> algorithm) ;
+  DynamicAlgorithm<?,D> getAlgorithm() ;
+  Observer<D> getObserver() ;
 }

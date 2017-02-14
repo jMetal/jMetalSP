@@ -1,8 +1,8 @@
 package org.uma.jmetalsp.problem.fda;
 
-import org.uma.jmetal.problem.impl.AbstractDoubleProblem;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.JMetalException;
+import org.uma.khaos.perception.core.Observable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -11,15 +11,16 @@ import java.util.List;
 /**
  * @author Cristóbal Barba <cbarba@lcc.uma.es>
  */
-public class FDA2 extends AbstractDoubleProblem implements FDA,Serializable {
+public class FDA2 extends FDA implements Serializable {
 
-  private double time;
   private boolean theProblemHasBeenModified;
 
-  public FDA2(){
-    this(31,2);
+  public FDA2(Observable<FDAUpdateData> observable){
+    this(31,2, observable);
   }
-  public FDA2(Integer numberOfVariables, Integer numberOfObjectives) throws JMetalException {
+
+  public FDA2 (Integer numberOfVariables, Integer numberOfObjectives, Observable<FDAUpdateData> observer) throws JMetalException {
+    super(observer) ;
     setNumberOfVariables(numberOfVariables);
     setNumberOfObjectives(numberOfObjectives);
     setName("FDA2");
@@ -47,12 +48,6 @@ public class FDA2 extends AbstractDoubleProblem implements FDA,Serializable {
   @Override
   public void reset() {
     theProblemHasBeenModified = false ;
-  }
-
-  @Override
-  public synchronized void  update(FDAUpdateData data) {
-    time=data.getTime();
-    theProblemHasBeenModified=true;
   }
 
   @Override
