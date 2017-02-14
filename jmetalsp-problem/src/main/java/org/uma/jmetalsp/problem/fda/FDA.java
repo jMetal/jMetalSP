@@ -13,10 +13,10 @@ import java.io.Serializable;
 public abstract class FDA extends AbstractDoubleProblem implements DynamicProblem<DoubleSolution, FDAUpdateData>, Serializable {
 	protected double time;
 	protected boolean theProblemHasBeenModified;
-	protected Observable<FDAUpdateData> observer ;
+	protected Observable<FDAUpdateData> observable ;
 
 	public FDA (Observable<FDAUpdateData> observable) {
-		this.observer = observable ;
+		this.observable = observable ;
 		observable.register(this);
 	}
 

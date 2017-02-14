@@ -5,6 +5,7 @@ import org.uma.jmetal.problem.impl.AbstractIntegerPermutationProblem;
 import org.uma.jmetal.solution.PermutationSolution;
 import org.uma.jmetal.util.solutionattribute.impl.OverallConstraintViolation;
 import org.uma.jmetalsp.problem.DynamicProblem;
+import org.uma.khaos.perception.core.Observable;
 
 /**
  * Version of the multi-objective TSP aimed at being solving dynamically.
@@ -24,15 +25,20 @@ public class DynamicMultiobjectiveTSP
   private static final int DISTANCE = 0;
   private static final int COST = 1;
 
+  protected Observable<MultiobjectiveTSPUpdateData> observable ;
+
+
   public OverallConstraintViolation<PermutationSolution<Integer>> overallConstraintViolationDegree ;
 
 
   public DynamicMultiobjectiveTSP(int numberOfCities,
                                   double[][] distanceMatrix,
-                                  double[][] costMatrix) {
+                                  double[][] costMatrix,
+                                  Observable<MultiobjectiveTSPUpdateData> observable) {
     this.numberOfCities = numberOfCities ;
     this.distanceMatrix = distanceMatrix ;
     this.costMatrix = costMatrix ;
+    this.observable = observable ;
 
     theProblemHasBeenModified = false ;
 
@@ -140,15 +146,6 @@ public class DynamicMultiobjectiveTSP
   }
 
   @Override
-  public synchronized void update(MultiobjectiveTSPUpdateData data) {
-    if (data!=null && data.getMatrixID()==COST){
-      updateCostValue(data.getX(),data.getY(),data.getValue());
-    }else if(data!=null && data.getMatrixID()==DISTANCE){
-      updateDistanceValue(data.getX(),data.getY(),data.getValue());
-    }
-  }
-
-  @Override
   public synchronized void reset() {
     theProblemHasBeenModified = false ;
   }
@@ -164,4 +161,13 @@ public class DynamicMultiobjectiveTSP
 
     return result ;
   }
+
+	@Override
+	public void update(Observable<MultiobjectiveTSPUpdateData> observable, MultiobjectiveTSPUpdateData data) {
+		if (data!=null && data.getMatrixID()==COST){
+			updateCostValue(data.getX(),data.getY(),data.getValue());
+		}else if(data!=null && data.getMatrixID()==DISTANCE){
+			updateDistanceValue(data.getX(),data.getY(),data.getValue());
+		}
+	}
 }

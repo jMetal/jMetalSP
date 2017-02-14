@@ -5,9 +5,12 @@ import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
 import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
 import org.uma.jmetal.solution.DoubleSolution;
+import org.uma.jmetal.util.archive.impl.CrowdingDistanceArchive;
 import org.uma.jmetalsp.algorithm.DynamicAlgorithm;
+import org.uma.jmetalsp.algorithm.mocell.DynamicMOCellBuilder;
 import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAII;
 import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAIIBuilder;
+import org.uma.jmetalsp.algorithm.smpso.DynamicSMPSOBuilder;
 import org.uma.jmetalsp.application.JMetalSPApplication;
 import org.uma.jmetalsp.consumer.impl.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.problem.DynamicProblem;
@@ -54,7 +57,7 @@ public class DynamicContinuousApplication {
                 Observable<DynamicNSGAII.AlgorithmData>>(crossover, mutation, observable)
                 .build(problem);
         break;
-        /*
+
       case "MOCell":
         algorithm = new DynamicMOCellBuilder<>(crossover, mutation, observable)
                 .build(problem);
@@ -64,7 +67,7 @@ public class DynamicContinuousApplication {
                 mutation, new CrowdingDistanceArchive<>(100), observable)
                 .build(problem);
         break;
-        */
+
       default:
         algorithm = null;
     }

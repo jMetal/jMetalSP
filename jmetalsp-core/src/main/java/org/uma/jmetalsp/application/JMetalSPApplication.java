@@ -19,7 +19,7 @@ import java.util.List;
 public class JMetalSPApplication<
     D extends UpdateData,
     P extends DynamicProblem<? extends Solution<?>, D>,
-    A extends DynamicAlgorithm<?>,
+    A extends DynamicAlgorithm<?, D>,
 		S extends StreamingDataSource<D>> {
 
   private List<S> streamingDataSourceList ;

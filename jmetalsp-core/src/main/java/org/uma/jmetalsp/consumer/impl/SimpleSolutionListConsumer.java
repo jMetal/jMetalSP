@@ -49,7 +49,6 @@ public class SimpleSolutionListConsumer implements AlgorithmDataConsumer<Algorit
 
 		dynamicAlgorithm.getObservable().register(this);
 
-
 	  while(true){
       try {
         Thread.sleep(1000000);
