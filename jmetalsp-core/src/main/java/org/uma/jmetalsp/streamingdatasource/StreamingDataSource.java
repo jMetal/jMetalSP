@@ -18,8 +18,7 @@ import org.uma.khaos.perception.core.Observable;
 /**
  * Created by ajnebro on 18/4/16.
  */
-public interface StreamingDataSource<D extends UpdateData> {
+public interface StreamingDataSource<D extends UpdateData> extends Observable<D> {
 	void start() ;
-  Observable<D> getObservable() ;
 }
 

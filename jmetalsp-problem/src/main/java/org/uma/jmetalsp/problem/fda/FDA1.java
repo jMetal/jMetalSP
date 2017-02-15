@@ -86,5 +86,4 @@ public class FDA1 extends FDA implements Serializable {
     double h = 1 - Math.sqrt(f / g);
     return h;
   }
-
 }

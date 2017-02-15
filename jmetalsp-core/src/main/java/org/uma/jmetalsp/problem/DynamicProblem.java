@@ -9,7 +9,7 @@ import org.uma.khaos.perception.core.Observer;
  * Created by ajnebro on 18/4/16.
  */
 public interface DynamicProblem<S extends Solution<?>, D extends UpdateData>
-        extends Problem<S>, Observer<D> {
+        extends Problem<S>, Observer {
   boolean hasTheProblemBeenModified() ;
 	void reset() ;
 }

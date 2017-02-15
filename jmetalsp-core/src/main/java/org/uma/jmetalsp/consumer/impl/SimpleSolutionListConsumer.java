@@ -37,7 +37,7 @@ public class SimpleSolutionListConsumer implements AlgorithmDataConsumer<Algorit
   }
 
 	@Override
-	public Observer<AlgorithmResultData> getObserver() {
+	public Observer getObserver() {
 		return this;
 	}
 
@@ -58,9 +58,20 @@ public class SimpleSolutionListConsumer implements AlgorithmDataConsumer<Algorit
     }
   }
 
+  /*
 	@Override
 	public void update(Observable<AlgorithmResultData> observable, AlgorithmResultData algorithmResultData) {
 		System.out.println("Consumer: Number of solutions: " + algorithmResultData.getSolutionList().size()) ;
 		System.out.println("Consumer: Computed iterations: " + algorithmResultData.getIterations()) ;
 	}
+  */
+  @Override
+  public void update(Observable<?> observable, Object data) {
+    if ("algorithm".equals(observable.getName())) {
+      AlgorithmResultData algorithmResultData = (AlgorithmResultData) data ;
+
+      System.out.println("Consumer: Number of solutions: " + algorithmResultData.getSolutionList().size()) ;
+      System.out.println("Consumer: Computed iterations: " + algorithmResultData.getIterations()) ;
+    }
+  }
 }

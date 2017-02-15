@@ -7,8 +7,8 @@ import org.uma.khaos.perception.core.Observer;
 /**
  * Created by ajnebro on 21/4/16.
  */
-public interface AlgorithmDataConsumer<D extends UpdateData> extends Runnable, Observer<D> {
+public interface AlgorithmDataConsumer<D extends UpdateData> extends Runnable, Observer {
   void setAlgorithm(DynamicAlgorithm<?,D> algorithm) ;
   DynamicAlgorithm<?,D> getAlgorithm() ;
-  Observer<D> getObserver() ;
+  Observer getObserver() ;
 }

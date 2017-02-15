@@ -10,21 +10,23 @@ import java.util.Set;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class DefaultObservable<Data> implements Observable<Data> {
-	private Set<Observer<Data>> observers ;
+	private Set<Observer> observers ;
 	private boolean dataHasChanged ;
+	private String name ;
 
-	public DefaultObservable(){
+	public DefaultObservable(String name){
 		observers = new HashSet<>() ;
 		dataHasChanged = false ;
+		this.name = name ;
 	}
 
 	@Override
-	public void register(Observer<Data> observer) {
+	public void register(Observer observer) {
 		observers.add(observer) ;
 	}
 
 	@Override
-	public void unregister(Observer<Data> observer) {
+	public void unregister(Observer observer) {
 		observers.remove(observer) ;
 	}
 
@@ -55,5 +57,10 @@ public class DefaultObservable<Data> implements Observable<Data> {
 	public void clearChanged() {
 		dataHasChanged = false ;
 	}
+
+	@Override
+  public String getName() {
+	  return name ;
+  }
 
 }

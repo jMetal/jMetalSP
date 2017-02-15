@@ -56,7 +56,7 @@ public class LocalDirectoryOutputConsumer implements AlgorithmDataConsumer<Algor
 	}
 
 	@Override
-	public Observer<AlgorithmResultData> getObserver() {
+	public Observer getObserver() {
 		return this;
 	}
 
@@ -96,12 +96,16 @@ public class LocalDirectoryOutputConsumer implements AlgorithmDataConsumer<Algor
 	}
 
 	@Override
-	public void update(Observable<AlgorithmResultData> observable, AlgorithmResultData algorithmResultData) {
-		new SolutionListOutput(algorithmResultData.getSolutionList())
-						.setSeparator("\t")
-						.setFunFileOutputContext(new DefaultFileOutputContext(outputDirectoryName + "/FUN" + fileCounter + ".tsv"))
-						.setVarFileOutputContext(new DefaultFileOutputContext(outputDirectoryName + "/VAR" + fileCounter + ".tsv"))
-						.print();
-		fileCounter++;
+	public void update(Observable<?> observable, Object data) {
+		AlgorithmResultData algorithmResultData = (AlgorithmResultData)data ;
+		if ("algorithm".equals(observable.getName())) {
+			new SolutionListOutput(algorithmResultData.getSolutionList())
+							.setSeparator("\t")
+							.setFunFileOutputContext(new DefaultFileOutputContext(outputDirectoryName + "/FUN" + fileCounter + ".tsv"))
+							.setVarFileOutputContext(new DefaultFileOutputContext(outputDirectoryName + "/VAR" + fileCounter + ".tsv"))
+							.print();
+			fileCounter++;
+		}
 	}
+
 }
