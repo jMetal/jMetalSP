@@ -13,8 +13,8 @@ import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetal.util.neighborhood.Neighborhood;
 import org.uma.jmetal.util.neighborhood.impl.C9;
+import org.uma.jmetalsp.updatedata.AlgorithmData;
 import org.uma.jmetalsp.algorithm.DynamicAlgorithmBuilder;
-import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAII;
 import org.uma.jmetalsp.problem.DynamicProblem;
 import org.uma.khaos.perception.core.Observable;
 
@@ -26,7 +26,7 @@ import java.util.List;
 public class DynamicMOCellBuilder<
 				S extends Solution<?>,
 				P extends DynamicProblem<S, ?>,
-				O extends Observable<DynamicNSGAII.AlgorithmData>> implements DynamicAlgorithmBuilder<DynamicMOCell<S, O>, P> {
+				O extends Observable<AlgorithmData>> implements DynamicAlgorithmBuilder<DynamicMOCell<S, O>, P> {
 
 	private int maxEvaluations;
 	private int populationSize;

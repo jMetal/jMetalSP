@@ -33,7 +33,6 @@ public class DefaultObservable<Data> implements Observable<Data> {
 	@Override
 	public void notifyObservers(Data data) {
 		if (dataHasChanged) {
-			System.out.println("notifiy observers") ;
 			observers.stream().forEach(observer -> observer.update(this, data));
 		}
 		clearChanged();

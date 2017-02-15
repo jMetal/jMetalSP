@@ -69,9 +69,6 @@ public class SimpleSolutionListConsumer implements AlgorithmDataConsumer<Algorit
   public void update(Observable<?> observable, Object data) {
     //if ("algorithm".equals(observable.getName())) {
       AlgorithmResultData algorithmResultData = (AlgorithmResultData) data ;
-
-      System.out.println("Consumer: Number of solutions: " + algorithmResultData.getSolutionList().size()) ;
-      System.out.println("Consumer: Computed iterations: " + algorithmResultData.getIterations()) ;
     //}
   }
 }

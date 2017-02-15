@@ -25,7 +25,6 @@ public class StreamingFDAUpdateData implements StreamingDataSource<FDAUpdateData
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-System.out.println("counter: " + counter + ". Number of observers: "+ updateData.numberOfRegisteredObservers()) ;
 			updateData.setChanged(); ;
 			updateData.notifyObservers(new FDAUpdateData(counter));
 			counter ++ ;

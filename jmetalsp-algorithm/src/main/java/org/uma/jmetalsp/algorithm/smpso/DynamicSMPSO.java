@@ -14,16 +14,14 @@
 package org.uma.jmetalsp.algorithm.smpso;
 
 import org.uma.jmetal.algorithm.multiobjective.smpso.SMPSO;
-import org.uma.jmetal.measure.impl.BasicMeasure;
-import org.uma.jmetal.measure.impl.SimpleMeasureManager;
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.problem.DoubleProblem;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.SolutionListUtils;
 import org.uma.jmetal.util.archive.BoundedArchive;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
+import org.uma.jmetalsp.updatedata.AlgorithmData;
 import org.uma.jmetalsp.algorithm.DynamicAlgorithm;
-import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAII;
 import org.uma.jmetalsp.problem.DynamicProblem;
 import org.uma.khaos.perception.core.Observable;
 
@@ -33,19 +31,17 @@ import java.util.List;
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DynamicSMPSO<O extends Observable<DynamicNSGAII.AlgorithmData>>
+public class DynamicSMPSO<O extends Observable<AlgorithmData>>
         extends SMPSO
-        implements DynamicAlgorithm<List<DoubleSolution>, DynamicNSGAII.AlgorithmData> {
+        implements DynamicAlgorithm<List<DoubleSolution>, AlgorithmData> {
 
-  private int completedIterations ;
-  protected SimpleMeasureManager measureManager ;
-  protected BasicMeasure<List<DoubleSolution>> solutionListMeasure ;
+  private int completedIterations;
   private SolutionListEvaluator<DoubleSolution> evaluator;
-  private DynamicProblem<DoubleSolution,?> problem;
-  private boolean stopAtTheEndOfTheCurrentIteration = false ;
-  private O observable ;
+  private DynamicProblem<DoubleSolution, ?> problem;
+  private boolean stopAtTheEndOfTheCurrentIteration = false;
+  private O observable;
 
-  public DynamicSMPSO(DynamicProblem<DoubleSolution,?> problem, int swarmSize, BoundedArchive<DoubleSolution> leaders,
+  public DynamicSMPSO(DynamicProblem<DoubleSolution, ?> problem, int swarmSize, BoundedArchive<DoubleSolution> leaders,
                       MutationOperator<DoubleSolution> mutationOperator,
                       int maxIterations,
                       double r1Min, double r1Max, double r2Min, double r2Max,
@@ -55,14 +51,11 @@ public class DynamicSMPSO<O extends Observable<DynamicNSGAII.AlgorithmData>>
                       SolutionListEvaluator<DoubleSolution> evaluator,
                       O observable) {
     super((DoubleProblem) problem, swarmSize, leaders, mutationOperator, maxIterations, r1Min, r1Max, r2Min, r2Max,
-				    c1Min, c1Max, c2Min, c2Max, weightMin, weightMax, changeVelocity1, changeVelocity2, evaluator);
-    this.problem=problem;
-    completedIterations = 0 ;
-    this.evaluator=evaluator;
-    solutionListMeasure = new BasicMeasure<>() ;
-    measureManager = new SimpleMeasureManager() ;
-    measureManager.setPushMeasure("currentPopulation", solutionListMeasure);
-    this.observable = observable ;
+            c1Min, c1Max, c2Min, c2Max, weightMin, weightMax, changeVelocity1, changeVelocity2, evaluator);
+    this.problem = problem;
+    completedIterations = 0;
+    this.evaluator = evaluator;
+    this.observable = observable;
   }
 
   @Override
@@ -77,31 +70,31 @@ public class DynamicSMPSO<O extends Observable<DynamicNSGAII.AlgorithmData>>
 
   @Override
   public DynamicProblem<?, ?> getDynamicProblem() {
-      return problem ;
+    return problem;
   }
 
   @Override
   public int getCompletedIterations() {
-    return completedIterations ;
+    return completedIterations;
   }
 
-
   @Override
-    protected void updateProgress() {
+  protected void updateProgress() {
     if (getDynamicProblem().hasTheProblemBeenModified()) {
       restart(100);
       getDynamicProblem().reset();
     }
-    int cont= getIterations();
-    this.setIterations(cont+this.getSwarmSize());
-    completedIterations ++ ;
+    int cont = getIterations();
+    this.setIterations(cont + this.getSwarmSize());
+    completedIterations++;
     updateLeadersDensityEstimator();
   }
 
   @Override
   protected boolean isStoppingConditionReached() {
-      if (getIterations() >= getMaxIterations()) {
-      solutionListMeasure.push(getResult()) ;
+    if (getIterations() >= getMaxIterations()) {
+      observable.setChanged();
+      observable.notifyObservers(new AlgorithmData(getResult(), completedIterations, 0.0));
       restart(100);
       completedIterations++;
     }
@@ -110,22 +103,23 @@ public class DynamicSMPSO<O extends Observable<DynamicNSGAII.AlgorithmData>>
 
   @Override
   public O getObservable() {
-    return this.observable ;
+    return this.observable;
   }
 
   @Override
   public void stopTheAlgorithm() {
-    stopAtTheEndOfTheCurrentIteration = true ;
+    stopAtTheEndOfTheCurrentIteration = true;
   }
+
   @Override
-  public void restart(int percentageOfSolutionsToRemove){
-    SolutionListUtils.restart(getSwarm(), (DoubleProblem)getDynamicProblem(), percentageOfSolutionsToRemove);
+  public void restart(int percentageOfSolutionsToRemove) {
+    SolutionListUtils.restart(getSwarm(), (DoubleProblem) getDynamicProblem(), percentageOfSolutionsToRemove);
     //setSwarm(createInitialSwarm());
-    SolutionListUtils.removeSolutionsFromList(getResult(),getResult().size());
-    evaluator.evaluate(getSwarm(),(DoubleProblem) getDynamicProblem()) ;
+    SolutionListUtils.removeSolutionsFromList(getResult(), getResult().size());
+    evaluator.evaluate(getSwarm(), (DoubleProblem) getDynamicProblem());
     initializeVelocity(getSwarm());
-    initializeParticlesMemory(getSwarm()) ;
-    initializeLeader(getSwarm()) ;
+    initializeParticlesMemory(getSwarm());
+    initializeLeader(getSwarm());
     initProgress();
   }
 }

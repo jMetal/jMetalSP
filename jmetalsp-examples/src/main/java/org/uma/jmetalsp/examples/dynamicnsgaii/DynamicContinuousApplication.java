@@ -6,9 +6,9 @@ import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
 import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.archive.impl.CrowdingDistanceArchive;
+import org.uma.jmetalsp.updatedata.AlgorithmData;
 import org.uma.jmetalsp.algorithm.DynamicAlgorithm;
 import org.uma.jmetalsp.algorithm.mocell.DynamicMOCellBuilder;
-import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAII;
 import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAIIBuilder;
 import org.uma.jmetalsp.algorithm.smpso.DynamicSMPSOBuilder;
 import org.uma.jmetalsp.application.JMetalSPApplication;
@@ -44,31 +44,37 @@ public class DynamicContinuousApplication {
     CrossoverOperator<DoubleSolution> crossover = new SBXCrossover(0.9, 20.0);
     MutationOperator<DoubleSolution> mutation = new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);
 
-    String defaultAlgorithm = "NSGAII";
+    String defaultAlgorithm = "MOCell";
 
-    DynamicAlgorithm<List<DoubleSolution>,DynamicNSGAII.AlgorithmData> algorithm;
-    Observable<DynamicNSGAII.AlgorithmData> observable = new DefaultObservable<>("NSGAII") ;
+    DynamicAlgorithm<List<DoubleSolution>,AlgorithmData> algorithm;
+    Observable<AlgorithmData> observable = new DefaultObservable<>("NSGAII") ;
 
     switch (defaultAlgorithm) {
       case "NSGAII":
         algorithm = new DynamicNSGAIIBuilder<
                 DoubleSolution,
                 DynamicProblem<DoubleSolution, ?>,
-                Observable<DynamicNSGAII.AlgorithmData>>(crossover, mutation, observable)
+                Observable<AlgorithmData>>(crossover, mutation, observable)
+                .setMaxEvaluations(50000)
+                .setPopulationSize(100)
                 .build(problem);
         break;
-/*
+
       case "MOCell":
         algorithm = new DynamicMOCellBuilder<>(crossover, mutation, observable)
+                .setMaxEvaluations(50000)
+                .setPopulationSize(100)
                 .build(problem);
         break;
 
       case "SMPSO":
         algorithm = new DynamicSMPSOBuilder<>(
                 mutation, new CrowdingDistanceArchive<>(100), observable)
+                .setMaxIterations(500)
+                .setSwarmSize(100)
                 .build(problem);
         break;
-*/
+
       default:
         algorithm = null;
     }
@@ -78,8 +84,8 @@ public class DynamicContinuousApplication {
             .setAlgorithm(algorithm)
             .addStreamingDataSource(new StreamingFDAUpdateData(fdaUpdateDataObservable))
             .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirectory"))
-            .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirector2"))
-            .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirector3"))
+            //.addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirector2"))
+            //.addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirector3"))
             .run();
   }
 }

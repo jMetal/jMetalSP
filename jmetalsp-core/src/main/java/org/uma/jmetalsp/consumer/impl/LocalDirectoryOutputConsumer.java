@@ -96,7 +96,6 @@ public class LocalDirectoryOutputConsumer implements AlgorithmDataConsumer<Algor
 
   @Override
   public void update(Observable<?> observable, Object data) {
-    System.out.println("Consumer received from " + observable.getName());
     AlgorithmResultData algorithmResultData = (AlgorithmResultData) data;
     //if ("algorithm".equals(observable.getName())) {
     new SolutionListOutput(algorithmResultData.getSolutionList())

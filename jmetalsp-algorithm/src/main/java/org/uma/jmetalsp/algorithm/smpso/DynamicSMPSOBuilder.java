@@ -7,8 +7,8 @@ import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 import org.uma.jmetal.util.pseudorandom.PseudoRandomGenerator;
+import org.uma.jmetalsp.updatedata.AlgorithmData;
 import org.uma.jmetalsp.algorithm.DynamicAlgorithmBuilder;
-import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAII;
 import org.uma.jmetalsp.problem.DynamicProblem;
 import org.uma.khaos.perception.core.Observable;
 
@@ -17,7 +17,7 @@ import org.uma.khaos.perception.core.Observable;
  */
 public class DynamicSMPSOBuilder<
 				P extends DynamicProblem<DoubleSolution, ?>,
-				O extends Observable<DynamicNSGAII.AlgorithmData>> implements DynamicAlgorithmBuilder<DynamicSMPSO<O>, P> {
+				O extends Observable<AlgorithmData>> implements DynamicAlgorithmBuilder<DynamicSMPSO<O>, P> {
 
 	private double c1Max;
 	private double c1Min;

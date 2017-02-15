@@ -20,9 +20,9 @@ import org.uma.jmetal.operator.SelectionOperator;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.SolutionListUtils;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
+import org.uma.jmetalsp.updatedata.AlgorithmData;
 import org.uma.jmetalsp.algorithm.DynamicAlgorithm;
 import org.uma.jmetalsp.problem.DynamicProblem;
-import org.uma.jmetalsp.updatedata.repository.AlgorithmResultData;
 import org.uma.khaos.perception.core.Observable;
 
 import java.util.List;
@@ -36,9 +36,9 @@ import java.util.List;
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DynamicNSGAII<S extends Solution<?>, O extends Observable<DynamicNSGAII.AlgorithmData>>
+public class DynamicNSGAII<S extends Solution<?>, O extends Observable<AlgorithmData>>
     extends NSGAII<S>
-    implements DynamicAlgorithm<List<S>, DynamicNSGAII.AlgorithmData> {
+    implements DynamicAlgorithm<List<S>, AlgorithmData> {
 
   private int completedIterations ;
   private boolean stopAtTheEndOfTheCurrentIteration = false ;
@@ -69,7 +69,6 @@ public class DynamicNSGAII<S extends Solution<?>, O extends Observable<DynamicNS
 
   @Override protected boolean isStoppingConditionReached() {
     if (evaluations >= maxEvaluations) {
-
       observable.setChanged() ;
       observable.notifyObservers(new AlgorithmData(getPopulation(), completedIterations, 0.0));
 
@@ -118,30 +117,4 @@ public class DynamicNSGAII<S extends Solution<?>, O extends Observable<DynamicNS
     SolutionListUtils.restart(getPopulation(), getDynamicProblem(), percentageOfSolutionsToRemove);
   }
 
-  public class AlgorithmData implements AlgorithmResultData {
-    private List<? extends Solution<?>> solutionList ;
-    private int numberOfIterations ;
-    private double computingTime ;
-
-    public AlgorithmData(List<? extends Solution<?>> solutionList, int numberOfIterations, double computingTime) {
-      this.solutionList = solutionList ;
-      this.computingTime = computingTime ;
-      this.numberOfIterations = numberOfIterations ;
-    }
-
-    @Override
-    public List<? extends Solution<?>> getSolutionList() {
-      return solutionList;
-    }
-
-    @Override
-    public double getRunningTime() {
-      return computingTime;
-    }
-
-    @Override
-    public int getIterations() {
-      return numberOfIterations;
-    }
-  }
 }

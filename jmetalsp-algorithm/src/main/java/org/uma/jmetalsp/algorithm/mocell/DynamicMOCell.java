@@ -14,8 +14,6 @@
 package org.uma.jmetalsp.algorithm.mocell;
 
 import org.uma.jmetal.algorithm.multiobjective.mocell.MOCell;
-import org.uma.jmetal.measure.impl.BasicMeasure;
-import org.uma.jmetal.measure.impl.SimpleMeasureManager;
 import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.SelectionOperator;
@@ -25,8 +23,8 @@ import org.uma.jmetal.util.archive.BoundedArchive;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetal.util.neighborhood.Neighborhood;
 import org.uma.jmetal.util.solutionattribute.impl.LocationAttribute;
+import org.uma.jmetalsp.updatedata.AlgorithmData;
 import org.uma.jmetalsp.algorithm.DynamicAlgorithm;
-import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAII;
 import org.uma.jmetalsp.problem.DynamicProblem;
 import org.uma.khaos.perception.core.Observable;
 
@@ -41,13 +39,11 @@ import java.util.List;
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DynamicMOCell<S extends Solution<?>, O extends Observable<DynamicNSGAII.AlgorithmData>>
+public class DynamicMOCell<S extends Solution<?>, O extends Observable<AlgorithmData>>
     extends MOCell<S>
-    implements DynamicAlgorithm<List<S>, DynamicNSGAII.AlgorithmData> {
+    implements DynamicAlgorithm<List<S>, AlgorithmData> {
 
   private int completedIterations ;
-  protected SimpleMeasureManager measureManager ;
-  protected BasicMeasure<List<S>> solutionListMeasure ;
   private boolean stopAtTheEndOfTheCurrentIteration = false ;
   private O observable ;
 
@@ -65,10 +61,6 @@ public class DynamicMOCell<S extends Solution<?>, O extends Observable<DynamicNS
             selectionOperator, evaluator);
 
     completedIterations = 0 ;
-
-    solutionListMeasure = new BasicMeasure<>() ;
-    measureManager = new SimpleMeasureManager() ;
-    measureManager.setPushMeasure("currentPopulation", solutionListMeasure);
     this.observable = observable ;
   }
 
@@ -84,10 +76,10 @@ public class DynamicMOCell<S extends Solution<?>, O extends Observable<DynamicNS
 
   @Override protected boolean isStoppingConditionReached() {
     if (evaluations >= maxEvaluations) {
-      solutionListMeasure.push(getPopulation()) ;
+      observable.setChanged() ;
+      observable.notifyObservers(new AlgorithmData(getPopulation(), completedIterations, 0.0));
       restart(100);
       completedIterations++;
-
     }
     return stopAtTheEndOfTheCurrentIteration;
   }
