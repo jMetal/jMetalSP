@@ -32,12 +32,12 @@ public class DynamicContinuousApplication {
     JMetalSPApplication<
             FDAUpdateData,
             DynamicProblem<DoubleSolution, FDAUpdateData>,
-            DynamicAlgorithm<List<DoubleSolution>,?>,
+            DynamicAlgorithm<List<DoubleSolution>,FDAUpdateData>,
             StreamingFDAUpdateData> application;
     application = new JMetalSPApplication<>();
 
 	  // Problem configuration
-    Observable<FDAUpdateData> fdaUpdateDataObservable = new DefaultObservable<>() ;
+    Observable<FDAUpdateData> fdaUpdateDataObservable = new DefaultObservable<>("timeData") ;
 	  DynamicProblem<DoubleSolution, FDAUpdateData> problem = new FDA2(fdaUpdateDataObservable);
 
 	  // Algorithm configuration
@@ -47,7 +47,7 @@ public class DynamicContinuousApplication {
     String defaultAlgorithm = "NSGAII";
 
     DynamicAlgorithm<List<DoubleSolution>,DynamicNSGAII.AlgorithmData> algorithm;
-    Observable<DynamicNSGAII.AlgorithmData> observable = new DefaultObservable<>() ;
+    Observable<DynamicNSGAII.AlgorithmData> observable = new DefaultObservable<>("NSGAII") ;
 
     switch (defaultAlgorithm) {
       case "NSGAII":
@@ -57,17 +57,18 @@ public class DynamicContinuousApplication {
                 Observable<DynamicNSGAII.AlgorithmData>>(crossover, mutation, observable)
                 .build(problem);
         break;
-
+/*
       case "MOCell":
         algorithm = new DynamicMOCellBuilder<>(crossover, mutation, observable)
                 .build(problem);
         break;
+
       case "SMPSO":
         algorithm = new DynamicSMPSOBuilder<>(
                 mutation, new CrowdingDistanceArchive<>(100), observable)
                 .build(problem);
         break;
-
+*/
       default:
         algorithm = null;
     }
@@ -77,6 +78,8 @@ public class DynamicContinuousApplication {
             .setAlgorithm(algorithm)
             .addStreamingDataSource(new StreamingFDAUpdateData(fdaUpdateDataObservable))
             .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirectory"))
+            .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirector2"))
+            .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirector3"))
             .run();
   }
 }

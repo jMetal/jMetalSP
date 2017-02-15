@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by khaosdev on 2/9/17.
  */
-public class DefaultRuntime<D extends UpdateData, S extends StreamingDataSource<D>> implements StreamingRuntime<D, S> {
+public class DefaultRuntime<D extends UpdateData, S extends StreamingDataSource<D,?>> implements StreamingRuntime<D, S> {
 	@Override
 	public void startStreamingDataSources(List<S> streamingDataSourceList) {
 		streamingDataSourceList.parallelStream()

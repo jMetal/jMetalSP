@@ -22,7 +22,7 @@ import java.util.List;
 public class DynamicNSGAIIBuilder<
 				S extends Solution<?>,
 				P extends DynamicProblem<S, ?>,
-				O extends Observable<? extends AlgorithmResultData>> implements DynamicAlgorithmBuilder<DynamicNSGAII<S, O>, P> {
+				O extends Observable<DynamicNSGAII.AlgorithmData>> implements DynamicAlgorithmBuilder<DynamicNSGAII<S, O>, P> {
 
 	private int maxEvaluations;
 	private int populationSize;

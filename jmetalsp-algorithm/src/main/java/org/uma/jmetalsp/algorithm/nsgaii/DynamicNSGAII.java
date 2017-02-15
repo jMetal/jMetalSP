@@ -54,7 +54,6 @@ public class DynamicNSGAII<S extends Solution<?>, O extends Observable<DynamicNS
     super(problem, maxEvaluations, populationSize, crossoverOperator, mutationOperator, selectionOperator, evaluator);
 
     completedIterations = 0 ;
-
     this.observable = observable ;
   }
 
