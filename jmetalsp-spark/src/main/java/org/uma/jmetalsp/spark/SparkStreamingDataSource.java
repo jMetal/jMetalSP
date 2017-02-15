@@ -3,10 +3,11 @@ package org.uma.jmetalsp.spark;
 import org.apache.spark.streaming.api.java.JavaStreamingContext;
 import org.uma.jmetalsp.streamingdatasource.StreamingDataSource;
 import org.uma.jmetalsp.updatedata.UpdateData;
+import org.uma.khaos.perception.core.Observable;
 
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public abstract class SparkStreamingDataSource<D extends UpdateData> implements StreamingDataSource<D>{
-	abstract void setStreamingContext(JavaStreamingContext streamingContext) ;
+public interface SparkStreamingDataSource<D extends UpdateData, O extends Observable<D>> extends StreamingDataSource<D, O> {
+	void setStreamingContext(JavaStreamingContext streamingContext) ;
 }

@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class SparkRuntime<D extends UpdateData> implements StreamingRuntime<D, SparkStreamingDataSource<D>> {
+public class SparkRuntime<D extends UpdateData> implements StreamingRuntime<D, SparkStreamingDataSource<D,?>> {
   private SparkConf sparkConf ;
   private JavaStreamingContext streamingContext ;
   private int duration ;
@@ -35,34 +35,18 @@ public class SparkRuntime<D extends UpdateData> implements StreamingRuntime<D, S
     streamingContext = new JavaStreamingContext(sparkConf, Durations.seconds(this.duration)) ;
   }
 
-  /*
-  public void start() {
-    streamingContext.start();
-    try {
-      streamingContext.awaitTermination();
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
-  }
-  */
+	@Override
+	public void startStreamingDataSources(List<SparkStreamingDataSource<D, ?>> streamingDataSourceList) {
+		for (SparkStreamingDataSource<D,?> streamingDataSource : streamingDataSourceList) {
+			streamingDataSource.setStreamingContext(streamingContext);
+			streamingDataSource.start();
+		}
 
-  @Override
-  public void startStreamingDataSources(List<SparkStreamingDataSource<D>> streamingDataSourcesList) {
-    for (SparkStreamingDataSource<D> streamingDataSource : streamingDataSourcesList) {
-    	streamingDataSource.setStreamingContext(streamingContext);
-      streamingDataSource.start();
-    }
-
-    streamingContext.start();
-    try {
-      streamingContext.awaitTermination();
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
-  }
-
-
-  public JavaStreamingContext getStreamingContext() {
-    return streamingContext ;
-  }
+		streamingContext.start();
+		try {
+			streamingContext.awaitTermination();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 }
