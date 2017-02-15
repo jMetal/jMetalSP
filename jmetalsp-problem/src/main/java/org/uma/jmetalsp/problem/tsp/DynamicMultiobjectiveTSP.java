@@ -162,12 +162,13 @@ public class DynamicMultiobjectiveTSP
     return result ;
   }
 
-	@Override
-	public void update(Observable<MultiobjectiveTSPUpdateData> observable, MultiobjectiveTSPUpdateData data) {
-		if (data!=null && data.getMatrixID()==COST){
-			updateCostValue(data.getX(),data.getY(),data.getValue());
-		}else if(data!=null && data.getMatrixID()==DISTANCE){
-			updateDistanceValue(data.getX(),data.getY(),data.getValue());
-		}
-	}
+  @Override
+  public void update(Observable<?> observable, Object data) {
+    MultiobjectiveTSPUpdateData tspData = (MultiobjectiveTSPUpdateData)data ;
+    if (data!=null && tspData.getMatrixID()==COST){
+      updateCostValue(tspData.getX(),tspData.getY(),tspData.getValue());
+    }else if(data!=null && tspData.getMatrixID()==DISTANCE){
+      updateDistanceValue(tspData.getX(),tspData.getY(),tspData.getValue());
+    }
+  }
 }

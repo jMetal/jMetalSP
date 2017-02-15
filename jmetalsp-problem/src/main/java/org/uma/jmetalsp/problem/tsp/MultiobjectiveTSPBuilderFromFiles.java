@@ -1,6 +1,7 @@
 package org.uma.jmetalsp.problem.tsp;
 
 import org.uma.jmetal.util.JMetalException;
+import org.uma.jmetalsp.problem.DynamicProblem;
 import org.uma.jmetalsp.problem.ProblemBuilder;
 
 import java.io.*;
@@ -11,6 +12,11 @@ import java.io.*;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class MultiobjectiveTSPBuilderFromFiles implements ProblemBuilder {
+  @Override
+  public DynamicProblem<?, ?> build() throws IOException {
+    return null;
+  }
+  /*
   private String distanceFileName;
   private String costFileName ;
 
@@ -102,4 +108,5 @@ public class MultiobjectiveTSPBuilderFromFiles implements ProblemBuilder {
     }
     return matrix;
   }
+  */
 }

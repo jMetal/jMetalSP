@@ -23,7 +23,9 @@ import org.uma.jmetal.util.SolutionListUtils;
 import org.uma.jmetal.util.archive.BoundedArchive;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetalsp.algorithm.DynamicAlgorithm;
+import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAII;
 import org.uma.jmetalsp.problem.DynamicProblem;
+import org.uma.khaos.perception.core.Observable;
 
 import java.util.List;
 
@@ -31,9 +33,9 @@ import java.util.List;
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DynamicSMPSO<O extends Observable>
+public class DynamicSMPSO<O extends Observable<DynamicNSGAII.AlgorithmData>>
         extends SMPSO
-        implements DynamicAlgorithm<List<DoubleSolution>, O> {
+        implements DynamicAlgorithm<List<DoubleSolution>, DynamicNSGAII.AlgorithmData> {
 
   private int completedIterations ;
   protected SimpleMeasureManager measureManager ;

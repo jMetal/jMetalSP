@@ -39,7 +39,7 @@ public class SparkRuntime<D extends UpdateData> implements StreamingRuntime<D, S
 	public void startStreamingDataSources(List<SparkStreamingDataSource<D, ?>> streamingDataSourceList) {
 		for (SparkStreamingDataSource<D,?> streamingDataSource : streamingDataSourceList) {
 			streamingDataSource.setStreamingContext(streamingContext);
-			streamingDataSource.start();
+			streamingDataSource.run();
 		}
 
 		streamingContext.start();

@@ -26,7 +26,9 @@ import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetal.util.neighborhood.Neighborhood;
 import org.uma.jmetal.util.solutionattribute.impl.LocationAttribute;
 import org.uma.jmetalsp.algorithm.DynamicAlgorithm;
+import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAII;
 import org.uma.jmetalsp.problem.DynamicProblem;
+import org.uma.khaos.perception.core.Observable;
 
 import java.util.List;
 
@@ -39,9 +41,9 @@ import java.util.List;
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DynamicMOCell<S extends Solution<?>, O extends Observable>
+public class DynamicMOCell<S extends Solution<?>, O extends Observable<DynamicNSGAII.AlgorithmData>>
     extends MOCell<S>
-    implements DynamicAlgorithm<List<S>, O> {
+    implements DynamicAlgorithm<List<S>, DynamicNSGAII.AlgorithmData> {
 
   private int completedIterations ;
   protected SimpleMeasureManager measureManager ;

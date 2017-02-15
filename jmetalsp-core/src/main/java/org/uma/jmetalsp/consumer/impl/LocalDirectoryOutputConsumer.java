@@ -28,84 +28,84 @@ import java.io.File;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class LocalDirectoryOutputConsumer implements AlgorithmDataConsumer<AlgorithmResultData> {
-	private String outputDirectoryName;
-	private DynamicAlgorithm<?, AlgorithmResultData> dynamicAlgorithm;
-	private int fileCounter = 0;
+  private String outputDirectoryName;
+  private DynamicAlgorithm<?, AlgorithmResultData> dynamicAlgorithm;
+  private int fileCounter = 0;
 
-	/**
-	 * Constructor
-	 *
-	 * @param outputDirectoryName
-	 */
-	public LocalDirectoryOutputConsumer(String outputDirectoryName) {
-		this.outputDirectoryName = outputDirectoryName;
-	}
+  /**
+   * Constructor
+   */
+  public LocalDirectoryOutputConsumer(String outputDirectoryName) {
+    this.outputDirectoryName = outputDirectoryName;
+    createDataDirectory(this.outputDirectoryName);
+  }
 
-	private LocalDirectoryOutputConsumer() {
-		this.outputDirectoryName = null;
-	}
+  private LocalDirectoryOutputConsumer() {
+    this.outputDirectoryName = null;
+  }
 
-	@Override
-	public void setAlgorithm(DynamicAlgorithm<?, AlgorithmResultData> algorithm) {
-		this.dynamicAlgorithm = algorithm;
-	}
+  @Override
+  public void setAlgorithm(DynamicAlgorithm<?, AlgorithmResultData> algorithm) {
+    this.dynamicAlgorithm = algorithm;
+  }
 
-	@Override
-	public DynamicAlgorithm<?, AlgorithmResultData> getAlgorithm() {
-		return dynamicAlgorithm;
-	}
+  @Override
+  public DynamicAlgorithm<?, AlgorithmResultData> getAlgorithm() {
+    return dynamicAlgorithm;
+  }
 
-	@Override
-	public Observer getObserver() {
-		return this;
-	}
-
-
-	@Override
-	public void run() {
-		if (dynamicAlgorithm == null) {
-			throw new JMetalException("The algorithm is null");
-		}
-
-		dynamicAlgorithm.getObservable().register(this);
+  @Override
+  public Observer getObserver() {
+    return this;
+  }
 
 
-		while (true) {
-			try {
-				Thread.sleep(1000000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+  @Override
+  public void run() {
+    if (dynamicAlgorithm == null) {
+      throw new JMetalException("The algorithm is null");
+    }
 
-	private void createDataDirectory(String outputDirectoryName) {
-		File outputDirectory = new File(outputDirectoryName);
+    dynamicAlgorithm.getObservable().register(this);
 
-		if (outputDirectory.isDirectory()) {
-			System.out.println("The output directory exists. Deleting and creating ...");
-			for (File file : outputDirectory.listFiles()) {
-				file.delete();
-			}
-			outputDirectory.delete();
-			new File(outputDirectoryName).mkdir();
-		} else {
-			System.out.println("The output directory doesn't exist. Creating ...");
-			new File(outputDirectoryName).mkdir();
-		}
-	}
 
-	@Override
-	public void update(Observable<?> observable, Object data) {
-		AlgorithmResultData algorithmResultData = (AlgorithmResultData)data ;
-		if ("algorithm".equals(observable.getName())) {
-			new SolutionListOutput(algorithmResultData.getSolutionList())
-							.setSeparator("\t")
-							.setFunFileOutputContext(new DefaultFileOutputContext(outputDirectoryName + "/FUN" + fileCounter + ".tsv"))
-							.setVarFileOutputContext(new DefaultFileOutputContext(outputDirectoryName + "/VAR" + fileCounter + ".tsv"))
-							.print();
-			fileCounter++;
-		}
-	}
+    while (true) {
+      try {
+        Thread.sleep(1000000);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  private void createDataDirectory(String outputDirectoryName) {
+    File outputDirectory = new File(outputDirectoryName);
+
+    if (outputDirectory.isDirectory()) {
+      System.out.println("The output directory exists. Deleting and creating ...");
+      for (File file : outputDirectory.listFiles()) {
+        file.delete();
+      }
+      outputDirectory.delete();
+      new File(outputDirectoryName).mkdir();
+    } else {
+      System.out.println("The output directory doesn't exist. Creating ...");
+      new File(outputDirectoryName).mkdir();
+    }
+  }
+
+  @Override
+  public void update(Observable<?> observable, Object data) {
+    System.out.println("Consumer received from " + observable.getName());
+    AlgorithmResultData algorithmResultData = (AlgorithmResultData) data;
+    //if ("algorithm".equals(observable.getName())) {
+    new SolutionListOutput(algorithmResultData.getSolutionList())
+            .setSeparator("\t")
+            .setFunFileOutputContext(new DefaultFileOutputContext(outputDirectoryName + "/FUN" + fileCounter + ".tsv"))
+            .setVarFileOutputContext(new DefaultFileOutputContext(outputDirectoryName + "/VAR" + fileCounter + ".tsv"))
+            .print();
+    fileCounter++;
+    //}
+  }
 
 }

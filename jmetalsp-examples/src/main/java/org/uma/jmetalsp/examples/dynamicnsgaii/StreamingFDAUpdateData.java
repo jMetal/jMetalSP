@@ -3,7 +3,6 @@ package org.uma.jmetalsp.examples.dynamicnsgaii;
 import org.uma.jmetalsp.problem.fda.FDAUpdateData;
 import org.uma.jmetalsp.streamingdatasource.StreamingDataSource;
 import org.uma.khaos.perception.core.Observable;
-import org.uma.khaos.perception.core2.ObservableItem;
 
 import java.util.List;
 
@@ -18,7 +17,7 @@ public class StreamingFDAUpdateData implements StreamingDataSource<FDAUpdateData
 	}
 
 	@Override
-	public void start() {
+	public void run() {
 		int counter = 0 ;
 		while (true) {
 			try {
@@ -26,8 +25,8 @@ public class StreamingFDAUpdateData implements StreamingDataSource<FDAUpdateData
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-
-			updateData.hasChanged() ;
+System.out.println("counter: " + counter + ". Number of observers: "+ updateData.numberOfRegisteredObservers()) ;
+			updateData.setChanged(); ;
 			updateData.notifyObservers(new FDAUpdateData(counter));
 			counter ++ ;
 		}

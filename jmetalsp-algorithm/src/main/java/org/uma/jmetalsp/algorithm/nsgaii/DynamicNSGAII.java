@@ -70,7 +70,7 @@ public class DynamicNSGAII<S extends Solution<?>, O extends Observable<DynamicNS
   @Override protected boolean isStoppingConditionReached() {
     if (evaluations >= maxEvaluations) {
 
-      observable.hasChanged() ;
+      observable.setChanged() ;
       observable.notifyObservers(new AlgorithmData(getPopulation(), completedIterations, 0.0));
 
       restart(100);

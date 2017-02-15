@@ -22,6 +22,7 @@ public abstract class FDA extends AbstractDoubleProblem implements DynamicProble
 
 	@Override
 	public void update(Observable<?> observable, Object data) {
+		System.out.println("Update on FDA invoked") ;
 		time=((FDAUpdateData)data).getTime();
 		if(time==0.0){
 			time=1.0;
