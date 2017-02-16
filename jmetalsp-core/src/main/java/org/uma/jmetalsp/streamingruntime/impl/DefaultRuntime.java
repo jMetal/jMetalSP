@@ -1,11 +1,9 @@
 package org.uma.jmetalsp.streamingruntime.impl;
 
-import org.uma.jmetalsp.consumer.AlgorithmDataConsumer;
 import org.uma.jmetalsp.streamingdatasource.StreamingDataSource;
 import org.uma.jmetalsp.streamingruntime.StreamingRuntime;
 import org.uma.jmetalsp.updatedata.UpdateData;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

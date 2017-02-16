@@ -3,6 +3,7 @@ package org.uma.jmetalsp.application.biobjectivetsp.runner.newyorktraffic.data;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;

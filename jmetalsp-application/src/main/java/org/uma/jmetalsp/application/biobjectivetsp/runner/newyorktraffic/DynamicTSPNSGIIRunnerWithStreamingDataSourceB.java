@@ -1,23 +1,23 @@
 package org.uma.jmetalsp.application.biobjectivetsp.runner.newyorktraffic;
 
-import org.uma.jmetalsp.algorithm.AlgorithmBuilder;
-import org.uma.jmetalsp.algorithm.DynamicNSGAII;
-import org.uma.jmetalsp.application.biobjectivetsp.algorithm.DynamicNSGAIIBuilder;
-import org.uma.jmetalsp.application.biobjectivetsp.algorithm.DynamicTSPNSGAII;
-import org.uma.jmetalsp.problem.tsp.DynamicMultiobjectiveTSP;
-import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPBuilderFromFiles;
-import org.uma.jmetalsp.application.biobjectivetsp.sparkutil.StreamingConfigurationTSP;
-import org.uma.jmetalsp.application.biobjectivetsp.streamingDataSource.StreamingDirectoryTSP;
 import org.apache.spark.streaming.api.java.JavaDStream;
 import org.apache.spark.streaming.api.java.JavaStreamingContext;
 import org.uma.jmetal.solution.PermutationSolution;
+import org.uma.jmetalsp.algorithm.AlgorithmBuilder;
 import org.uma.jmetalsp.algorithm.DynamicAlgorithm;
+import org.uma.jmetalsp.algorithm.DynamicNSGAII;
 import org.uma.jmetalsp.application.JMetalSPApplication;
-import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPUpdateData;
+import org.uma.jmetalsp.application.biobjectivetsp.algorithm.DynamicNSGAIIBuilder;
+import org.uma.jmetalsp.application.biobjectivetsp.algorithm.DynamicTSPNSGAII;
+import org.uma.jmetalsp.application.biobjectivetsp.sparkutil.StreamingConfigurationTSP;
+import org.uma.jmetalsp.application.biobjectivetsp.streamingDataSource.StreamingDirectoryTSP;
 import org.uma.jmetalsp.consumer.AlgorithmDataConsumer;
 import org.uma.jmetalsp.consumer.impl.SimpleSolutionListConsumer;
-import org.uma.jmetalsp.streamingdatasource.StreamingDataSource;
+import org.uma.jmetalsp.problem.tsp.DynamicMultiobjectiveTSP;
+import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPBuilderFromFiles;
+import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPUpdateData;
 import org.uma.jmetalsp.spark.util.spark.SparkRuntime;
+import org.uma.jmetalsp.streamingdatasource.StreamingDataSource;
 
 import java.io.IOException;
 

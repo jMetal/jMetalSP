@@ -15,13 +15,13 @@ package org.uma.jmetalsp.application.biobjectivetsp.sparkutil;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.uma.jmetalsp.spark.util.spark.StreamingConfiguration;
 
-import java.io.Serializable;
-import java.util.HashMap;
-
 import twitter4j.auth.Authorization;
 import twitter4j.auth.AuthorizationFactory;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
+
+import java.io.Serializable;
+import java.util.HashMap;
 
 /**
  * StreamingConfigurationTSP class for initialize  hdfs, kafka and twitter streaming

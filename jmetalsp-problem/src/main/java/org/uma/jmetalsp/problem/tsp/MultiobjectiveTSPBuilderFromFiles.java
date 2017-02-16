@@ -1,10 +1,9 @@
 package org.uma.jmetalsp.problem.tsp;
 
-import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetalsp.problem.DynamicProblem;
 import org.uma.jmetalsp.problem.ProblemBuilder;
 
-import java.io.*;
+import java.io.IOException;
 
 /**
  * Class for initializing a dynamic multiobjective TSP from data files

@@ -1,12 +1,8 @@
 package org.uma.jmetalsp.problem.tsp;
 
-import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetalsp.problem.DynamicProblem;
 import org.uma.jmetalsp.problem.ProblemBuilder;
-import org.uma.jmetalsp.spark.util.HDFSUtil;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 
 /**

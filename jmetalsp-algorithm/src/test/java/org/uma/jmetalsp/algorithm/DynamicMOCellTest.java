@@ -1,23 +1,6 @@
 package org.uma.jmetalsp.algorithm;
 
 
-import org.junit.Test;
-import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
-import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
-import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
-import org.uma.jmetal.solution.DoubleSolution;
-import org.uma.jmetal.solution.Solution;
-import org.uma.jmetal.util.archive.impl.CrowdingDistanceArchive;
-import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
-import org.uma.jmetal.util.neighborhood.impl.C9;
-import org.uma.jmetalsp.algorithm.mocell.DynamicMOCell;
-import org.uma.jmetalsp.problem.DynamicProblem;
-import org.uma.jmetalsp.updatedata.UpdateData;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-
 /**
  * Integration test for class DynamicMOCell
  *

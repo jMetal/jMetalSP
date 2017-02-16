@@ -6,18 +6,17 @@ import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
 import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.archive.impl.CrowdingDistanceArchive;
-import org.uma.jmetalsp.consumer.impl.SimpleSolutionListConsumer;
-import org.uma.jmetalsp.updatedata.AlgorithmData;
 import org.uma.jmetalsp.algorithm.DynamicAlgorithm;
 import org.uma.jmetalsp.algorithm.mocell.DynamicMOCellBuilder;
 import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAIIBuilder;
 import org.uma.jmetalsp.algorithm.smpso.DynamicSMPSOBuilder;
 import org.uma.jmetalsp.application.JMetalSPApplication;
-import org.uma.jmetalsp.consumer.impl.LocalDirectoryOutputConsumer;
+import org.uma.jmetalsp.consumer.SimpleSolutionListConsumer2;
 import org.uma.jmetalsp.problem.DynamicProblem;
 import org.uma.jmetalsp.problem.fda.FDA2;
 import org.uma.jmetalsp.problem.fda.FDAUpdateData;
 import org.uma.jmetalsp.streamingruntime.impl.DefaultRuntime;
+import org.uma.jmetalsp.updatedata.AlgorithmData;
 import org.uma.jmetalsp.util.Observable;
 import org.uma.jmetalsp.util.impl.DefaultObservable;
 
@@ -84,7 +83,7 @@ public class DynamicContinuousApplication {
             .setProblem(problem)
             .setAlgorithm(algorithm)
             .addStreamingDataSource(new StreamingFDAUpdateData(fdaUpdateDataObservable))
-            .addAlgorithmDataConsumer(new SimpleSolutionListConsumer())
+            .addAlgorithmDataConsumer(new SimpleSolutionListConsumer2())
             //.addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirectory"))
             //.addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirector2"))
             //.addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirector3"))

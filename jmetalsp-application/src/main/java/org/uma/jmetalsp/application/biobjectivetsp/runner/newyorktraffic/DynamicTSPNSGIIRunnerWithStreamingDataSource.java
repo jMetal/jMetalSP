@@ -1,15 +1,15 @@
 package org.uma.jmetalsp.application.biobjectivetsp.runner.newyorktraffic;
 
+import org.uma.jmetalsp.application.JMetalSPApplication;
 import org.uma.jmetalsp.application.biobjectivetsp.algorithm.DynamicNSGAIIBuilder;
 import org.uma.jmetalsp.application.biobjectivetsp.algorithm.DynamicTSPNSGAII;
-import org.uma.jmetalsp.problem.tsp.DynamicMultiobjectiveTSP;
-import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPBuilderParsed;
 import org.uma.jmetalsp.application.biobjectivetsp.sparkutil.StreamingConfigurationTSP;
 import org.uma.jmetalsp.application.biobjectivetsp.streamingDataSource.StreamingDirectoryTSP;
-import org.uma.jmetalsp.application.JMetalSPApplication;
-import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPUpdateData;
 import org.uma.jmetalsp.consumer.impl.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.consumer.impl.SimpleSolutionListConsumer;
+import org.uma.jmetalsp.problem.tsp.DynamicMultiobjectiveTSP;
+import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPBuilderParsed;
+import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPUpdateData;
 import org.uma.jmetalsp.spark.util.spark.SparkRuntime;
 
 import java.io.IOException;

@@ -14,7 +14,6 @@ import org.uma.jmetal.util.pseudorandom.PseudoRandomGenerator;
 import org.uma.jmetalsp.algorithm.AlgorithmBuilder;
 import org.uma.jmetalsp.algorithm.DynamicSMPSO;
 import org.uma.jmetalsp.problem.fda.FDA;
-import org.uma.jmetalsp.problem.fda.fda5.FDA5;
 
 import java.io.Serializable;
 
