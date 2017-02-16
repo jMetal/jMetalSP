@@ -12,6 +12,7 @@ import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAIIBuilder;
 import org.uma.jmetalsp.algorithm.smpso.DynamicSMPSOBuilder;
 import org.uma.jmetalsp.application.JMetalSPApplication;
 import org.uma.jmetalsp.consumer.SimpleSolutionListConsumer2;
+import org.uma.jmetalsp.consumer.impl.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.problem.DynamicProblem;
 import org.uma.jmetalsp.problem.fda.FDA2;
 import org.uma.jmetalsp.problem.fda.FDAUpdateData;
@@ -44,7 +45,7 @@ public class DynamicContinuousApplication {
     CrossoverOperator<DoubleSolution> crossover = new SBXCrossover(0.9, 20.0);
     MutationOperator<DoubleSolution> mutation = new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);
 
-    String defaultAlgorithm = "NSGAII";
+    String defaultAlgorithm = "SMPSO";
 
     DynamicAlgorithm<List<DoubleSolution>,AlgorithmData> algorithm;
     Observable<AlgorithmData> observable = new DefaultObservable<>("NSGAII") ;
@@ -62,7 +63,7 @@ public class DynamicContinuousApplication {
 
       case "MOCell":
         algorithm = new DynamicMOCellBuilder<>(crossover, mutation, observable)
-                .setMaxEvaluations(500000)
+                .setMaxEvaluations(50000)
                 .setPopulationSize(100)
                 .build(problem);
         break;
@@ -84,7 +85,7 @@ public class DynamicContinuousApplication {
             .setAlgorithm(algorithm)
             .addStreamingDataSource(new StreamingFDAUpdateData(fdaUpdateDataObservable))
             .addAlgorithmDataConsumer(new SimpleSolutionListConsumer2())
-            //.addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirectory"))
+            .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirectory"))
             //.addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirector2"))
             //.addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirector3"))
             .run();

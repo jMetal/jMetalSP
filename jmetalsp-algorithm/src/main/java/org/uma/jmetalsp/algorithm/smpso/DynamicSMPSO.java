@@ -85,8 +85,8 @@ public class DynamicSMPSO<O extends Observable<AlgorithmData>>
       getDynamicProblem().reset();
     }
     int cont = getIterations();
-    this.setIterations(cont + this.getSwarmSize());
-    completedIterations++;
+    this.setIterations(cont + 1);
+    //completedIterations++;
     updateLeadersDensityEstimator();
   }
 
