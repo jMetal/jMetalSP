@@ -9,9 +9,16 @@ import org.uma.jmetalsp.util.Observable;
  */
 public class StreamingFDAUpdateData implements StreamingDataSource<FDAUpdateData, Observable<FDAUpdateData>> {
 	private Observable<FDAUpdateData> updateData ;
+	private int dataDelay ;
 
-	public StreamingFDAUpdateData(Observable<FDAUpdateData> updateData) {
+  /**
+   *
+   * @param updateData
+   * @param dataDelay Delay in milliseconds
+   */
+	public StreamingFDAUpdateData(Observable<FDAUpdateData> updateData, int dataDelay) {
 		this.updateData = updateData ;
+		this.dataDelay = dataDelay ;
 	}
 
 	@Override
@@ -19,7 +26,7 @@ public class StreamingFDAUpdateData implements StreamingDataSource<FDAUpdateData
 		int counter = 0 ;
 		while (true) {
 			try {
-				Thread.sleep(5000);
+				Thread.sleep(dataDelay);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

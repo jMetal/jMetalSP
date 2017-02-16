@@ -105,8 +105,8 @@ public class DynamicMOCell<S extends Solution<?>, O extends Observable<Algorithm
       restart(100);
       getDynamicProblem().reset();
     }
-    evaluations += getMaxPopulationSize() ;
-    completedIterations ++ ;
+    evaluations ++ ;
+    //completedIterations ++ ;
     currentIndividual=(currentIndividual+1)%getMaxPopulationSize();
   }
 

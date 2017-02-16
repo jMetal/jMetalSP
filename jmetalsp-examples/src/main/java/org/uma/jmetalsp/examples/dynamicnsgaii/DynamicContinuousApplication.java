@@ -45,7 +45,7 @@ public class DynamicContinuousApplication {
     CrossoverOperator<DoubleSolution> crossover = new SBXCrossover(0.9, 20.0);
     MutationOperator<DoubleSolution> mutation = new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);
 
-    String defaultAlgorithm = "SMPSO";
+    String defaultAlgorithm = "MOCell";
 
     DynamicAlgorithm<List<DoubleSolution>,AlgorithmData> algorithm;
     Observable<AlgorithmData> observable = new DefaultObservable<>("NSGAII") ;
@@ -83,7 +83,7 @@ public class DynamicContinuousApplication {
     application.setStreamingRuntime(new DefaultRuntime<FDAUpdateData, StreamingFDAUpdateData>())
             .setProblem(problem)
             .setAlgorithm(algorithm)
-            .addStreamingDataSource(new StreamingFDAUpdateData(fdaUpdateDataObservable))
+            .addStreamingDataSource(new StreamingFDAUpdateData(fdaUpdateDataObservable, 2000))
             .addAlgorithmDataConsumer(new SimpleSolutionListConsumer2())
             .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirectory"))
             //.addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirector2"))
