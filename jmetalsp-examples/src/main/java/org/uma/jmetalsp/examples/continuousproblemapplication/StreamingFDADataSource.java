@@ -1,13 +1,14 @@
-package org.uma.jmetalsp.examples.dynamicnsgaii;
+package org.uma.jmetalsp.examples.continuousproblemapplication;
 
 import org.uma.jmetalsp.problem.fda.FDAUpdateData;
 import org.uma.jmetalsp.streamingdatasource.StreamingDataSource;
 import org.uma.jmetalsp.util.Observable;
 
 /**
+ * This class emits the value of a counter periodically after a given delay (in milliseconds)
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class StreamingFDAUpdateData implements StreamingDataSource<FDAUpdateData, Observable<FDAUpdateData>> {
+public class StreamingFDADataSource implements StreamingDataSource<FDAUpdateData, Observable<FDAUpdateData>> {
 	private Observable<FDAUpdateData> updateData ;
 	private int dataDelay ;
 
@@ -16,7 +17,7 @@ public class StreamingFDAUpdateData implements StreamingDataSource<FDAUpdateData
    * @param updateData
    * @param dataDelay Delay in milliseconds
    */
-	public StreamingFDAUpdateData(Observable<FDAUpdateData> updateData, int dataDelay) {
+	public StreamingFDADataSource(Observable<FDAUpdateData> updateData, int dataDelay) {
 		this.updateData = updateData ;
 		this.dataDelay = dataDelay ;
 	}

@@ -95,9 +95,6 @@ public class DynamicMOCell<S extends Solution<?>, O extends Observable<Algorithm
     location = new LocationAttribute<>(getPopulation());
     evaluator.evaluate(getPopulation(), getDynamicProblem()) ;
     initProgress();
-    //setPopulation(createInitialPopulation());
-    //neighborhood = new C9<S>((int)Math.sqrt(getPopulation().size()), (int)Math.sqrt(getPopulation().size())) ;
-    //archive = new CrowdingDistanceArchive<>(getPopulation().size()) ;
   }
 
   @Override protected void updateProgress() {
@@ -106,7 +103,6 @@ public class DynamicMOCell<S extends Solution<?>, O extends Observable<Algorithm
       getDynamicProblem().reset();
     }
     evaluations ++ ;
-    //completedIterations ++ ;
     currentIndividual=(currentIndividual+1)%getMaxPopulationSize();
   }
 

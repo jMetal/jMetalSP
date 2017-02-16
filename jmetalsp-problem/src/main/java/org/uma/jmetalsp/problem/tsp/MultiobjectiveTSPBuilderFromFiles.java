@@ -1,21 +1,24 @@
 package org.uma.jmetalsp.problem.tsp;
 
+import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetalsp.problem.DynamicProblem;
 import org.uma.jmetalsp.problem.ProblemBuilder;
+import org.uma.jmetalsp.util.Observable;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StreamTokenizer;
 
 /**
  * Class for initializing a dynamic multiobjective TSP from data files
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class MultiobjectiveTSPBuilderFromFiles implements ProblemBuilder {
-  @Override
-  public DynamicProblem<?, ?> build() throws IOException {
-    return null;
-  }
-  /*
+public class MultiobjectiveTSPBuilderFromFiles  {
+
   private String distanceFileName;
   private String costFileName ;
 
@@ -24,7 +27,7 @@ public class MultiobjectiveTSPBuilderFromFiles implements ProblemBuilder {
     this.costFileName = costFileName ;
   }
 
-  public DynamicMultiobjectiveTSP build() throws IOException {
+  public DynamicMultiobjectiveTSP build(Observable<MultiobjectiveTSPUpdateData> observable) throws IOException {
     int         numberOfCities ;
     double [][] distanceMatrix ;
     double [][] costMatrix;
@@ -33,7 +36,8 @@ public class MultiobjectiveTSPBuilderFromFiles implements ProblemBuilder {
     costMatrix = readProblem(costFileName) ;
     numberOfCities = distanceMatrix.length ;
 
-    DynamicMultiobjectiveTSP problem = new DynamicMultiobjectiveTSP(numberOfCities, distanceMatrix, costMatrix);
+    DynamicMultiobjectiveTSP problem =
+            new DynamicMultiobjectiveTSP(numberOfCities, distanceMatrix, costMatrix, observable);
 
     return problem ;
   }
@@ -107,5 +111,5 @@ public class MultiobjectiveTSPBuilderFromFiles implements ProblemBuilder {
     }
     return matrix;
   }
-  */
+
 }
