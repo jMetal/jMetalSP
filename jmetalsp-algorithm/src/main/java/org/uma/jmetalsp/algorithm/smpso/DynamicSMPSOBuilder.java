@@ -10,7 +10,7 @@ import org.uma.jmetal.util.pseudorandom.PseudoRandomGenerator;
 import org.uma.jmetalsp.updatedata.AlgorithmData;
 import org.uma.jmetalsp.algorithm.DynamicAlgorithmBuilder;
 import org.uma.jmetalsp.problem.DynamicProblem;
-import org.uma.khaos.perception.core.Observable;
+import org.uma.jmetalsp.util.Observable;
 
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>

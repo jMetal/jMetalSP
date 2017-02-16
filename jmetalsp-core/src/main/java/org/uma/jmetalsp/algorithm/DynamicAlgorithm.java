@@ -3,7 +3,7 @@ package org.uma.jmetalsp.algorithm;
 import org.uma.jmetal.algorithm.Algorithm;
 import org.uma.jmetalsp.problem.DynamicProblem;
 import org.uma.jmetalsp.updatedata.UpdateData;
-import org.uma.khaos.perception.core.Observable;
+import org.uma.jmetalsp.util.Observable;
 
 
 /**

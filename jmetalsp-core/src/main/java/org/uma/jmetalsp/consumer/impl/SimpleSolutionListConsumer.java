@@ -17,8 +17,8 @@ import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetalsp.algorithm.DynamicAlgorithm;
 import org.uma.jmetalsp.consumer.AlgorithmDataConsumer;
 import org.uma.jmetalsp.updatedata.repository.AlgorithmResultData;
-import org.uma.khaos.perception.core.Observable;
-import org.uma.khaos.perception.core.Observer;
+import org.uma.jmetalsp.util.Observable;
+import org.uma.jmetalsp.util.Observer;
 
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
@@ -69,6 +69,7 @@ public class SimpleSolutionListConsumer implements AlgorithmDataConsumer<Algorit
   public void update(Observable<?> observable, Object data) {
     //if ("algorithm".equals(observable.getName())) {
       AlgorithmResultData algorithmResultData = (AlgorithmResultData) data ;
+      System.out.println("Number of generated fronts: " + algorithmResultData.getIterations());
     //}
   }
 }

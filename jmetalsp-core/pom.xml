@@ -51,16 +51,4 @@
             </plugin>
         </plugins>
     </build>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.uma.jmetal</groupId>
-            <artifactId>jmetal-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.uma.jmetalsp</groupId>
-            <artifactId>perception</artifactId>
-            <version>1.1-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
 </project>

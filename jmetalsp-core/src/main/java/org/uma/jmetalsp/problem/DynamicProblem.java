@@ -3,7 +3,7 @@ package org.uma.jmetalsp.problem;
 import org.uma.jmetal.problem.Problem;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetalsp.updatedata.UpdateData;
-import org.uma.khaos.perception.core.Observer;
+import org.uma.jmetalsp.util.Observer;
 
 /**
  * Created by ajnebro on 18/4/16.

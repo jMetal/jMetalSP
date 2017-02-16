@@ -3,7 +3,7 @@ package org.uma.jmetalsp.problem.fda;
 import org.uma.jmetal.problem.impl.AbstractDoubleProblem;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetalsp.problem.DynamicProblem;
-import org.uma.khaos.perception.core.Observable;
+import org.uma.jmetalsp.util.Observable;
 
 import java.io.Serializable;
 

@@ -12,7 +12,7 @@ import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetalsp.updatedata.AlgorithmData;
 import org.uma.jmetalsp.algorithm.DynamicAlgorithmBuilder;
 import org.uma.jmetalsp.problem.DynamicProblem;
-import org.uma.khaos.perception.core.Observable;
+import org.uma.jmetalsp.util.Observable;
 
 import java.util.List;
 

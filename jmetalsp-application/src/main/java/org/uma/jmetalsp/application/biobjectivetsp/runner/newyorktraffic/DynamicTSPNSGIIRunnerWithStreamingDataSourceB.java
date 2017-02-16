@@ -78,7 +78,7 @@ public class DynamicTSPNSGIIRunnerWithStreamingDataSourceB {
     application
         .setProblemBuilder(new MultiobjectiveTSPBuilderFromFiles("kroA100.tsp", "kroB100.tsp"))
         .setAlgorithmBuilder(algorithmBuilder)
-        .addAlgorithmDataConsumer(new SimpleSolutionListConsumer())
+        .addAlgorithmDataConsumer(new PlotSolutionListConsumer())
      //   .addStreamingDataSource(directorySource)
      //   .setRuntime(new SparkRuntime(4))
         .run(streamingContext);

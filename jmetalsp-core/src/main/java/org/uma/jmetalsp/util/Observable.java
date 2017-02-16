@@ -1,4 +1,4 @@
-package org.uma.khaos.perception.core;
+package org.uma.jmetalsp.util;
 
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>

@@ -13,7 +13,7 @@
 package org.uma.jmetalsp.streamingdatasource;
 
 import org.uma.jmetalsp.updatedata.UpdateData;
-import org.uma.khaos.perception.core.Observable;
+import org.uma.jmetalsp.util.Observable;
 
 /**
  * Created by ajnebro on 18/4/16.

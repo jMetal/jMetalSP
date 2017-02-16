@@ -6,6 +6,7 @@ import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
 import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.archive.impl.CrowdingDistanceArchive;
+import org.uma.jmetalsp.consumer.impl.SimpleSolutionListConsumer;
 import org.uma.jmetalsp.updatedata.AlgorithmData;
 import org.uma.jmetalsp.algorithm.DynamicAlgorithm;
 import org.uma.jmetalsp.algorithm.mocell.DynamicMOCellBuilder;
@@ -17,8 +18,8 @@ import org.uma.jmetalsp.problem.DynamicProblem;
 import org.uma.jmetalsp.problem.fda.FDA2;
 import org.uma.jmetalsp.problem.fda.FDAUpdateData;
 import org.uma.jmetalsp.streamingruntime.impl.DefaultRuntime;
-import org.uma.khaos.perception.core.Observable;
-import org.uma.khaos.perception.core.impl.DefaultObservable;
+import org.uma.jmetalsp.util.Observable;
+import org.uma.jmetalsp.util.impl.DefaultObservable;
 
 import java.io.IOException;
 import java.util.List;
@@ -44,7 +45,7 @@ public class DynamicContinuousApplication {
     CrossoverOperator<DoubleSolution> crossover = new SBXCrossover(0.9, 20.0);
     MutationOperator<DoubleSolution> mutation = new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);
 
-    String defaultAlgorithm = "MOCell";
+    String defaultAlgorithm = "NSGAII";
 
     DynamicAlgorithm<List<DoubleSolution>,AlgorithmData> algorithm;
     Observable<AlgorithmData> observable = new DefaultObservable<>("NSGAII") ;
@@ -62,7 +63,7 @@ public class DynamicContinuousApplication {
 
       case "MOCell":
         algorithm = new DynamicMOCellBuilder<>(crossover, mutation, observable)
-                .setMaxEvaluations(50000)
+                .setMaxEvaluations(500000)
                 .setPopulationSize(100)
                 .build(problem);
         break;
@@ -83,7 +84,8 @@ public class DynamicContinuousApplication {
             .setProblem(problem)
             .setAlgorithm(algorithm)
             .addStreamingDataSource(new StreamingFDAUpdateData(fdaUpdateDataObservable))
-            .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirectory"))
+            .addAlgorithmDataConsumer(new SimpleSolutionListConsumer())
+            //.addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirectory"))
             //.addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirector2"))
             //.addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirector3"))
             .run();

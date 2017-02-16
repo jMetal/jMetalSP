@@ -23,7 +23,7 @@ import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetalsp.updatedata.AlgorithmData;
 import org.uma.jmetalsp.algorithm.DynamicAlgorithm;
 import org.uma.jmetalsp.problem.DynamicProblem;
-import org.uma.khaos.perception.core.Observable;
+import org.uma.jmetalsp.util.Observable;
 
 import java.util.List;
 
@@ -94,7 +94,6 @@ public class DynamicNSGAII<S extends Solution<?>, O extends Observable<Algorithm
       getDynamicProblem().reset();
     }
     evaluations += getMaxPopulationSize() ;
-    completedIterations ++ ;
   }
 
   @Override
@@ -116,5 +115,4 @@ public class DynamicNSGAII<S extends Solution<?>, O extends Observable<Algorithm
   public void restart(int percentageOfSolutionsToRemove) {
     SolutionListUtils.restart(getPopulation(), getDynamicProblem(), percentageOfSolutionsToRemove);
   }
-
 }

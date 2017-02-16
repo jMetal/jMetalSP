@@ -2,7 +2,7 @@ package org.uma.jmetalsp.problem.fda;
 
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.JMetalException;
-import org.uma.khaos.perception.core.Observable;
+import org.uma.jmetalsp.util.Observable;
 
 import java.io.Serializable;
 import java.util.ArrayList;

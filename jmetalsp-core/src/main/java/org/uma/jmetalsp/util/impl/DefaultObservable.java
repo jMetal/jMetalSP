@@ -1,7 +1,7 @@
-package org.uma.khaos.perception.core.impl;
+package org.uma.jmetalsp.util.impl;
 
-import org.uma.khaos.perception.core.Observable;
-import org.uma.khaos.perception.core.Observer;
+import org.uma.jmetalsp.util.Observable;
+import org.uma.jmetalsp.util.Observer;
 
 import java.util.HashSet;
 import java.util.Set;

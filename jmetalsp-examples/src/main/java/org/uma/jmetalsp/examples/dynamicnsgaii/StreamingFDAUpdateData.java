@@ -2,9 +2,7 @@ package org.uma.jmetalsp.examples.dynamicnsgaii;
 
 import org.uma.jmetalsp.problem.fda.FDAUpdateData;
 import org.uma.jmetalsp.streamingdatasource.StreamingDataSource;
-import org.uma.khaos.perception.core.Observable;
-
-import java.util.List;
+import org.uma.jmetalsp.util.Observable;
 
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>

@@ -5,7 +5,7 @@ import org.uma.jmetal.problem.impl.AbstractIntegerPermutationProblem;
 import org.uma.jmetal.solution.PermutationSolution;
 import org.uma.jmetal.util.solutionattribute.impl.OverallConstraintViolation;
 import org.uma.jmetalsp.problem.DynamicProblem;
-import org.uma.khaos.perception.core.Observable;
+import org.uma.jmetalsp.util.Observable;
 
 /**
  * Version of the multi-objective TSP aimed at being solving dynamically.

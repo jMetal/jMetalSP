@@ -2,7 +2,7 @@ package org.uma.jmetalsp.consumer;
 
 import org.uma.jmetalsp.algorithm.DynamicAlgorithm;
 import org.uma.jmetalsp.updatedata.UpdateData;
-import org.uma.khaos.perception.core.Observer;
+import org.uma.jmetalsp.util.Observer;
 
 /**
  * Created by ajnebro on 21/4/16.

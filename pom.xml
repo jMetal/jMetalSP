@@ -4,6 +4,7 @@
     <groupId>org.uma.jmetalsp</groupId>
     <artifactId>jmetalsp</artifactId>
     <version>1.1-SNAPSHOT</version>
+
     <packaging>pom</packaging>
 
     <name>jmetalsp</name>
@@ -61,10 +62,11 @@
         <module>jmetalsp-core</module>
         <module>jmetalsp-algorithm</module>
        <!-- <module>jmetalsp-application</module>-->
+        <!--<module>jmetalsp-consumer</module>-->
         <module>jmetalsp-problem</module>
         <module>jmetalsp-examples</module>
         <module>jmetalsp-spark</module>
-        <module>perception</module>
+        <!--<module>perception</module>-->
     </modules>
 
     <profiles>
