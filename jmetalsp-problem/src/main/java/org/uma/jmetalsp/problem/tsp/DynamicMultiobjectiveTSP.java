@@ -22,8 +22,8 @@ public class DynamicMultiobjectiveTSP
   private double [][] costMatrix;
 
   private boolean theProblemHasBeenModified;
-  private static final int DISTANCE = 0;
-  private static final int COST = 1;
+  public static final int DISTANCE = 0;
+  public static final int COST = 1;
 
   protected Observable<MultiobjectiveTSPUpdateData> observable ;
 
