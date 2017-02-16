@@ -2,10 +2,15 @@ package org.uma.jmetalsp.examples.dynamictsp;
 
 import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
+import org.uma.jmetal.operator.SelectionOperator;
+import org.uma.jmetal.operator.impl.crossover.PMXCrossover;
 import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
+import org.uma.jmetal.operator.impl.mutation.PermutationSwapMutation;
 import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
+import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.solution.PermutationSolution;
+import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
 import org.uma.jmetalsp.algorithm.DynamicAlgorithm;
 import org.uma.jmetalsp.algorithm.mocell.DynamicMOCellBuilder;
 import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAIIBuilder;
@@ -16,7 +21,10 @@ import org.uma.jmetalsp.examples.continuousproblemapplication.StreamingFDADataSo
 import org.uma.jmetalsp.problem.DynamicProblem;
 import org.uma.jmetalsp.problem.fda.FDA2;
 import org.uma.jmetalsp.problem.fda.FDAUpdateData;
+import org.uma.jmetalsp.problem.tsp.DynamicMultiobjectiveTSP;
+import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPBuilderFromFiles;
 import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPUpdateData;
+import org.uma.jmetalsp.streamingdatasource.impl.DefaultStreamingDataSource;
 import org.uma.jmetalsp.streamingruntime.impl.DefaultRuntime;
 import org.uma.jmetalsp.updatedata.AlgorithmData;
 import org.uma.jmetalsp.util.Observable;
@@ -40,25 +48,32 @@ public class DynamicTSPApplication {
     application = new JMetalSPApplication<>();
 
 	  // Problem configuration
-    Observable<FDAUpdateData> fdaUpdateDataObservable = new DefaultObservable<>("timeData") ;
-	  DynamicProblem<DoubleSolution, FDAUpdateData> problem = new FDA2(fdaUpdateDataObservable);
+    Observable<MultiobjectiveTSPUpdateData> dataObservable = new DefaultObservable<>("") ;
+	  DynamicProblem<PermutationSolution<Integer>, MultiobjectiveTSPUpdateData> problem ;
+	  problem = new MultiobjectiveTSPBuilderFromFiles("kroA100.tsp", "kroB100.tsp")
+            .build(dataObservable) ;
 
 	  // Algorithm configuration
-    CrossoverOperator<DoubleSolution> crossover = new SBXCrossover(0.9, 20.0);
-    MutationOperator<DoubleSolution> mutation =
-            new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);
+    CrossoverOperator<PermutationSolution<Integer>> crossover;
+    MutationOperator<PermutationSolution<Integer>> mutation;
+    SelectionOperator<List<PermutationSolution<Integer>>, PermutationSolution<Integer>> selection;
+    crossover = new PMXCrossover(0.9) ;
+    double mutationProbability = 0.2 ;
+    mutation = new PermutationSwapMutation<Integer>(mutationProbability) ;
+    selection = new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<PermutationSolution<Integer>>());
 
-    String defaultAlgorithm = "MOCell";
+    String defaultAlgorithm = "NSGAII";
 
-    DynamicAlgorithm<List<DoubleSolution>,AlgorithmData> algorithm;
+    DynamicAlgorithm<List<PermutationSolution<Integer>>, AlgorithmData> algorithm;
     Observable<AlgorithmData> observable = new DefaultObservable<>("NSGAII") ;
 
     switch (defaultAlgorithm) {
       case "NSGAII":
         algorithm = new DynamicNSGAIIBuilder<
-                DoubleSolution,
-                DynamicProblem<DoubleSolution, ?>,
+                PermutationSolution<Integer>,
+                DynamicProblem<PermutationSolution<Integer>, ?>,
                 Observable<AlgorithmData>>(crossover, mutation, observable)
+                .setSelectionOperator(selection)
                 .setMaxEvaluations(50000)
                 .setPopulationSize(100)
                 .build(problem);
@@ -74,10 +89,10 @@ public class DynamicTSPApplication {
         algorithm = null;
     }
 
-    application.setStreamingRuntime(new DefaultRuntime<FDAUpdateData, StreamingFDADataSource>())
+    application.setStreamingRuntime(new DefaultRuntime<MultiobjectiveTSPUpdateData, DefaultStreamingDataSource<MultiobjectiveTSPUpdateData,?>>())
             .setProblem(problem)
             .setAlgorithm(algorithm)
-            .addStreamingDataSource(new StreamingFDADataSource(fdaUpdateDataObservable, 2000))
+            .addStreamingDataSource(new DefaultStreamingDataSource())
             .addAlgorithmDataConsumer(new SimpleSolutionListConsumer2())
             .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirectory"))
             //.addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirector2"))
