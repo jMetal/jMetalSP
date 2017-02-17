@@ -10,8 +10,8 @@ import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetalsp.DynamicProblem;
-import org.uma.jmetalsp.updatedata.AlgorithmData;
 import org.uma.jmetalsp.perception.Observable;
+import org.uma.jmetalsp.updatedata.AlgorithmData;
 
 import java.util.List;
 

@@ -25,8 +25,8 @@ import org.uma.jmetal.util.neighborhood.Neighborhood;
 import org.uma.jmetal.util.solutionattribute.impl.LocationAttribute;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.DynamicProblem;
-import org.uma.jmetalsp.updatedata.AlgorithmData;
 import org.uma.jmetalsp.perception.Observable;
+import org.uma.jmetalsp.updatedata.AlgorithmData;
 
 import java.util.List;
 

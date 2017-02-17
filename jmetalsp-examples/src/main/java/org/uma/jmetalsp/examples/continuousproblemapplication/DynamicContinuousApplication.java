@@ -46,9 +46,9 @@ public class DynamicContinuousApplication {
     MutationOperator<DoubleSolution> mutation =
             new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);
 
-    String defaultAlgorithm = "MOCell";
+    String defaultAlgorithm = "SMPSO";
 
-    DynamicAlgorithm<List<DoubleSolution>,AlgorithmData> algorithm;
+    DynamicAlgorithm<List<DoubleSolution>, AlgorithmData> algorithm;
     Observable<AlgorithmData> observable = new DefaultObservable<>("NSGAII") ;
 
     switch (defaultAlgorithm) {

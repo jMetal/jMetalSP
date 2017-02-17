@@ -12,7 +12,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package org.uma.jmetalsp.problem.tsp;
 
-import org.uma.jmetalsp.updatedata.repository.DoubleMatrixUpdateData;
+import org.uma.jmetalsp.updatedata.DoubleMatrixUpdateData;
 
 import java.io.Serializable;
 

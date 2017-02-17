@@ -16,7 +16,7 @@ package org.uma.jmetalsp.consumer;
 import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetalsp.AlgorithmDataConsumer;
 import org.uma.jmetalsp.DynamicAlgorithm;
-import org.uma.jmetalsp.updatedata.repository.AlgorithmResultData;
+import org.uma.jmetalsp.updatedata.AlgorithmResultData;
 import org.uma.jmetalsp.perception.Observable;
 import org.uma.jmetalsp.perception.Observer;
 

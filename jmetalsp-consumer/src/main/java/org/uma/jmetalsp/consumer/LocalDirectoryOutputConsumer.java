@@ -18,7 +18,7 @@ import org.uma.jmetal.util.fileoutput.SolutionListOutput;
 import org.uma.jmetal.util.fileoutput.impl.DefaultFileOutputContext;
 import org.uma.jmetalsp.AlgorithmDataConsumer;
 import org.uma.jmetalsp.DynamicAlgorithm;
-import org.uma.jmetalsp.updatedata.repository.AlgorithmResultData;
+import org.uma.jmetalsp.updatedata.AlgorithmResultData;
 import org.uma.jmetalsp.perception.Observable;
 import org.uma.jmetalsp.perception.Observer;
 

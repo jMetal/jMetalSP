@@ -1,7 +1,6 @@
 package org.uma.jmetalsp.updatedata;
 
 import org.uma.jmetal.solution.Solution;
-import org.uma.jmetalsp.updatedata.repository.AlgorithmResultData;
 
 import java.util.List;
 

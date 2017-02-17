@@ -1,7 +1,7 @@
 package org.uma.jmetalsp.problem.fda;
 
 
-import org.uma.jmetalsp.updatedata.repository.TimeUpdateData;
+import org.uma.jmetalsp.updatedata.TimeUpdateData;
 
 import java.io.Serializable;
 

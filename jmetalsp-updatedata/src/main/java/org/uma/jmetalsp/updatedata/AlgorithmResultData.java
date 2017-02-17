@@ -1,4 +1,4 @@
-package org.uma.jmetalsp.updatedata.repository;
+package org.uma.jmetalsp.updatedata;
 
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetalsp.UpdateData;
