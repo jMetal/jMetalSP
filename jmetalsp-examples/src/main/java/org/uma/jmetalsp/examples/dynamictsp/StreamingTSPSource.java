@@ -1,11 +1,10 @@
 package org.uma.jmetalsp.examples.dynamictsp;
 
 import org.uma.jmetal.util.pseudorandom.JMetalRandom;
-import org.uma.jmetalsp.problem.fda.FDAUpdateData;
 import org.uma.jmetalsp.problem.tsp.DynamicMultiobjectiveTSP;
 import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPUpdateData;
-import org.uma.jmetalsp.streamingdatasource.StreamingDataSource;
-import org.uma.jmetalsp.util.Observable;
+import org.uma.jmetalsp.StreamingDataSource;
+import org.uma.jmetalsp.perception.Observable;
 
 /**
  * This class emits a value periodically after a given delay (in milliseconds)

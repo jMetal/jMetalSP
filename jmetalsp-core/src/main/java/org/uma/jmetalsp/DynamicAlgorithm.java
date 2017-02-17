@@ -1,9 +1,7 @@
-package org.uma.jmetalsp.algorithm;
+package org.uma.jmetalsp;
 
 import org.uma.jmetal.algorithm.Algorithm;
-import org.uma.jmetalsp.problem.DynamicProblem;
-import org.uma.jmetalsp.updatedata.UpdateData;
-import org.uma.jmetalsp.util.Observable;
+import org.uma.jmetalsp.perception.Observable;
 
 
 /**

@@ -1,4 +1,4 @@
-package org.uma.jmetalsp.updatedata;
+package org.uma.jmetalsp;
 
 import java.io.Serializable;
 

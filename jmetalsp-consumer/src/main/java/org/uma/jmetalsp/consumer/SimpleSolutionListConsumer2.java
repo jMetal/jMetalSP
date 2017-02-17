@@ -14,10 +14,11 @@
 package org.uma.jmetalsp.consumer;
 
 import org.uma.jmetal.util.JMetalException;
-import org.uma.jmetalsp.algorithm.DynamicAlgorithm;
+import org.uma.jmetalsp.AlgorithmDataConsumer;
+import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.updatedata.repository.AlgorithmResultData;
-import org.uma.jmetalsp.util.Observable;
-import org.uma.jmetalsp.util.Observer;
+import org.uma.jmetalsp.perception.Observable;
+import org.uma.jmetalsp.perception.Observer;
 
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
@@ -57,13 +58,6 @@ public class SimpleSolutionListConsumer2 implements AlgorithmDataConsumer<Algori
     }
   }
 
-  /*
-	@Override
-	public void update(Observable<AlgorithmResultData> observable, AlgorithmResultData algorithmResultData) {
-		System.out.println("Consumer: Number of solutions: " + algorithmResultData.getSolutionList().size()) ;
-		System.out.println("Consumer: Computed iterations: " + algorithmResultData.getIterations()) ;
-	}
-  */
   @Override
   public void update(Observable<?> observable, Object data) {
     //if ("algorithm".equals(observable.getName())) {

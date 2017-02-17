@@ -13,10 +13,9 @@ import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetal.util.neighborhood.Neighborhood;
 import org.uma.jmetal.util.neighborhood.impl.C9;
-import org.uma.jmetalsp.algorithm.DynamicAlgorithmBuilder;
-import org.uma.jmetalsp.problem.DynamicProblem;
+import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.updatedata.AlgorithmData;
-import org.uma.jmetalsp.util.Observable;
+import org.uma.jmetalsp.perception.Observable;
 
 import java.util.List;
 
@@ -26,7 +25,7 @@ import java.util.List;
 public class DynamicMOCellBuilder<
 				S extends Solution<?>,
 				P extends DynamicProblem<S, ?>,
-				O extends Observable<AlgorithmData>> implements DynamicAlgorithmBuilder<DynamicMOCell<S, O>, P> {
+				O extends Observable<AlgorithmData>> {
 
 	private int maxEvaluations;
 	private int populationSize;
@@ -102,7 +101,6 @@ public class DynamicMOCellBuilder<
 		return this;
 	}
 
-	@Override
 	public DynamicMOCell<S,O> build(P problem) {
 		return new DynamicMOCell<>(problem, maxEvaluations, populationSize, archive, neighborhood,
 						crossoverOperator, mutationOperator, selectionOperator, evaluator, observable);

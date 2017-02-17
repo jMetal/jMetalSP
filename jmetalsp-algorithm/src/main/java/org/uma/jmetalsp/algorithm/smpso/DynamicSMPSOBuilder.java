@@ -7,17 +7,16 @@ import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 import org.uma.jmetal.util.pseudorandom.PseudoRandomGenerator;
-import org.uma.jmetalsp.algorithm.DynamicAlgorithmBuilder;
-import org.uma.jmetalsp.problem.DynamicProblem;
+import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.updatedata.AlgorithmData;
-import org.uma.jmetalsp.util.Observable;
+import org.uma.jmetalsp.perception.Observable;
 
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class DynamicSMPSOBuilder<
 				P extends DynamicProblem<DoubleSolution, ?>,
-				O extends Observable<AlgorithmData>> implements DynamicAlgorithmBuilder<DynamicSMPSO<O>, P> {
+				O extends Observable<AlgorithmData>> {
 
 	private double c1Max;
 	private double c1Min;
@@ -169,7 +168,6 @@ public class DynamicSMPSOBuilder<
 		return this ;
 	}
 
-	@Override
 	public DynamicSMPSO build(P problem) {
 		return new DynamicSMPSO(problem, swarmSize, leaders, mutationOperator, maxIterations, r1Min, r1Max,
 						r2Min, r2Max, c1Min, c1Max, c2Min, c2Max, weightMin, weightMax, changeVelocity1,

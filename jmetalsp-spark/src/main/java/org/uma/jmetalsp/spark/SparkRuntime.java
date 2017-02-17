@@ -16,8 +16,8 @@ package org.uma.jmetalsp.spark;
 import org.apache.spark.SparkConf;
 import org.apache.spark.streaming.Durations;
 import org.apache.spark.streaming.api.java.JavaStreamingContext;
-import org.uma.jmetalsp.streamingruntime.StreamingRuntime;
-import org.uma.jmetalsp.updatedata.UpdateData;
+import org.uma.jmetalsp.StreamingRuntime;
+import org.uma.jmetalsp.UpdateData;
 
 import java.util.List;
 

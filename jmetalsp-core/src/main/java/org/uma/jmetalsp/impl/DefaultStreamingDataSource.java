@@ -1,8 +1,8 @@
-package org.uma.jmetalsp.streamingdatasource.impl;
+package org.uma.jmetalsp.impl;
 
-import org.uma.jmetalsp.streamingdatasource.StreamingDataSource;
-import org.uma.jmetalsp.updatedata.UpdateData;
-import org.uma.jmetalsp.util.Observable;
+import org.uma.jmetalsp.StreamingDataSource;
+import org.uma.jmetalsp.UpdateData;
+import org.uma.jmetalsp.perception.Observable;
 
 /**
  * Created by ajnebro on 16/2/17.

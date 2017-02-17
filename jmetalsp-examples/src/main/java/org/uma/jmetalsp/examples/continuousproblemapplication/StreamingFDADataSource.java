@@ -1,8 +1,8 @@
 package org.uma.jmetalsp.examples.continuousproblemapplication;
 
 import org.uma.jmetalsp.problem.fda.FDAUpdateData;
-import org.uma.jmetalsp.streamingdatasource.StreamingDataSource;
-import org.uma.jmetalsp.util.Observable;
+import org.uma.jmetalsp.StreamingDataSource;
+import org.uma.jmetalsp.perception.Observable;
 
 /**
  * This class emits the value of a counter periodically after a given delay (in milliseconds)

@@ -9,10 +9,9 @@ import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
-import org.uma.jmetalsp.algorithm.DynamicAlgorithmBuilder;
-import org.uma.jmetalsp.problem.DynamicProblem;
+import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.updatedata.AlgorithmData;
-import org.uma.jmetalsp.util.Observable;
+import org.uma.jmetalsp.perception.Observable;
 
 import java.util.List;
 
@@ -22,7 +21,7 @@ import java.util.List;
 public class DynamicNSGAIIBuilder<
 				S extends Solution<?>,
 				P extends DynamicProblem<S, ?>,
-				O extends Observable<AlgorithmData>> implements DynamicAlgorithmBuilder<DynamicNSGAII<S, O>, P> {
+				O extends Observable<AlgorithmData>>  {
 
 	private int maxEvaluations;
 	private int populationSize;
@@ -81,7 +80,6 @@ public class DynamicNSGAIIBuilder<
 		return this;
 	}
 
-	@Override
 	public DynamicNSGAII<S, O> build(P problem) {
 		return new DynamicNSGAII<S, O>(problem, maxEvaluations, populationSize, crossoverOperator, mutationOperator,
 						selectionOperator, evaluator, observable);

@@ -1,7 +1,7 @@
-package org.uma.jmetalsp.util.impl;
+package org.uma.jmetalsp.perception.impl;
 
-import org.uma.jmetalsp.util.Observable;
-import org.uma.jmetalsp.util.Observer;
+import org.uma.jmetalsp.perception.Observable;
+import org.uma.jmetalsp.perception.Observer;
 
 import java.util.HashSet;
 import java.util.Set;

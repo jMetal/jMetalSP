@@ -1,8 +1,6 @@
-package org.uma.jmetalsp.consumer;
+package org.uma.jmetalsp;
 
-import org.uma.jmetalsp.algorithm.DynamicAlgorithm;
-import org.uma.jmetalsp.updatedata.UpdateData;
-import org.uma.jmetalsp.util.Observer;
+import org.uma.jmetalsp.perception.Observer;
 
 /**
  * Created by ajnebro on 21/4/16.

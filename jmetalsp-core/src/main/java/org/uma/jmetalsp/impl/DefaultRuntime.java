@@ -1,8 +1,8 @@
-package org.uma.jmetalsp.streamingruntime.impl;
+package org.uma.jmetalsp.impl;
 
-import org.uma.jmetalsp.streamingdatasource.StreamingDataSource;
-import org.uma.jmetalsp.streamingruntime.StreamingRuntime;
-import org.uma.jmetalsp.updatedata.UpdateData;
+import org.uma.jmetalsp.StreamingDataSource;
+import org.uma.jmetalsp.StreamingRuntime;
+import org.uma.jmetalsp.UpdateData;
 
 import java.util.List;
 

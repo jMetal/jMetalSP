@@ -1,6 +1,6 @@
 package org.uma.jmetalsp.updatedata.repository;
 
-import org.uma.jmetalsp.updatedata.UpdateData;
+import org.uma.jmetalsp.UpdateData;
 
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>

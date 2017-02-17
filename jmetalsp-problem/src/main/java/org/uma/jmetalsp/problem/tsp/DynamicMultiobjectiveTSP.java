@@ -4,8 +4,8 @@ import org.uma.jmetal.problem.ConstrainedProblem;
 import org.uma.jmetal.problem.impl.AbstractIntegerPermutationProblem;
 import org.uma.jmetal.solution.PermutationSolution;
 import org.uma.jmetal.util.solutionattribute.impl.OverallConstraintViolation;
-import org.uma.jmetalsp.problem.DynamicProblem;
-import org.uma.jmetalsp.util.Observable;
+import org.uma.jmetalsp.DynamicProblem;
+import org.uma.jmetalsp.perception.Observable;
 
 /**
  * Version of the multi-objective TSP aimed at being solving dynamically.

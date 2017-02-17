@@ -1,7 +1,7 @@
 package org.uma.jmetalsp.updatedata.repository;
 
 import org.uma.jmetal.solution.Solution;
-import org.uma.jmetalsp.updatedata.UpdateData;
+import org.uma.jmetalsp.UpdateData;
 
 import java.util.List;
 

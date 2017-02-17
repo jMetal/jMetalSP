@@ -1,9 +1,8 @@
-package org.uma.jmetalsp.problem;
+package org.uma.jmetalsp;
 
 import org.uma.jmetal.problem.Problem;
 import org.uma.jmetal.solution.Solution;
-import org.uma.jmetalsp.updatedata.UpdateData;
-import org.uma.jmetalsp.util.Observer;
+import org.uma.jmetalsp.perception.Observer;
 
 /**
  * Created by ajnebro on 18/4/16.

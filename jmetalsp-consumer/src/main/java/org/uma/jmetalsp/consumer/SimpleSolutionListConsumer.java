@@ -11,45 +11,45 @@
 //  You should have received a copy of the GNU Lesser General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-package org.uma.jmetalsp.consumer.impl;
+package org.uma.jmetalsp.consumer;
 
 import org.uma.jmetal.util.JMetalException;
-import org.uma.jmetalsp.algorithm.DynamicAlgorithm;
-import org.uma.jmetalsp.consumer.AlgorithmDataConsumer;
+import org.uma.jmetalsp.AlgorithmDataConsumer;
+import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.updatedata.repository.AlgorithmResultData;
-import org.uma.jmetalsp.util.Observable;
-import org.uma.jmetalsp.util.Observer;
+import org.uma.jmetalsp.perception.Observable;
+import org.uma.jmetalsp.perception.Observer;
 
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class SimpleSolutionListConsumer implements AlgorithmDataConsumer<AlgorithmResultData> {
-  private DynamicAlgorithm<?, AlgorithmResultData> dynamicAlgorithm ;
+  private DynamicAlgorithm<?, AlgorithmResultData> dynamicAlgorithm;
 
   @Override
-  public void setAlgorithm(DynamicAlgorithm<?,AlgorithmResultData> algorithm) {
-    this.dynamicAlgorithm = algorithm ;
+  public void setAlgorithm(DynamicAlgorithm<?, AlgorithmResultData> algorithm) {
+    this.dynamicAlgorithm = algorithm;
   }
 
   @Override
-  public DynamicAlgorithm<?,AlgorithmResultData> getAlgorithm() {
-    return dynamicAlgorithm ;
+  public DynamicAlgorithm<?, AlgorithmResultData> getAlgorithm() {
+    return dynamicAlgorithm;
   }
 
-	@Override
-	public Observer getObserver() {
-		return this;
-	}
+  @Override
+  public Observer getObserver() {
+    return this;
+  }
 
-	@Override
+  @Override
   public void run() {
     if (dynamicAlgorithm == null) {
-      throw new JMetalException("The algorithm is null") ;
+      throw new JMetalException("The algorithm is null");
     }
 
-		dynamicAlgorithm.getObservable().register(this);
+    dynamicAlgorithm.getObservable().register(this);
 
-	  while(true){
+    while (true) {
       try {
         Thread.sleep(1000000);
       } catch (InterruptedException e) {
@@ -58,18 +58,13 @@ public class SimpleSolutionListConsumer implements AlgorithmDataConsumer<Algorit
     }
   }
 
-  /*
-	@Override
-	public void update(Observable<AlgorithmResultData> observable, AlgorithmResultData algorithmResultData) {
-		System.out.println("Consumer: Number of solutions: " + algorithmResultData.getSolutionList().size()) ;
-		System.out.println("Consumer: Computed iterations: " + algorithmResultData.getIterations()) ;
-	}
-  */
   @Override
   public void update(Observable<?> observable, Object data) {
     //if ("algorithm".equals(observable.getName())) {
-      AlgorithmResultData algorithmResultData = (AlgorithmResultData) data ;
-      System.out.println("Number of generated fronts: " + algorithmResultData.getIterations());
+    AlgorithmResultData algorithmResultData = (AlgorithmResultData) data;
+    System.out.println("Number of generated fronts: " + algorithmResultData.getIterations());
+    System.out.println("Size of the front: " + algorithmResultData.getSolutionList().size());
+
     //}
   }
 }

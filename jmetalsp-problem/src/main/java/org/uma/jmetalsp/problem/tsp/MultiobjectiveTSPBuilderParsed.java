@@ -1,7 +1,6 @@
 package org.uma.jmetalsp.problem.tsp;
 
-import org.uma.jmetalsp.problem.DynamicProblem;
-import org.uma.jmetalsp.problem.ProblemBuilder;
+import org.uma.jmetalsp.DynamicProblem;
 
 import java.io.IOException;
 
@@ -10,8 +9,7 @@ import java.io.IOException;
  *
  * @author Jose Andres Cordero
  */
-public class MultiobjectiveTSPBuilderParsed implements ProblemBuilder {
-  @Override
+public class MultiobjectiveTSPBuilderParsed {
   public DynamicProblem<?, ?> build() throws IOException {
     return null;
   }

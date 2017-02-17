@@ -1,4 +1,4 @@
-package org.uma.jmetalsp.util;
+package org.uma.jmetalsp.perception;
 
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>

@@ -11,16 +11,16 @@
 //  You should have received a copy of the GNU Lesser General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-package org.uma.jmetalsp.consumer.impl;
+package org.uma.jmetalsp.consumer;
 
 import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetal.util.fileoutput.SolutionListOutput;
 import org.uma.jmetal.util.fileoutput.impl.DefaultFileOutputContext;
-import org.uma.jmetalsp.algorithm.DynamicAlgorithm;
-import org.uma.jmetalsp.consumer.AlgorithmDataConsumer;
+import org.uma.jmetalsp.AlgorithmDataConsumer;
+import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.updatedata.repository.AlgorithmResultData;
-import org.uma.jmetalsp.util.Observable;
-import org.uma.jmetalsp.util.Observer;
+import org.uma.jmetalsp.perception.Observable;
+import org.uma.jmetalsp.perception.Observer;
 
 import java.io.File;
 
