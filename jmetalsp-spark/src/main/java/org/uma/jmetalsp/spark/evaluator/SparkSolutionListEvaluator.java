@@ -1,8 +1,7 @@
-package org.uma.jmetalsp.spark.util;
+package org.uma.jmetalsp.spark.evaluator;
 
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.api.java.function.Function;
 import org.uma.jmetal.problem.Problem;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.JMetalException;
@@ -14,10 +13,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by Antonio J. Nebro on 26/06/14.
+ * Solution list evaluator based on Spark
+ *
+ * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class SparkSolutionListEvaluator<S extends Solution<?>> implements SolutionListEvaluator<S>, Serializable {
-  static JavaSparkContext sparkContext ;
+public class SparkSolutionListEvaluator<S extends Solution<?>> implements SolutionListEvaluator<S> {
+  static JavaSparkContext sparkContext ; // = new JavaSparkContext(sparkConf);
 
   public SparkSolutionListEvaluator(JavaSparkContext sparkContext) {
     this.sparkContext = sparkContext ;
@@ -25,26 +26,21 @@ public class SparkSolutionListEvaluator<S extends Solution<?>> implements Soluti
 
   @Override public List<S> evaluate(List<S> solutionList, final Problem<S> problem)
       throws JMetalException {
+    List<S> population = new LinkedList<S>();
+
+    for (int i = 0; i < solutionList.size(); i++) {
+      population.add(solutionList.get(i));
+    }
 
     JavaRDD<S> solutionsToEvaluate = sparkContext.parallelize(solutionList);
 
-    solutionsToEvaluate.foreach(solution -> problem.evaluate(solution));
-    /*
     JavaRDD<S> evaluatedSolutions =
         solutionsToEvaluate.map(solution -> {
-          S sol = (S)solution.copy() ;
-          problem.evaluate(sol);
-          return sol;
+          problem.evaluate(solution);
+          return solution;
         });
 
-    List<S> newPopulation = evaluatedSolutions.collect();
-
-    List<S> resultSolutionSet = new ArrayList<>(solutionSet.size()) ;
-    for (Solution solution : newPopulation) {
-      resultSolutionSet.add((S)solution) ;
-    }
-  */
-    return solutionsToEvaluate.collect();
+    return evaluatedSolutions.collect() ;
   }
 
   @Override
