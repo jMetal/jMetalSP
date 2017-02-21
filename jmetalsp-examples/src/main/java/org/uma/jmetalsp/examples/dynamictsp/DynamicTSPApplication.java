@@ -15,6 +15,7 @@ import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAIIBuilder;
 import org.uma.jmetalsp.JMetalSPApplication;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.DynamicProblem;
+import org.uma.jmetalsp.consumer.SimpleSolutionListConsumer;
 import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPBuilderFromFiles;
 import org.uma.jmetalsp.impl.DefaultStreamingDataSource;
 import org.uma.jmetalsp.impl.DefaultRuntime;
@@ -41,13 +42,11 @@ public class DynamicTSPApplication {
     application = new JMetalSPApplication<>();
 
 	  // Problem configuration
-    Observable<MatrixUpdateData<Double>> streamingTSPData = new DefaultObservable<>("streamingTSP") ;
+    Observable<MatrixUpdateData<Double>> streamingTSPDataObservable = new DefaultObservable<>("streamingTSP") ;
 
 	  DynamicProblem<PermutationSolution<Integer>, MatrixUpdateData<Double>> problem ;
 	  problem = new MultiobjectiveTSPBuilderFromFiles("kroA100.tsp", "kroB100.tsp")
-            .build() ;
-
-	  streamingTSPData.register(problem);
+            .build(streamingTSPDataObservable) ;
 
 	  // Algorithm configuration
     CrossoverOperator<PermutationSolution<Integer>> crossover;
@@ -61,14 +60,14 @@ public class DynamicTSPApplication {
     String defaultAlgorithm = "NSGAII";
 
     DynamicAlgorithm<List<PermutationSolution<Integer>>, DefaultAlgorithmUpdateData> algorithm;
-    Observable<DefaultAlgorithmUpdateData> observable = new DefaultObservable<>("NSGAII") ;
+    Observable<DefaultAlgorithmUpdateData> algorithmObservable = new DefaultObservable<>("NSGAII") ;
 
     switch (defaultAlgorithm) {
       case "NSGAII":
         algorithm = new DynamicNSGAIIBuilder<
                 PermutationSolution<Integer>,
                 DynamicProblem<PermutationSolution<Integer>, ?>,
-                Observable<DefaultAlgorithmUpdateData>>(crossover, mutation, observable)
+                Observable<DefaultAlgorithmUpdateData>>(crossover, mutation, algorithmObservable)
                 .setSelectionOperator(selection)
                 .setMaxEvaluations(50000)
                 .setPopulationSize(100)
@@ -76,7 +75,7 @@ public class DynamicTSPApplication {
         break;
 
       case "MOCell":
-        algorithm = new DynamicMOCellBuilder<>(crossover, mutation, observable)
+        algorithm = new DynamicMOCellBuilder<>(crossover, mutation, algorithmObservable)
                 .setMaxEvaluations(50000)
                 .setPopulationSize(100)
                 .build(problem);
@@ -89,7 +88,7 @@ public class DynamicTSPApplication {
             .setProblem(problem)
             .setAlgorithm(algorithm)
             .addStreamingDataSource(new DefaultStreamingDataSource())
-            .addAlgorithmDataConsumer(new SimpleSolutionListConsumer2())
+            .addAlgorithmDataConsumer(new SimpleSolutionListConsumer())
             .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirectory"))
             //.addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirector2"))
             //.addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirector3"))

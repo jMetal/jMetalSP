@@ -7,5 +7,4 @@ import org.uma.jmetalsp.UpdateData;
  */
 public interface TimeUpdateData extends UpdateData {
 	double getTime() ;
-	double getTimeInterval() ;
 }

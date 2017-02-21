@@ -15,8 +15,8 @@ import org.uma.jmetalsp.consumer.SimpleSolutionListConsumer;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.problem.fda.FDA2;
-import org.uma.jmetalsp.problem.fda.FDAUpdateData;
 import org.uma.jmetalsp.impl.DefaultRuntime;
+import org.uma.jmetalsp.updatedata.TimeUpdateData;
 import org.uma.jmetalsp.updatedata.impl.DefaultAlgorithmUpdateData;
 import org.uma.jmetalsp.perception.Observable;
 import org.uma.jmetalsp.perception.impl.DefaultObservable;
@@ -31,15 +31,15 @@ public class DynamicContinuousApplication {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     JMetalSPApplication<
-            FDAUpdateData,
-            DynamicProblem<DoubleSolution, FDAUpdateData>,
-            DynamicAlgorithm<List<DoubleSolution>,FDAUpdateData>,
+            TimeUpdateData,
+            DynamicProblem<DoubleSolution, TimeUpdateData>,
+            DynamicAlgorithm<List<DoubleSolution>,TimeUpdateData>,
             StreamingFDADataSource> application;
     application = new JMetalSPApplication<>();
 
 	  // Problem configuration
-    Observable<FDAUpdateData> fdaUpdateDataObservable = new DefaultObservable<>("timeData") ;
-	  DynamicProblem<DoubleSolution, FDAUpdateData> problem = new FDA2(fdaUpdateDataObservable);
+    Observable<TimeUpdateData> fdaUpdateDataObservable = new DefaultObservable<>("timeData") ;
+	  DynamicProblem<DoubleSolution, TimeUpdateData> problem = new FDA2(fdaUpdateDataObservable);
 
 	  // Algorithm configuration
     CrossoverOperator<DoubleSolution> crossover = new SBXCrossover(0.9, 20.0);
@@ -81,7 +81,7 @@ public class DynamicContinuousApplication {
         algorithm = null;
     }
 
-    application.setStreamingRuntime(new DefaultRuntime<FDAUpdateData, StreamingFDADataSource>())
+    application.setStreamingRuntime(new DefaultRuntime<TimeUpdateData, StreamingFDADataSource>())
             .setProblem(problem)
             .setAlgorithm(algorithm)
             .addStreamingDataSource(new StreamingFDADataSource(fdaUpdateDataObservable, 2000))

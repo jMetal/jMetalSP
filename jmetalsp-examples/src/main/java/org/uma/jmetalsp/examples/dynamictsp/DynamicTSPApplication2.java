@@ -15,6 +15,7 @@ import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAIIBuilder;
 import org.uma.jmetalsp.JMetalSPApplication;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.DynamicProblem;
+import org.uma.jmetalsp.consumer.SimpleSolutionListConsumer;
 import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPBuilderFromFiles;
 import org.uma.jmetalsp.impl.DefaultRuntime;
 import org.uma.jmetalsp.updatedata.MatrixUpdateData;
@@ -86,7 +87,7 @@ public class DynamicTSPApplication2 {
             .setProblem(problem)
             .setAlgorithm(algorithm)
             .addStreamingDataSource(new StreamingTSPSource(streamingTSPDataObservable, 5000))
-            .addAlgorithmDataConsumer(new SimpleSolutionListConsumer2())
+            .addAlgorithmDataConsumer(new SimpleSolutionListConsumer())
             .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirectory"))
             .run();
   }
