@@ -58,6 +58,16 @@
         </repository>
     </distributionManagement>
 
+    <repositories>
+        <repository>
+            <id>sonatype</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <modules>
         <module>jmetalsp-core</module>
         <module>jmetalsp-updatedata</module>
@@ -281,5 +291,4 @@
 -->
         </dependencies>
     </dependencyManagement>
-
 </project>

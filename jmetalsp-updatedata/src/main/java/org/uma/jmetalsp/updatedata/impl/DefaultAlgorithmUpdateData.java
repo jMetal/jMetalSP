@@ -1,18 +1,19 @@
-package org.uma.jmetalsp.updatedata;
+package org.uma.jmetalsp.updatedata.impl;
 
 import org.uma.jmetal.solution.Solution;
+import org.uma.jmetalsp.updatedata.AlgorithmResultData;
 
 import java.util.List;
 
 /**
  * Created by ajnebro on 16/2/17.
  */
-public class AlgorithmData implements AlgorithmResultData {
+public class DefaultAlgorithmUpdateData implements AlgorithmResultData {
   private List<? extends Solution<?>> solutionList;
   private int numberOfIterations;
   private double computingTime;
 
-  public AlgorithmData(List<? extends Solution<?>> solutionList, int numberOfIterations, double computingTime) {
+  public DefaultAlgorithmUpdateData(List<? extends Solution<?>> solutionList, int numberOfIterations, double computingTime) {
     this.solutionList = solutionList;
     this.computingTime = computingTime;
     this.numberOfIterations = numberOfIterations;

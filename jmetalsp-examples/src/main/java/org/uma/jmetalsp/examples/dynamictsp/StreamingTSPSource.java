@@ -1,17 +1,17 @@
 package org.uma.jmetalsp.examples.dynamictsp;
 
 import org.uma.jmetal.util.pseudorandom.JMetalRandom;
-import org.uma.jmetalsp.problem.tsp.DynamicMultiobjectiveTSP;
-import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPUpdateData;
 import org.uma.jmetalsp.StreamingDataSource;
 import org.uma.jmetalsp.perception.Observable;
+import org.uma.jmetalsp.updatedata.MatrixUpdateData;
+import org.uma.jmetalsp.updatedata.impl.DefaultMatrixUpdateData;
 
 /**
  * This class emits a value periodically after a given delay (in milliseconds)
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class StreamingTSPSource implements StreamingDataSource<MultiobjectiveTSPUpdateData, Observable<MultiobjectiveTSPUpdateData>> {
-	private Observable<MultiobjectiveTSPUpdateData> updateData ;
+public class StreamingTSPSource implements StreamingDataSource<MatrixUpdateData, Observable<MatrixUpdateData>> {
+	private Observable<MatrixUpdateData<Double>> updateData ;
 	private int dataDelay ;
 
   /**
@@ -19,7 +19,7 @@ public class StreamingTSPSource implements StreamingDataSource<MultiobjectiveTSP
    * @param updateData
    * @param dataDelay Delay in milliseconds
    */
-	public StreamingTSPSource(Observable<MultiobjectiveTSPUpdateData> updateData, int dataDelay) {
+	public StreamingTSPSource(Observable<MatrixUpdateData<Double>> updateData, int dataDelay) {
 		this.updateData = updateData ;
 		this.dataDelay = dataDelay ;
 	}
@@ -38,9 +38,7 @@ public class StreamingTSPSource implements StreamingDataSource<MultiobjectiveTSP
       int y = JMetalRandom.getInstance().nextInt(0, 100) ;
       double value = JMetalRandom.getInstance().nextDouble(1.0, 4000) ;
 			updateData.setChanged(); ;
-			updateData.notifyObservers(new MultiobjectiveTSPUpdateData(
-							DynamicMultiobjectiveTSP.COST,
-							x, y, value));
+			updateData.notifyObservers(new DefaultMatrixUpdateData<>("COST", x, y, value));
 		}
 	}
 }

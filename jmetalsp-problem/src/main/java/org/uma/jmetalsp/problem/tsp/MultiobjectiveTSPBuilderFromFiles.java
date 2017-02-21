@@ -25,7 +25,7 @@ public class MultiobjectiveTSPBuilderFromFiles  {
     this.costFileName = costFileName ;
   }
 
-  public DynamicMultiobjectiveTSP build(Observable<MultiobjectiveTSPUpdateData> observable) throws IOException {
+  public DynamicMultiobjectiveTSP build() throws IOException {
     int         numberOfCities ;
     double [][] distanceMatrix ;
     double [][] costMatrix;
@@ -35,7 +35,7 @@ public class MultiobjectiveTSPBuilderFromFiles  {
     numberOfCities = distanceMatrix.length ;
 
     DynamicMultiobjectiveTSP problem =
-            new DynamicMultiobjectiveTSP(numberOfCities, distanceMatrix, costMatrix, observable);
+            new DynamicMultiobjectiveTSP(numberOfCities, distanceMatrix, costMatrix);
 
     return problem ;
   }

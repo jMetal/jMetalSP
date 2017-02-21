@@ -11,7 +11,7 @@ import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.perception.Observable;
-import org.uma.jmetalsp.updatedata.AlgorithmData;
+import org.uma.jmetalsp.updatedata.impl.DefaultAlgorithmUpdateData;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ import java.util.List;
 public class DynamicNSGAIIBuilder<
 				S extends Solution<?>,
 				P extends DynamicProblem<S, ?>,
-				O extends Observable<AlgorithmData>>  {
+				O extends Observable<DefaultAlgorithmUpdateData>>  {
 
 	private int maxEvaluations;
 	private int populationSize;

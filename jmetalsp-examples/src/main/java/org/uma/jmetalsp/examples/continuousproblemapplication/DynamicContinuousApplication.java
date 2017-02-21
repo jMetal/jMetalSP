@@ -17,7 +17,7 @@ import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.problem.fda.FDA2;
 import org.uma.jmetalsp.problem.fda.FDAUpdateData;
 import org.uma.jmetalsp.impl.DefaultRuntime;
-import org.uma.jmetalsp.updatedata.AlgorithmData;
+import org.uma.jmetalsp.updatedata.impl.DefaultAlgorithmUpdateData;
 import org.uma.jmetalsp.perception.Observable;
 import org.uma.jmetalsp.perception.impl.DefaultObservable;
 
@@ -48,15 +48,15 @@ public class DynamicContinuousApplication {
 
     String defaultAlgorithm = "SMPSO";
 
-    DynamicAlgorithm<List<DoubleSolution>, AlgorithmData> algorithm;
-    Observable<AlgorithmData> observable = new DefaultObservable<>("NSGAII") ;
+    DynamicAlgorithm<List<DoubleSolution>, DefaultAlgorithmUpdateData> algorithm;
+    Observable<DefaultAlgorithmUpdateData> observable = new DefaultObservable<>("NSGAII") ;
 
     switch (defaultAlgorithm) {
       case "NSGAII":
         algorithm = new DynamicNSGAIIBuilder<
                 DoubleSolution,
                 DynamicProblem<DoubleSolution, ?>,
-                Observable<AlgorithmData>>(crossover, mutation, observable)
+                Observable<DefaultAlgorithmUpdateData>>(crossover, mutation, observable)
                 .setMaxEvaluations(50000)
                 .setPopulationSize(100)
                 .build(problem);

@@ -6,6 +6,7 @@ import org.uma.jmetal.solution.PermutationSolution;
 import org.uma.jmetal.util.solutionattribute.impl.OverallConstraintViolation;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.perception.Observable;
+import org.uma.jmetalsp.updatedata.MatrixUpdateData;
 
 /**
  * Version of the multi-objective TSP aimed at being solving dynamically.
@@ -15,30 +16,23 @@ import org.uma.jmetalsp.perception.Observable;
 public class DynamicMultiobjectiveTSP
     extends AbstractIntegerPermutationProblem
     implements ConstrainedProblem<PermutationSolution<Integer>>,
-    DynamicProblem<PermutationSolution<Integer>, MultiobjectiveTSPUpdateData> {
+    DynamicProblem<PermutationSolution<Integer>, MatrixUpdateData<Double>> {
   public static final double NON_CONNECTED = Double.POSITIVE_INFINITY ;
   private int         numberOfCities ;
   private double [][] distanceMatrix ;
   private double [][] costMatrix;
 
   private boolean theProblemHasBeenModified;
-  public static final int DISTANCE = 0;
-  public static final int COST = 1;
-
-  protected Observable<MultiobjectiveTSPUpdateData> observable ;
-
 
   public OverallConstraintViolation<PermutationSolution<Integer>> overallConstraintViolationDegree ;
 
 
   public DynamicMultiobjectiveTSP(int numberOfCities,
                                   double[][] distanceMatrix,
-                                  double[][] costMatrix,
-                                  Observable<MultiobjectiveTSPUpdateData> observable) {
+                                  double[][] costMatrix) {
     this.numberOfCities = numberOfCities ;
     this.distanceMatrix = distanceMatrix ;
     this.costMatrix = costMatrix ;
-    this.observable = observable ;
 
     theProblemHasBeenModified = false ;
 
@@ -125,7 +119,6 @@ public class DynamicMultiobjectiveTSP
   public synchronized void updateDistanceValue(int row, int col, double newValue) {
     distanceMatrix[row][col] = newValue ;
     theProblemHasBeenModified = true ;
-   // JMetalLogger.logger.info("Updated distance: " + row + ", " + col + ": " + newValue) ;
   }
 
   /* Getters/Setters */
@@ -164,10 +157,10 @@ public class DynamicMultiobjectiveTSP
 
   @Override
   public void update(Observable<?> observable, Object data) {
-    MultiobjectiveTSPUpdateData tspData = (MultiobjectiveTSPUpdateData)data ;
-    if (data!=null && tspData.getMatrixID()==COST){
+    MatrixUpdateData<Double> tspData = (MatrixUpdateData<Double>)data ;
+    if (data!=null && tspData.getMatrixIdentifier() == "COST") {
       updateCostValue(tspData.getX(),tspData.getY(),tspData.getValue());
-    }else if(data!=null && tspData.getMatrixID()==DISTANCE){
+    } else if(data!=null && tspData.getMatrixIdentifier() == "VALUE"){
       updateDistanceValue(tspData.getX(),tspData.getY(),tspData.getValue());
     }
   }

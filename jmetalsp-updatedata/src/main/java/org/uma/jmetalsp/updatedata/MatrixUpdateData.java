@@ -5,9 +5,9 @@ import org.uma.jmetalsp.UpdateData;
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public interface DoubleMatrixUpdateData extends UpdateData {
-	int getMatrixID() ;
+public interface MatrixUpdateData<T> extends UpdateData {
 	int getX() ;
 	int getY() ;
-	double getValue() ;
+	T getValue() ;
+	Object getMatrixIdentifier() ;
 }

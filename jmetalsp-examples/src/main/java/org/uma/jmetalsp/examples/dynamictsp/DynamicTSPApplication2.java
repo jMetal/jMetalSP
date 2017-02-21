@@ -17,9 +17,9 @@ import org.uma.jmetalsp.consumer.SimpleSolutionListConsumer2;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPBuilderFromFiles;
-import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPUpdateData;
 import org.uma.jmetalsp.impl.DefaultRuntime;
-import org.uma.jmetalsp.updatedata.AlgorithmData;
+import org.uma.jmetalsp.updatedata.MatrixUpdateData;
+import org.uma.jmetalsp.updatedata.impl.DefaultAlgorithmUpdateData;
 import org.uma.jmetalsp.perception.Observable;
 import org.uma.jmetalsp.perception.impl.DefaultObservable;
 
@@ -33,18 +33,20 @@ public class DynamicTSPApplication2 {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     JMetalSPApplication<
-            MultiobjectiveTSPUpdateData,
-            DynamicProblem<DoubleSolution, MultiobjectiveTSPUpdateData>,
-            DynamicAlgorithm<List<PermutationSolution<Integer>>,MultiobjectiveTSPUpdateData>,
-            //StreamingFDADataSource> application;
+            MatrixUpdateData,
+            DynamicProblem<DoubleSolution, MatrixUpdateData>,
+            DynamicAlgorithm<List<PermutationSolution<Integer>>,MatrixUpdateData>,
             ?> application;
     application = new JMetalSPApplication<>();
 
 	  // Problem configuration
-    Observable<MultiobjectiveTSPUpdateData> dataObservable = new DefaultObservable<>("") ;
-	  DynamicProblem<PermutationSolution<Integer>, MultiobjectiveTSPUpdateData> problem ;
-	  problem = new MultiobjectiveTSPBuilderFromFiles("kroA100.tsp", "kroB100.tsp")
-            .build(dataObservable) ;
+    Observable<MatrixUpdateData<Double>> streamingTSPData = new DefaultObservable<>("streamingTSP") ;
+
+    DynamicProblem<PermutationSolution<Integer>, MatrixUpdateData<Double>> problem ;
+    problem = new MultiobjectiveTSPBuilderFromFiles("kroA100.tsp", "kroB100.tsp")
+            .build() ;
+
+    streamingTSPData.register(problem);
 
 	  // Algorithm configuration
     CrossoverOperator<PermutationSolution<Integer>> crossover;
@@ -57,15 +59,15 @@ public class DynamicTSPApplication2 {
 
     String defaultAlgorithm = "NSGAII";
 
-    DynamicAlgorithm<List<PermutationSolution<Integer>>, AlgorithmData> algorithm;
-    Observable<AlgorithmData> observable = new DefaultObservable<>("NSGAII") ;
+    DynamicAlgorithm<List<PermutationSolution<Integer>>, DefaultAlgorithmUpdateData> algorithm;
+    Observable<DefaultAlgorithmUpdateData> observable = new DefaultObservable<>("NSGAII") ;
 
     switch (defaultAlgorithm) {
       case "NSGAII":
         algorithm = new DynamicNSGAIIBuilder<
                 PermutationSolution<Integer>,
                 DynamicProblem<PermutationSolution<Integer>, ?>,
-                Observable<AlgorithmData>>(crossover, mutation, observable)
+                Observable<DefaultAlgorithmUpdateData>>(crossover, mutation, observable)
                 .setSelectionOperator(selection)
                 .setMaxEvaluations(100000)
                 .setPopulationSize(100)
@@ -82,10 +84,10 @@ public class DynamicTSPApplication2 {
         algorithm = null;
     }
 
-    application.setStreamingRuntime(new DefaultRuntime<MultiobjectiveTSPUpdateData, StreamingTSPSource>())
+    application.setStreamingRuntime(new DefaultRuntime<MatrixUpdateData, StreamingTSPSource>())
             .setProblem(problem)
             .setAlgorithm(algorithm)
-            .addStreamingDataSource(new StreamingTSPSource(dataObservable, 5000))
+            .addStreamingDataSource(new StreamingTSPSource(streamingTSPData, 5000))
             .addAlgorithmDataConsumer(new SimpleSolutionListConsumer2())
             .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirectory"))
             .run();
