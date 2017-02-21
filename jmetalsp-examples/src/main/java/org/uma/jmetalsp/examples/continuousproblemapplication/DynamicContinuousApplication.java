@@ -11,7 +11,7 @@ import org.uma.jmetalsp.algorithm.mocell.DynamicMOCellBuilder;
 import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAIIBuilder;
 import org.uma.jmetalsp.algorithm.smpso.DynamicSMPSOBuilder;
 import org.uma.jmetalsp.JMetalSPApplication;
-import org.uma.jmetalsp.consumer.SimpleSolutionListConsumer2;
+import org.uma.jmetalsp.consumer.SimpleSolutionListConsumer;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.problem.fda.FDA2;
@@ -85,7 +85,7 @@ public class DynamicContinuousApplication {
             .setProblem(problem)
             .setAlgorithm(algorithm)
             .addStreamingDataSource(new StreamingFDADataSource(fdaUpdateDataObservable, 2000))
-            .addAlgorithmDataConsumer(new SimpleSolutionListConsumer2())
+            .addAlgorithmDataConsumer(new SimpleSolutionListConsumer())
             .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirectory"))
             //.addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirector2"))
             //.addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirector3"))
