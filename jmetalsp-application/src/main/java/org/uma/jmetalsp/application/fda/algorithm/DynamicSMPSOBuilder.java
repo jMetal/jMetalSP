@@ -14,7 +14,6 @@ import org.uma.jmetal.util.pseudorandom.PseudoRandomGenerator;
 import org.uma.jmetalsp.algorithm.AlgorithmBuilder;
 import org.uma.jmetalsp.algorithm.DynamicSMPSO;
 import org.uma.jmetalsp.problem.fda.FDA;
-import org.uma.jmetalsp.problem.fda.fda5.FDA5;
 
 import java.io.Serializable;
 
@@ -26,7 +25,7 @@ public class DynamicSMPSOBuilder implements AlgorithmBuilder<DynamicSMPSO,FDA>,S
   public DynamicSMPSO build(FDA problem) {
       this.leaders=  new CrowdingDistanceArchive<DoubleSolution>(100);
       swarmSize = 100;
-      maxIterations = 40000;//250000
+      maxIterations = 75000;//250000
       r1Max = 1.0;
       r1Min = 0.0;
       r2Max = 1.0;

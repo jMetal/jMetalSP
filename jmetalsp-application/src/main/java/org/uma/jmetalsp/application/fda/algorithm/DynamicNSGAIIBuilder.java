@@ -12,7 +12,6 @@ import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetalsp.algorithm.AlgorithmBuilder;
 import org.uma.jmetalsp.algorithm.DynamicNSGAII;
 import org.uma.jmetalsp.problem.fda.FDA;
-import org.uma.jmetalsp.problem.fda.fda2.FDA2;
 
 import java.util.List;
 

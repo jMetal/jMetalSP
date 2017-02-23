@@ -1,8 +1,8 @@
 package org.uma.jmetalsp.application.fda.generatorDataSource.kafka;
 
+import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
 import java.io.Serializable;
@@ -16,13 +16,13 @@ public class KafkaFDA extends Thread implements Serializable{
   private final String topic;
   private final int waitTime;
 
-  public KafkaFDA(int waitTime, String topic,String server,int port) {
+  public KafkaFDA(int waitTime, String topic,String server,int port,String clientId) {
     this.topic = topic;
     this.waitTime = waitTime;
     String aux = server+":"+port;
     Properties props = new Properties();
     props.put("bootstrap.servers", aux);
-    props.put("client.id", "TSPProducer");
+    props.put("client.id", clientId);
     props.put("key.serializer", "org.apache.kafka.common.serialization.IntegerSerializer");
     props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
     producer = new KafkaProducer<Integer, String>(props);

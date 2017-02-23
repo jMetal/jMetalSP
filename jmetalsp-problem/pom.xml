@@ -10,6 +10,7 @@
         <version>1.1-SNAPSHOT</version>
     </parent>
 
+    <groupId>org.uma.jmetalsp</groupId>
     <artifactId>jmetalsp-problem</artifactId>
     <packaging>jar</packaging>
 
@@ -54,6 +55,21 @@
         <dependency>
             <groupId>org.uma.jmetalsp</groupId>
             <artifactId>jmetalsp-core</artifactId>
+            <version>1.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.uma.jmetalsp</groupId>
+            <artifactId>jmetalsp-spark</artifactId>
+            <version>1.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.uma.jmetalsp</groupId>
+            <artifactId>jmetalsp-updatedata</artifactId>
+            <version>1.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.uma.jmetal</groupId>
+            <artifactId>jmetal-core</artifactId>
         </dependency>
     </dependencies>
 </project>

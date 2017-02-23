@@ -1,14 +1,14 @@
 package  org.uma.jmetalsp.application.fda.streamingDataSource;
 
-import org.apache.spark.api.java.JavaRDD;
-import org.apache.spark.api.java.function.Function;
-import org.apache.spark.api.java.function.VoidFunction;
 import org.apache.spark.streaming.api.java.JavaDStream;
 import org.apache.spark.streaming.api.java.JavaPairInputDStream;
 import org.apache.spark.streaming.api.java.JavaStreamingContext;
 import org.apache.spark.streaming.kafka.KafkaUtils;
 import org.uma.jmetal.solution.DoubleSolution;
-
+import org.uma.jmetalsp.application.fda.sparkutil.StreamingConfigurationFDA;
+import org.uma.jmetalsp.problem.DynamicProblem;
+import org.uma.jmetalsp.problem.fda.FDAUpdateData;
+import org.uma.jmetalsp.streamingdatasource.StreamingDataSource;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -17,11 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 
 import kafka.serializer.StringDecoder;
-import org.uma.jmetalsp.application.fda.sparkutil.StreamingConfigurationFDA;
-import org.uma.jmetalsp.problem.DynamicProblem;
-import org.uma.jmetalsp.problem.fda.FDAUpdateData;
-import org.uma.jmetalsp.streamingdatasource.StreamingDataSource;
-import scala.Tuple2;
 
 /**
  * @author Cristóbal Barba <cbarba@lcc.uma.es>
@@ -53,29 +48,15 @@ public class StreamingKafkaFDA implements StreamingDataSource<FDAUpdateData>,Ser
             kafkaParams,
             topicsSet
     );
-    JavaDStream<String> lines = messages.map(new Function<Tuple2<String, String>, String>() {
-      @Override
-      public String call(Tuple2<String, String> tuple2) {
-        return tuple2._2();
-      }
-    });
+    JavaDStream<String> lines = messages.map(tuple2 -> tuple2._2());
 
     JavaDStream<FDAUpdateData> routeUpdates =
-            lines.map(new Function<String, FDAUpdateData>() {
-              @Override
-              public FDAUpdateData call(String s) throws Exception {
-                FDAUpdateData data = new FDAUpdateData( Integer.valueOf(s));
-                return data;
-              }
-            });
+            lines.map(s -> new FDAUpdateData( Integer.valueOf(s)));
 
-    routeUpdates.foreachRDD(new VoidFunction<JavaRDD<FDAUpdateData>>() {
-      @Override
-      public void call(JavaRDD<FDAUpdateData> mapJavaRDD) throws Exception {
-        List<FDAUpdateData> dataList = mapJavaRDD.collect();
-        for (FDAUpdateData data : dataList) {
-          problem.update(data);
-        }
+    routeUpdates.foreachRDD(mapJavaRDD -> {
+      List<FDAUpdateData> dataList = mapJavaRDD.collect();
+      for (FDAUpdateData data : dataList) {
+        problem.update(data);
       }
     });
   }

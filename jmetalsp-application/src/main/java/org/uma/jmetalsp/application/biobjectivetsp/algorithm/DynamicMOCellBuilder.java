@@ -15,7 +15,6 @@ import org.uma.jmetal.util.neighborhood.Neighborhood;
 import org.uma.jmetal.util.neighborhood.impl.C9;
 import org.uma.jmetalsp.algorithm.AlgorithmBuilder;
 import org.uma.jmetalsp.algorithm.DynamicMOCell;
-
 import org.uma.jmetalsp.problem.tsp.DynamicMultiobjectiveTSP;
 
 import java.util.List;

@@ -12,7 +12,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package org.uma.jmetalsp.application.biobjectivetsp.streamingDataSource;
 
-import org.uma.jmetalsp.application.biobjectivetsp.sparkutil.StreamingConfigurationTSP;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.function.VoidFunction;
 import org.apache.spark.api.java.function.VoidFunction2;
@@ -21,10 +20,11 @@ import org.apache.spark.streaming.api.java.JavaDStream;
 import org.apache.spark.streaming.api.java.JavaStreamingContext;
 import org.apache.spark.streaming.twitter.TwitterUtils;
 import org.uma.jmetal.solution.PermutationSolution;
-
-import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPUpdateData;
+import org.uma.jmetalsp.application.biobjectivetsp.sparkutil.StreamingConfigurationTSP;
 import org.uma.jmetalsp.problem.DynamicProblem;
+import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPUpdateData;
 import org.uma.jmetalsp.streamingdatasource.StreamingDataSource;
+
 import twitter4j.Status;
 import twitter4j.auth.Authorization;
 

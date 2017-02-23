@@ -12,8 +12,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package org.uma.jmetalsp.application.biobjectivetsp.streamingDataSource;
 
-import org.uma.jmetalsp.application.biobjectivetsp.sparkutil.StreamingConfigurationTSP;
-import kafka.serializer.StringDecoder;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.VoidFunction;
@@ -22,16 +20,18 @@ import org.apache.spark.streaming.api.java.JavaPairInputDStream;
 import org.apache.spark.streaming.api.java.JavaStreamingContext;
 import org.apache.spark.streaming.kafka.KafkaUtils;
 import org.uma.jmetal.solution.PermutationSolution;
-
-import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPUpdateData;
+import org.uma.jmetalsp.application.biobjectivetsp.sparkutil.StreamingConfigurationTSP;
 import org.uma.jmetalsp.problem.DynamicProblem;
+import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPUpdateData;
 import org.uma.jmetalsp.streamingdatasource.StreamingDataSource;
-import scala.Tuple2;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+
+import kafka.serializer.StringDecoder;
+import scala.Tuple2;
 
 /**
  * StreamingKafkaTSP class for get streaming kafka data for TSP problem

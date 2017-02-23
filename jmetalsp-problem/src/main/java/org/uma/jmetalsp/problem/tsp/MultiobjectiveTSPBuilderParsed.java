@@ -1,11 +1,7 @@
 package org.uma.jmetalsp.problem.tsp;
 
-import org.uma.jmetal.util.JMetalException;
-import org.uma.jmetalsp.problem.ProblemBuilder;
-import org.uma.jmetalsp.util.HDFSUtil;
+import org.uma.jmetalsp.DynamicProblem;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 
 /**
@@ -13,8 +9,11 @@ import java.io.IOException;
  *
  * @author Jose Andres Cordero
  */
-public class MultiobjectiveTSPBuilderParsed implements ProblemBuilder {
-  
+public class MultiobjectiveTSPBuilderParsed {
+  public DynamicProblem<?, ?> build() throws IOException {
+    return null;
+  }
+  /*
   private int         numberOfCities ;
   private double [][] distanceMatrix ;
   private double [][] costMatrix;
@@ -82,4 +81,5 @@ public class MultiobjectiveTSPBuilderParsed implements ProblemBuilder {
     public DynamicMultiobjectiveTSP build() throws IOException {
         return this.initializeProblem();
     }
+    */
 }
