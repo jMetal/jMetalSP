@@ -20,12 +20,4 @@ public class DefaultRuntime<D extends UpdateData, S extends StreamingDataSource<
     }
     System.out.println("Started streaming data sources") ;
   }
-
-    /*
-    System.out.println("Default runtime") ;
-    streamingDataSourceList.parallelStream()
-						.forEach(s -> s.start());
-    System.out.println("Started streaming data sources") ;
-	}
-*/
 }

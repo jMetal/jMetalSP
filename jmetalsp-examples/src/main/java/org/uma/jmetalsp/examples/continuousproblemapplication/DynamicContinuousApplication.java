@@ -53,10 +53,7 @@ public class DynamicContinuousApplication {
 
     switch (defaultAlgorithm) {
       case "NSGAII":
-        algorithm = new DynamicNSGAIIBuilder<
-                DoubleSolution,
-                DynamicProblem<DoubleSolution, ?>,
-                Observable<DefaultAlgorithmUpdateData>>(crossover, mutation, observable)
+        algorithm = new DynamicNSGAIIBuilder<>(crossover, mutation, observable)
                 .setMaxEvaluations(50000)
                 .setPopulationSize(100)
                 .build(problem);
@@ -87,8 +84,6 @@ public class DynamicContinuousApplication {
             .addStreamingDataSource(new StreamingFDADataSource(fdaUpdateDataObservable, 2000))
             .addAlgorithmDataConsumer(new SimpleSolutionListConsumer())
             .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirectory"))
-            //.addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirector2"))
-            //.addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirector3"))
             .run();
   }
 }

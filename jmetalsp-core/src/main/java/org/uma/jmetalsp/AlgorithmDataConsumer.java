@@ -8,5 +8,4 @@ import org.uma.jmetalsp.perception.Observer;
 public interface AlgorithmDataConsumer<D extends UpdateData> extends Runnable, Observer {
   void setAlgorithm(DynamicAlgorithm<?,D> algorithm) ;
   DynamicAlgorithm<?,D> getAlgorithm() ;
-  Observer getObserver() ;
 }
