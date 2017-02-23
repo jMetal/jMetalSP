@@ -33,8 +33,7 @@ The implementation of jMetalSP applies Java generics to ensure that all the comp
 public class JMetalSPApplication<
     D extends UpdateData,
     P extends DynamicProblem<? extends Solution<?>, D>,
-    A extends DynamicAlgorithm<?, D>,
-		S extends StreamingDataSource<D,?>> {
+    A extends DynamicAlgorithm<?, D>, S extends StreamingDataSource<D,?>> {
 
   private List<S> streamingDataSourceList ;
   private List<AlgorithmDataConsumer> algorithmDataConsumerList ;
@@ -53,6 +52,14 @@ The following example applications are included in the current development versi
 * [`DynamicContinuousApplication`](https://github.com/jMetal/jMetalSP/blob/master/jmetalsp-examples/src/main/java/org/uma/jmetalsp/examples/continuousproblemapplication/DynamicContinuousApplication.java). Example of using NSGA-II, MOCell or SMPSO to solve the FDA problems using the default streaming runtime, i.e. without Spark
 * [`DynamicTSPApplication`](https://github.com/jMetal/jMetalSP/blob/master/jmetalsp-examples/src/main/java/org/uma/jmetalsp/examples/dynamictsp/DynamicTSPApplication.java). Example of using NSGA-II or MOCell or SMPSO to solve a bi-objective TSP problem using the default streaming runtime, i.e. without Spark. The streaming data source simulates changes in the cost matrix (no external data source is used). This is a simplied version the algorithm presented in MOD 2016.
 * [`NSGAIIRunner`](https://github.com/jMetal/jMetalSP/blob/master/jmetalsp-spark/src/main/java/org/uma/jmetalsp/spark/evaluator/NSGAIIRunner.java). This example, included in the paper to be presented in EMO 2017, shows how to configure the standard NSGA-II algorithm to solve a modified version of the ZDT1 problem using the Spark evaluator to evaluate the solutions of the population in parallel. 
+
+## Requirements
+To run the examples that do not use Spark you need:
+* Java JDK 8
+* Apache Maven
+
+To execute the codes with Spark:
+* Spark 2.0.0 or later
 
 ## References
 * José A. Cordero, Antonio J. Nebro, Juan J. Durillo, José García-Nieto, Ismael Navas-Delgado, José F. Aldana-Montes: "Dynamic Multi-Objective Optimization With jMetal and Spark: a Case Study". MOD 2016 ([DOI](http://dx.doi.org/10.1007/978-3-319-51469-7_9)).
