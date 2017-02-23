@@ -48,27 +48,6 @@ public class JMetalSPApplication<
 ```
 This way, by using generics the Java compiler can check that all the components fit together. 
 
-As an example, the [jMetalSP application](https://github.com/jMetal/jMetalSP/blob/master/jmetalsp-application/src/main/java/org/uma/jmetalsp/application/biobjectivetsp/runner/newyorktraffic/DynamicTSPNSGAIIRunner.java) used in the paper to be presented in MOD 2016 (which solves a dynamic version of the bi-objective TSP problem with a dynamic variant of NSGA-II) is configured in this way:
-```java
-    JMetalSPApplication<
-            MultiobjectiveTSPUpdateData,
-            DynamicMultiobjectiveTSP,
-            DynamicTSPNSGAII> application = new JMetalSPApplication<>();
-    
-    StreamingConfigurationTSP streamingConfigurationTSP= new StreamingConfigurationTSP();
-    streamingConfigurationTSP.initializeDirectoryTSP(args[1]);
-    
-    application
-            .setSparkRuntime(new SparkRuntime(1))
-            .setProblemBuilder(new MultiobjectiveTSPBuilderParsed(fileName))
-            .setAlgorithmBuilder(new DynamicNSGAIIBuilder())
-            .addAlgorithmDataConsumer(new SimpleSolutionListConsumer())
-            .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer(args[2]))
-            .addStreamingDataSource(new StreamingDirectoryTSP(streamingConfigurationTSP))
-            .run();
-}
-```
-
 ## Examples
 The following example applications are included in the current development version:
 * [`DynamicContinuousApplication`](https://github.com/jMetal/jMetalSP/blob/master/jmetalsp-examples/src/main/java/org/uma/jmetalsp/examples/continuousproblemapplication/DynamicContinuousApplication.java). Example of using NSGA-II, MOCell or SMPSO to solve the FDA problems using the default streaming runtime, i.e. without Spark
