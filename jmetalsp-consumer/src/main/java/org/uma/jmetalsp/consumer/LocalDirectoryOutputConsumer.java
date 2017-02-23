@@ -55,12 +55,6 @@ public class LocalDirectoryOutputConsumer implements AlgorithmDataConsumer<Algor
   }
 
   @Override
-  public Observer getObserver() {
-    return this;
-  }
-
-
-  @Override
   public void run() {
     if (dynamicAlgorithm == null) {
       throw new JMetalException("The algorithm is null");
