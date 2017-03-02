@@ -68,6 +68,11 @@
         </dependency>
         <dependency>
             <groupId>org.uma.jmetalsp</groupId>
+            <artifactId>jmetalsp-spark</artifactId>
+            <version>1.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.uma.jmetalsp</groupId>
             <artifactId>jmetalsp-consumer</artifactId>
             <version>1.1-SNAPSHOT</version>
         </dependency>

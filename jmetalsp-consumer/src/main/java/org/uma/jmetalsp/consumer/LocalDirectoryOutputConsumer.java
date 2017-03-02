@@ -54,12 +54,10 @@ public class LocalDirectoryOutputConsumer implements AlgorithmDataConsumer<Algor
     return dynamicAlgorithm;
   }
 
-  @Override
   public Observer getObserver() {
     return this;
   }
-
-
+  
   @Override
   public void run() {
     if (dynamicAlgorithm == null) {

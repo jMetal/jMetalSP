@@ -7,30 +7,30 @@ import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.archive.impl.CrowdingDistanceArchive;
 import org.uma.jmetalsp.DynamicAlgorithm;
+import org.uma.jmetalsp.DynamicProblem;
+import org.uma.jmetalsp.JMetalSPApplication;
 import org.uma.jmetalsp.algorithm.mocell.DynamicMOCellBuilder;
 import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAIIBuilder;
 import org.uma.jmetalsp.algorithm.smpso.DynamicSMPSOBuilder;
-import org.uma.jmetalsp.JMetalSPApplication;
-import org.uma.jmetalsp.consumer.SimpleSolutionListConsumer;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
-import org.uma.jmetalsp.DynamicProblem;
-import org.uma.jmetalsp.problem.fda.FDA2;
-import org.uma.jmetalsp.impl.DefaultRuntime;
-import org.uma.jmetalsp.updatedata.TimeUpdateData;
-import org.uma.jmetalsp.updatedata.impl.DefaultAlgorithmUpdateData;
+import org.uma.jmetalsp.consumer.SimpleSolutionListConsumer;
 import org.uma.jmetalsp.perception.Observable;
 import org.uma.jmetalsp.perception.impl.DefaultObservable;
+import org.uma.jmetalsp.problem.fda.FDA2;
+import org.uma.jmetalsp.spark.SparkRuntime;
+import org.uma.jmetalsp.updatedata.TimeUpdateData;
+import org.uma.jmetalsp.updatedata.impl.DefaultAlgorithmUpdateData;
 
 import java.io.IOException;
 import java.util.List;
 
 /**
  * Example of application to solve a dynamic continuous problem (any of the FDA family) with NSGA-II, SMPSO or MOCell
- * using threads.
+ * using Apache Spark.
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DynamicContinuousApplication {
+public class DynamicContinuousApplicationWithSpark {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     JMetalSPApplication<
@@ -81,10 +81,10 @@ public class DynamicContinuousApplication {
         algorithm = null;
     }
 
-    application.setStreamingRuntime(new DefaultRuntime<TimeUpdateData, StreamingFDADataSource>())
+    application.setStreamingRuntime(new SparkRuntime<TimeUpdateData>(5))
             .setProblem(problem)
             .setAlgorithm(algorithm)
-            .addStreamingDataSource(new StreamingFDADataSource(fdaUpdateDataObservable, 2000))
+            .addStreamingDataSource(new StreamingSparkFDADataSource(fdaUpdateDataObservable, 2000, "timeDirectory"))
             .addAlgorithmDataConsumer(new SimpleSolutionListConsumer())
             .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirectory"))
             .run();

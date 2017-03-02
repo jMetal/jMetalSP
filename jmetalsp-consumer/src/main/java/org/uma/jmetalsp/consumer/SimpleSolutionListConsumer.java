@@ -36,7 +36,6 @@ public class SimpleSolutionListConsumer implements AlgorithmDataConsumer<Algorit
     return dynamicAlgorithm;
   }
 
-  @Override
   public Observer getObserver() {
     return this;
   }

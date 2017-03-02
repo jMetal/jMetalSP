@@ -36,6 +36,7 @@ public class StreamingFDADataSource implements StreamingDataSource<TimeUpdateDat
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+
       time= (1.0d/(double)nT) * Math.floor((double)counter/(double)tauT) ;
 
 			updateData.setChanged(); ;
