@@ -41,7 +41,8 @@ import java.io.FileNotFoundException;
 import java.util.List;
 
 /**
- * Class to configure and run the NSGA-II algorithm with the Spark evaluator
+ * Class to configure and run the NSGA-II algorithm to solve a modified version of
+ * problem ZDT1 using the Spark evaluator
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */

@@ -67,6 +67,7 @@ public class ZDT1 extends AbstractDoubleProblem {
     double h = this.evalH(f[0], g);
     f[1] = h * g;
 
+    // Computing delay
     double value = 1.2 ;
     for (long i = 0 ; i < 100000; i++) {
       value = value * i ;
