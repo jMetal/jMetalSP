@@ -7,6 +7,7 @@ import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.archive.impl.CrowdingDistanceArchive;
 import org.uma.jmetalsp.DynamicAlgorithm;
+import org.uma.jmetalsp.StreamingDataSource;
 import org.uma.jmetalsp.algorithm.mocell.DynamicMOCellBuilder;
 import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAIIBuilder;
 import org.uma.jmetalsp.algorithm.smpso.DynamicSMPSOBuilder;
@@ -25,8 +26,11 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Example of application to solve a dynamic continuous problem (any of the FDA family) with NSGA-II, SMPSO or MOCell
- * using threads.
+ * Example of SparkSP application.
+ * Features:
+ * - Algorithm: to choose among NSGA-II, SMPSO and MOCell
+ * - Problem: Any of the FDA familiy
+ * - Default streaming runtime (Spark is not used)
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
@@ -40,8 +44,11 @@ public class DynamicContinuousApplication {
             StreamingFDADataSource> application;
     application = new JMetalSPApplication<>();
 
-	  // Problem configuration
+    // Set the streaming data source
     Observable<TimeUpdateData> fdaUpdateDataObservable = new DefaultObservable<>("timeData") ;
+    StreamingDataSource<?, ?> streamingDataSource = new StreamingFDADataSource(fdaUpdateDataObservable, 2000) ;
+
+    // Problem configuration
 	  DynamicProblem<DoubleSolution, TimeUpdateData> problem = new FDA2(fdaUpdateDataObservable);
 
 	  // Algorithm configuration
@@ -52,7 +59,7 @@ public class DynamicContinuousApplication {
     String defaultAlgorithm = "SMPSO";
 
     DynamicAlgorithm<List<DoubleSolution>, DefaultAlgorithmUpdateData> algorithm;
-    Observable<DefaultAlgorithmUpdateData> observable = new DefaultObservable<>("NSGAII") ;
+    Observable<DefaultAlgorithmUpdateData> observable = new DefaultObservable<>("") ;
 
     switch (defaultAlgorithm) {
       case "NSGAII":
@@ -84,7 +91,7 @@ public class DynamicContinuousApplication {
     application.setStreamingRuntime(new DefaultRuntime<TimeUpdateData, StreamingFDADataSource>())
             .setProblem(problem)
             .setAlgorithm(algorithm)
-            .addStreamingDataSource(new StreamingFDADataSource(fdaUpdateDataObservable, 2000))
+            .addStreamingDataSource(streamingDataSource)
             .addAlgorithmDataConsumer(new SimpleSolutionListConsumer())
             .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirectory"))
             .run();

@@ -62,28 +62,22 @@ public class StreamingDirectoryTSP implements StreamingDataSource<Multiobjective
     JavaDStream<String> lines = streamingContext.textFileStream(dataDirectoryName);
 
     JavaDStream<MultiobjectiveTSPUpdateData> routeUpdates =
-        lines.map(new Function<String, MultiobjectiveTSPUpdateData>() {
-          @Override
-          public MultiobjectiveTSPUpdateData call(String s) throws Exception {
-            String[] split = s.split(" ");
-            MultiobjectiveTSPUpdateData data =
-                new MultiobjectiveTSPUpdateData(
-                    split[0].equals("c") ? COST : DISTANCE,
-                Integer.valueOf(split[1]),
-                Integer.valueOf(split[2]),
-                Integer.valueOf(split[3])) ;
+        lines.map(s -> {
+          String[] split = s.split(" ");
+          MultiobjectiveTSPUpdateData data =
+              new MultiobjectiveTSPUpdateData(
+                  split[0].equals("c") ? COST : DISTANCE,
+              Integer.valueOf(split[1]),
+              Integer.valueOf(split[2]),
+              Integer.valueOf(split[3])) ;
 
-            return data;
-          }
+          return data;
         });
 
-    routeUpdates.foreachRDD(new VoidFunction<JavaRDD<MultiobjectiveTSPUpdateData>>() {
-      @Override
-      public void call(JavaRDD<MultiobjectiveTSPUpdateData> mapJavaRDD) throws Exception {
-        List<MultiobjectiveTSPUpdateData> dataList = mapJavaRDD.collect();
-        for (MultiobjectiveTSPUpdateData data : dataList) {
-          problem.update(data);
-        }
+    routeUpdates.foreachRDD(mapJavaRDD -> {
+      List<MultiobjectiveTSPUpdateData> dataList = mapJavaRDD.collect();
+      for (MultiobjectiveTSPUpdateData data : dataList) {
+        problem.update(data);
       }
     });
   }
