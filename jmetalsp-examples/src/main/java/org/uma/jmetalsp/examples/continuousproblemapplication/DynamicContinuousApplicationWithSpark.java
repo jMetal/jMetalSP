@@ -1,5 +1,7 @@
 package org.uma.jmetalsp.examples.continuousproblemapplication;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
@@ -80,6 +82,8 @@ public class DynamicContinuousApplicationWithSpark {
       default:
         algorithm = null;
     }
+
+    Logger.getLogger("org").setLevel(Level.OFF) ;
 
     application.setStreamingRuntime(new SparkRuntime<TimeUpdateData>(5))
             .setProblem(problem)

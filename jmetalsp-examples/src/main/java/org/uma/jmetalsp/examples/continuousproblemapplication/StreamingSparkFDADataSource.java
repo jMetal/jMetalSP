@@ -39,6 +39,9 @@ public class StreamingSparkFDADataSource implements SparkStreamingDataSource<Tim
 
 	@Override
 	public void run() {
+		System.out.println("Run method in the streaming data source invoked") ;
+		System.out.println("Directory: " + directoryName) ;
+
 		JavaDStream<String> lines = streamingContext.textFileStream(directoryName);
 
 		JavaDStream<Integer> time = lines.map(line -> {System.out.println(Integer.parseInt(line)); return Integer.parseInt(line); }) ;
