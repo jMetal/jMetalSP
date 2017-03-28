@@ -78,7 +78,7 @@
         </dependency>
         <dependency>
             <groupId>org.uma.jmetalsp</groupId>
-            <artifactId>jmetalsp-updatedata</artifactId>
+            <artifactId>jmetalsp-observeddata</artifactId>
             <version>1.1-SNAPSHOT</version>
         </dependency>
     </dependencies>

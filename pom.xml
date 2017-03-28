@@ -70,7 +70,7 @@
 
     <modules>
         <module>jmetalsp-core</module>
-        <module>jmetalsp-updatedata</module>
+        <module>jmetalsp-observeddata</module>
         <module>jmetalsp-algorithm</module>
        <!-- <module>jmetalsp-application</module>-->
         <module>jmetalsp-consumer</module>

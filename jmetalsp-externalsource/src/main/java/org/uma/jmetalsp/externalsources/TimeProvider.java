@@ -14,7 +14,6 @@ import java.io.IOException;
  */
 public class TimeProvider {
 
-
 	private void start(String directory, long frequency) throws InterruptedException, IOException {
 		int counter = 0 ;
 

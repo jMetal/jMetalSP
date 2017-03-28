@@ -18,7 +18,7 @@ import java.util.List;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class SparkSolutionListEvaluator<S extends Solution<?>> implements SolutionListEvaluator<S> {
-  static JavaSparkContext sparkContext ; // = new JavaSparkContext(sparkConf);
+  static JavaSparkContext sparkContext ;
 
   public SparkSolutionListEvaluator(JavaSparkContext sparkContext) {
     this.sparkContext = sparkContext ;
@@ -26,12 +26,13 @@ public class SparkSolutionListEvaluator<S extends Solution<?>> implements Soluti
 
   @Override public List<S> evaluate(List<S> solutionList, final Problem<S> problem)
       throws JMetalException {
+    /*
     List<S> population = new LinkedList<S>();
 
     for (int i = 0; i < solutionList.size(); i++) {
       population.add(solutionList.get(i));
     }
-
+*/
     JavaRDD<S> solutionsToEvaluate = sparkContext.parallelize(solutionList);
 
     JavaRDD<S> evaluatedSolutions =
