@@ -8,9 +8,9 @@ Please, note that jMetalSP is a project in continuous development. If you have a
 We are currently working on a redesign of the framework with the following ideas in mind:
 * Spark is incoupled in a separate module, so users only interested in non-Big Data dynamic optimization problems can use the core of jMetal without Spark.
 * The architecture is being refactored:
- * The have introduced the observer pattern to link the stream data sources and algorithm outputs (the observables) with the problems and data consumers (the observers).
- * Unnecessary classes (i.e. problem and algorithm builders) have been removed.
- * Two different runtime systems can be used: plain Java and Java+Spark.
+  * The have introduced the observer pattern to link the stream data sources and algorithm outputs (the observables) with the problems and data consumers (the observers).
+  * Unnecessary classes (i.e. problem and algorithm builders) have been removed.
+  * Two different runtime systems can be used: plain Java and Java+Spark.
 * We are refactoring the example published in the MOD 2016 paper becase the original Web service to obtain traffic data has changed. 
 * Algorithms included: dynamic versions of NSGA-II, MOCell and SMPSO
 * Problems included: bi-objective TSP, FDA problems.
@@ -63,6 +63,6 @@ To execute the codes with Spark:
 
 ## References
 * José A. Cordero, Antonio J. Nebro, Juan J. Durillo, José García-Nieto, Ismael Navas-Delgado, José F. Aldana-Montes: "Dynamic Multi-Objective Optimization With jMetal and Spark: a Case Study". MOD 2016 ([DOI](http://dx.doi.org/10.1007/978-3-319-51469-7_9)).
-* Cristóbal Barba-González, José García-Nieto, Antonio J. Nebro and José F. Aldana-Montes. Multi-Objective Big Data Optimization with jMetal and Spark. To be presented in EMO 2017 ([DOI](http://dx.doi.org/10.1007/978-3-319-54157-0_2)).
+* Cristóbal Barba-González, José García-Nieto, Antonio J. Nebro and José F. Aldana-Montes. Multi-Objective Big Data Optimization with jMetal and Spark. EMO 2017 ([DOI](http://dx.doi.org/10.1007/978-3-319-54157-0_2)).
 * Cristóbal Barba-González, Antonio J. Nebro, José A. Cordero, José García-Nieto, Juan J. Durillo, Ismael Navas-Delgado, José F. Aldana-Montes. "JMetalSP: a Framework for Dynamic Multi-Objective Big Data Optimization". Submitted to Applied Soft Computing.
 
