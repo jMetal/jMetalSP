@@ -8,9 +8,9 @@ Please, note that jMetalSP is a project in continuous development. If you have a
 We are currently working on a redesign of the framework with the following ideas in mind:
 * Spark is incoupled in a separate module, so users only interested in non-Big Data dynamic optimization problems can use the core of jMetal without Spark.
 * The architecture is being refactored:
- * The have introduced the observer pattern to link the stream data sources and algorithm outputs (the observables) with the problems and data consumers (the observers).
- * Unnecessary classes (i.e. problem and algorithm builders) have been removed.
- * Two different runtime systems can be used: plain Java and Java+Spark.
+  * The have introduced the observer pattern to link the stream data sources and algorithm outputs (the observables) with the problems and data consumers (the observers).
+  * Unnecessary classes (i.e. problem and algorithm builders) have been removed.
+  * Two different runtime systems can be used: plain Java and Java+Spark.
 * We are refactoring the example published in the MOD 2016 paper becase the original Web service to obtain traffic data has changed. 
 * Algorithms included: dynamic versions of NSGA-II, MOCell and SMPSO
 * Problems included: bi-objective TSP, FDA problems.
