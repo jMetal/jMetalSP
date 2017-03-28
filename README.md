@@ -19,7 +19,7 @@ We are currently working on a redesign of the framework with the following ideas
 ## Architecture
 The architecture of the current development version of jMetalSP (Version 1.1) is depicted in the following UML class diagram:
 
-![jMetalSP architecture](resources/jMetalSP1.1.png)
+![jMetalSP architecture](https://github.com/jMetal/jMetalSP/blob/master/resources/jMetalSPArchitecture.png)
 
 A `jMetalSPApplication` is composed of: 
 * An instance of the `DynamicProblem` class (the problem to be solved).
