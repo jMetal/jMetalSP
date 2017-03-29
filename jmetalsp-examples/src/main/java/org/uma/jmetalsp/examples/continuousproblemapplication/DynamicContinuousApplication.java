@@ -17,8 +17,8 @@ import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.problem.fda.FDA2;
 import org.uma.jmetalsp.impl.DefaultRuntime;
-import org.uma.jmetalsp.updatedata.TimeUpdateData;
-import org.uma.jmetalsp.updatedata.impl.DefaultAlgorithmUpdateData;
+import org.uma.jmetalsp.updatedata.TimeObservedData;
+import org.uma.jmetalsp.updatedata.impl.DefaultAlgorithmObservedData;
 import org.uma.jmetalsp.perception.Observable;
 import org.uma.jmetalsp.perception.impl.DefaultObservable;
 
@@ -38,18 +38,18 @@ public class DynamicContinuousApplication {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     JMetalSPApplication<
-            TimeUpdateData,
-            DynamicProblem<DoubleSolution, TimeUpdateData>,
-            DynamicAlgorithm<List<DoubleSolution>,TimeUpdateData>,
+            TimeObservedData,
+            DynamicProblem<DoubleSolution, TimeObservedData>,
+            DynamicAlgorithm<List<DoubleSolution>,TimeObservedData>,
             StreamingFDADataSource> application;
     application = new JMetalSPApplication<>();
 
     // Set the streaming data source
-    Observable<TimeUpdateData> fdaUpdateDataObservable = new DefaultObservable<>("timeData") ;
+    Observable<TimeObservedData> fdaUpdateDataObservable = new DefaultObservable<>("timeData") ;
     StreamingDataSource<?, ?> streamingDataSource = new StreamingFDADataSource(fdaUpdateDataObservable, 2000) ;
 
     // Problem configuration
-	  DynamicProblem<DoubleSolution, TimeUpdateData> problem = new FDA2(fdaUpdateDataObservable);
+	  DynamicProblem<DoubleSolution, TimeObservedData> problem = new FDA2(fdaUpdateDataObservable);
 
 	  // Algorithm configuration
     CrossoverOperator<DoubleSolution> crossover = new SBXCrossover(0.9, 20.0);
@@ -58,8 +58,8 @@ public class DynamicContinuousApplication {
 
     String defaultAlgorithm = "SMPSO";
 
-    DynamicAlgorithm<List<DoubleSolution>, DefaultAlgorithmUpdateData> algorithm;
-    Observable<DefaultAlgorithmUpdateData> observable = new DefaultObservable<>("") ;
+    DynamicAlgorithm<List<DoubleSolution>, DefaultAlgorithmObservedData> algorithm;
+    Observable<DefaultAlgorithmObservedData> observable = new DefaultObservable<>("") ;
 
     switch (defaultAlgorithm) {
       case "NSGAII":
@@ -88,7 +88,7 @@ public class DynamicContinuousApplication {
         algorithm = null;
     }
 
-    application.setStreamingRuntime(new DefaultRuntime<TimeUpdateData, StreamingFDADataSource>())
+    application.setStreamingRuntime(new DefaultRuntime<TimeObservedData, StreamingFDADataSource>())
             .setProblem(problem)
             .setAlgorithm(algorithm)
             .addStreamingDataSource(streamingDataSource)

@@ -3,7 +3,7 @@ package org.uma.jmetalsp.problem.fda;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetalsp.perception.Observable;
-import org.uma.jmetalsp.updatedata.TimeUpdateData;
+import org.uma.jmetalsp.updatedata.TimeObservedData;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,11 +18,11 @@ public class FDA5 extends FDA implements Serializable {
 
   private final int M = 3;
 
-  public FDA5(Observable<TimeUpdateData> observable){
+  public FDA5(Observable<TimeObservedData> observable){
     this(12,3, observable);
   }
 
-  public FDA5(Integer numberOfVariables, Integer numberOfObjectives, Observable<TimeUpdateData> observable) throws JMetalException {
+  public FDA5(Integer numberOfVariables, Integer numberOfObjectives, Observable<TimeObservedData> observable) throws JMetalException {
 	  super(observable) ;
     setNumberOfVariables(numberOfVariables);
     setNumberOfObjectives(numberOfObjectives);

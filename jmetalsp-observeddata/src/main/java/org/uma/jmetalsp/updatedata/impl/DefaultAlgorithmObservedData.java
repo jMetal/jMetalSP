@@ -8,12 +8,12 @@ import java.util.List;
 /**
  * Created by ajnebro on 16/2/17.
  */
-public class DefaultAlgorithmUpdateData implements AlgorithmResultData {
+public class DefaultAlgorithmObservedData implements AlgorithmResultData {
   private List<? extends Solution<?>> solutionList;
   private int numberOfIterations;
   private double computingTime;
 
-  public DefaultAlgorithmUpdateData(List<? extends Solution<?>> solutionList, int numberOfIterations, double computingTime) {
+  public DefaultAlgorithmObservedData(List<? extends Solution<?>> solutionList, int numberOfIterations, double computingTime) {
     this.solutionList = solutionList;
     this.computingTime = computingTime;
     this.numberOfIterations = numberOfIterations;

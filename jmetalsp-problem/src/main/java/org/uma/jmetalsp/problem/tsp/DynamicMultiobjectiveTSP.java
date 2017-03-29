@@ -6,7 +6,7 @@ import org.uma.jmetal.solution.PermutationSolution;
 import org.uma.jmetal.util.solutionattribute.impl.OverallConstraintViolation;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.perception.Observable;
-import org.uma.jmetalsp.updatedata.MatrixUpdateData;
+import org.uma.jmetalsp.updatedata.MatrixObservedData;
 
 /**
  * Version of the multi-objective TSP aimed at being solving dynamically.
@@ -16,7 +16,7 @@ import org.uma.jmetalsp.updatedata.MatrixUpdateData;
 public class DynamicMultiobjectiveTSP
     extends AbstractIntegerPermutationProblem
     implements ConstrainedProblem<PermutationSolution<Integer>>,
-    DynamicProblem<PermutationSolution<Integer>, MatrixUpdateData<Double>> {
+    DynamicProblem<PermutationSolution<Integer>, MatrixObservedData<Double>> {
   public static final double NON_CONNECTED = Double.POSITIVE_INFINITY ;
   private int         numberOfCities ;
   private double [][] distanceMatrix ;
@@ -157,7 +157,7 @@ public class DynamicMultiobjectiveTSP
 
   @Override
   public void update(Observable<?> observable, Object data) {
-    MatrixUpdateData<Double> tspData = (MatrixUpdateData<Double>)data ;
+    MatrixObservedData<Double> tspData = (MatrixObservedData<Double>)data ;
     if (data!=null && tspData.getMatrixIdentifier() == "COST") {
       updateCostValue(tspData.getX(),tspData.getY(),tspData.getValue());
     } else if(data!=null && tspData.getMatrixIdentifier() == "VALUE"){

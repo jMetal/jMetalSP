@@ -4,19 +4,19 @@ import org.uma.jmetal.problem.impl.AbstractDoubleProblem;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.perception.Observable;
-import org.uma.jmetalsp.updatedata.TimeUpdateData;
+import org.uma.jmetalsp.updatedata.TimeObservedData;
 
 import java.io.Serializable;
 
 /**
  * Cristóbal Barba <cbarba@lcc.uma.es>
  */
-public abstract class FDA extends AbstractDoubleProblem implements DynamicProblem<DoubleSolution, TimeUpdateData>, Serializable {
+public abstract class FDA extends AbstractDoubleProblem implements DynamicProblem<DoubleSolution, TimeObservedData>, Serializable {
 	protected double time;
 	protected boolean theProblemHasBeenModified;
-	protected Observable<TimeUpdateData> observable ;
+	protected Observable<TimeObservedData> observable ;
 
-	public FDA (Observable<TimeUpdateData> observable) {
+	public FDA (Observable<TimeObservedData> observable) {
 		this.observable = observable ;
 		observable.register(this);
 	}
@@ -24,7 +24,7 @@ public abstract class FDA extends AbstractDoubleProblem implements DynamicProble
 	@Override
 	public void update(Observable<?> observable, Object data) {
 		System.out.println("Update on FDA invoked") ;
-		time=((TimeUpdateData)data).getTime();
+		time=((TimeObservedData)data).getTime();
 		if(time==0.0){
 			time=1.0;
 		}

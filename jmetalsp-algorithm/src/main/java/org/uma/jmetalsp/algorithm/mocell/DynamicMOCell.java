@@ -26,7 +26,7 @@ import org.uma.jmetal.util.solutionattribute.impl.LocationAttribute;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.perception.Observable;
-import org.uma.jmetalsp.updatedata.impl.DefaultAlgorithmUpdateData;
+import org.uma.jmetalsp.updatedata.impl.DefaultAlgorithmObservedData;
 
 import java.util.List;
 
@@ -39,9 +39,9 @@ import java.util.List;
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DynamicMOCell<S extends Solution<?>, O extends Observable<DefaultAlgorithmUpdateData>>
+public class DynamicMOCell<S extends Solution<?>, O extends Observable<DefaultAlgorithmObservedData>>
     extends MOCell<S>
-    implements DynamicAlgorithm<List<S>, DefaultAlgorithmUpdateData> {
+    implements DynamicAlgorithm<List<S>, DefaultAlgorithmObservedData> {
 
   private int completedIterations ;
   private boolean stopAtTheEndOfTheCurrentIteration = false ;
@@ -77,7 +77,7 @@ public class DynamicMOCell<S extends Solution<?>, O extends Observable<DefaultAl
   @Override protected boolean isStoppingConditionReached() {
     if (evaluations >= maxEvaluations) {
       observable.setChanged() ;
-      observable.notifyObservers(new DefaultAlgorithmUpdateData(getPopulation(), completedIterations, 0.0));
+      observable.notifyObservers(new DefaultAlgorithmObservedData(getPopulation(), completedIterations, 0.0));
       restart(100);
       completedIterations++;
     }

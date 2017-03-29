@@ -4,8 +4,8 @@ import org.apache.spark.streaming.api.java.JavaDStream;
 import org.apache.spark.streaming.api.java.JavaStreamingContext;
 import org.uma.jmetalsp.perception.Observable;
 import org.uma.jmetalsp.spark.SparkStreamingDataSource;
-import org.uma.jmetalsp.updatedata.TimeUpdateData;
-import org.uma.jmetalsp.updatedata.impl.DefaultTimeUpdateData;
+import org.uma.jmetalsp.updatedata.TimeObservedData;
+import org.uma.jmetalsp.updatedata.impl.DefaultTimeObservedData;
 
 import java.util.List;
 
@@ -13,9 +13,8 @@ import java.util.List;
  * This class emits the value of a counter periodically after a given delay (in milliseconds)
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class StreamingSparkFDADataSource implements SparkStreamingDataSource<TimeUpdateData, Observable<TimeUpdateData>> {
-	private Observable<TimeUpdateData> updateData ;
-	private int dataDelay ;
+public class StreamingSparkFDADataSource implements SparkStreamingDataSource<TimeObservedData, Observable<TimeObservedData>> {
+	private Observable<TimeObservedData> updateData ;
 
 	private double time=1.0d;
 	private int tauT=5;
@@ -25,15 +24,12 @@ public class StreamingSparkFDADataSource implements SparkStreamingDataSource<Tim
 	private String directoryName ;
 
 	/**
-   * @param updateData
-   * @param dataDelay Delay in milliseconds
+   * @param observedData
    */
 	public StreamingSparkFDADataSource(
-					Observable<TimeUpdateData> updateData,
-					int dataDelay,
+					Observable<TimeObservedData> observedData,
 					String directoryName) {
-		this.updateData = updateData ;
-		this.dataDelay = dataDelay ;
+		this.updateData = observedData ;
 		this.directoryName = directoryName ;
 	}
 
@@ -42,9 +38,9 @@ public class StreamingSparkFDADataSource implements SparkStreamingDataSource<Tim
 		System.out.println("Run method in the streaming data source invoked") ;
 		System.out.println("Directory: " + directoryName) ;
 
-		JavaDStream<String> lines = streamingContext.textFileStream(directoryName);
-
-		JavaDStream<Integer> time = lines.map(line -> {System.out.println(Integer.parseInt(line)); return Integer.parseInt(line); }) ;
+		JavaDStream<Integer> time = streamingContext
+						.textFileStream(directoryName)
+						.map(line -> Integer.parseInt(line)) ;
 
 		time.foreachRDD(numbers -> {
 			List<Integer> numberList = numbers.collect() ;
@@ -52,7 +48,7 @@ public class StreamingSparkFDADataSource implements SparkStreamingDataSource<Tim
 				double value = (1.0d / (double) nT) * Math.floor((double) number / (double) tauT);
 
 				updateData.setChanged();
-				updateData.notifyObservers(new DefaultTimeUpdateData(value));
+				updateData.notifyObservers(new DefaultTimeObservedData(value));
 			}
 
 		}) ;

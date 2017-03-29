@@ -22,7 +22,7 @@ import org.uma.jmetal.util.archive.BoundedArchive;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.DynamicProblem;
-import org.uma.jmetalsp.updatedata.impl.DefaultAlgorithmUpdateData;
+import org.uma.jmetalsp.updatedata.impl.DefaultAlgorithmObservedData;
 import org.uma.jmetalsp.perception.Observable;
 
 import java.util.List;
@@ -31,9 +31,9 @@ import java.util.List;
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DynamicSMPSO<O extends Observable<DefaultAlgorithmUpdateData>>
+public class DynamicSMPSO<O extends Observable<DefaultAlgorithmObservedData>>
         extends SMPSO
-        implements DynamicAlgorithm<List<DoubleSolution>, DefaultAlgorithmUpdateData> {
+        implements DynamicAlgorithm<List<DoubleSolution>, DefaultAlgorithmObservedData> {
 
   private int completedIterations;
   private SolutionListEvaluator<DoubleSolution> evaluator;
@@ -94,7 +94,7 @@ public class DynamicSMPSO<O extends Observable<DefaultAlgorithmUpdateData>>
   protected boolean isStoppingConditionReached() {
     if (getIterations() >= getMaxIterations()) {
       observable.setChanged();
-      observable.notifyObservers(new DefaultAlgorithmUpdateData(getResult(), completedIterations, 0.0));
+      observable.notifyObservers(new DefaultAlgorithmObservedData(getResult(), completedIterations, 0.0));
       restart(100);
       completedIterations++;
     }

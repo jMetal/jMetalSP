@@ -1,15 +1,14 @@
 package org.uma.jmetalsp.updatedata.impl;
 
-import org.uma.jmetalsp.updatedata.MatrixUpdateData;
-import org.uma.jmetalsp.updatedata.TimeUpdateData;
+import org.uma.jmetalsp.updatedata.TimeObservedData;
 
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DefaultTimeUpdateData implements TimeUpdateData{
+public class DefaultTimeObservedData implements TimeObservedData {
   private double time ;
 
-  public DefaultTimeUpdateData(double time) {
+  public DefaultTimeObservedData(double time) {
     this.time = time ;
   }
 

@@ -13,5 +13,4 @@ public interface Observable<Data> {
 	boolean hasChanged() ;
 	void clearChanged() ;
   String getName() ;
-
 }

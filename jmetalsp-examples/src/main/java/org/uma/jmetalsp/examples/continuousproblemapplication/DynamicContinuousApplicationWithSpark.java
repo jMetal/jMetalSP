@@ -20,8 +20,8 @@ import org.uma.jmetalsp.perception.Observable;
 import org.uma.jmetalsp.perception.impl.DefaultObservable;
 import org.uma.jmetalsp.problem.fda.FDA2;
 import org.uma.jmetalsp.spark.SparkRuntime;
-import org.uma.jmetalsp.updatedata.TimeUpdateData;
-import org.uma.jmetalsp.updatedata.impl.DefaultAlgorithmUpdateData;
+import org.uma.jmetalsp.updatedata.TimeObservedData;
+import org.uma.jmetalsp.updatedata.impl.DefaultAlgorithmObservedData;
 
 import java.io.IOException;
 import java.util.List;
@@ -36,15 +36,15 @@ public class DynamicContinuousApplicationWithSpark {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     JMetalSPApplication<
-            TimeUpdateData,
-            DynamicProblem<DoubleSolution, TimeUpdateData>,
-            DynamicAlgorithm<List<DoubleSolution>,TimeUpdateData>,
+            TimeObservedData,
+            DynamicProblem<DoubleSolution, TimeObservedData>,
+            DynamicAlgorithm<List<DoubleSolution>,TimeObservedData>,
             StreamingFDADataSource> application;
     application = new JMetalSPApplication<>();
 
 	  // Problem configuration
-    Observable<TimeUpdateData> fdaUpdateDataObservable = new DefaultObservable<>("timeData") ;
-	  DynamicProblem<DoubleSolution, TimeUpdateData> problem = new FDA2(fdaUpdateDataObservable);
+    Observable<TimeObservedData> fdaUpdateDataObservable = new DefaultObservable<>("timeData") ;
+	  DynamicProblem<DoubleSolution, TimeObservedData> problem = new FDA2(fdaUpdateDataObservable);
 
 	  // Algorithm configuration
     CrossoverOperator<DoubleSolution> crossover = new SBXCrossover(0.9, 20.0);
@@ -53,8 +53,8 @@ public class DynamicContinuousApplicationWithSpark {
 
     String defaultAlgorithm = "SMPSO";
 
-    DynamicAlgorithm<List<DoubleSolution>, DefaultAlgorithmUpdateData> algorithm;
-    Observable<DefaultAlgorithmUpdateData> observable = new DefaultObservable<>("NSGAII") ;
+    DynamicAlgorithm<List<DoubleSolution>, DefaultAlgorithmObservedData> algorithm;
+    Observable<DefaultAlgorithmObservedData> observable = new DefaultObservable<>("NSGAII") ;
 
     switch (defaultAlgorithm) {
       case "NSGAII":
@@ -85,10 +85,10 @@ public class DynamicContinuousApplicationWithSpark {
 
     Logger.getLogger("org").setLevel(Level.OFF) ;
 
-    application.setStreamingRuntime(new SparkRuntime<TimeUpdateData>(5))
+    application.setStreamingRuntime(new SparkRuntime<TimeObservedData>(5))
             .setProblem(problem)
             .setAlgorithm(algorithm)
-            .addStreamingDataSource(new StreamingSparkFDADataSource(fdaUpdateDataObservable, 2000, "timeDirectory"))
+            .addStreamingDataSource(new StreamingSparkFDADataSource(fdaUpdateDataObservable, "timeDirectory"))
             .addAlgorithmDataConsumer(new SimpleSolutionListConsumer())
             .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirectory"))
             .run();

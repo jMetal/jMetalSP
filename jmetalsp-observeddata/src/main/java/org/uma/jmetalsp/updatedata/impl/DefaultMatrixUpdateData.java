@@ -1,11 +1,11 @@
 package org.uma.jmetalsp.updatedata.impl;
 
-import org.uma.jmetalsp.updatedata.MatrixUpdateData;
+import org.uma.jmetalsp.updatedata.MatrixObservedData;
 
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DefaultMatrixUpdateData<T> implements MatrixUpdateData<T>{
+public class DefaultMatrixUpdateData<T> implements MatrixObservedData<T> {
   private int x ;
   private int y ;
   private T value ;
