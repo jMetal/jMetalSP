@@ -56,5 +56,11 @@
             <groupId>org.uma.jmetal</groupId>
             <artifactId>jmetal-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.6.1</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 </project>
