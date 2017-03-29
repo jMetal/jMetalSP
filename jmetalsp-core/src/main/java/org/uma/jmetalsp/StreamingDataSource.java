@@ -17,7 +17,7 @@ import org.uma.jmetalsp.perception.Observable;
 /**
  * Created by ajnebro on 18/4/16.
  */
-public interface StreamingDataSource<D extends UpdateData, O extends Observable<D>> extends Runnable {
+public interface StreamingDataSource<D extends ObservedData, O extends Observable<D>> extends Runnable {
 	void run() ;
 }
 

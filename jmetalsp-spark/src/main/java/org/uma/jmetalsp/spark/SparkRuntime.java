@@ -16,15 +16,15 @@ package org.uma.jmetalsp.spark;
 import org.apache.spark.SparkConf;
 import org.apache.spark.streaming.Durations;
 import org.apache.spark.streaming.api.java.JavaStreamingContext;
+import org.uma.jmetalsp.ObservedData;
 import org.uma.jmetalsp.StreamingRuntime;
-import org.uma.jmetalsp.UpdateData;
 
 import java.util.List;
 
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class SparkRuntime<D extends UpdateData> implements StreamingRuntime<D, SparkStreamingDataSource<D,?>> {
+public class SparkRuntime<D extends ObservedData> implements StreamingRuntime<D, SparkStreamingDataSource<D,?>> {
   private SparkConf sparkConf ;
   private JavaStreamingContext streamingContext ;
   private int duration ;

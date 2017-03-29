@@ -7,7 +7,7 @@ import org.uma.jmetalsp.perception.Observable;
 /**
  * Created by ajnebro on 18/4/16.
  */
-public interface DynamicAlgorithm<Result, D extends UpdateData>
+public interface DynamicAlgorithm<Result, D extends ObservedData>
         extends Algorithm<Result>{
   DynamicProblem<?, ?> getDynamicProblem() ;
   int getCompletedIterations() ;

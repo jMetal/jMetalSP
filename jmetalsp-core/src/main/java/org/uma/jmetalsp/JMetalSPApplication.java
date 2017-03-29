@@ -11,7 +11,7 @@ import java.util.List;
  * Created by ajnebro on 18/4/16.
  */
 public class JMetalSPApplication<
-    D extends UpdateData,
+    D extends ObservedData,
     P extends DynamicProblem<? extends Solution<?>, D>,
     A extends DynamicAlgorithm<?, D>,
 		S extends StreamingDataSource<D,?>> {

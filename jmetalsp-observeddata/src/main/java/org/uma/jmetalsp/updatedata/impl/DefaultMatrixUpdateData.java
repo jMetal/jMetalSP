@@ -1,6 +1,5 @@
 package org.uma.jmetalsp.updatedata.impl;
 
-import org.uma.jmetalsp.UpdateData;
 import org.uma.jmetalsp.updatedata.MatrixUpdateData;
 
 /**

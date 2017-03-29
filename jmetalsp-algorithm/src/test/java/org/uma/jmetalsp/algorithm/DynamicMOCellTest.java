@@ -47,7 +47,7 @@ public class DynamicMOCellTest {
     assertEquals(0, dynamicMOCell.getCompletedIterations()) ;
   }
 
-  private class MockedDynamicProblem<S extends Solution<?>, D extends UpdateData> implements DynamicProblem<S, D> {
+  private class MockedDynamicProblem<S extends Solution<?>, D extends ObservedData> implements DynamicProblem<S, D> {
 
     @Override
     public boolean hasTheProblemBeenModified() {
@@ -95,7 +95,7 @@ public class DynamicMOCellTest {
     }
   }
 
-  private class MockedUpdateData implements UpdateData {
+  private class MockedUpdateData implements ObservedData {
   }
   */
 }
