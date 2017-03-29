@@ -15,6 +15,20 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * This class parses the new XML Format of the New York Traffic Cameras.
+ * It requires 2 arguments:
+ *   - The path to generate the initial problem, containing all the initial 
+ *     information to execute the optimization.
+ *   - The path to generate the updates, where every 30 seconds a new file will 
+ *     be written with all the updates received by the traffic cameras.
+ * 
+ * The program will read the distance between nodes using the Google Distance
+ * Service. You will need a Google API Key to be able to use the service.
+ * However, as the distances doesn't change, it is possible to specify an 
+ * optional file containing all the preloaded distances.
+ * 
+ * Optional:
+ *   - The path to a file containing the distances for all nodes.
  *
  * @author Jose Andres
  */
