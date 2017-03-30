@@ -37,17 +37,17 @@ public class DynamicContinuousApplicationWithSpark {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     JMetalSPApplication<
-            SingleObservedData<Double>,
+            SingleObservedData<Integer>,
             AlgorithmObservedData,
-            DynamicProblem<DoubleSolution, SingleObservedData<Double>>,
+            DynamicProblem<DoubleSolution, SingleObservedData<Integer>>,
             DynamicAlgorithm<List<DoubleSolution>,AlgorithmObservedData, Observable<AlgorithmObservedData>>,
-            StreamingFDADataSource,
+            SimpleStreamingCounterDataSource,
             AlgorithmDataConsumer<AlgorithmObservedData, DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData, Observable<AlgorithmObservedData>>>> application;
     application = new JMetalSPApplication<>();
 
 	  // Problem configuration
-    Observable<SingleObservedData<Double>> fdaUpdateDataObservable = new DefaultObservable<>("timeData") ;
-	  DynamicProblem<DoubleSolution, SingleObservedData<Double>> problem = new FDA2(fdaUpdateDataObservable);
+    Observable<SingleObservedData<Integer>> fdaUpdateDataObservable = new DefaultObservable<>("timeData") ;
+	  DynamicProblem<DoubleSolution, SingleObservedData<Integer>> problem = new FDA2(fdaUpdateDataObservable);
 
 	  // Algorithm configuration
     CrossoverOperator<DoubleSolution> crossover = new SBXCrossover(0.9, 20.0);
@@ -91,7 +91,7 @@ public class DynamicContinuousApplicationWithSpark {
     application.setStreamingRuntime(new SparkRuntime<SingleObservedData<Double>, Observable<SingleObservedData<Double>>>(5))
             .setProblem(problem)
             .setAlgorithm(algorithm)
-            .addStreamingDataSource(new StreamingSparkFDADataSource(fdaUpdateDataObservable, "timeDirectory"))
+            .addStreamingDataSource(new SimpleSparkStreamingCounterDataSource(fdaUpdateDataObservable, "timeDirectory"))
             .addAlgorithmDataConsumer(new SimpleSolutionListConsumer(algorithm))
             .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirectory", algorithm))
             .run();

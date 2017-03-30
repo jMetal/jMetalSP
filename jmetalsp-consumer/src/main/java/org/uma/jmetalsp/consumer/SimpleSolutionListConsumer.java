@@ -41,10 +41,6 @@ public class SimpleSolutionListConsumer implements
     return dynamicAlgorithm;
   }
 
-  public Observer getObserver() {
-    return this;
-  }
-
   @Override
   public void run() {
     if (dynamicAlgorithm == null) {
@@ -64,11 +60,8 @@ public class SimpleSolutionListConsumer implements
 
   @Override
   public void update(Observable<AlgorithmObservedData> observable, AlgorithmObservedData data) {
-    //if ("algorithm".equals(observable.getName())) {
     AlgorithmObservedData algorithmResultData = (AlgorithmObservedData) data;
     System.out.println("Number of generated fronts: " + algorithmResultData.getIterations());
     System.out.println("Size of the front: " + algorithmResultData.getSolutionList().size());
-
-    //}
   }
 }

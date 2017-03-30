@@ -14,11 +14,11 @@ import java.util.List;
  */
 public class FDA1 extends FDA implements Serializable {
 
-  public FDA1(Observable<SingleObservedData<Double>> observable){
+  public FDA1(Observable<SingleObservedData<Integer>> observable){
     this(100,2, observable);
   }
 
-  public FDA1 (Integer numberOfVariables, Integer numberOfObjectives, Observable<SingleObservedData<Double>> observer) throws JMetalException {
+  public FDA1 (Integer numberOfVariables, Integer numberOfObjectives, Observable<SingleObservedData<Integer>> observer) throws JMetalException {
   	super(observer) ;
     setNumberOfVariables(numberOfVariables);
     setNumberOfObjectives(numberOfObjectives);

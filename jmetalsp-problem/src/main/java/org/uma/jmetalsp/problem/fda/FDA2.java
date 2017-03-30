@@ -16,11 +16,11 @@ public class FDA2 extends FDA implements Serializable {
 
   private boolean theProblemHasBeenModified;
 
-  public FDA2(Observable<SingleObservedData<Double>> observable){
+  public FDA2(Observable<SingleObservedData<Integer>> observable){
     this(31,2, observable);
   }
 
-  public FDA2 (Integer numberOfVariables, Integer numberOfObjectives, Observable<SingleObservedData<Double>> observer) throws JMetalException {
+  public FDA2 (Integer numberOfVariables, Integer numberOfObjectives, Observable<SingleObservedData<Integer>> observer) throws JMetalException {
     super(observer) ;
     setNumberOfVariables(numberOfVariables);
     setNumberOfObjectives(numberOfObjectives);

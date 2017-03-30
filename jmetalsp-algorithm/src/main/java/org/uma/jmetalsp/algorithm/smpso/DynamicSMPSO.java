@@ -93,7 +93,7 @@ public class DynamicSMPSO<O extends Observable<AlgorithmObservedData>>
   protected boolean isStoppingConditionReached() {
     if (getIterations() >= getMaxIterations()) {
       observable.setChanged();
-      observable.notifyObservers(new AlgorithmObservedData(getResult(), completedIterations, 0.0));
+      observable.notifyObservers(new AlgorithmObservedData(getResult(), completedIterations));
       restart(100);
       completedIterations++;
     }

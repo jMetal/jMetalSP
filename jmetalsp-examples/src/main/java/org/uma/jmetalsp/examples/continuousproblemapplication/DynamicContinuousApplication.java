@@ -39,20 +39,20 @@ public class DynamicContinuousApplication {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     JMetalSPApplication<
-            SingleObservedData<Double>,
+            SingleObservedData<Integer>,
             AlgorithmObservedData,
-            DynamicProblem<DoubleSolution, SingleObservedData<Double>>,
+            DynamicProblem<DoubleSolution, SingleObservedData<Integer>>,
             DynamicAlgorithm<List<DoubleSolution>,AlgorithmObservedData, Observable<AlgorithmObservedData>>,
-            StreamingFDADataSource,
+            SimpleStreamingCounterDataSource,
             AlgorithmDataConsumer<AlgorithmObservedData, DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData, Observable<AlgorithmObservedData>>>> application;
     application = new JMetalSPApplication<>();
 
     // Set the streaming data source
-    Observable<SingleObservedData<Double>> fdaObservable = new DefaultObservable<>("timeData") ;
-    StreamingDataSource<SingleObservedData<Double>, Observable<SingleObservedData<Double>>> streamingDataSource = new StreamingFDADataSource(fdaObservable, 2000) ;
+    Observable<SingleObservedData<Integer>> fdaObservable = new DefaultObservable<>("timeData") ;
+    StreamingDataSource<SingleObservedData<Integer>, Observable<SingleObservedData<Integer>>> streamingDataSource = new SimpleStreamingCounterDataSource(fdaObservable, 2000) ;
 
     // Problem configuration
-	  DynamicProblem<DoubleSolution, SingleObservedData<Double>> problem = new FDA2(fdaObservable);
+	  DynamicProblem<DoubleSolution, SingleObservedData<Integer>> problem = new FDA2(fdaObservable);
 
 	  // Algorithm configuration
     CrossoverOperator<DoubleSolution> crossover = new SBXCrossover(0.9, 20.0);
@@ -91,7 +91,7 @@ public class DynamicContinuousApplication {
         algorithm = null;
     }
 
-    application.setStreamingRuntime(new DefaultRuntime<SingleObservedData<Double>, Observable<SingleObservedData<Double>>, StreamingFDADataSource>())
+    application.setStreamingRuntime(new DefaultRuntime<SingleObservedData<Integer>, Observable<SingleObservedData<Integer>>, SimpleStreamingCounterDataSource>())
             .setProblem(problem)
             .setAlgorithm(algorithm)
             .addStreamingDataSource(streamingDataSource)

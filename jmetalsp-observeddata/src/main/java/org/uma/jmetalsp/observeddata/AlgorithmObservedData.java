@@ -11,20 +11,14 @@ import java.util.List;
 public class AlgorithmObservedData implements ObservedData {
 	private List<? extends Solution<?>> solutionList;
 	private int numberOfIterations;
-	private double computingTime;
 
-	public AlgorithmObservedData(List<? extends Solution<?>> solutionList, int numberOfIterations, double computingTime) {
+	public AlgorithmObservedData(List<? extends Solution<?>> solutionList, int numberOfIterations) {
 		this.solutionList = solutionList;
-		this.computingTime = computingTime;
 		this.numberOfIterations = numberOfIterations;
 	}
 
 	public List<? extends Solution<?>> getSolutionList() {
 		return solutionList;
-	}
-
-	public double getRunningTime() {
-		return computingTime;
 	}
 
 	public int getIterations() {

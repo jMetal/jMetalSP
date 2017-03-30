@@ -13,20 +13,25 @@ import java.io.Serializable;
  */
 public abstract class FDA
 				extends AbstractDoubleProblem
-				implements DynamicProblem<DoubleSolution, SingleObservedData<Double>>, Serializable {
+				implements DynamicProblem<DoubleSolution, SingleObservedData<Integer>>, Serializable {
 	protected double time;
 	protected boolean theProblemHasBeenModified;
-	protected Observable<SingleObservedData<Double>> observable ;
+	protected Observable<SingleObservedData<Integer>> observable ;
 
-	public FDA (Observable<SingleObservedData<Double>> observable) {
+  private int tauT=5;
+  private int nT=10;
+
+	public FDA (Observable<SingleObservedData<Integer>> observable) {
 		this.observable = observable ;
 		observable.register(this);
 	}
 
 	@Override
-	public void update(Observable<SingleObservedData<Double>> observable, SingleObservedData<Double> data) {
+	public void update(Observable<SingleObservedData<Integer>> observable, SingleObservedData<Integer> counter) {
 		System.out.println("Update on FDA invoked") ;
-		time=((SingleObservedData<Double>)data).getValue();
+
+    time = (1.0d/(double)nT) * Math.floor(counter.getValue()/(double)tauT) ;
+
 		if(time==0.0){
 			time=1.0;
 		}

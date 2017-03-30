@@ -12,8 +12,8 @@ import java.util.List;
  * This class emits the value of a counter periodically after a given delay (in milliseconds)
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class StreamingSparkFDADataSource implements SparkStreamingDataSource<SingleObservedData<Double>, Observable<SingleObservedData<Double>>> {
-	private Observable<SingleObservedData<Double>> updateData ;
+public class SimpleSparkStreamingCounterDataSource implements SparkStreamingDataSource<SingleObservedData<Integer>, Observable<SingleObservedData<Integer>>> {
+	private Observable<SingleObservedData<Integer>> updateData ;
 
 	private double time=1.0d;
 	private int tauT=5;
@@ -25,8 +25,8 @@ public class StreamingSparkFDADataSource implements SparkStreamingDataSource<Sin
 	/**
    * @param observedData
    */
-	public StreamingSparkFDADataSource(
-					Observable<SingleObservedData<Double>> observedData,
+	public SimpleSparkStreamingCounterDataSource(
+					Observable<SingleObservedData<Integer>> observedData,
 					String directoryName) {
 		this.updateData = observedData ;
 		this.directoryName = directoryName ;
@@ -44,10 +44,8 @@ public class StreamingSparkFDADataSource implements SparkStreamingDataSource<Sin
 		time.foreachRDD(numbers -> {
 			List<Integer> numberList = numbers.collect() ;
 			for (Integer number : numberList) {
-				double value = (1.0d / (double) nT) * Math.floor((double) number / (double) tauT);
-
-				updateData.setChanged();
-				updateData.notifyObservers(new SingleObservedData<Double>(value));
+        updateData.setChanged();
+				updateData.notifyObservers(new SingleObservedData<Integer>(number));
 			}
 
 		}) ;

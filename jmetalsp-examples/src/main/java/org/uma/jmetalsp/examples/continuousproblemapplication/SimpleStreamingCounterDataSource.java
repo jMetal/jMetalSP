@@ -8,8 +8,8 @@ import org.uma.jmetalsp.perception.Observable;
  * This class emits the value of a counter periodically after a given delay (in milliseconds)
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class StreamingFDADataSource implements StreamingDataSource<SingleObservedData<Double>, Observable<SingleObservedData<Double>>> {
-	private Observable<SingleObservedData<Double>> observable;
+public class SimpleStreamingCounterDataSource implements StreamingDataSource<SingleObservedData<Integer>, Observable<SingleObservedData<Integer>>> {
+	private Observable<SingleObservedData<Integer>> observable;
 	private int dataDelay ;
 
 	private double time=1.0d;
@@ -21,7 +21,7 @@ public class StreamingFDADataSource implements StreamingDataSource<SingleObserve
    * @param observable
    * @param dataDelay Delay in milliseconds
    */
-	public StreamingFDADataSource(Observable<SingleObservedData<Double>> observable, int dataDelay) {
+	public SimpleStreamingCounterDataSource(Observable<SingleObservedData<Integer>> observable, int dataDelay) {
 		this.observable = observable ;
 		this.dataDelay = dataDelay ;
 	}
@@ -36,10 +36,8 @@ public class StreamingFDADataSource implements StreamingDataSource<SingleObserve
 				e.printStackTrace();
 			}
 
-      time= (1.0d/(double)nT) * Math.floor((double)counter/(double)tauT) ;
-
 			observable.setChanged(); ;
-			observable.notifyObservers(new SingleObservedData<Double>(time));
+			observable.notifyObservers(new SingleObservedData<Integer>(counter));
 			counter ++ ;
 		}
 	}
