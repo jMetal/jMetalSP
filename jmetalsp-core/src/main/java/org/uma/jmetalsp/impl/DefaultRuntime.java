@@ -16,12 +16,10 @@ public class DefaultRuntime<
         S extends StreamingDataSource<D,O>> implements StreamingRuntime<D, O, S> {
 	@Override
 	public void startStreamingDataSources(List<S> streamingDataSourceList) {
-    System.out.println("Default runtime") ;
 
     for (StreamingDataSource<?, ?> streamingDataSource : streamingDataSourceList) {
       Thread thread = new Thread(streamingDataSource);
       thread.start();
     }
-    System.out.println("Started streaming data sources") ;
   }
 }

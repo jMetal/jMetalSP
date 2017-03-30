@@ -12,10 +12,6 @@ public class SimpleStreamingCounterDataSource implements StreamingDataSource<Sin
 	private Observable<SingleObservedData<Integer>> observable;
 	private int dataDelay ;
 
-	private double time=1.0d;
-	private int tauT=5;
-	private int nT=10;
-
 	/**
    *
    * @param observable
