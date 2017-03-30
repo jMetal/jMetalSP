@@ -4,13 +4,12 @@ import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 import org.uma.jmetalsp.StreamingDataSource;
 import org.uma.jmetalsp.perception.Observable;
 import org.uma.jmetalsp.observeddata.MatrixObservedData;
-import org.uma.jmetalsp.observeddata.impl.DefaultMatrixUpdateData;
 
 /**
  * This class emits a value periodically after a given delay (in milliseconds)
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class StreamingTSPSource implements StreamingDataSource<MatrixObservedData, Observable<MatrixObservedData>> {
+public class StreamingTSPSource implements StreamingDataSource<MatrixObservedData<Double>, Observable<MatrixObservedData<Double>>> {
 	private Observable<MatrixObservedData<Double>> updateData ;
 	private int dataDelay ;
 
@@ -38,7 +37,7 @@ public class StreamingTSPSource implements StreamingDataSource<MatrixObservedDat
       int y = JMetalRandom.getInstance().nextInt(0, 100) ;
       double value = JMetalRandom.getInstance().nextDouble(1.0, 4000) ;
 			updateData.setChanged(); ;
-			updateData.notifyObservers(new DefaultMatrixUpdateData<>("COST", x, y, value));
+			updateData.notifyObservers(new MatrixObservedData<>("COST", x, y, value));
 		}
 	}
 }

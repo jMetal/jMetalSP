@@ -11,7 +11,9 @@ import java.io.Serializable;
 /**
  * Cristóbal Barba <cbarba@lcc.uma.es>
  */
-public abstract class FDA extends AbstractDoubleProblem implements DynamicProblem<DoubleSolution, SingleObservedData<Double>>, Serializable {
+public abstract class FDA
+				extends AbstractDoubleProblem
+				implements DynamicProblem<DoubleSolution, SingleObservedData<Double>>, Serializable {
 	protected double time;
 	protected boolean theProblemHasBeenModified;
 	protected Observable<SingleObservedData<Double>> observable ;

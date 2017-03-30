@@ -88,7 +88,7 @@ public class DynamicContinuousApplicationWithSpark {
 
     Logger.getLogger("org").setLevel(Level.OFF) ;
 
-    application.setStreamingRuntime(new SparkRuntime<SingleObservedData<Double>>(5))
+    application.setStreamingRuntime(new SparkRuntime<SingleObservedData<Double>, Observable<SingleObservedData<Double>>>(5))
             .setProblem(problem)
             .setAlgorithm(algorithm)
             .addStreamingDataSource(new StreamingSparkFDADataSource(fdaUpdateDataObservable, "timeDirectory"))

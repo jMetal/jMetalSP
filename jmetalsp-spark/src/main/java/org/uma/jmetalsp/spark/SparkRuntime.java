@@ -17,14 +17,18 @@ import org.apache.spark.SparkConf;
 import org.apache.spark.streaming.Durations;
 import org.apache.spark.streaming.api.java.JavaStreamingContext;
 import org.uma.jmetalsp.ObservedData;
+import org.uma.jmetalsp.StreamingDataSource;
 import org.uma.jmetalsp.StreamingRuntime;
+import org.uma.jmetalsp.perception.Observable;
 
 import java.util.List;
 
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class SparkRuntime<D extends ObservedData> implements StreamingRuntime<D, SparkStreamingDataSource<D,?>> {
+public class SparkRuntime<
+        D extends ObservedData,
+        O extends Observable<D>> implements StreamingRuntime<D, O, SparkStreamingDataSource<D,O>> {
   private SparkConf sparkConf ;
   private JavaStreamingContext streamingContext ;
   private int duration ;
@@ -36,7 +40,7 @@ public class SparkRuntime<D extends ObservedData> implements StreamingRuntime<D,
   }
 
 	@Override
-	public void startStreamingDataSources(List<SparkStreamingDataSource<D, ?>> streamingDataSourceList) {
+	public void startStreamingDataSources(List<SparkStreamingDataSource<D, O>> streamingDataSourceList) {
 		for (SparkStreamingDataSource<D,?> streamingDataSource : streamingDataSourceList) {
 			streamingDataSource.setStreamingContext(streamingContext);
 			streamingDataSource.run();

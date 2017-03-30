@@ -156,7 +156,7 @@ public class DynamicMultiobjectiveTSP
   }
 
   @Override
-  public void update(Observable<?> observable, Object data) {
+  public void update(Observable<MatrixObservedData<Double>> observable, MatrixObservedData<Double> data) {
     MatrixObservedData<Double> tspData = (MatrixObservedData<Double>)data ;
     if (data!=null && tspData.getMatrixIdentifier() == "COST") {
       updateCostValue(tspData.getX(),tspData.getY(),tspData.getValue());

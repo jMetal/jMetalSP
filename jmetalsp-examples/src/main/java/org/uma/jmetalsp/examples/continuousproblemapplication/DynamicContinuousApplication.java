@@ -49,7 +49,7 @@ public class DynamicContinuousApplication {
 
     // Set the streaming data source
     Observable<SingleObservedData<Double>> fdaObservable = new DefaultObservable<>("timeData") ;
-    StreamingDataSource<?, ?> streamingDataSource = new StreamingFDADataSource(fdaObservable, 2000) ;
+    StreamingDataSource<SingleObservedData<Double>, Observable<SingleObservedData<Double>>> streamingDataSource = new StreamingFDADataSource(fdaObservable, 2000) ;
 
     // Problem configuration
 	  DynamicProblem<DoubleSolution, SingleObservedData<Double>> problem = new FDA2(fdaObservable);
