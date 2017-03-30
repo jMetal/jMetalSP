@@ -1,4 +1,4 @@
-package org.uma.jmetalsp.examples.continuousproblemapplication;
+package org.uma.jmetalsp.examples.streamingdatasource;
 
 import org.uma.jmetalsp.StreamingDataSource;
 import org.uma.jmetalsp.observeddata.SingleObservedData;

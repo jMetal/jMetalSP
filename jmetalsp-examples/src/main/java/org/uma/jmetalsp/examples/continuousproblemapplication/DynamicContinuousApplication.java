@@ -16,10 +16,11 @@ import org.uma.jmetalsp.JMetalSPApplication;
 import org.uma.jmetalsp.consumer.SimpleSolutionListConsumer;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.DynamicProblem;
+import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingCounterDataSource;
+import org.uma.jmetalsp.impl.DefaultRuntime;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.problem.fda.FDA2;
-import org.uma.jmetalsp.impl.DefaultRuntime;
 import org.uma.jmetalsp.perception.Observable;
 import org.uma.jmetalsp.perception.impl.DefaultObservable;
 

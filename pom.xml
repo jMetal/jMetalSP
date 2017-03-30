@@ -77,6 +77,7 @@
         <module>jmetalsp-problem</module>
         <module>jmetalsp-examples</module>
         <module>jmetalsp-externalsource</module>
+        <module>jmetalsp-streamdatasource</module>
         <module>jmetalsp-spark</module>
         <!--<module>perception</module>-->
     </modules>

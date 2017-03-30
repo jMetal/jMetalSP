@@ -81,5 +81,10 @@
             <artifactId>jmetalsp-observeddata</artifactId>
             <version>1.1-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.uma.jmetalsp</groupId>
+            <artifactId>jmetalsp-streamingdatasource</artifactId>
+            <version>1.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

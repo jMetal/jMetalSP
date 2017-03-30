@@ -1,7 +1,8 @@
-package org.uma.jmetalsp.examples.continuousproblemapplication;
+package org.uma.jmetalsp.spark.streamingdatasource;
 
 import org.apache.spark.streaming.api.java.JavaDStream;
 import org.apache.spark.streaming.api.java.JavaStreamingContext;
+import org.uma.jmetal.util.JMetalLogger;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.perception.Observable;
 import org.uma.jmetalsp.spark.SparkStreamingDataSource;
@@ -34,8 +35,8 @@ public class SimpleSparkStreamingCounterDataSource implements SparkStreamingData
 
 	@Override
 	public void run() {
-		System.out.println("Run method in the streaming data source invoked") ;
-		System.out.println("Directory: " + directoryName) ;
+		JMetalLogger.logger.info("Run method in the streaming data source invoked") ;
+    JMetalLogger.logger.info("Directory: " + directoryName) ;
 
 		JavaDStream<Integer> time = streamingContext
 						.textFileStream(directoryName)
