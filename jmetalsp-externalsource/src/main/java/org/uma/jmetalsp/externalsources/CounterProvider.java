@@ -12,7 +12,7 @@ import java.io.IOException;
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class TimeProvider {
+public class CounterProvider {
 
 	private void start(String directory, long frequency) throws InterruptedException, IOException {
 		int counter = 0 ;
@@ -37,7 +37,8 @@ public class TimeProvider {
 
 	public static void main(String[] args) throws Exception {
 		if (args.length != 2) {
-			throw new Exception("Invalid number of arguments. Usage: java TimeProvider directory frequency") ;
+			throw new Exception("Invalid number of arguments. " +
+							"Usage: java org.uma.jmetalsp.externalsources.CounterProvider directory frequency") ;
 		}
 
 		String directory = args[0] ;
@@ -45,7 +46,7 @@ public class TimeProvider {
 
 		createDataDirectory(directory);
 
-		new TimeProvider().start(directory, frequency);
+		new CounterProvider().start(directory, frequency);
 	}
 
 	private static void createDataDirectory(String outputDirectoryName) {
