@@ -20,11 +20,11 @@ import org.uma.jmetalsp.consumer.SimpleSolutionListConsumer;
 import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingCounterDataSource;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
-import org.uma.jmetalsp.perception.Observable;
-import org.uma.jmetalsp.perception.impl.DefaultObservable;
+import org.uma.jmetalsp.observer.Observable;
+import org.uma.jmetalsp.observer.impl.DefaultObservable;
 import org.uma.jmetalsp.problem.fda.FDA2;
 import org.uma.jmetalsp.spark.SparkRuntime;
-import org.uma.jmetalsp.spark.impl.SimpleSparkStreamingCounterDataSource;
+import org.uma.jmetalsp.spark.streamingdatasource.SimpleSparkStreamingCounterDataSource;
 
 import java.io.IOException;
 import java.util.List;

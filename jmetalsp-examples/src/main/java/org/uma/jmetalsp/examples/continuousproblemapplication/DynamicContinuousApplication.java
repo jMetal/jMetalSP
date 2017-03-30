@@ -21,8 +21,8 @@ import org.uma.jmetalsp.impl.DefaultRuntime;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.problem.fda.FDA2;
-import org.uma.jmetalsp.perception.Observable;
-import org.uma.jmetalsp.perception.impl.DefaultObservable;
+import org.uma.jmetalsp.observer.Observable;
+import org.uma.jmetalsp.observer.impl.DefaultObservable;
 
 import java.io.IOException;
 import java.util.List;

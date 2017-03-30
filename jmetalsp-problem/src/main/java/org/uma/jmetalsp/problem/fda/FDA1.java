@@ -3,7 +3,7 @@ package org.uma.jmetalsp.problem.fda;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
-import org.uma.jmetalsp.perception.Observable;
+import org.uma.jmetalsp.observer.Observable;
 
 import java.io.Serializable;
 import java.util.ArrayList;

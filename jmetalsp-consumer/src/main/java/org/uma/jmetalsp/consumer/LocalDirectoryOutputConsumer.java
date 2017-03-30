@@ -19,8 +19,8 @@ import org.uma.jmetal.util.fileoutput.impl.DefaultFileOutputContext;
 import org.uma.jmetalsp.AlgorithmDataConsumer;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
-import org.uma.jmetalsp.perception.Observable;
-import org.uma.jmetalsp.perception.Observer;
+import org.uma.jmetalsp.observer.Observable;
+import org.uma.jmetalsp.observer.Observer;
 
 import java.io.File;
 

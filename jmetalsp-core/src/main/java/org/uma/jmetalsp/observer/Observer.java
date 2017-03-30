@@ -1,4 +1,4 @@
-package org.uma.jmetalsp.perception;
+package org.uma.jmetalsp.observer;
 
 import org.uma.jmetalsp.ObservedData;
 

@@ -17,8 +17,7 @@ import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetalsp.AlgorithmDataConsumer;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
-import org.uma.jmetalsp.perception.Observable;
-import org.uma.jmetalsp.perception.Observer;
+import org.uma.jmetalsp.observer.Observable;
 
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>

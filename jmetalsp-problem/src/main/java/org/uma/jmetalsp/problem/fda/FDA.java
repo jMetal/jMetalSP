@@ -4,7 +4,7 @@ import org.uma.jmetal.problem.impl.AbstractDoubleProblem;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
-import org.uma.jmetalsp.perception.Observable;
+import org.uma.jmetalsp.observer.Observable;
 
 import java.io.Serializable;
 

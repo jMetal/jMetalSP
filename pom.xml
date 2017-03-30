@@ -79,7 +79,7 @@
         <module>jmetalsp-externalsource</module>
         <module>jmetalsp-streamingdatasource</module>
         <module>jmetalsp-spark</module>
-        <!--<module>perception</module>-->
+        <!--<modobservertion</module>-->
     </modules>
 
     <profiles>

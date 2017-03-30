@@ -12,7 +12,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package org.uma.jmetalsp;
 
-import org.uma.jmetalsp.perception.Observable;
+import org.uma.jmetalsp.observer.Observable;
 
 /**
  * Created by ajnebro on 18/4/16.

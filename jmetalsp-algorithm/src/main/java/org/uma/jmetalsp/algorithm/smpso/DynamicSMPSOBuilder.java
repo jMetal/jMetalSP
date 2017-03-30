@@ -9,7 +9,7 @@ import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 import org.uma.jmetal.util.pseudorandom.PseudoRandomGenerator;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
-import org.uma.jmetalsp.perception.Observable;
+import org.uma.jmetalsp.observer.Observable;
 
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>

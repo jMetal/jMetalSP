@@ -4,7 +4,7 @@ import org.apache.spark.streaming.api.java.JavaDStream;
 import org.apache.spark.streaming.api.java.JavaStreamingContext;
 import org.uma.jmetal.util.JMetalLogger;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
-import org.uma.jmetalsp.perception.Observable;
+import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.spark.SparkStreamingDataSource;
 
 import java.util.List;

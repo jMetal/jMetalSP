@@ -2,7 +2,7 @@ package org.uma.jmetalsp.examples.streamingdatasource;
 
 import org.uma.jmetalsp.StreamingDataSource;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
-import org.uma.jmetalsp.perception.Observable;
+import org.uma.jmetalsp.observer.Observable;
 
 /**
  * This class emits the value of a counter periodically after a given delay (in milliseconds)

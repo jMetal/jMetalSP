@@ -2,7 +2,7 @@ package org.uma.jmetalsp.examples.dynamictsp;
 
 import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 import org.uma.jmetalsp.StreamingDataSource;
-import org.uma.jmetalsp.perception.Observable;
+import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observeddata.MatrixObservedData;
 
 /**

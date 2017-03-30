@@ -2,7 +2,7 @@ package org.uma.jmetalsp;
 
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.JMetalException;
-import org.uma.jmetalsp.perception.Observable;
+import org.uma.jmetalsp.observer.Observable;
 
 import java.io.IOException;
 import java.util.ArrayList;

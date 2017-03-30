@@ -2,7 +2,7 @@ package org.uma.jmetalsp;
 
 import org.uma.jmetal.problem.Problem;
 import org.uma.jmetal.solution.Solution;
-import org.uma.jmetalsp.perception.Observer;
+import org.uma.jmetalsp.observer.Observer;
 
 /**
  * Created by ajnebro on 18/4/16.
