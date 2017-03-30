@@ -5,14 +5,22 @@ import org.uma.jmetalsp.externalsources.lib.ParsedNode;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Node;
+import org.w3c.dom.Element;
 
 /**
  * This class parses the new XML Format of the New York Traffic Cameras.
@@ -34,15 +42,16 @@ import java.util.Map;
  */
 public class NYTrafficProvider {
     
-    public static final int FIELD_ID = 0;
-    public static final int FIELD_SPEED = 1;
-    public static final int FIELD_TRAVELTIME = 2;
-    public static final int FIELD_STATUS = 3;
-    public static final int FIELD_DATE = 4;
-    public static final int FIELD_POLYLINE = 7;
-    public static final int FIELD_NAME = 12;
+    public static final String FIELD_ID = "linkId";
+    public static final String FIELD_SPEED = "linkSpeed";
+    public static final String FIELD_TRAVELTIME = "linkTravelTime";
+    public static final String FIELD_STATUS = "linkStatus";
+    public static final String FIELD_DATE = "linkTimeStamp";
+    public static final String FIELD_POLYLINE = "linkPolyline";
+    public static final String FIELD_NAME = "linkName";
     public static final double JOIN_DISTANCE = 0.001;
-    public static final String NY_LINK_CAMS_URL = "http://207.251.86.229/nyc-links-cams/LinkSpeedQuery.txt";
+    public static final String NY_LINK_CAMS_URL = "http://dotsignals.org/nyc-links-cams/TrafficSpeed.php";
+    public static final int TIME_BETWEEN_UPDATES = 30000;
     private List<ParsedNode> pnodes;
     private Map<Integer, ParsedNode> hashnodes;
     private Map<Integer, Integer> nodeDistances;
@@ -53,7 +62,9 @@ public class NYTrafficProvider {
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
-        
+        args = new String[2];
+        args[0] = "debug";
+        args[1] = "debug";
         if (args == null || args.length < 2) {
             System.out.println("Provide the path to generate the output files:");
             System.out.println("    ParseLinkSpeedQuery <initial file path> <updates file path>");
@@ -61,28 +72,29 @@ public class NYTrafficProvider {
             return;
         }
         NYTrafficProvider parser = new NYTrafficProvider();
-        parser.initialize();
-        parser.generateOutput();
+        parser.readAndParseData();
+        //parser.initialize();
+        //parser.generateOutput();
         
-        if (args[0].equalsIgnoreCase("-print")) {
+        /*if (args[0].equalsIgnoreCase("-print")) {
             // Example
             //parser.printCoordinatesForSolution("12 32 30 73 69 10 92 53 56 57 5 27 48 51 46 79 75 15 13 70 21 8 9 83 22 42 20 19 88 1 84 82 29 38 41 36 39 2 11 91 16 14 37 18 17 59 90 60 61 67 40 66 65 24 25 62 64 63 74 89 26 31 28 33 34 7 3 4 87 86 47 23 35 76 6 50 44 43 45 68 72 71 0 85 80 55 52 78 54 77 58 49 81");
             parser.printCoordinatesForSolution(args[1]);
             return;
         }
         
-        parser.generateOutputFile(args[0]);
+        parser.generateOutputFile(args[0]);*/
         
         int update = 0;
         
-        while (true) {
-            Thread.sleep(30000);
+        /*while (true) {
+            Thread.sleep(TIME_BETWEEN_UPDATES);
             System.out.println("Doing update!");
             int updates = parser.update();
             System.out.println(updates + " nodes updated!");
             parser.generateUpdateFile(args[1], update);
             update++;
-        }
+        }*/
     }
     
     public List<ParsedNode> initialize() {
@@ -105,11 +117,17 @@ public class NYTrafficProvider {
     
     public int update() {
         try {
-            URL linkquery = new URL(NY_LINK_CAMS_URL);
+            /*URL linkquery = new URL(NY_LINK_CAMS_URL);
             BufferedReader in = new BufferedReader(
-                new InputStreamReader(linkquery.openStream()));
+                new InputStreamReader(linkquery.openStream()));*/
+            
+            File fXmlFile = new File(NY_LINK_CAMS_URL);
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(fXmlFile);
+            
             int updates = 0;
-            String inputLine = in.readLine(); // Ignore first line (headers)
+            /*String inputLine = in.readLine(); // Ignore first line (headers)
             while ((inputLine = in.readLine()) != null) {
                 if (inputLine.charAt(inputLine.length()-1) != '\"') {
                     inputLine += in.readLine();
@@ -151,7 +169,7 @@ public class NYTrafficProvider {
                     System.err.println("Ignored line " + fields[0] + " cause an error in parsing.");
                 }
             }
-            in.close();
+            in.close();*/
             return updates;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -172,30 +190,39 @@ public class NYTrafficProvider {
     }
     
     private void readAndParseData() throws Exception {
-        URL linkquery = new URL(NY_LINK_CAMS_URL);
-        BufferedReader in = new BufferedReader(
-            new InputStreamReader(linkquery.openStream()));
         pnodes = new ArrayList<>();
         hashnodes = new HashMap<>();
+        Document doc = null;
         
-        String inputLine = in.readLine(); // Ignore first line (headers)
-        while ((inputLine = in.readLine()) != null) {
-            if (inputLine.charAt(inputLine.length()-1) != '\"') {
-                inputLine += in.readLine();
-            }
-            inputLine = inputLine.replace("\"", "");
-            String[] fields = inputLine.split("\t");
-            
+        try {
+            URL url = new URL(NY_LINK_CAMS_URL);
+            URLConnection connection = url.openConnection();
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            doc = dBuilder.parse(connection.getInputStream());
+        } catch (Exception ex) {
+            System.err.println("Error reading the XML File.");
+            ex.printStackTrace();
+            return;
+        }
+
+        doc.getDocumentElement().normalize();
+
+        NodeList nodeList = doc.getElementsByTagName("TrafficSpeedData");
+
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            Element eElement = (Element)nodeList.item(i);
+
             try {
                 ParsedNode pnode = new ParsedNode(
-                    Integer.parseInt(fields[FIELD_ID]),
-                    Double.parseDouble(fields[FIELD_SPEED]),
-                    Integer.parseInt(fields[FIELD_TRAVELTIME]),
-                    fields[FIELD_STATUS].equals("1"),
-                    fields[FIELD_POLYLINE],
-                    fields[FIELD_NAME],
-                    GoogleDecode.decode(fields[FIELD_POLYLINE]));
-                
+                    Integer.parseInt(eElement.getAttribute(FIELD_ID)),
+                    Double.parseDouble(eElement.getAttribute(FIELD_SPEED)),
+                    Integer.parseInt(eElement.getAttribute(FIELD_TRAVELTIME)),
+                    eElement.getAttribute(FIELD_STATUS).equals("1"),
+                    eElement.getAttribute(FIELD_POLYLINE),
+                    eElement.getAttribute(FIELD_NAME),
+                    GoogleDecode.decode(eElement.getAttribute(FIELD_POLYLINE)));
+
                 // If distances are not cached, call the Google Service
                 if (nodeDistances == null) {
                     Integer dist1 = GoogleDecode.getDistance(pnode.getCoords().get(0), pnode.getCoords().get(pnode.getCoords().size()-1));
@@ -206,16 +233,16 @@ public class NYTrafficProvider {
                         pnode.setDistance(nodeDistances.get(pnode.getId()));
                     }
                 }
-                
+
                 pnodes.add(pnode);
                 hashnodes.put(pnode.getId(), pnode);
-            }
-            catch (Exception ex) {
-                System.err.println("Ignored line " + fields[0] + " cause an error in parsing.");
+            } catch (Exception ex) {
+                System.err.println("Ignored node " + eElement.getNodeName() + " cause an error in parsing.");
+                ex.printStackTrace();
             }
         }
-        in.close();
     }
+    
     private Integer min(Integer data1,Integer data2){
         Integer result=null;
         if(data1!=null &&data2!=null){
