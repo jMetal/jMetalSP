@@ -2,7 +2,7 @@ package org.uma.jmetalsp.problem.tsp;
 
 import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetalsp.perception.Observable;
-import org.uma.jmetalsp.updatedata.MatrixObservedData;
+import org.uma.jmetalsp.observeddata.MatrixObservedData;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;

@@ -3,8 +3,8 @@ package org.uma.jmetalsp.examples.dynamictsp;
 import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 import org.uma.jmetalsp.StreamingDataSource;
 import org.uma.jmetalsp.perception.Observable;
-import org.uma.jmetalsp.updatedata.MatrixObservedData;
-import org.uma.jmetalsp.updatedata.impl.DefaultMatrixUpdateData;
+import org.uma.jmetalsp.observeddata.MatrixObservedData;
+import org.uma.jmetalsp.observeddata.impl.DefaultMatrixUpdateData;
 
 /**
  * This class emits a value periodically after a given delay (in milliseconds)

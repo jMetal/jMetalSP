@@ -9,6 +9,7 @@ import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.solution.PermutationSolution;
 import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
+import org.uma.jmetalsp.AlgorithmDataConsumer;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.StreamingDataSource;
 import org.uma.jmetalsp.algorithm.mocell.DynamicMOCellBuilder;
@@ -17,10 +18,11 @@ import org.uma.jmetalsp.JMetalSPApplication;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.consumer.SimpleSolutionListConsumer;
+import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPBuilderFromFiles;
 import org.uma.jmetalsp.impl.DefaultRuntime;
-import org.uma.jmetalsp.updatedata.MatrixObservedData;
-import org.uma.jmetalsp.updatedata.impl.DefaultAlgorithmObservedData;
+import org.uma.jmetalsp.observeddata.MatrixObservedData;
+import org.uma.jmetalsp.observeddata.impl.DefaultAlgorithmObservedData;
 import org.uma.jmetalsp.perception.Observable;
 import org.uma.jmetalsp.perception.impl.DefaultObservable;
 
@@ -41,9 +43,11 @@ public class DynamicTSPApplication {
   public static void main(String[] args) throws IOException, InterruptedException {
     JMetalSPApplication<
             MatrixObservedData,
+            AlgorithmObservedData,
             DynamicProblem<DoubleSolution, MatrixObservedData>,
-            DynamicAlgorithm<List<PermutationSolution<Integer>>,MatrixObservedData>,
-            ?> application;
+            DynamicAlgorithm<List<PermutationSolution<Integer>>,AlgorithmObservedData>,
+            ?,
+            AlgorithmDataConsumer<AlgorithmObservedData>> application;
     application = new JMetalSPApplication<>();
 
     // Set the streaming data source

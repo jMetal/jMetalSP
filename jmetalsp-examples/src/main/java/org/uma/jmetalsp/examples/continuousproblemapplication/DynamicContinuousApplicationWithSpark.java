@@ -8,6 +8,7 @@ import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
 import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.archive.impl.CrowdingDistanceArchive;
+import org.uma.jmetalsp.AlgorithmDataConsumer;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.JMetalSPApplication;
@@ -16,12 +17,12 @@ import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAIIBuilder;
 import org.uma.jmetalsp.algorithm.smpso.DynamicSMPSOBuilder;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.consumer.SimpleSolutionListConsumer;
+import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
+import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.perception.Observable;
 import org.uma.jmetalsp.perception.impl.DefaultObservable;
 import org.uma.jmetalsp.problem.fda.FDA2;
 import org.uma.jmetalsp.spark.SparkRuntime;
-import org.uma.jmetalsp.updatedata.TimeObservedData;
-import org.uma.jmetalsp.updatedata.impl.DefaultAlgorithmObservedData;
 
 import java.io.IOException;
 import java.util.List;
@@ -36,15 +37,17 @@ public class DynamicContinuousApplicationWithSpark {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     JMetalSPApplication<
-            TimeObservedData,
-            DynamicProblem<DoubleSolution, TimeObservedData>,
-            DynamicAlgorithm<List<DoubleSolution>,TimeObservedData>,
-            StreamingFDADataSource> application;
+            SingleObservedData<Double>,
+            AlgorithmObservedData,
+            DynamicProblem<DoubleSolution, SingleObservedData<Double>>,
+            DynamicAlgorithm<List<DoubleSolution>,AlgorithmObservedData, Observable<AlgorithmObservedData>>,
+            StreamingFDADataSource,
+            AlgorithmDataConsumer<AlgorithmObservedData, DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData, Observable<AlgorithmObservedData>>>> application;
     application = new JMetalSPApplication<>();
 
 	  // Problem configuration
-    Observable<TimeObservedData> fdaUpdateDataObservable = new DefaultObservable<>("timeData") ;
-	  DynamicProblem<DoubleSolution, TimeObservedData> problem = new FDA2(fdaUpdateDataObservable);
+    Observable<SingleObservedData<Double>> fdaUpdateDataObservable = new DefaultObservable<>("timeData") ;
+	  DynamicProblem<DoubleSolution, SingleObservedData<Double>> problem = new FDA2(fdaUpdateDataObservable);
 
 	  // Algorithm configuration
     CrossoverOperator<DoubleSolution> crossover = new SBXCrossover(0.9, 20.0);
@@ -53,8 +56,8 @@ public class DynamicContinuousApplicationWithSpark {
 
     String defaultAlgorithm = "SMPSO";
 
-    DynamicAlgorithm<List<DoubleSolution>, DefaultAlgorithmObservedData> algorithm;
-    Observable<DefaultAlgorithmObservedData> observable = new DefaultObservable<>("NSGAII") ;
+    DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData, Observable<AlgorithmObservedData>> algorithm;
+    Observable<AlgorithmObservedData> observable = new DefaultObservable<>("NSGAII") ;
 
     switch (defaultAlgorithm) {
       case "NSGAII":
@@ -85,12 +88,12 @@ public class DynamicContinuousApplicationWithSpark {
 
     Logger.getLogger("org").setLevel(Level.OFF) ;
 
-    application.setStreamingRuntime(new SparkRuntime<TimeObservedData>(5))
+    application.setStreamingRuntime(new SparkRuntime<SingleObservedData<Double>>(5))
             .setProblem(problem)
             .setAlgorithm(algorithm)
             .addStreamingDataSource(new StreamingSparkFDADataSource(fdaUpdateDataObservable, "timeDirectory"))
-            .addAlgorithmDataConsumer(new SimpleSolutionListConsumer())
-            .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirectory"))
+            .addAlgorithmDataConsumer(new SimpleSolutionListConsumer(algorithm))
+            .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirectory", algorithm))
             .run();
   }
 }

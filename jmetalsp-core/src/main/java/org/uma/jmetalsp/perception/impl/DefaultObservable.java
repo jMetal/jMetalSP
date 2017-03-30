@@ -1,5 +1,6 @@
 package org.uma.jmetalsp.perception.impl;
 
+import org.uma.jmetalsp.ObservedData;
 import org.uma.jmetalsp.perception.Observable;
 import org.uma.jmetalsp.perception.Observer;
 
@@ -9,8 +10,8 @@ import java.util.Set;
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DefaultObservable<Data> implements Observable<Data> {
-	private Set<Observer> observers ;
+public class DefaultObservable<D extends ObservedData> implements Observable<D> {
+	private Set<Observer<D>> observers ;
 	private boolean dataHasChanged ;
 	private String name ;
 
@@ -31,7 +32,7 @@ public class DefaultObservable<Data> implements Observable<Data> {
 	}
 
 	@Override
-	public void notifyObservers(Data data) {
+	public void notifyObservers(D data) {
 		if (dataHasChanged) {
 			observers.stream().forEach(observer -> observer.update(this, data));
 		}

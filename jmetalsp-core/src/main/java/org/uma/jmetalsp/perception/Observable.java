@@ -1,13 +1,15 @@
 package org.uma.jmetalsp.perception;
 
+import org.uma.jmetalsp.ObservedData;
+
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public interface Observable<Data> {
-	void register(Observer observer) ;
-	void unregister(Observer observer) ;
+public interface Observable<D extends ObservedData> {
+	void register(Observer<D> observer) ;
+	void unregister(Observer<D> observer) ;
 
-	void notifyObservers(Data data);
+	void notifyObservers(D data);
 	int numberOfRegisteredObservers() ;
 	void setChanged() ;
 	boolean hasChanged() ;

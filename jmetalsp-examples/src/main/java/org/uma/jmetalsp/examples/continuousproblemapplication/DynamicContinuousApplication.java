@@ -6,6 +6,7 @@ import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
 import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.archive.impl.CrowdingDistanceArchive;
+import org.uma.jmetalsp.AlgorithmDataConsumer;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.StreamingDataSource;
 import org.uma.jmetalsp.algorithm.mocell.DynamicMOCellBuilder;
@@ -15,10 +16,10 @@ import org.uma.jmetalsp.JMetalSPApplication;
 import org.uma.jmetalsp.consumer.SimpleSolutionListConsumer;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.DynamicProblem;
+import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
+import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.problem.fda.FDA2;
 import org.uma.jmetalsp.impl.DefaultRuntime;
-import org.uma.jmetalsp.updatedata.TimeObservedData;
-import org.uma.jmetalsp.updatedata.impl.DefaultAlgorithmObservedData;
 import org.uma.jmetalsp.perception.Observable;
 import org.uma.jmetalsp.perception.impl.DefaultObservable;
 
@@ -38,18 +39,20 @@ public class DynamicContinuousApplication {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     JMetalSPApplication<
-            TimeObservedData,
-            DynamicProblem<DoubleSolution, TimeObservedData>,
-            DynamicAlgorithm<List<DoubleSolution>,TimeObservedData>,
-            StreamingFDADataSource> application;
+            SingleObservedData<Double>,
+            AlgorithmObservedData,
+            DynamicProblem<DoubleSolution, SingleObservedData<Double>>,
+            DynamicAlgorithm<List<DoubleSolution>,AlgorithmObservedData, Observable<AlgorithmObservedData>>,
+            StreamingFDADataSource,
+            AlgorithmDataConsumer<AlgorithmObservedData, DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData, Observable<AlgorithmObservedData>>>> application;
     application = new JMetalSPApplication<>();
 
     // Set the streaming data source
-    Observable<TimeObservedData> fdaUpdateDataObservable = new DefaultObservable<>("timeData") ;
-    StreamingDataSource<?, ?> streamingDataSource = new StreamingFDADataSource(fdaUpdateDataObservable, 2000) ;
+    Observable<SingleObservedData<Double>> fdaObservable = new DefaultObservable<>("timeData") ;
+    StreamingDataSource<?, ?> streamingDataSource = new StreamingFDADataSource(fdaObservable, 2000) ;
 
     // Problem configuration
-	  DynamicProblem<DoubleSolution, TimeObservedData> problem = new FDA2(fdaUpdateDataObservable);
+	  DynamicProblem<DoubleSolution, SingleObservedData<Double>> problem = new FDA2(fdaObservable);
 
 	  // Algorithm configuration
     CrossoverOperator<DoubleSolution> crossover = new SBXCrossover(0.9, 20.0);
@@ -58,8 +61,8 @@ public class DynamicContinuousApplication {
 
     String defaultAlgorithm = "SMPSO";
 
-    DynamicAlgorithm<List<DoubleSolution>, DefaultAlgorithmObservedData> algorithm;
-    Observable<DefaultAlgorithmObservedData> observable = new DefaultObservable<>("") ;
+    DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData, Observable<AlgorithmObservedData>> algorithm;
+    Observable<AlgorithmObservedData> observable = new DefaultObservable<>("") ;
 
     switch (defaultAlgorithm) {
       case "NSGAII":
@@ -88,12 +91,12 @@ public class DynamicContinuousApplication {
         algorithm = null;
     }
 
-    application.setStreamingRuntime(new DefaultRuntime<TimeObservedData, StreamingFDADataSource>())
+    application.setStreamingRuntime(new DefaultRuntime<SingleObservedData<Double>, Observable<SingleObservedData<Double>>, StreamingFDADataSource>())
             .setProblem(problem)
             .setAlgorithm(algorithm)
             .addStreamingDataSource(streamingDataSource)
-            .addAlgorithmDataConsumer(new SimpleSolutionListConsumer())
-            .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirectory"))
+            .addAlgorithmDataConsumer(new SimpleSolutionListConsumer(algorithm))
+            .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirectory", algorithm))
             .run();
   }
 }

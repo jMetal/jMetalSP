@@ -2,8 +2,8 @@ package org.uma.jmetalsp.problem.fda;
 
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.JMetalException;
+import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.perception.Observable;
-import org.uma.jmetalsp.updatedata.TimeObservedData;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -19,11 +19,11 @@ public class FDA3 extends FDA implements Serializable {
   private final int limitSupI = 1;
   private final int limitInfII = 1;
 
-  public FDA3(Observable<TimeObservedData> observable){
+  public FDA3(Observable<SingleObservedData<Double>> observable){
     this(30,2, observable);
   }
 
-  public FDA3 (Integer numberOfVariables, Integer numberOfObjectives, Observable<TimeObservedData> observable) throws JMetalException {
+  public FDA3 (Integer numberOfVariables, Integer numberOfObjectives, Observable<SingleObservedData<Double>> observable) throws JMetalException {
     super(observable) ;
     setNumberOfVariables(numberOfVariables);
     setNumberOfObjectives(numberOfObjectives);

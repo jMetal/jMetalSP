@@ -6,7 +6,7 @@ import org.uma.jmetal.solution.PermutationSolution;
 import org.uma.jmetal.util.solutionattribute.impl.OverallConstraintViolation;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.perception.Observable;
-import org.uma.jmetalsp.updatedata.MatrixObservedData;
+import org.uma.jmetalsp.observeddata.MatrixObservedData;
 
 /**
  * Version of the multi-objective TSP aimed at being solving dynamically.

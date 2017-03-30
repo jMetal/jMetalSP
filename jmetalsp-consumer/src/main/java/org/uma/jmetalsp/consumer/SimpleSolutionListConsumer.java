@@ -16,23 +16,28 @@ package org.uma.jmetalsp.consumer;
 import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetalsp.AlgorithmDataConsumer;
 import org.uma.jmetalsp.DynamicAlgorithm;
-import org.uma.jmetalsp.updatedata.AlgorithmResultData;
+import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.perception.Observable;
 import org.uma.jmetalsp.perception.Observer;
 
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class SimpleSolutionListConsumer implements AlgorithmDataConsumer<AlgorithmResultData> {
-  private DynamicAlgorithm<?, AlgorithmResultData> dynamicAlgorithm;
+public class SimpleSolutionListConsumer implements
+        AlgorithmDataConsumer<AlgorithmObservedData, DynamicAlgorithm<?, AlgorithmObservedData, Observable<AlgorithmObservedData>>> {
+  private DynamicAlgorithm<?, AlgorithmObservedData, Observable<AlgorithmObservedData>> dynamicAlgorithm;
 
+  public SimpleSolutionListConsumer(DynamicAlgorithm<?, AlgorithmObservedData, Observable<AlgorithmObservedData>> algorithm) {
+    this.dynamicAlgorithm = algorithm ;
+  }
+  /*
   @Override
-  public void setAlgorithm(DynamicAlgorithm<?, AlgorithmResultData> algorithm) {
+  public void setAlgorithm(DynamicAlgorithm<?, AlgorithmObservedData> algorithm) {
     this.dynamicAlgorithm = algorithm;
   }
-
+*/
   @Override
-  public DynamicAlgorithm<?, AlgorithmResultData> getAlgorithm() {
+  public DynamicAlgorithm<?, AlgorithmObservedData, Observable<AlgorithmObservedData>> getAlgorithm() {
     return dynamicAlgorithm;
   }
 
@@ -58,9 +63,9 @@ public class SimpleSolutionListConsumer implements AlgorithmDataConsumer<Algorit
   }
 
   @Override
-  public void update(Observable<?> observable, Object data) {
+  public void update(Observable<AlgorithmObservedData> observable, AlgorithmObservedData data) {
     //if ("algorithm".equals(observable.getName())) {
-    AlgorithmResultData algorithmResultData = (AlgorithmResultData) data;
+    AlgorithmObservedData algorithmResultData = (AlgorithmObservedData) data;
     System.out.println("Number of generated fronts: " + algorithmResultData.getIterations());
     System.out.println("Size of the front: " + algorithmResultData.getSolutionList().size());
 

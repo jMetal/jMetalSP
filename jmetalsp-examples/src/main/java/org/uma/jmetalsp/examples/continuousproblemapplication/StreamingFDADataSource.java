@@ -1,16 +1,15 @@
 package org.uma.jmetalsp.examples.continuousproblemapplication;
 
 import org.uma.jmetalsp.StreamingDataSource;
+import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.perception.Observable;
-import org.uma.jmetalsp.updatedata.TimeObservedData;
-import org.uma.jmetalsp.updatedata.impl.DefaultTimeObservedData;
 
 /**
  * This class emits the value of a counter periodically after a given delay (in milliseconds)
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class StreamingFDADataSource implements StreamingDataSource<TimeObservedData, Observable<TimeObservedData>> {
-	private Observable<TimeObservedData> observedData;
+public class StreamingFDADataSource implements StreamingDataSource<SingleObservedData<Double>, Observable<SingleObservedData<Double>>> {
+	private Observable<SingleObservedData<Double>> observable;
 	private int dataDelay ;
 
 	private double time=1.0d;
@@ -19,11 +18,11 @@ public class StreamingFDADataSource implements StreamingDataSource<TimeObservedD
 
 	/**
    *
-   * @param observedData
+   * @param observable
    * @param dataDelay Delay in milliseconds
    */
-	public StreamingFDADataSource(Observable<TimeObservedData> observedData, int dataDelay) {
-		this.observedData = observedData ;
+	public StreamingFDADataSource(Observable<SingleObservedData<Double>> observable, int dataDelay) {
+		this.observable = observable ;
 		this.dataDelay = dataDelay ;
 	}
 
@@ -39,8 +38,8 @@ public class StreamingFDADataSource implements StreamingDataSource<TimeObservedD
 
       time= (1.0d/(double)nT) * Math.floor((double)counter/(double)tauT) ;
 
-			observedData.setChanged(); ;
-			observedData.notifyObservers(new DefaultTimeObservedData(time));
+			observable.setChanged(); ;
+			observable.notifyObservers(new SingleObservedData<Double>(time));
 			counter ++ ;
 		}
 	}

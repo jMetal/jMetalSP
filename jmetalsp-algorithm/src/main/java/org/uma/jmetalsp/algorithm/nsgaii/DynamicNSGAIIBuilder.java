@@ -10,8 +10,8 @@ import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetalsp.DynamicProblem;
+import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.perception.Observable;
-import org.uma.jmetalsp.updatedata.impl.DefaultAlgorithmObservedData;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ import java.util.List;
 public class DynamicNSGAIIBuilder<
 				S extends Solution<?>,
 				P extends DynamicProblem<S, ?>,
-				O extends Observable<DefaultAlgorithmObservedData>>  {
+				O extends Observable<AlgorithmObservedData>>  {
 
 	private int maxEvaluations;
 	private int populationSize;
