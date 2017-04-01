@@ -85,16 +85,15 @@ public class NYTrafficProvider {
         }
         
         NYTrafficProvider parser = new NYTrafficProvider();
-        parser.readAndParseData();
-        //parser.initialize();
-        //parser.generateOutput();
+        parser.initialize(args.length == 3 ? args[2] : null);
+        parser.generateOutput();
         
         switch(args[0]) {
             case "-output":
                 parser.printCoordinatesForSolution(args[1]);
                 return;
             case "-distances":
-                
+                parser.generateDistancesFile(args[1]);
                 return;
             default:
                 parser.generateOutputFile(args[0]);
@@ -113,9 +112,12 @@ public class NYTrafficProvider {
     
     private List<ParsedNode> initialize(String distanceFile) {
         try {
-            createCachedDistances();
-            readAndParseData();
-            addManualEdges();
+            if (distanceFile != null) {
+                
+            }
+            //createCachedDistances();
+            readAndParseNodes();
+            //addManualEdges();
             generateGraph();
             int removed;
             do {
@@ -203,7 +205,7 @@ public class NYTrafficProvider {
         }
     }
     
-    private void readAndParseData() {
+    private void readAndParseNodes() {
         pnodes = new ArrayList<>();
         hashnodes = new HashMap<>();
         Document doc = null;
@@ -217,6 +219,11 @@ public class NYTrafficProvider {
         } catch (Exception ex) {
             System.err.println("Error reading the XML File.");
             ex.printStackTrace();
+            return;
+        }
+        
+        if (doc == null) {
+            System.err.println("Error reading the XML File.");
             return;
         }
 
@@ -241,7 +248,8 @@ public class NYTrafficProvider {
                 if (nodeDistances == null) {
                     Integer dist1 = GoogleDecode.getDistance(pnode.getCoords().get(0), pnode.getCoords().get(pnode.getCoords().size()-1));
                     Integer dist2 = GoogleDecode.getDistance(pnode.getCoords().get(pnode.getCoords().size()-1), pnode.getCoords().get(0));
-                    pnode.setDistance(min(dist1, dist2));
+                    pnode.setDistance(Math.min(dist1, dist2));
+                    System.out.println("Distance for node: " + pnode.getId() + " = " + pnode.getDistance());
                 } else {
                     if (nodeDistances.containsKey(pnode.getId())) {
                         pnode.setDistance(nodeDistances.get(pnode.getId()));
@@ -250,25 +258,14 @@ public class NYTrafficProvider {
 
                 pnodes.add(pnode);
                 hashnodes.put(pnode.getId(), pnode);
+                System.out.println("Added node " + pnode);
             } catch (Exception ex) {
                 System.err.println("Ignored node " + eElement.getNodeName() + " cause an error in parsing.");
                 ex.printStackTrace();
             }
         }
-    }
-    
-    private Integer min(Integer data1,Integer data2){
-        Integer result=null;
-        if(data1!=null &&data2!=null){
-            int aux1=data1.intValue();
-            int aux2=data2.intValue();
-            if(aux1<=aux2){
-                result= data1;
-            }else{
-                result=data2;
-            }
-        }
-        return result;
+        System.out.println(pnodes.size());
+        System.out.println(hashnodes.size());
     }
     
     private void generateGraph() {
@@ -325,6 +322,22 @@ public class NYTrafficProvider {
                 int edgePosition = edge.getPosition();
                 System.out.println(nodePosition + " " + edgePosition + " " + node.getDistance() + " " + node.getSpeed() + " " + node.getId());
             }
+        }
+    }
+    
+    private void generateDistancesFile(String path) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(path))) {
+            // First line is the total number of cities
+            writer.write(pnodes.size() + "\n");
+            for (ParsedNode node : pnodes) {
+                int nodePosition = node.getPosition();
+                for (ParsedNode edge : node.getNodes()) {
+                    int edgePosition = edge.getPosition();
+                    writer.write(nodePosition + " " + edgePosition + " " + node.getDistance() + " " + node.getId() + "\n");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
     
