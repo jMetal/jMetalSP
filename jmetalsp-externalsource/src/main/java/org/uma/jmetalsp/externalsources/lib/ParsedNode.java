@@ -31,7 +31,7 @@ public class ParsedNode {
         this.polyLine = polyLine;
         this.coords = coords;
         this.name = name;
-        nodes = new HashSet<ParsedNode>();
+        nodes = new HashSet<>();
     }
     
     public Integer getId() {

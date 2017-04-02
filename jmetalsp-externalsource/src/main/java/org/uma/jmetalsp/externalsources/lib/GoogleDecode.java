@@ -13,7 +13,7 @@ import java.util.List;
 
 
 public class GoogleDecode {
-	public static final String DISTANCE_QUERY = "https://maps.googleapis.com/maps/api/distancematrix/json?";
+    public static final String DISTANCE_QUERY = "https://maps.googleapis.com/maps/api/distancematrix/json?";
     public static final String GOOGLE_KEY = "*****";//use your own google key
     
     public static Integer getDistance(Coord o, Coord d) throws Exception {
@@ -63,30 +63,35 @@ public class GoogleDecode {
         int lat = 0;
         int lng = 0;
 
-        while (index < len) {
-            int result = 1;
-            int shift = 0;
-            int b;
-            do {
-                b = encodedPath.charAt(index++) - 63 - 1;
-                result += b << shift;
-                shift += 5;
-            } while (b >= 0x1f);
-            lat += (result & 1) != 0 ? ~(result >> 1) : (result >> 1);
+        try {
+            while (index < len) {
+                int result = 1;
+                int shift = 0;
+                int b;
+                do {
+                    b = encodedPath.charAt(index++) - 63 - 1;
+                    result += b << shift;
+                    shift += 5;
+                } while (b >= 0x1f);
+                lat += (result & 1) != 0 ? ~(result >> 1) : (result >> 1);
 
-            result = 1;
-            shift = 0;
-            do {
-                b = encodedPath.charAt(index++) - 63 - 1;
-                result += b << shift;
-                shift += 5;
-            } while (b >= 0x1f);
-            lng += (result & 1) != 0 ? ~(result >> 1) : (result >> 1);
+                result = 1;
+                shift = 0;
+                do {
+                    b = encodedPath.charAt(index++) - 63 - 1;
+                    result += b << shift;
+                    shift += 5;
+                } while (b >= 0x1f);
+                lng += (result & 1) != 0 ? ~(result >> 1) : (result >> 1);
 
-            path.add(new Coord(lat * 1e-5, lng * 1e-5));
+                path.add(new Coord(lat * 1e-5, lng * 1e-5));
+            }
+            return path;
+        } catch (Exception ex) {
+            // Some arithmetic exceptions can be thrown by the previous code
+            System.err.println(encodedPath);
+            ex.printStackTrace();
+            return null;
         }
-        return path;
     }
-    
-
 }
