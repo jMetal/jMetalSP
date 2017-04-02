@@ -13,8 +13,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import org.uma.jmetalsp.externalsources.lib.Coord;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
@@ -76,9 +79,6 @@ public class NYTrafficProvider {
     private Map<Integer, Integer> nodeDistances;
     
     public static void main(String[] args) {
-        args = new String[2];
-        args[0] = "debug";
-        args[1] = "debug";
         if (args == null || args.length < 2 || args.length > 3) {
             printUsage();
             return;
@@ -234,7 +234,9 @@ public class NYTrafficProvider {
         for (int i = 0; i < nodeList.getLength(); i++) {
             Element eElement = (Element)nodeList.item(i);
 
-            try {
+            List<Coord> coordinates = GoogleDecode.decode(eElement.getAttribute(FIELD_POLYLINE));
+            if (coordinates != null) {
+                
                 ParsedNode pnode = new ParsedNode(
                     Integer.parseInt(eElement.getAttribute(FIELD_ID)),
                     Double.parseDouble(eElement.getAttribute(FIELD_SPEED)),
@@ -244,24 +246,13 @@ public class NYTrafficProvider {
                     eElement.getAttribute(FIELD_NAME),
                     GoogleDecode.decode(eElement.getAttribute(FIELD_POLYLINE)));
 
-                // If distances are not cached, call the Google Service
-                if (nodeDistances == null) {
-                    Integer dist1 = GoogleDecode.getDistance(pnode.getCoords().get(0), pnode.getCoords().get(pnode.getCoords().size()-1));
-                    Integer dist2 = GoogleDecode.getDistance(pnode.getCoords().get(pnode.getCoords().size()-1), pnode.getCoords().get(0));
-                    pnode.setDistance(Math.min(dist1, dist2));
-                    System.out.println("Distance for node: " + pnode.getId() + " = " + pnode.getDistance());
-                } else {
-                    if (nodeDistances.containsKey(pnode.getId())) {
-                        pnode.setDistance(nodeDistances.get(pnode.getId()));
-                    }
-                }
+                pnode.setDistance(getDistanceForNode(pnode));
 
                 pnodes.add(pnode);
                 hashnodes.put(pnode.getId(), pnode);
                 System.out.println("Added node " + pnode);
-            } catch (Exception ex) {
+            } else {
                 System.err.println("Ignored node " + eElement.getNodeName() + " cause an error in parsing.");
-                ex.printStackTrace();
             }
         }
         System.out.println(pnodes.size());
@@ -325,16 +316,33 @@ public class NYTrafficProvider {
         }
     }
     
+    private int getDistanceForNode(ParsedNode pnode) {
+        // If distances are not cached, call the Google Service
+        if (nodeDistances == null) {
+            try {
+                Integer dist1 = GoogleDecode.getDistance(pnode.getCoords().get(0), pnode.getCoords().get(pnode.getCoords().size()-1));
+                Integer dist2 = GoogleDecode.getDistance(pnode.getCoords().get(pnode.getCoords().size()-1), pnode.getCoords().get(0));
+                return Math.min(dist1, dist2);
+            } catch (Exception ex) {
+                Logger.getLogger(NYTrafficProvider.class.getName()).log(Level.SEVERE, "Error getting Google Distance for node " + pnode.getId(), ex);
+                return 0;
+            }
+        } else {
+            if (nodeDistances.containsKey(pnode.getId())) {
+                return nodeDistances.get(pnode.getId());
+            } else {
+                Logger.getLogger(NYTrafficProvider.class.getName()).log(Level.SEVERE, "Error loading cached distance for node {0}", pnode.getId());
+                return 0;
+            }
+        }
+    }
+    
     private void generateDistancesFile(String path) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(path))) {
-            // First line is the total number of cities
+            // First line is the total number of nodes
             writer.write(pnodes.size() + "\n");
             for (ParsedNode node : pnodes) {
-                int nodePosition = node.getPosition();
-                for (ParsedNode edge : node.getNodes()) {
-                    int edgePosition = edge.getPosition();
-                    writer.write(nodePosition + " " + edgePosition + " " + node.getDistance() + " " + node.getId() + "\n");
-                }
+                writer.write(node.getId() + " " + node.getDistance() + "\n");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -388,121 +396,6 @@ public class NYTrafficProvider {
             int id = Integer.parseInt(sol);
             System.out.println(pnodes.get(id).getCoords().get(0).getX() + "," + pnodes.get(id).getCoords().get(0).getY());
         }
-    }
-    
-    // This method has all the distances cached, to avoid making petitions to Google service
-    private void createCachedDistances(){
-        nodeDistances = new HashMap<>();
-        nodeDistances.put(1, 2397);
-        nodeDistances.put(2, 1467);
-        nodeDistances.put(3, 2958);
-        nodeDistances.put(4, 1398);
-        nodeDistances.put(106, 974);
-        nodeDistances.put(107, 4771);
-        nodeDistances.put(108, 2758);
-        nodeDistances.put(110, 3390);
-        nodeDistances.put(119, 3160);
-        nodeDistances.put(122, 2248);
-        nodeDistances.put(123, 512);
-        nodeDistances.put(124, 3065);
-        nodeDistances.put(129, 2077);
-        nodeDistances.put(137, 2079);
-        nodeDistances.put(145, 1384);
-        nodeDistances.put(148, 7716);
-        nodeDistances.put(149, 3266);
-        nodeDistances.put(153, 3161);
-        nodeDistances.put(154, 1891);
-        nodeDistances.put(155, 3137);
-        nodeDistances.put(157, 6792);
-        nodeDistances.put(164, 1877);
-        nodeDistances.put(165, 1156);
-        nodeDistances.put(167, 3414);
-        nodeDistances.put(168, 1877);
-        nodeDistances.put(169, 4147);
-        nodeDistances.put(170, 2037);
-        nodeDistances.put(171, 5384);
-        nodeDistances.put(199, 6195);
-        nodeDistances.put(204, 5498);
-        nodeDistances.put(207, 3430);
-        nodeDistances.put(208, 4511);
-        nodeDistances.put(215, 3094);
-        nodeDistances.put(217, 4505);
-        nodeDistances.put(221, 4498);
-        nodeDistances.put(222, 3079);
-        nodeDistances.put(223, 320);
-        nodeDistances.put(224, 1670);
-        nodeDistances.put(225, 835);
-        nodeDistances.put(257, 5717);
-        nodeDistances.put(258, 2114);
-        nodeDistances.put(259, 1900);
-        nodeDistances.put(261, 2091);
-        nodeDistances.put(262, 5761);
-        nodeDistances.put(263, 1494);
-        nodeDistances.put(264, 1508);
-        nodeDistances.put(295, 1841);
-        nodeDistances.put(298, 1151);
-        nodeDistances.put(311, 2346);
-        nodeDistances.put(313, 6984);
-        nodeDistances.put(315, 2361);
-        nodeDistances.put(316, 6980);
-        nodeDistances.put(331, 3279);
-        nodeDistances.put(332, 4147);
-        nodeDistances.put(349, 27970);
-        nodeDistances.put(350, 2967);
-        nodeDistances.put(351, 2337);
-        nodeDistances.put(364, 2018);
-        nodeDistances.put(365, 2154);
-        nodeDistances.put(369, 27655);
-        nodeDistances.put(375, 2968);
-        nodeDistances.put(377, 1695);
-        nodeDistances.put(378, 1183);
-        nodeDistances.put(381, 744);
-        nodeDistances.put(382, 4196);
-        nodeDistances.put(384, 2789);
-        nodeDistances.put(385, 746);
-        nodeDistances.put(388, 1502);
-        nodeDistances.put(389, 4076);
-        nodeDistances.put(390, 1704);
-        nodeDistances.put(402, 2674);
-        nodeDistances.put(405, 1645);
-        nodeDistances.put(406, 2661);
-        nodeDistances.put(410, 1202);
-        nodeDistances.put(411, 7612);
-        nodeDistances.put(412, 1532);
-        nodeDistances.put(413, 1537);
-        nodeDistances.put(416, 1193);
-        nodeDistances.put(417, 7388);
-        nodeDistances.put(422, 3241);
-        nodeDistances.put(423, 4060);
-        nodeDistances.put(424, 1154);
-        nodeDistances.put(425, 4840);
-        nodeDistances.put(426, 3397);
-        nodeDistances.put(427, 3279);
-        nodeDistances.put(428, 4068);
-        nodeDistances.put(430, 3588);
-        nodeDistances.put(431, 2300);
-        nodeDistances.put(432, 1040);
-        nodeDistances.put(433, 3820);
-        nodeDistances.put(434, 1426);
-        nodeDistances.put(435, 2746);
-        nodeDistances.put(436, 2288);
-        nodeDistances.put(437, 2883);
-        nodeDistances.put(439, 1447);
-        nodeDistances.put(440, 3935);
-        nodeDistances.put(441, 3543);
-        nodeDistances.put(442, 2836);
-        nodeDistances.put(443, 2672);
-        nodeDistances.put(444, 2351);
-        nodeDistances.put(445, 5334);
-        nodeDistances.put(446, 2442);
-        nodeDistances.put(447, 1827);
-        nodeDistances.put(448, 10301);
-        nodeDistances.put(450, 9815);
-        nodeDistances.put(451, 3444);
-        nodeDistances.put(453, 1187);
-        nodeDistances.put(202, 1427);
-        nodeDistances.put(126, 3790);
-        nodeDistances.put(338, 6250);
     }
     
     private static void printUsage() {
