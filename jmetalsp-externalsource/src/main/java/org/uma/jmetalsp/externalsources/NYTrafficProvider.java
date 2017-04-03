@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
@@ -113,7 +114,7 @@ public class NYTrafficProvider {
     private List<ParsedNode> initialize(String distanceFile) {
         try {
             if (distanceFile != null) {
-                
+                loadDistancesFile(distanceFile);
             }
             //createCachedDistances();
             readAndParseNodes();
@@ -334,6 +335,21 @@ public class NYTrafficProvider {
                 Logger.getLogger(NYTrafficProvider.class.getName()).log(Level.SEVERE, "Error loading cached distance for node {0}", pnode.getId());
                 return 0;
             }
+        }
+    }
+    
+    private void loadDistancesFile(String path) {
+        nodeDistances = new HashMap<>();
+        try (Scanner scan = new Scanner(new File(path))) {
+            int nodes = scan.nextInt();
+            for (int node = 0; node < nodes; node++) {
+                int id = scan.nextInt();
+                int distance = scan.nextInt();
+                nodeDistances.put(id, distance);
+            }
+        } catch (Exception e) {
+            Logger.getLogger(NYTrafficProvider.class.getName()).log(Level.SEVERE, "Error loading cached distances for file {0}", path);
+            e.printStackTrace();
         }
     }
     
