@@ -86,7 +86,10 @@ public class NYTrafficProvider {
         }
         
         NYTrafficProvider parser = new NYTrafficProvider();
-        parser.initialize(args.length == 3 ? args[2] : null);
+        if (!parser.initialize(args.length == 3 ? args[2] : null)) {
+            // Abort program in case of error
+            return;
+        }
         parser.generateOutput();
         
         switch(args[0]) {
@@ -111,12 +114,13 @@ public class NYTrafficProvider {
         }*/
     }
     
-    private List<ParsedNode> initialize(String distanceFile) {
+    private boolean initialize(String distanceFile) {
         try {
-            if (distanceFile != null) {
-                loadDistancesFile(distanceFile);
+            if (distanceFile != null && !loadDistancesFile(distanceFile)) {
+                // Abort the program in case of error
+                return false;
             }
-            //createCachedDistances();
+
             readAndParseNodes();
             //addManualEdges();
             generateGraph();
@@ -125,10 +129,10 @@ public class NYTrafficProvider {
                 removed = removeIsolatedNodes();
             } while (removed != 0);
             generatePositionGraph();
-            return pnodes;
+            return true;
         } catch (Exception ex) {
             ex.printStackTrace();
-            return null;
+            return false;
         }
     }
     
@@ -338,7 +342,7 @@ public class NYTrafficProvider {
         }
     }
     
-    private void loadDistancesFile(String path) {
+    private boolean loadDistancesFile(String path) {
         nodeDistances = new HashMap<>();
         try (Scanner scan = new Scanner(new File(path))) {
             int nodes = scan.nextInt();
@@ -347,9 +351,11 @@ public class NYTrafficProvider {
                 int distance = scan.nextInt();
                 nodeDistances.put(id, distance);
             }
+            return true;
         } catch (Exception e) {
             Logger.getLogger(NYTrafficProvider.class.getName()).log(Level.SEVERE, "Error loading cached distances for file {0}", path);
             e.printStackTrace();
+            return false;
         }
     }
     
