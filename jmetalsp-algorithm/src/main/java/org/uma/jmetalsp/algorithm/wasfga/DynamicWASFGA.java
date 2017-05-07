@@ -21,63 +21,79 @@ import java.util.List;
 public class DynamicWASFGA<S extends Solution<?>, O extends Observable<AlgorithmObservedData>>
         extends WASFGA<S>
         implements DynamicAlgorithm<List<S>, AlgorithmObservedData, Observable<AlgorithmObservedData>> {
-  private int completedIterations;
-  private boolean stopAtTheEndOfTheCurrentIteration = false;
+    private int completedIterations;
+    private boolean stopAtTheEndOfTheCurrentIteration = false;
 
-  O observable;
+    O observable;
 
-  public DynamicWASFGA(Problem<S> problem, int populationSize, int maxIterations, CrossoverOperator<S> crossoverOperator, MutationOperator<S> mutationOperator, SelectionOperator<List<S>, S> selectionOperator, SolutionListEvaluator<S> evaluator, List<Double> referencePoint, O observable) {
-    super(problem, populationSize, maxIterations, crossoverOperator, mutationOperator, selectionOperator, evaluator, referencePoint);
-    completedIterations = 0;
-    this.observable = observable;
-  }
-
-  @Override
-  public DynamicProblem<S, ?> getDynamicProblem() {
-    return (DynamicProblem<S, ?>) super.getProblem();
-  }
-
-  @Override
-  public int getCompletedIterations() {
-    return completedIterations;
-  }
-
-  @Override
-  public void stopTheAlgorithm() {
-    stopAtTheEndOfTheCurrentIteration = true;
-  }
-
-  @Override
-  public void restart(int percentageOfSolutionsToRemove) {
-    SolutionListUtils.restart(getPopulation(), getDynamicProblem(), percentageOfSolutionsToRemove);
-    this.setPopulation(createInitialPopulation());
-    this.evaluatePopulation(this.getPopulation());
-    initProgress();
-  }
-
-  @Override
-  public Observable<AlgorithmObservedData> getObservable() {
-    return this.observable;
-  }
-
-  @Override
-  public String getName() {
-    return "DynamicWASFGA";
-  }
-
-  @Override
-  public String getDescription() {
-    return "Dynamic version of algorithm WASFGA";
-  }
-
-  @Override
-  protected boolean isStoppingConditionReached() {
-    if (evaluations >= maxEvaluations) {
-      observable.setChanged();
-      observable.notifyObservers(new AlgorithmObservedData(getPopulation(), completedIterations));
-      restart(100);
-      completedIterations++;
+    public DynamicWASFGA(Problem<S> problem, int populationSize, int maxIterations, CrossoverOperator<S> crossoverOperator, MutationOperator<S> mutationOperator, SelectionOperator<List<S>, S> selectionOperator, SolutionListEvaluator<S> evaluator, List<Double> referencePoint, O observable) {
+        super(problem, populationSize, maxIterations, crossoverOperator, mutationOperator, selectionOperator, evaluator, referencePoint);
+        completedIterations = 0;
+        this.observable = observable;
+        evaluations = 0;
+        maxEvaluations = maxIterations;
     }
-    return stopAtTheEndOfTheCurrentIteration;
-  }
+
+    @Override
+    public DynamicProblem<S, ?> getDynamicProblem() {
+        return (DynamicProblem<S, ?>) super.getProblem();
+    }
+
+    @Override
+    public int getCompletedIterations() {
+        return completedIterations;
+    }
+
+    @Override
+    public void stopTheAlgorithm() {
+        stopAtTheEndOfTheCurrentIteration = true;
+    }
+
+    @Override
+    public void restart(int percentageOfSolutionsToRemove) {
+        SolutionListUtils.restart(getPopulation(), getDynamicProblem(), percentageOfSolutionsToRemove);
+        this.evaluatePopulation(this.getPopulation());
+        this.initProgress();
+        this.specificMOEAComputations();
+    }
+
+    @Override
+    protected void initProgress() {
+        evaluations = 0;
+    }
+
+    @Override
+    public Observable<AlgorithmObservedData> getObservable() {
+        return this.observable;
+    }
+
+    @Override
+    public String getName() {
+        return "DynamicWASFGA";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Dynamic version of algorithm WASFGA";
+    }
+
+    @Override
+    protected boolean isStoppingConditionReached() {
+        if (evaluations >= maxEvaluations) {
+            observable.setChanged();
+            observable.notifyObservers(new AlgorithmObservedData(getPopulation(), completedIterations));
+            restart(100);
+            completedIterations++;
+        }
+        return stopAtTheEndOfTheCurrentIteration;
+    }
+
+    @Override
+    protected void updateProgress() {
+        if (getDynamicProblem().hasTheProblemBeenModified()) {
+            restart(100);
+            getDynamicProblem().reset();
+        }
+        evaluations++;
+    }
 }

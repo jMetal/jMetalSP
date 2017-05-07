@@ -13,6 +13,7 @@ import org.uma.jmetalsp.algorithm.mocell.DynamicMOCellBuilder;
 import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAIIBuilder;
 import org.uma.jmetalsp.algorithm.smpso.DynamicSMPSOBuilder;
 import org.uma.jmetalsp.JMetalSPApplication;
+import org.uma.jmetalsp.algorithm.wasfga.DynamicWASFGABuilder;
 import org.uma.jmetalsp.consumer.SimpleSolutionListConsumer;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.DynamicProblem;
@@ -60,10 +61,10 @@ public class DynamicContinuousApplication {
     MutationOperator<DoubleSolution> mutation =
             new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);
 
-    String defaultAlgorithm = "SMPSO";
+    String defaultAlgorithm = "WASFGA";
 
     DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData, Observable<AlgorithmObservedData>> algorithm;
-    Observable<AlgorithmObservedData> observable = new DefaultObservable<>("") ;
+    Observable<AlgorithmObservedData> observable = new DefaultObservable<>("WASFGA") ;
 
     switch (defaultAlgorithm) {
       case "NSGAII":
@@ -86,6 +87,11 @@ public class DynamicContinuousApplication {
                 .setMaxIterations(500)
                 .setSwarmSize(100)
                 .build(problem);
+        break;
+      case "WASFGA":
+        algorithm = new DynamicWASFGABuilder<>(crossover, mutation, observable)
+                .setMaxIterations(500)
+                .setPopulationSize(100).build(problem);
         break;
 
       default:
