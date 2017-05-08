@@ -26,6 +26,7 @@ import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -89,9 +90,14 @@ public class DynamicContinuousApplication {
                 .build(problem);
         break;
       case "WASFGA":
-        algorithm = new DynamicWASFGABuilder<>(crossover, mutation, observable)
+        List<Double> referencePoint = new ArrayList<>();
+        referencePoint.add(0.5);
+        referencePoint.add(0.5);
+
+        algorithm = new DynamicWASFGABuilder<>(crossover, mutation, referencePoint, observable)
                 .setMaxIterations(500)
-                .setPopulationSize(100).build(problem);
+                .setPopulationSize(100)
+                .build(problem);
         break;
 
       default:

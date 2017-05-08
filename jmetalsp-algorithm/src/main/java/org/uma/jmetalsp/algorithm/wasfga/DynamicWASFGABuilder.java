@@ -38,6 +38,7 @@ public class DynamicWASFGABuilder<
 
   public DynamicWASFGABuilder(CrossoverOperator<S> crossoverOperator,
                               MutationOperator<S> mutationOperator,
+                              List<Double> referencePoint,
                               O observable) {
     this.crossover = crossoverOperator;
     this.mutation = mutationOperator;
@@ -50,8 +51,7 @@ public class DynamicWASFGABuilder<
     this.populationSize = 100;
     this.observable = observable;
     this.referencePoint = new ArrayList<>();
-    this.referencePoint.add(0.0);
-    this.referencePoint.add(0.0);
+    this.referencePoint = referencePoint ;
   }
 
   public DynamicWASFGABuilder<S, P, O> setCrossover(CrossoverOperator<S> crossover) {
