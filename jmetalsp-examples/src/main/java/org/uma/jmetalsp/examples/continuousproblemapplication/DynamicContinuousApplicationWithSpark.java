@@ -29,6 +29,7 @@ import org.uma.jmetalsp.spark.SparkRuntime;
 import org.uma.jmetalsp.spark.streamingdatasource.SimpleSparkStreamingCounterDataSource;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -86,9 +87,14 @@ public class DynamicContinuousApplicationWithSpark {
                         .build(problem);
                 break;
             case "WASFGA":
-                algorithm = new DynamicWASFGABuilder<>(crossover, mutation, observable)
-                        .setMaxIterations(50000)
-                        .setPopulationSize(100).build(problem);
+                List<Double> referencePoint = new ArrayList<>();
+                referencePoint.add(0.5);
+                referencePoint.add(0.5);
+
+                algorithm = new DynamicWASFGABuilder<>(crossover, mutation, referencePoint, observable)
+                        .setMaxIterations(500)
+                        .setPopulationSize(100)
+                        .build(problem);
                 break;
             default:
                 algorithm = null;
