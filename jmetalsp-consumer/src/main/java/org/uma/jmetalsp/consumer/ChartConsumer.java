@@ -15,6 +15,8 @@ package org.uma.jmetalsp.consumer;
 
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.JMetalException;
+import org.uma.jmetal.util.extremevalues.impl.FrontExtremeValues;
+import org.uma.jmetal.util.referencePoint.impl.NadirPoint;
 import org.uma.jmetalsp.AlgorithmDataConsumer;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
