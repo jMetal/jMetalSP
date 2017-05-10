@@ -8,23 +8,23 @@ import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.archive.impl.CrowdingDistanceArchive;
 import org.uma.jmetalsp.AlgorithmDataConsumer;
 import org.uma.jmetalsp.DynamicAlgorithm;
+import org.uma.jmetalsp.DynamicProblem;
+import org.uma.jmetalsp.JMetalSPApplication;
 import org.uma.jmetalsp.StreamingDataSource;
 import org.uma.jmetalsp.algorithm.mocell.DynamicMOCellBuilder;
 import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAIIBuilder;
 import org.uma.jmetalsp.algorithm.smpso.DynamicSMPSOBuilder;
-import org.uma.jmetalsp.JMetalSPApplication;
 import org.uma.jmetalsp.algorithm.wasfga.DynamicWASFGABuilder;
 import org.uma.jmetalsp.consumer.ChartConsumer;
-import org.uma.jmetalsp.consumer.SimpleSolutionListConsumer;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
-import org.uma.jmetalsp.DynamicProblem;
+import org.uma.jmetalsp.consumer.SimpleSolutionListConsumer;
 import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingCounterDataSource;
 import org.uma.jmetalsp.impl.DefaultRuntime;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
-import org.uma.jmetalsp.problem.fda.FDA2;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
+import org.uma.jmetalsp.problem.fda.FDA2;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ import java.util.List;
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DynamicContinuousApplication {
+public class DynamicContinuousApplicationWithCharts {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     JMetalSPApplication<
@@ -92,8 +92,8 @@ public class DynamicContinuousApplication {
         break;
       case "WASFGA":
         List<Double> referencePoint = new ArrayList<>();
-        referencePoint.add(0.5);
-        referencePoint.add(0.5);
+        referencePoint.add(0.0);
+        referencePoint.add(0.0);
 
         algorithm = new DynamicWASFGABuilder<>(crossover, mutation, referencePoint, observable)
                 .setMaxIterations(500)
@@ -109,9 +109,7 @@ public class DynamicContinuousApplication {
             .setProblem(problem)
             .setAlgorithm(algorithm)
             .addStreamingDataSource(streamingDataSource)
-            .addAlgorithmDataConsumer(new SimpleSolutionListConsumer(algorithm))
-            .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirectory", algorithm))
-            //.addAlgorithmDataConsumer(new ChartConsumer(algorithm))
+            .addAlgorithmDataConsumer(new ChartConsumer(algorithm))
             .run();
   }
 }
