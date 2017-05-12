@@ -13,6 +13,7 @@
 
 package org.uma.jmetalsp.consumer;
 
+import org.knowm.xchart.style.Styler;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetal.util.extremevalues.impl.FrontExtremeValues;
@@ -72,12 +73,13 @@ public class ChartConsumer implements
       this.chart = new ChartContainer(dynamicAlgorithm.getName(), 200);
       try {
         this.chart.setFrontChart(0, 1, null);
+        this.chart.getFrontChart().getStyler().setLegendPosition(Styler.LegendPosition.InsideNE) ;
       } catch (FileNotFoundException e) {
         e.printStackTrace();
       }
       this.chart.initChart();
     } else {
-      if (!lastReceivedFront.equals((List<DoubleSolution>) data.getSolutionList())) {
+      if (data.getSolutionList().size() != 0) {
         this.chart.getFrontChart().setTitle("Iteration: " + data.getIterations());
         this.chart.updateFrontCharts((List<DoubleSolution>) data.getSolutionList(), data.getIterations());
         this.chart.refreshCharts();

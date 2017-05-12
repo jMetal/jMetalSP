@@ -14,12 +14,10 @@
 package org.uma.jmetalsp.consumer;
 
 import org.knowm.xchart.BitmapEncoder;
-import org.knowm.xchart.BitmapEncoder.BitmapFormat;
 import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
 import org.knowm.xchart.XYSeries;
-import org.knowm.xchart.XYSeries.XYSeriesRenderStyle;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.front.imp.ArrayFront;
 import org.uma.jmetal.util.front.util.FrontUtils;
@@ -75,7 +73,7 @@ public class ChartContainer {
         this.objective2 = objective2;
         this.frontChart = new XYChartBuilder().xAxisTitle("Objective " + this.objective1)
                 .yAxisTitle("Objective " + this.objective2).build();
-        this.frontChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter).setMarkerSize(5);
+        this.frontChart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Scatter).setMarkerSize(5);
 
         if (referenceFrontFileName != null) {
             this.displayReferenceFront(referenceFrontFileName);
@@ -103,7 +101,7 @@ public class ChartContainer {
         this.variable2 = variable2;
         this.varChart = new XYChartBuilder().xAxisTitle("Variable " + this.variable1)
                 .yAxisTitle("Variable " + this.variable2).build();
-        this.varChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter).setMarkerSize(5);
+        this.varChart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Scatter).setMarkerSize(5);
 
         double[] xData = new double[] { 0 };
         double[] yData = new double[] { 0 };
@@ -153,7 +151,7 @@ public class ChartContainer {
 
     public void addIndicatorChart(String indicator) {
         XYChart indicatorChart = new XYChartBuilder().xAxisTitle("n").yAxisTitle(indicator).build();
-        indicatorChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter).setMarkerSize(5);
+        indicatorChart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Scatter).setMarkerSize(5);
 
         List<Integer> indicatorIterations = new ArrayList<Integer>();
         indicatorIterations.add(0);
@@ -236,7 +234,7 @@ public class ChartContainer {
         return result;
     }
 
-    public void saveChart(String fileName, BitmapFormat format) throws IOException {
+    public void saveChart(String fileName, BitmapEncoder.BitmapFormat format) throws IOException {
         for (String chart : this.charts.keySet()) {
             BitmapEncoder.saveBitmap(this.charts.get(chart), fileName + "_" + chart, format);
         }

@@ -92,8 +92,8 @@ public class DynamicContinuousApplicationWithCharts {
         break;
       case "WASFGA":
         List<Double> referencePoint = new ArrayList<>();
-        referencePoint.add(0.0);
-        referencePoint.add(0.0);
+        referencePoint.add(0.5);
+        referencePoint.add(0.5);
 
         algorithm = new DynamicWASFGABuilder<>(crossover, mutation, referencePoint, observable)
                 .setMaxIterations(500)
