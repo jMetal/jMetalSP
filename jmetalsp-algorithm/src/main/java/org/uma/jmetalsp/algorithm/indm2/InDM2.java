@@ -1,4 +1,4 @@
-package org.uma.jmetalsp.algorithm.wasfga;
+package org.uma.jmetalsp.algorithm.indm2;
 
 import org.uma.jmetal.algorithm.multiobjective.wasfga.WASFGA;
 import org.uma.jmetal.operator.CrossoverOperator;
@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * @author Cristobal Barba <cbarba@lcc.uma.es>
  */
-public class DynamicWASFGA<S extends Solution<?>, O extends Observable<AlgorithmObservedData>>
+public class InDM2<S extends Solution<?>, O extends Observable<AlgorithmObservedData>>
         extends WASFGA<S>
         implements DynamicAlgorithm<List<S>, AlgorithmObservedData, Observable<AlgorithmObservedData>> {
     private int completedIterations;
@@ -26,7 +26,7 @@ public class DynamicWASFGA<S extends Solution<?>, O extends Observable<Algorithm
 
     O observable;
 
-    public DynamicWASFGA(Problem<S> problem, int populationSize, int maxIterations, CrossoverOperator<S> crossoverOperator, MutationOperator<S> mutationOperator, SelectionOperator<List<S>, S> selectionOperator, SolutionListEvaluator<S> evaluator, List<Double> referencePoint, O observable) {
+    public InDM2(Problem<S> problem, int populationSize, int maxIterations, CrossoverOperator<S> crossoverOperator, MutationOperator<S> mutationOperator, SelectionOperator<List<S>, S> selectionOperator, SolutionListEvaluator<S> evaluator, List<Double> referencePoint, O observable) {
         super(problem, populationSize, maxIterations, crossoverOperator, mutationOperator, selectionOperator, evaluator, referencePoint);
         completedIterations = 0;
         this.observable = observable;
