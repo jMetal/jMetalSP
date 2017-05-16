@@ -47,7 +47,8 @@ public class DynamicContinuousApplicationWithSpark {
                 DynamicProblem<DoubleSolution, SingleObservedData<Integer>>,
                 DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData, Observable<AlgorithmObservedData>>,
                 SimpleStreamingCounterDataSource,
-                AlgorithmDataConsumer<AlgorithmObservedData, DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData, Observable<AlgorithmObservedData>>>> application;
+                AlgorithmDataConsumer<AlgorithmObservedData, DynamicAlgorithm<List<DoubleSolution>,
+                        AlgorithmObservedData, Observable<AlgorithmObservedData>>>> application;
         application = new JMetalSPApplication<>();
 
         // Problem configuration

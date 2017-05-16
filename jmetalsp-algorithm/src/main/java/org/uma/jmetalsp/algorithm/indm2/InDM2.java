@@ -17,6 +17,7 @@ import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.Observer;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Cristobal Barba <cbarba@lcc.uma.es>
@@ -26,6 +27,7 @@ public class InDM2<S extends Solution<?>>
         implements DynamicAlgorithm<List<S>, AlgorithmObservedData, Observable<AlgorithmObservedData>>, Observer<ListObservedData<Double>> {
   private int completedIterations;
   private boolean stopAtTheEndOfTheCurrentIteration = false;
+  private Optional<S> newReferencePoint ;
 
   Observable<AlgorithmObservedData> observable;
 
@@ -39,6 +41,7 @@ public class InDM2<S extends Solution<?>>
     this.observable = observable;
     evaluations = 0;
     maxEvaluations = maxIterations;
+    newReferencePoint = Optional.ofNullable(null);
   }
 
   @Override
@@ -96,10 +99,16 @@ public class InDM2<S extends Solution<?>>
   }
 
   @Override
-  protected void updateProgress() {
+  protected synchronized void updateProgress() {
     if (getDynamicProblem().hasTheProblemBeenModified()) {
       restart(100);
       getDynamicProblem().reset();
+    }
+
+    if (newReferencePoint.isPresent()) {
+      System.out.println("NEWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW. Restarting") ;
+      this.updateReferencePoint(newReferencePoint.get());
+      restart(100) ;
     }
     evaluations++;
   }
@@ -110,13 +119,13 @@ public class InDM2<S extends Solution<?>>
       throw new JMetalException("The reference point size is not correct: " + data.getList().size()) ;
     }
     ////// OJO A LA SINCRONIZACION ....
-    
+
     S solution = getDynamicProblem().createSolution();
 
     for (int i = 0; i < getDynamicProblem().getNumberOfObjectives(); i++) {
       solution.setObjective(i, data.getList().get(i));
     }
 
-    this.updateReferencePoint(solution);
+    newReferencePoint = Optional.of(solution) ;
   }
 }

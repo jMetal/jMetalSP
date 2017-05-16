@@ -10,8 +10,10 @@ import org.uma.jmetalsp.algorithm.indm2.InDM2Builder;
 import org.uma.jmetalsp.algorithm.wasfga.DynamicWASFGABuilder;
 import org.uma.jmetalsp.consumer.ChartInDM2Consumer;
 import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingCounterDataSource;
+import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingDataSourceFromKeyboard;
 import org.uma.jmetalsp.impl.DefaultRuntime;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
+import org.uma.jmetalsp.observeddata.ListObservedData;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
@@ -42,9 +44,15 @@ public class InDM2Runner {
             AlgorithmDataConsumer<AlgorithmObservedData, DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData, Observable<AlgorithmObservedData>>>> application;
     application = new JMetalSPApplication<>();
 
-    // Set the streaming data source
+    // Set the streaming data source for the problem
     Observable<SingleObservedData<Integer>> fdaObservable = new DefaultObservable<>("timeData");
-    StreamingDataSource<SingleObservedData<Integer>, Observable<SingleObservedData<Integer>>> streamingDataSource = new SimpleStreamingCounterDataSource(fdaObservable, 2000);
+    StreamingDataSource<SingleObservedData<Integer>, Observable<SingleObservedData<Integer>>> streamingDataSource =
+            new SimpleStreamingCounterDataSource(fdaObservable, 2000);
+
+    // Set the streaming data source for the algorithm
+    Observable<ListObservedData<Double>> algorithmObservable = new DefaultObservable<>("Problem observable");
+    StreamingDataSource<ListObservedData<Double>, Observable<ListObservedData<Double>>> streamingDataSource2 =
+            new SimpleStreamingDataSourceFromKeyboard(algorithmObservable) ;
 
     // Problem configuration
     DynamicProblem<DoubleSolution, SingleObservedData<Integer>> problem = new FDA2(fdaObservable);
@@ -71,6 +79,7 @@ public class InDM2Runner {
             .setProblem(problem)
             .setAlgorithm(algorithm)
             .addStreamingDataSource(streamingDataSource)
+            .addStreamingDataSource(streamingDataSource2)
             .addAlgorithmDataConsumer(new ChartInDM2Consumer(algorithm, referencePoint))
             .run();
   }
