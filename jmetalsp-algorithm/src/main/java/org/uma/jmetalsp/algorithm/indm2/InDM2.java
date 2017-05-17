@@ -16,6 +16,7 @@ import org.uma.jmetalsp.observeddata.ListObservedData;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.Observer;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -90,6 +91,7 @@ public class InDM2<S extends Solution<?>>
   @Override
   protected boolean isStoppingConditionReached() {
     if (evaluations >= maxEvaluations) {
+      //System.out.println("End. Ref Point: " + this.getReferencePoint().get(0) + ", " + this.getReferencePoint().get(1)) ;
       observable.setChanged();
       observable.notifyObservers(new AlgorithmObservedData(getPopulation(), completedIterations));
       restart(100);
@@ -99,7 +101,7 @@ public class InDM2<S extends Solution<?>>
   }
 
   @Override
-  protected synchronized void updateProgress() {
+  protected void updateProgress() {
     if (getDynamicProblem().hasTheProblemBeenModified()) {
       restart(100);
       getDynamicProblem().reset();
@@ -107,12 +109,27 @@ public class InDM2<S extends Solution<?>>
 
     if (newReferencePoint.isPresent()) {
       System.out.println("NEWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW. Restarting") ;
-      this.updateReferencePoint(newReferencePoint.get());
+
+      this.updateNewReferencePoint(newReferencePoint.get());
       restart(100) ;
+      newReferencePoint = Optional.ofNullable(null);
     }
     evaluations++;
   }
 
+  public void updateNewReferencePoint(S newReferencePoint) {
+    List<Double> referencePoint = Arrays.asList(
+            newReferencePoint.getObjective(0),
+            newReferencePoint.getObjective(1)) ;
+    this.updatePointOfInterest(referencePoint);
+  }
+/*
+  @Override
+  public void specificMOEAComputations() {
+    updateNadirPoint(this.getPopulation());
+    updateReferencePoint(this.getPopulation());
+  }
+*/
   @Override
   public synchronized void update(Observable<ListObservedData<Double>> observable, ListObservedData<Double> data) {
     if (data.getList().size() != getDynamicProblem().getNumberOfObjectives()) {
@@ -127,5 +144,7 @@ public class InDM2<S extends Solution<?>>
     }
 
     newReferencePoint = Optional.of(solution) ;
+    System.out.println("NNNNNNNNew reference point: " + solution.getObjective(0) + ", " + solution.getObjective(1)) ;
+
   }
 }

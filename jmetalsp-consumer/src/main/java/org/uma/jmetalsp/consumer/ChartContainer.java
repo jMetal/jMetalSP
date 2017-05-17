@@ -183,7 +183,7 @@ public class ChartContainer {
     public void repaint() {
         try {
             for (int i = 0; i < this.charts.values().size(); i++) {
-                System.out.println("Size: " + charts.values().size()) ;
+                //System.out.println("Size: " + charts.values().size()) ;
                 this.sw.repaintChart(i);
             }
         } catch (IndexOutOfBoundsException e) {

@@ -8,62 +8,99 @@ import org.uma.jmetalsp.observer.Observable;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 
 /**
  * This class reads double values from the keyboard and returns them as a list
+ *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class SimpleStreamingDataSourceFromKeyboard implements
-				StreamingDataSource<ListObservedData<Double>,
-								Observable<ListObservedData<Double>>> {
-	private Observable<ListObservedData<Double>> observable;
+        StreamingDataSource<ListObservedData<Double>,
+                Observable<ListObservedData<Double>>> {
+  private Observable<ListObservedData<Double>> observable;
 
-	/**
-   *
+  /**
    * @param observable
    */
-	public SimpleStreamingDataSourceFromKeyboard(Observable<ListObservedData<Double>> observable) {
-		this.observable = observable ;
-	}
+  public SimpleStreamingDataSourceFromKeyboard(Observable<ListObservedData<Double>> observable) {
+    this.observable = observable;
+  }
 
-	@Override
-	public void run() {
-		while (true) {
-		  System.out.println("Introduce the new reference point:") ;
+  @Override
+  public void run() {
+    Scanner scanner = new Scanner(System.in);
+    double v1 = 0.2 ;
+    double v2 = 0.2 ;
 
-      BufferedReader reader = new BufferedReader(new InputStreamReader(System.in)) ;
-      String values ;
+    while (true) {
+      System.out.println("Introduce the new reference point:");
 
-      try {
-        values = reader.readLine() ;
-        List<String> doubleValuesAsStrings = Arrays.asList(values.split(" ")) ;
+      String s = scanner.nextLine() ;
 
-        System.out.println("RRRRREEADDDD: -" + values + "- ") ;
+      System.out.println("REF POINT: " + v1 + ", " + v2) ;
 
-        for (String v  : doubleValuesAsStrings) {
-          System.out.println(" - " + v) ;
-        }
-        /*
-        List<Double> doubleValues = doubleValuesAsStrings
-                .stream()
-                .map(value -> Double.parseDouble(value))
-                .collect(Collectors.toList());
+      observable.setChanged();
+      List<Double> values = Arrays.asList(v1, v2) ;
+      observable.notifyObservers(new ListObservedData<>(values));
 
-        System.out.println("RRRRREEADDDD") ;
-        doubleValues
-                .stream()
-                .forEach(System.out::println);
+      System.out.println("Introduce the new reference point 2:");
 
-*/
-        //observable.setChanged();
-        //observable.notifyObservers(new ListObservedData<>(doubleValues));
+      s = scanner.nextLine() ;
 
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-		}
-	}
+      v1 = 0.3 ;
+      v2 = 0.6 ;
+
+      System.out.println("REF POINT 2: " + v1 + ", " + v2) ;
+
+      observable.setChanged();
+      values = Arrays.asList(v1, v2) ;
+      observable.notifyObservers(new ListObservedData<>(values));
+
+      System.out.println("Introduce the new reference point 3:");
+
+      s = scanner.nextLine() ;
+
+      v1 = 0.4 ;
+      v2 = 0.4 ;
+
+      System.out.println("REF POINT 3: " + v1 + ", " + v2) ;
+
+      observable.setChanged();
+      values = Arrays.asList(v1, v2) ;
+      observable.notifyObservers(new ListObservedData<>(values));
+
+      System.out.println("Introduce the new reference point 4:");
+
+      s = scanner.nextLine() ;
+
+      v1 = 0.6 ;
+      v2 = 0.6 ;
+
+      System.out.println("REF POINT 5: " + v1 + ", " + v2) ;
+
+      observable.setChanged();
+      values = Arrays.asList(v1, v2) ;
+      observable.notifyObservers(new ListObservedData<>(values));
+
+      /*
+      String line = scanner.nextLine();
+      System.out.println("LINE: " + line);
+
+      List<Double> values = Arrays.asList(line.split(" "))
+              .stream()
+              .map(value -> Double.valueOf(value))
+              .collect(Collectors.toList());
+
+      System.out.println("VALUES: " + line);
+      values
+              .stream()
+              .forEach(System.out::println);
+              */
+    }
+  }
 }

@@ -69,7 +69,7 @@ public class ChartInDM2Consumer implements
 
   @Override
   public void update(Observable<AlgorithmObservedData> observable, AlgorithmObservedData data) {
-    System.out.println("Number of generated fronts: " + data.getIterations());
+    //System.out.println("Number of generated fronts: " + data.getIterations());
     if (chart == null) {
       this.chart = new ChartContainer(dynamicAlgorithm.getName(), 200);
       try {

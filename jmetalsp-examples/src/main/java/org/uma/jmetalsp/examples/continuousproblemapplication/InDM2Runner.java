@@ -6,6 +6,7 @@ import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
 import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetalsp.*;
+import org.uma.jmetalsp.algorithm.indm2.InDM2;
 import org.uma.jmetalsp.algorithm.indm2.InDM2Builder;
 import org.uma.jmetalsp.algorithm.wasfga.DynamicWASFGABuilder;
 import org.uma.jmetalsp.consumer.ChartInDM2Consumer;
@@ -16,6 +17,7 @@ import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.ListObservedData;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.Observable;
+import org.uma.jmetalsp.observer.Observer;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
 import org.uma.jmetalsp.problem.fda.FDA2;
 
@@ -41,7 +43,8 @@ public class InDM2Runner {
             DynamicProblem<DoubleSolution, SingleObservedData<Integer>>,
             DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData, Observable<AlgorithmObservedData>>,
             SimpleStreamingCounterDataSource,
-            AlgorithmDataConsumer<AlgorithmObservedData, DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData, Observable<AlgorithmObservedData>>>> application;
+            AlgorithmDataConsumer<AlgorithmObservedData, DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData,
+                    Observable<AlgorithmObservedData>>>> application;
     application = new JMetalSPApplication<>();
 
     // Set the streaming data source for the problem
@@ -50,7 +53,7 @@ public class InDM2Runner {
             new SimpleStreamingCounterDataSource(fdaObservable, 2000);
 
     // Set the streaming data source for the algorithm
-    Observable<ListObservedData<Double>> algorithmObservable = new DefaultObservable<>("Problem observable");
+    Observable<ListObservedData<Double>> algorithmObservable = new DefaultObservable<>("Algorithm observable");
     StreamingDataSource<ListObservedData<Double>, Observable<ListObservedData<Double>>> streamingDataSource2 =
             new SimpleStreamingDataSourceFromKeyboard(algorithmObservable) ;
 
@@ -62,9 +65,8 @@ public class InDM2Runner {
     MutationOperator<DoubleSolution> mutation =
             new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);
 
-    DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData, Observable<AlgorithmObservedData>> algorithm;
+    InDM2<DoubleSolution> algorithm;
     Observable<AlgorithmObservedData> observable = new DefaultObservable<>("InDM2");
-
 
     List<Double> referencePoint = new ArrayList<>();
     referencePoint.add(0.5);
@@ -75,7 +77,11 @@ public class InDM2Runner {
             .setPopulationSize(100)
             .build(problem);
 
-    application.setStreamingRuntime(new DefaultRuntime<SingleObservedData<Integer>, Observable<SingleObservedData<Integer>>, SimpleStreamingCounterDataSource>())
+    algorithmObservable.register(algorithm);
+
+    application.setStreamingRuntime(new DefaultRuntime<SingleObservedData<Integer>,
+            Observable<SingleObservedData<Integer>>,
+            SimpleStreamingCounterDataSource>())
             .setProblem(problem)
             .setAlgorithm(algorithm)
             .addStreamingDataSource(streamingDataSource)

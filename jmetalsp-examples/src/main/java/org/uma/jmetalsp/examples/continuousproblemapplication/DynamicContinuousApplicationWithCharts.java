@@ -63,7 +63,7 @@ public class DynamicContinuousApplicationWithCharts {
     MutationOperator<DoubleSolution> mutation =
             new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);
 
-    String defaultAlgorithm = "WASFGA";
+    String defaultAlgorithm = "SMPSO";
 
     DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData, Observable<AlgorithmObservedData>> algorithm;
     Observable<AlgorithmObservedData> observable = new DefaultObservable<>("WASFGA") ;
