@@ -108,8 +108,6 @@ public class InDM2<S extends Solution<?>>
     }
 
     if (newReferencePoint.isPresent()) {
-      System.out.println("NEWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW. Restarting") ;
-
       this.updateNewReferencePoint(newReferencePoint.get());
       restart(100) ;
       newReferencePoint = Optional.ofNullable(null);
@@ -123,19 +121,12 @@ public class InDM2<S extends Solution<?>>
             newReferencePoint.getObjective(1)) ;
     this.updatePointOfInterest(referencePoint);
   }
-/*
-  @Override
-  public void specificMOEAComputations() {
-    updateNadirPoint(this.getPopulation());
-    updateReferencePoint(this.getPopulation());
-  }
-*/
+
   @Override
   public synchronized void update(Observable<ListObservedData<Double>> observable, ListObservedData<Double> data) {
     if (data.getList().size() != getDynamicProblem().getNumberOfObjectives()) {
       throw new JMetalException("The reference point size is not correct: " + data.getList().size()) ;
     }
-    ////// OJO A LA SINCRONIZACION ....
 
     S solution = getDynamicProblem().createSolution();
 
@@ -144,7 +135,5 @@ public class InDM2<S extends Solution<?>>
     }
 
     newReferencePoint = Optional.of(solution) ;
-    System.out.println("NNNNNNNNew reference point: " + solution.getObjective(0) + ", " + solution.getObjective(1)) ;
-
   }
 }
