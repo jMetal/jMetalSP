@@ -25,7 +25,8 @@ import java.util.Optional;
  */
 public class InDM2<S extends Solution<?>>
         extends WASFGA<S>
-        implements DynamicAlgorithm<List<S>, AlgorithmObservedData, Observable<AlgorithmObservedData>>, Observer<ListObservedData<Double>> {
+        implements DynamicAlgorithm<List<S>, AlgorithmObservedData, Observable<AlgorithmObservedData>>,
+        Observer<ListObservedData<Double>> {
   private int completedIterations;
   private boolean stopAtTheEndOfTheCurrentIteration = false;
   private Optional<S> newReferencePoint ;
