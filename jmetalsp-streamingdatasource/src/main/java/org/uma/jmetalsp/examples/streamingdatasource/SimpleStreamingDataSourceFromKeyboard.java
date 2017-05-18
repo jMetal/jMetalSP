@@ -34,21 +34,29 @@ public class SimpleStreamingDataSourceFromKeyboard implements
   @Override
   public void run() {
     Scanner scanner = new Scanner(System.in);
-    double v1 = 0.2 ;
-    double v2 = 0.2 ;
+
+    double v1 ;//= 0.2 ;
+    double v2 ;//= 0.2 ;
 
     while (true) {
-      System.out.println("Introduce the new reference point:");
-
+      System.out.println("Introduce the new reference point(between commas):");
       String s = scanner.nextLine() ;
-
+      Scanner sl= new Scanner(s);
+      sl.useDelimiter(",");
+      try {
+        v1 = Double.parseDouble(sl.next());
+        v2 = Double.parseDouble(sl.next());
+      }catch (Exception e){//any problem
+        v1=0;
+        v2=0;
+      }
       System.out.println("REF POINT: " + v1 + ", " + v2) ;
 
       observable.setChanged();
       List<Double> values = Arrays.asList(v1, v2) ;
       observable.notifyObservers(new ListObservedData<>(values));
 
-      System.out.println("Introduce the new reference point 2:");
+      /*System.out.println("Introduce the new reference point 2:");
 
       s = scanner.nextLine() ;
 
@@ -85,7 +93,7 @@ public class SimpleStreamingDataSourceFromKeyboard implements
 
       observable.setChanged();
       values = Arrays.asList(v1, v2) ;
-      observable.notifyObservers(new ListObservedData<>(values));
+      observable.notifyObservers(new ListObservedData<>(values));*/
 
       /*
       String line = scanner.nextLine();
