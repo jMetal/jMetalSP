@@ -37,6 +37,7 @@ public class ChartInDM2Consumer implements
   private ChartContainer chart ;
   private List<DoubleSolution> lastReceivedFront = new ArrayList<>() ;
   private List<Double> referencePoint ;
+  private int sizeIni;
 
   public ChartInDM2Consumer(DynamicAlgorithm<?, AlgorithmObservedData, Observable<AlgorithmObservedData>> algorithm,
                             List<Double> referencePoint) {
@@ -74,14 +75,20 @@ public class ChartInDM2Consumer implements
       this.chart = new ChartContainer(dynamicAlgorithm.getName(), 200);
       try {
         this.chart.setFrontChart(0, 1, null);
+        sizeIni= this.chart.getFrontChart().getStyler().getMarkerSize();
+
         this.chart.setReferencePoint(referencePoint);
+        //this.chart.getFrontChart().getStyler().setMarkerSize(15);
         this.chart.getFrontChart().getStyler().setLegendPosition(Styler.LegendPosition.InsideNE) ;
+
+
       } catch (FileNotFoundException e) {
         e.printStackTrace();
       }
       this.chart.initChart();
     } else {
       if (data.getSolutionList().size() != 0) {
+       // this.chart.getFrontChart().getStyler().setMarkerSize(5);
         this.chart.getFrontChart().setTitle("Iteration: " + data.getIterations());
         this.chart.updateFrontCharts((List<DoubleSolution>) data.getSolutionList(), data.getIterations());
         this.chart.refreshCharts();

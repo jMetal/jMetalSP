@@ -18,6 +18,9 @@ import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
 import org.knowm.xchart.XYSeries;
+import org.knowm.xchart.style.Styler;
+import org.uma.jmetal.qualityindicator.impl.Hypervolume;
+import org.uma.jmetal.qualityindicator.impl.SetCoverage;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.front.imp.ArrayFront;
 import org.uma.jmetal.util.front.util.FrontUtils;
@@ -25,11 +28,8 @@ import org.uma.jmetal.util.front.util.FrontUtils;
 import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -51,7 +51,8 @@ public class ChartContainer {
     private int variable2;
     private Map<String, List<Integer>> iterations;
     private Map<String, List<Double>> indicatorValues;
-
+    private SetCoverage coverage;
+    private List<DoubleSolution> lastFront;
     public ChartContainer(String name) {
         this(name, 0);
     }
@@ -62,6 +63,8 @@ public class ChartContainer {
         this.charts = new LinkedHashMap<String, XYChart>();
         this.iterations = new HashMap<String, List<Integer>>();
         this.indicatorValues = new HashMap<String, List<Double>>();
+        this.coverage = new SetCoverage();
+        this.lastFront=null;
     }
 
     public void setFrontChart(int objective1, int objective2) throws FileNotFoundException {
@@ -74,7 +77,7 @@ public class ChartContainer {
         this.frontChart = new XYChartBuilder().xAxisTitle("Objective " + this.objective1)
                 .yAxisTitle("Objective " + this.objective2).build();
         this.frontChart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Scatter).setMarkerSize(5);
-
+        //changeColorFrontChart();
         if (referenceFrontFileName != null) {
             this.displayReferenceFront(referenceFrontFileName);
         }
@@ -94,6 +97,7 @@ public class ChartContainer {
                                                                   new double[] { rp1 },
                                                                   new double[] { rp2 });
         referencePointSeries.setMarkerColor(Color.green);
+
     }
 
     public void setVarChart(int variable1, int variable2) {
@@ -101,6 +105,7 @@ public class ChartContainer {
         this.variable2 = variable2;
         this.varChart = new XYChartBuilder().xAxisTitle("Variable " + this.variable1)
                 .yAxisTitle("Variable " + this.variable2).build();
+
         this.varChart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Scatter).setMarkerSize(5);
 
         double[] xData = new double[] { 0 };
@@ -115,23 +120,37 @@ public class ChartContainer {
     public void initChart() {
         this.sw = new SwingWrapper<XYChart>(new ArrayList<XYChart>(this.charts.values()));
         this.sw.displayChartMatrix(this.name);
+
     }
 
     public void updateFrontCharts(List<DoubleSolution> solutionList, int counter) {
+        double coverageValue=0;
         if (this.frontChart != null) {
-            this.frontChart.addSeries("Front." + counter,
-                                           this.getSolutionsForObjective(solutionList, this.objective1),
-                                           this.getSolutionsForObjective(solutionList, this.objective2),
-                                           null);
-        }
+          if(lastFront!=null) {
+            coverageValue=coverage.evaluate(solutionList,lastFront);
+            System.out.println("Cobertura "+ coverageValue);
+          }
+          lastFront=solutionList;
+          if(coverageValue<0.8) {
 
+            this.frontChart.addSeries("Front." + counter,
+                    this.getSolutionsForObjective(solutionList, this.objective1),
+                    this.getSolutionsForObjective(solutionList, this.objective2),
+                    null);
+          }
+
+        }
         if (this.varChart != null) {
+           // initChart();
+           // changeColorVarChart();
             this.varChart.updateXYSeries(this.name,
                                          this.getVariableValues(solutionList, this.variable1),
                                          this.getVariableValues(solutionList, this.variable2),
                                          null);
         }
     }
+
+
 
     public void refreshCharts() {
         this.refreshCharts(this.delay);
