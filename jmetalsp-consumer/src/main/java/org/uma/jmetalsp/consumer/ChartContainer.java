@@ -53,6 +53,8 @@ public class ChartContainer {
     private Map<String, List<Double>> indicatorValues;
     private SetCoverage coverage;
     private List<DoubleSolution> lastFront;
+    private Map<String,List<DoubleSolution>> historicalFronts;
+    String nameAnt=null;
     public ChartContainer(String name) {
         this(name, 0);
     }
@@ -65,6 +67,7 @@ public class ChartContainer {
         this.indicatorValues = new HashMap<String, List<Double>>();
         this.coverage = new SetCoverage();
         this.lastFront=null;
+        this.historicalFronts= new HashMap<String,List<DoubleSolution>>();
     }
 
     public void setFrontChart(int objective1, int objective2) throws FileNotFoundException {
@@ -132,11 +135,15 @@ public class ChartContainer {
           }
           lastFront=solutionList;
           if(coverageValue<0.8) {
-
+            if(nameAnt!=null) {
+              this.frontChart.removeSeries(nameAnt);
+            }
             this.frontChart.addSeries("Front." + counter,
                     this.getSolutionsForObjective(solutionList, this.objective1),
                     this.getSolutionsForObjective(solutionList, this.objective2),
                     null);
+            nameAnt="Front." + counter;
+            historicalFronts.put("Front." + counter,solutionList);
           }
 
         }
@@ -150,7 +157,36 @@ public class ChartContainer {
         }
     }
 
+  private void repaintFronts(){
+    Set<String> keys=historicalFronts.keySet();
+    Iterator<String> it= keys.iterator();
+    Color[] colors = this.frontChart.getStyler().getSeriesColors();
+    while (it.hasNext()){
+      String name=it.next();
+      this.frontChart.removeSeries(name);
 
+      changeColorFrontChart(Color.GRAY);
+      List<DoubleSolution> list= historicalFronts.get(name);
+
+     this.frontChart.addSeries(name,
+              this.getSolutionsForObjective(list, this.objective1),
+              this.getSolutionsForObjective(list, this.objective2),
+              null);
+
+    }
+    this.frontChart.getStyler().setSeriesColors(colors);
+  }
+  private void changeColorFrontChart(Color color){
+    if(this.frontChart !=null && this.frontChart.getStyler()!=null ) {
+      Color[] colors = this.frontChart.getStyler().getSeriesColors();
+      if(colors!=null) {
+        for (int i = 0; i <colors.length; i++) {
+          colors[i]=color;
+        }
+        this.frontChart.getStyler().setSeriesColors(colors);
+      }
+    }
+  }
 
     public void refreshCharts() {
         this.refreshCharts(this.delay);
