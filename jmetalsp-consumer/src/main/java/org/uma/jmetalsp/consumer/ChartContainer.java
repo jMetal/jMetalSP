@@ -51,10 +51,7 @@ public class ChartContainer {
     private int variable2;
     private Map<String, List<Integer>> iterations;
     private Map<String, List<Double>> indicatorValues;
-    private SetCoverage coverage;
-    private List<DoubleSolution> lastFront;
-    private Map<String,List<DoubleSolution>> historicalFronts;
-    String nameAnt=null;
+
     public ChartContainer(String name) {
         this(name, 0);
     }
@@ -65,9 +62,7 @@ public class ChartContainer {
         this.charts = new LinkedHashMap<String, XYChart>();
         this.iterations = new HashMap<String, List<Integer>>();
         this.indicatorValues = new HashMap<String, List<Double>>();
-        this.coverage = new SetCoverage();
-        this.lastFront=null;
-        this.historicalFronts= new HashMap<String,List<DoubleSolution>>();
+
     }
 
     public void setFrontChart(int objective1, int objective2) throws FileNotFoundException {
@@ -99,7 +94,7 @@ public class ChartContainer {
         XYSeries referencePointSeries = this.frontChart.addSeries("Reference Point ["+ rp1 + ", " + rp2 + "]",
                                                                   new double[] { rp1 },
                                                                   new double[] { rp2 });
-        referencePointSeries.setMarkerColor(Color.green);
+       // referencePointSeries.setMarkerColor(Color.green);
 
     }
 
@@ -129,22 +124,29 @@ public class ChartContainer {
     public void updateFrontCharts(List<DoubleSolution> solutionList, int counter) {
         double coverageValue=0;
         if (this.frontChart != null) {
-          if(lastFront!=null) {
-            coverageValue=coverage.evaluate(solutionList,lastFront);
-            System.out.println("Cobertura "+ coverageValue);
-          }
-          lastFront=solutionList;
-          if(coverageValue<0.8) {
-            if(nameAnt!=null) {
-              this.frontChart.removeSeries(nameAnt);
-            }
+
+
+          //  if(nameAnt!=null) {
+              //this.frontChart.removeSeries(nameAnt);
+              if(this.frontChart.getSeriesMap()!=null){
+                Set<String>  keys= this.frontChart.getSeriesMap().keySet();
+                Iterator<String> it= keys.iterator();
+                while (it.hasNext()){
+                  String name= it.next();
+                  if(!name.contains("Reference")) {
+                    this.frontChart.getSeriesMap().get(name).setMarkerColor(Color.GRAY);
+                  }
+                }
+
+              }
+           // }
             this.frontChart.addSeries("Front." + counter,
                     this.getSolutionsForObjective(solutionList, this.objective1),
                     this.getSolutionsForObjective(solutionList, this.objective2),
                     null);
-            nameAnt="Front." + counter;
-            historicalFronts.put("Front." + counter,solutionList);
-          }
+
+
+
 
         }
         if (this.varChart != null) {
@@ -157,7 +159,8 @@ public class ChartContainer {
         }
     }
 
-  private void repaintFronts(){
+
+ /* private void repaintFronts(){
     Set<String> keys=historicalFronts.keySet();
     Iterator<String> it= keys.iterator();
     Color[] colors = this.frontChart.getStyler().getSeriesColors();
@@ -175,7 +178,7 @@ public class ChartContainer {
 
     }
     this.frontChart.getStyler().setSeriesColors(colors);
-  }
+  }*/
   private void changeColorFrontChart(Color color){
     if(this.frontChart !=null && this.frontChart.getStyler()!=null ) {
       Color[] colors = this.frontChart.getStyler().getSeriesColors();

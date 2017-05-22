@@ -20,7 +20,8 @@ import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.consumer.SimpleSolutionListConsumer;
 import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingCounterDataSource;
 import org.uma.jmetalsp.impl.DefaultRuntime;
-import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
+
+import org.uma.jmetalsp.observeddata.AlgorithmObservedData2;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
@@ -44,11 +45,11 @@ public class DynamicContinuousApplicationWithCharts {
   public static void main(String[] args) throws IOException, InterruptedException {
     JMetalSPApplication<
             SingleObservedData<Integer>,
-            AlgorithmObservedData,
+            AlgorithmObservedData2,
             DynamicProblem<DoubleSolution, SingleObservedData<Integer>>,
-            DynamicAlgorithm<List<DoubleSolution>,AlgorithmObservedData, Observable<AlgorithmObservedData>>,
+            DynamicAlgorithm<List<DoubleSolution>,AlgorithmObservedData2, Observable<AlgorithmObservedData2>>,
             SimpleStreamingCounterDataSource,
-            AlgorithmDataConsumer<AlgorithmObservedData, DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData, Observable<AlgorithmObservedData>>>> application;
+            AlgorithmDataConsumer<AlgorithmObservedData2, DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData2, Observable<AlgorithmObservedData2>>>> application;
     application = new JMetalSPApplication<>();
 
     // Set the streaming data source
@@ -65,8 +66,8 @@ public class DynamicContinuousApplicationWithCharts {
 
     String defaultAlgorithm = "SMPSO";
 
-    DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData, Observable<AlgorithmObservedData>> algorithm;
-    Observable<AlgorithmObservedData> observable = new DefaultObservable<>("WASFGA") ;
+    DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData2, Observable<AlgorithmObservedData2>> algorithm;
+    Observable<AlgorithmObservedData2> observable = new DefaultObservable<>("WASFGA") ;
 
     switch (defaultAlgorithm) {
       case "NSGAII":

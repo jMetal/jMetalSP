@@ -10,6 +10,7 @@ import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
+import org.uma.jmetalsp.observeddata.AlgorithmObservedData2;
 import org.uma.jmetalsp.observer.Observable;
 
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ import java.util.List;
 public class DynamicWASFGABuilder<
         S extends Solution<?>,
         P extends DynamicProblem<S, ?>,
-        O extends Observable<AlgorithmObservedData>> {
+        O extends Observable<AlgorithmObservedData2>> {
 
   private CrossoverOperator<S> crossover;
   private MutationOperator<S> mutation;
