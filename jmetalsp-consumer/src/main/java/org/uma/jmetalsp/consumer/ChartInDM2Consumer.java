@@ -14,9 +14,11 @@
 package org.uma.jmetalsp.consumer;
 
 import org.knowm.xchart.style.Styler;
+import org.uma.jmetal.qualityindicator.impl.InvertedGenerationalDistance;
 import org.uma.jmetal.qualityindicator.impl.SetCoverage;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.JMetalException;
+import org.uma.jmetal.util.front.imp.ArrayFront;
 import org.uma.jmetalsp.AlgorithmDataConsumer;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
@@ -39,11 +41,9 @@ public class ChartInDM2Consumer implements
   private DynamicAlgorithm<?, AlgorithmObservedData2, Observable<AlgorithmObservedData2>> dynamicAlgorithm;
 
   private ChartContainer chart ;
-  private List<DoubleSolution> lastReceivedFront = new ArrayList<>() ;
+  private List<DoubleSolution> lastReceivedFront = null ;
   private List<Double> referencePoint ;
   private int sizeIni;
-  private SetCoverage coverage;
-  private List<DoubleSolution> lastFront;
   private Map<String,List<DoubleSolution>> historicalFronts;
   private String nameAnt=null;
 
@@ -52,8 +52,6 @@ public class ChartInDM2Consumer implements
     this.dynamicAlgorithm = algorithm ;
     this.chart = null ;
     this.referencePoint = referencePoint ;
-    this.coverage = new SetCoverage();
-    this.lastFront=null;
     this.historicalFronts= new HashMap<String,List<DoubleSolution>>();
     this.nameAnt=null;
   }
@@ -104,18 +102,28 @@ public class ChartInDM2Consumer implements
         List<Integer> iteraciones=(List<Integer> )data.getAlgorithmData().get("numberOfIterations");
         List<DoubleSolution> solutionList=(List<DoubleSolution>) data.getSolutionList();
         this.chart.getFrontChart().setTitle("Iteration: " + iteraciones.get(0));
+        if (lastReceivedFront == null) {
+          lastReceivedFront = (List<DoubleSolution>) data.getSolutionList();
+        } else {
+          InvertedGenerationalDistance<DoubleSolution> igd =
+                  new InvertedGenerationalDistance<DoubleSolution>(new ArrayFront(lastReceivedFront));
+          System.out.println("IGD: " + igd.evaluate((List<DoubleSolution>) data.getSolutionList())) ;
+        }
+        /*
         double coverageValue=0;
         if(lastFront!=null) {
 
           coverageValue=coverage.evaluate(solutionList,lastFront);
           //System.out.println("Cobertura "+ coverageValue);
         }
-        lastFront=solutionList;
-        if(coverageValue<0.8) {
+        */
+        //lastFront=solutionList;
+        //if(coverageValue<0.8) {
           this.chart.updateFrontCharts(solutionList, iteraciones.get(0));//nameAnt
         //  nameAnt="Front." + iteraciones.get(0);
-          historicalFronts.put(nameAnt,solutionList);
-        }
+          //historicalFronts.put(nameAnt,solutionList);
+        //}
+
         if(data.getAlgorithmData().get("referencePoints")!=null){
           this.chart.setReferencePoint((List<Double>)data.getAlgorithmData().get("referencePoints"));
           data.getAlgorithmData().put("referencePoints",null);

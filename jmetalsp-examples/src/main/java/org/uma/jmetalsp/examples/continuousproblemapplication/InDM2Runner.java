@@ -10,6 +10,7 @@ import org.uma.jmetalsp.algorithm.indm2.InDM2;
 import org.uma.jmetalsp.algorithm.indm2.InDM2Builder;
 import org.uma.jmetalsp.algorithm.wasfga.DynamicWASFGABuilder;
 import org.uma.jmetalsp.consumer.ChartInDM2Consumer;
+import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingCounterDataSource;
 import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingDataSourceFromKeyboard;
 import org.uma.jmetalsp.impl.DefaultRuntime;
@@ -88,6 +89,7 @@ public class InDM2Runner {
             .addStreamingDataSource(streamingDataSource)
             .addStreamingDataSource(streamingDataSource2)
             .addAlgorithmDataConsumer(new ChartInDM2Consumer(algorithm, referencePoint))
+            .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirectory", algorithm))
             .run();
   }
 }
