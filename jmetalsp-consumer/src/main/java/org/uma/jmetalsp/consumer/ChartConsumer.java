@@ -14,9 +14,11 @@
 package org.uma.jmetalsp.consumer;
 
 import org.knowm.xchart.style.Styler;
+import org.uma.jmetal.qualityindicator.impl.InvertedGenerationalDistance;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetal.util.extremevalues.impl.FrontExtremeValues;
+import org.uma.jmetal.util.front.imp.ArrayFront;
 import org.uma.jmetal.util.referencePoint.impl.NadirPoint;
 import org.uma.jmetalsp.AlgorithmDataConsumer;
 import org.uma.jmetalsp.DynamicAlgorithm;
@@ -38,7 +40,7 @@ public class ChartConsumer implements
   private DynamicAlgorithm<?, AlgorithmObservedData2, Observable<AlgorithmObservedData2>> dynamicAlgorithm;
 
   private ChartContainer chart ;
-  List<DoubleSolution> lastReceivedFront = new ArrayList<>() ;
+  List<DoubleSolution> lastReceivedFront = null ;
 
   public ChartConsumer(DynamicAlgorithm<?, AlgorithmObservedData2, Observable<AlgorithmObservedData2>> algorithm) {
     this.dynamicAlgorithm = algorithm ;
@@ -81,6 +83,13 @@ public class ChartConsumer implements
       this.chart.initChart();
     } else {
       if (data.getSolutionList().size() != 0) {
+        if (lastReceivedFront == null) {
+          lastReceivedFront = (List<DoubleSolution>) data.getSolutionList();
+        } else {
+          InvertedGenerationalDistance<DoubleSolution> igd =
+                  new InvertedGenerationalDistance<DoubleSolution>(new ArrayFront(lastReceivedFront));
+          System.out.println("IGD: " + igd.evaluate((List<DoubleSolution>) data.getSolutionList())) ;
+        }
         List<Integer> iteraciones=(List<Integer> )data.getAlgorithmData().get("numberOfIterations");
         this.chart.getFrontChart().setTitle("Iteration: " + iteraciones.get(0));
         //String nameAnt="Front." + iteraciones.get(0);
