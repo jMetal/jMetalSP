@@ -130,7 +130,7 @@ public class ChartInDM2Consumer implements
           //System.out.println("Cobertura "+ coverageValue);
         }
         */
-        //lastFront=solutionList;
+         lastReceivedFront=solutionList;
         //if(coverageValue<0.8) {
           this.chart.updateFrontCharts(solutionList, iteraciones.get(0));//nameAnt
         //  nameAnt="Front." + iteraciones.get(0);
