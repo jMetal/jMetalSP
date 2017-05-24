@@ -19,6 +19,8 @@ import org.uma.jmetal.qualityindicator.impl.SetCoverage;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetal.util.front.imp.ArrayFront;
+import org.uma.jmetal.util.front.util.FrontNormalizer;
+import org.uma.jmetal.util.front.util.FrontUtils;
 import org.uma.jmetalsp.AlgorithmDataConsumer;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
@@ -105,9 +107,14 @@ public class ChartInDM2Consumer implements
         if (lastReceivedFront == null) {
           lastReceivedFront = (List<DoubleSolution>) data.getSolutionList();
         } else {
+          FrontNormalizer frontNormalizer = new FrontNormalizer(lastReceivedFront);
+          lastReceivedFront = (List<DoubleSolution>)frontNormalizer.normalize(lastReceivedFront);
           InvertedGenerationalDistance<DoubleSolution> igd =
                   new InvertedGenerationalDistance<DoubleSolution>(new ArrayFront(lastReceivedFront));
-          System.out.println("IGD: " + igd.evaluate((List<DoubleSolution>) data.getSolutionList())) ;
+          List<DoubleSolution> solution = (List<DoubleSolution>)data.getSolutionList();
+          FrontNormalizer front = new FrontNormalizer(solution);
+          solution = (List<DoubleSolution>)front.normalize(solution);
+          System.out.println("IGD: " + igd.evaluate(solution));
         }
         /*
         double coverageValue=0;
