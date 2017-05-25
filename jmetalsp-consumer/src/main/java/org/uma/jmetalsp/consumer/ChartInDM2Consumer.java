@@ -85,6 +85,7 @@ public class ChartInDM2Consumer implements
   @Override
   public void update(Observable<AlgorithmObservedData2> observable, AlgorithmObservedData2 data) {
     //System.out.println("Number of generated fronts: " + data.getIterations());
+    double coverageValue=0;
     if (chart == null) {
       this.chart = new ChartContainer(dynamicAlgorithm.getName(), 200);
       try {
@@ -105,22 +106,24 @@ public class ChartInDM2Consumer implements
        // this.chart.getFrontChart().getStyler().setMarkerSize(5);
         List<Integer> iteraciones=(List<Integer> )data.getAlgorithmData().get("numberOfIterations");
         List<DoubleSolution> solutionList=(List<DoubleSolution>) data.getSolutionList();
+
         this.chart.getFrontChart().setTitle("Iteration: " + iteraciones.get(0));
         if (lastReceivedFront == null) {
           lastReceivedFront = (List<DoubleSolution>) data.getSolutionList();
         } else {
           List<DoubleSolution> solution = (List<DoubleSolution>)data.getSolutionList();
           Front referenceFront = new ArrayFront(lastReceivedFront);
-          Front front = new ArrayFront(solution);
+         // Front front = new ArrayFront(solution);
 
-          FrontNormalizer frontNormalizer = new FrontNormalizer(referenceFront);
-          referenceFront = frontNormalizer.normalize(referenceFront);
+         // FrontNormalizer frontNormalizer = new FrontNormalizer(referenceFront);
+          //referenceFront = frontNormalizer.normalize(referenceFront);
           //lastReceivedFront = (List<DoubleSolution>)frontNormalizer.normalize(lastReceivedFront);
-          InvertedGenerationalDistance<PointSolution> igd =
-                  new InvertedGenerationalDistance<PointSolution>(referenceFront);
+          InvertedGenerationalDistance<DoubleSolution> igd =
+                  new InvertedGenerationalDistance<DoubleSolution>(referenceFront);
 
-          front = frontNormalizer.normalize(front);
-          System.out.println("IGD: " + igd.evaluate(FrontUtils.convertFrontToSolutionList(front)));
+          //front = frontNormalizer.normalize(front);
+          //System.out.println("IGD: " + igd.evaluate(solutionList));
+          coverageValue=igd.evaluate(solutionList);
         }
         /*
         double coverageValue=0;
@@ -130,12 +133,13 @@ public class ChartInDM2Consumer implements
           //System.out.println("Cobertura "+ coverageValue);
         }
         */
-         lastReceivedFront=solutionList;
-        //if(coverageValue<0.8) {
+
+        if(coverageValue>0.001) {
           this.chart.updateFrontCharts(solutionList, iteraciones.get(0));//nameAnt
         //  nameAnt="Front." + iteraciones.get(0);
           //historicalFronts.put(nameAnt,solutionList);
-        //}
+          lastReceivedFront=solutionList;
+        }
 
         if(data.getAlgorithmData().get("referencePoints")!=null){
           this.chart.setReferencePoint((List<Double>)data.getAlgorithmData().get("referencePoints"));

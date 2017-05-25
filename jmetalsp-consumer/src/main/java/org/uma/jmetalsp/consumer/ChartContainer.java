@@ -51,7 +51,7 @@ public class ChartContainer {
     private int variable2;
     private Map<String, List<Integer>> iterations;
     private Map<String, List<Double>> indicatorValues;
-
+    private String referenceName;
     public ChartContainer(String name) {
         this(name, 0);
     }
@@ -62,7 +62,7 @@ public class ChartContainer {
         this.charts = new LinkedHashMap<String, XYChart>();
         this.iterations = new HashMap<String, List<Integer>>();
         this.indicatorValues = new HashMap<String, List<Double>>();
-
+        this.referenceName=null;
     }
 
     public void setFrontChart(int objective1, int objective2) throws FileNotFoundException {
@@ -91,11 +91,38 @@ public class ChartContainer {
     public void setReferencePoint(List<Double> referencePoint){
         double rp1 = referencePoint.get(this.objective1);
         double rp2 = referencePoint.get(this.objective2);
-        XYSeries referencePointSeries = this.frontChart.addSeries("Reference Point ["+ rp1 + ", " + rp2 + "]",
+        if(referenceName!=null) {
+         this.changeColorFrontChart(Color.GRAY);
+          this.frontChart.removeSeries(referenceName);
+        }
+          referenceName="Reference Point ["+ rp1 + ", " + rp2 + "]";
+
+        XYSeries referencePointSeries = this.frontChart.addSeries(referenceName,
                                                                   new double[] { rp1 },
                                                                   new double[] { rp2 });
+      referencePointSeries.setShowInLegend(true);
        // referencePointSeries.setMarkerColor(Color.green);
 
+    }
+    private void deleteAllFront(){
+      if(this.frontChart!=null && this.frontChart.getSeriesMap()!=null) {
+        Set<String> keys = this.frontChart.getSeriesMap().keySet();
+        if(keys!=null) {
+          Object[] obj = keys.toArray();
+          if(obj!=null) {
+            String[] listFront = new String[obj.length];
+            for (int i = 0; i < obj.length; i++) {
+              listFront[i] = obj[i].toString();
+            }
+            for (int i = 0; i < listFront.length; i++) {
+              String name = listFront[i];
+              if (name != this.name && !name.contains("Reference")&&this.frontChart.getSeriesMap().get(name).getMarkerColor()!=Color.GRAY) {
+                  this.frontChart.removeSeries(name);
+              }
+            }
+          }
+        }
+      }
     }
 
     public void setVarChart(int variable1, int variable2) {
@@ -129,14 +156,15 @@ public class ChartContainer {
           //  if(nameAnt!=null) {
               //this.frontChart.removeSeries(nameAnt);
               if(this.frontChart.getSeriesMap()!=null){
-                Set<String>  keys= this.frontChart.getSeriesMap().keySet();
+                this.deleteAllFront();
+                /*Set<String>  keys= this.frontChart.getSeriesMap().keySet();
                 Iterator<String> it= keys.iterator();
                 while (it.hasNext()){
                   String name= it.next();
                   if(!name.contains("Reference")) {
                     this.frontChart.getSeriesMap().get(name).setMarkerColor(Color.GRAY);
                   }
-                }
+                }*/
 
               }
            // }
@@ -180,14 +208,16 @@ public class ChartContainer {
     this.frontChart.getStyler().setSeriesColors(colors);
   }*/
   private void changeColorFrontChart(Color color){
-    if(this.frontChart !=null && this.frontChart.getStyler()!=null ) {
-      Color[] colors = this.frontChart.getStyler().getSeriesColors();
-      if(colors!=null) {
-        for (int i = 0; i <colors.length; i++) {
-          colors[i]=color;
+    if(this.frontChart.getSeriesMap()!=null){
+      Set<String>  keys= this.frontChart.getSeriesMap().keySet();
+      Iterator<String> it= keys.iterator();
+      while (it.hasNext()){
+        String name= it.next();
+        if(!name.contains("Reference") && name!=this.name) {
+          this.frontChart.getSeriesMap().get(name).setMarkerColor(color);
         }
-        this.frontChart.getStyler().setSeriesColors(colors);
       }
+
     }
   }
 
