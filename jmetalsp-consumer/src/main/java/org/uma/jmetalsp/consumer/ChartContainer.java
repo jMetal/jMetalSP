@@ -92,7 +92,7 @@ public class ChartContainer {
         double rp1 = referencePoint.get(this.objective1);
         double rp2 = referencePoint.get(this.objective2);
         if(referenceName!=null) {
-         this.changeColorFrontChart(Color.GRAY);
+         //this.changeColorFrontChart(Color.GRAY);
           this.frontChart.removeSeries(referenceName);
         }
           referenceName="Reference Point ["+ rp1 + ", " + rp2 + "]";
@@ -101,6 +101,8 @@ public class ChartContainer {
                                                                   new double[] { rp1 },
                                                                   new double[] { rp2 });
       referencePointSeries.setShowInLegend(true);
+      orderAllFront();
+
        // referencePointSeries.setMarkerColor(Color.green);
 
     }
@@ -124,7 +126,41 @@ public class ChartContainer {
         }
       }
     }
-
+  private void orderAllFront(){
+    if(this.frontChart!=null && this.frontChart.getSeriesMap()!=null) {
+      Set<String> keys = this.frontChart.getSeriesMap().keySet();
+      if(keys!=null) {
+        Object[] obj = keys.toArray();
+        if(obj!=null) {
+          String[] listFront = new String[obj.length];
+          for (int i = 0; i < obj.length; i++) {
+            listFront[i] = obj[i].toString();
+          }
+          for (int i = 0; i < listFront.length; i++) {
+            String name = listFront[i];
+            if (name != this.name && !name.contains("Reference")) {
+              XYSeries xy=this.frontChart.getSeriesMap().get(name);
+              this.frontChart.removeSeries(name);
+              
+              this.frontChart.addSeries(name,generateArray(xy.getXData()),generateArray(xy.getYData()));
+            }
+          }
+          this.changeColorFrontChart(Color.GRAY);
+        }
+      }
+    }
+  }
+private  double[] generateArray(Collection collection){
+    double [] result=null;
+    if(collection!=null){
+      result= new double[collection.size()];
+      Object[] aux= collection.toArray();
+      for (int i=0; i<aux.length;i++){
+        result[i]=Double.parseDouble(aux[i].toString());
+      }
+    }
+    return result;
+}
     public void setVarChart(int variable1, int variable2) {
         this.variable1 = variable1;
         this.variable2 = variable2;
@@ -149,37 +185,21 @@ public class ChartContainer {
     }
 
     public void updateFrontCharts(List<DoubleSolution> solutionList, int counter) {
-        double coverageValue=0;
+
         if (this.frontChart != null) {
 
-
-          //  if(nameAnt!=null) {
-              //this.frontChart.removeSeries(nameAnt);
               if(this.frontChart.getSeriesMap()!=null){
-                this.deleteAllFront();
-                /*Set<String>  keys= this.frontChart.getSeriesMap().keySet();
-                Iterator<String> it= keys.iterator();
-                while (it.hasNext()){
-                  String name= it.next();
-                  if(!name.contains("Reference")) {
-                    this.frontChart.getSeriesMap().get(name).setMarkerColor(Color.GRAY);
-                  }
-                }*/
-
+                // this.deleteAllFront();//delete the other fronts
               }
-           // }
+
             this.frontChart.addSeries("Front." + counter,
                     this.getSolutionsForObjective(solutionList, this.objective1),
                     this.getSolutionsForObjective(solutionList, this.objective2),
                     null);
 
-
-
-
         }
         if (this.varChart != null) {
-           // initChart();
-           // changeColorVarChart();
+
             this.varChart.updateXYSeries(this.name,
                                          this.getVariableValues(solutionList, this.variable1),
                                          this.getVariableValues(solutionList, this.variable2),
@@ -188,25 +208,6 @@ public class ChartContainer {
     }
 
 
- /* private void repaintFronts(){
-    Set<String> keys=historicalFronts.keySet();
-    Iterator<String> it= keys.iterator();
-    Color[] colors = this.frontChart.getStyler().getSeriesColors();
-    while (it.hasNext()){
-      String name=it.next();
-      this.frontChart.removeSeries(name);
-
-      changeColorFrontChart(Color.GRAY);
-      List<DoubleSolution> list= historicalFronts.get(name);
-
-     this.frontChart.addSeries(name,
-              this.getSolutionsForObjective(list, this.objective1),
-              this.getSolutionsForObjective(list, this.objective2),
-              null);
-
-    }
-    this.frontChart.getStyler().setSeriesColors(colors);
-  }*/
   private void changeColorFrontChart(Color color){
     if(this.frontChart.getSeriesMap()!=null){
       Set<String>  keys= this.frontChart.getSeriesMap().keySet();
@@ -220,6 +221,8 @@ public class ChartContainer {
 
     }
   }
+
+
 
     public void refreshCharts() {
         this.refreshCharts(this.delay);
