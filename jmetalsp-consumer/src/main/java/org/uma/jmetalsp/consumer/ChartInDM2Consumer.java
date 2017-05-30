@@ -15,11 +15,14 @@ package org.uma.jmetalsp.consumer;
 
 import org.knowm.xchart.style.Styler;
 import org.uma.jmetal.qualityindicator.impl.InvertedGenerationalDistance;
+import org.uma.jmetal.qualityindicator.impl.SetCoverage;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.JMetalException;
-import org.uma.jmetal.util.extremevalues.impl.FrontExtremeValues;
+import org.uma.jmetal.util.front.Front;
 import org.uma.jmetal.util.front.imp.ArrayFront;
-import org.uma.jmetal.util.referencePoint.impl.NadirPoint;
+import org.uma.jmetal.util.front.util.FrontNormalizer;
+import org.uma.jmetal.util.front.util.FrontUtils;
+import org.uma.jmetal.util.point.util.PointSolution;
 import org.uma.jmetalsp.AlgorithmDataConsumer;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
@@ -28,23 +31,33 @@ import org.uma.jmetalsp.observer.Observable;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Plots a chart with the produce fronts
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class ChartConsumer implements
+public class ChartInDM2Consumer implements
         AlgorithmDataConsumer<AlgorithmObservedData2, DynamicAlgorithm<?, AlgorithmObservedData2, Observable<AlgorithmObservedData2>>> {
   private DynamicAlgorithm<?, AlgorithmObservedData2, Observable<AlgorithmObservedData2>> dynamicAlgorithm;
 
   private ChartContainer chart ;
-  List<DoubleSolution> lastReceivedFront = null ;
+  private List<DoubleSolution> lastReceivedFront = null ;
+  private List<Double> referencePoint ;
+  private int sizeIni;
+  private Map<String,List<DoubleSolution>> historicalFronts;
+  private String nameAnt=null;
 
-  public ChartConsumer(DynamicAlgorithm<?, AlgorithmObservedData2, Observable<AlgorithmObservedData2>> algorithm) {
+  public ChartInDM2Consumer(DynamicAlgorithm<?, AlgorithmObservedData2, Observable<AlgorithmObservedData2>> algorithm,
+                            List<Double> referencePoint) {
     this.dynamicAlgorithm = algorithm ;
     this.chart = null ;
+    this.referencePoint = referencePoint ;
+    this.historicalFronts= new HashMap<String,List<DoubleSolution>>();
+    this.nameAnt=null;
   }
 
   @Override
@@ -71,31 +84,66 @@ public class ChartConsumer implements
 
   @Override
   public void update(Observable<AlgorithmObservedData2> observable, AlgorithmObservedData2 data) {
-    System.out.println("Number of generated fronts: " + data.getAlgorithmData().get("numberOfIterations"));
+    //System.out.println("Number of generated fronts: " + data.getIterations());
+    double coverageValue=0;
     if (chart == null) {
       this.chart = new ChartContainer(dynamicAlgorithm.getName(), 200);
       try {
         this.chart.setFrontChart(0, 1, null);
+        sizeIni= this.chart.getFrontChart().getStyler().getMarkerSize();
+
+        this.chart.setReferencePoint(referencePoint);
+        //this.chart.getFrontChart().getStyler().setMarkerSize(15);
         this.chart.getFrontChart().getStyler().setLegendPosition(Styler.LegendPosition.InsideNE) ;
+
+
       } catch (FileNotFoundException e) {
         e.printStackTrace();
       }
       this.chart.initChart();
     } else {
       if (data.getSolutionList().size() != 0) {
+       // this.chart.getFrontChart().getStyler().setMarkerSize(5);
+        List<Integer> iteraciones=(List<Integer> )data.getAlgorithmData().get("numberOfIterations");
+        List<DoubleSolution> solutionList=(List<DoubleSolution>) data.getSolutionList();
+
+        this.chart.getFrontChart().setTitle("Iteration: " + iteraciones.get(0));
         if (lastReceivedFront == null) {
           lastReceivedFront = (List<DoubleSolution>) data.getSolutionList();
         } else {
+          List<DoubleSolution> solution = (List<DoubleSolution>)data.getSolutionList();
+          Front referenceFront = new ArrayFront(lastReceivedFront);
+         // Front front = new ArrayFront(solution);
+
+         // FrontNormalizer frontNormalizer = new FrontNormalizer(referenceFront);
+          //referenceFront = frontNormalizer.normalize(referenceFront);
+          //lastReceivedFront = (List<DoubleSolution>)frontNormalizer.normalize(lastReceivedFront);
           InvertedGenerationalDistance<DoubleSolution> igd =
-                  new InvertedGenerationalDistance<DoubleSolution>(new ArrayFront(lastReceivedFront));
-          System.out.println("IGD: " + igd.evaluate((List<DoubleSolution>) data.getSolutionList())) ;
+                  new InvertedGenerationalDistance<DoubleSolution>(referenceFront);
+
+          //front = frontNormalizer.normalize(front);
+          //System.out.println("IGD: " + igd.evaluate(solutionList));
+          coverageValue=igd.evaluate(solutionList);
         }
-        List<Integer> iteraciones=(List<Integer> )data.getAlgorithmData().get("numberOfIterations");
-        this.chart.getFrontChart().setTitle("Iteration: " + iteraciones.get(0));
-        //String nameAnt="Front." + iteraciones.get(0);
-        this.chart.updateFrontCharts((List<DoubleSolution>) data.getSolutionList(), iteraciones.get(0));
+        /*
+        double coverageValue=0;
+        if(lastFront!=null) {
+
+          coverageValue=coverage.evaluate(solutionList,lastFront);
+          //System.out.println("Cobertura "+ coverageValue);
+        }
+        */
+
+        if(coverageValue>0.001) {
+          this.chart.updateFrontCharts(solutionList, iteraciones.get(0));//nameAnt
+        //  nameAnt="Front." + iteraciones.get(0);
+          //historicalFronts.put(nameAnt,solutionList);
+          lastReceivedFront=solutionList;
+        }
+
         if(data.getAlgorithmData().get("referencePoints")!=null){
           this.chart.setReferencePoint((List<Double>)data.getAlgorithmData().get("referencePoints"));
+          data.getAlgorithmData().put("referencePoints",null);
         }
         this.chart.refreshCharts();
       }

@@ -18,7 +18,7 @@ import org.uma.jmetal.util.fileoutput.SolutionListOutput;
 import org.uma.jmetal.util.fileoutput.impl.DefaultFileOutputContext;
 import org.uma.jmetalsp.AlgorithmDataConsumer;
 import org.uma.jmetalsp.DynamicAlgorithm;
-import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
+import org.uma.jmetalsp.observeddata.AlgorithmObservedData2;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.Observer;
 
@@ -28,15 +28,15 @@ import java.io.File;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class LocalDirectoryOutputConsumer implements
-        AlgorithmDataConsumer<AlgorithmObservedData, DynamicAlgorithm<?, AlgorithmObservedData, Observable<AlgorithmObservedData>>> {
+        AlgorithmDataConsumer<AlgorithmObservedData2, DynamicAlgorithm<?, AlgorithmObservedData2, Observable<AlgorithmObservedData2>>> {
   private String outputDirectoryName;
-  private DynamicAlgorithm<?, AlgorithmObservedData, Observable<AlgorithmObservedData>> dynamicAlgorithm;
+  private DynamicAlgorithm<?, AlgorithmObservedData2, Observable<AlgorithmObservedData2>> dynamicAlgorithm;
   private int fileCounter = 0;
 
   /**
    * Constructor
    */
-  public LocalDirectoryOutputConsumer(String outputDirectoryName, DynamicAlgorithm<?, AlgorithmObservedData, Observable<AlgorithmObservedData>> algorithm) {
+  public LocalDirectoryOutputConsumer(String outputDirectoryName, DynamicAlgorithm<?, AlgorithmObservedData2, Observable<AlgorithmObservedData2>> algorithm) {
     this.outputDirectoryName = outputDirectoryName;
     this.dynamicAlgorithm = algorithm ;
     createDataDirectory(this.outputDirectoryName);
@@ -53,7 +53,7 @@ public class LocalDirectoryOutputConsumer implements
   }
 */
   @Override
-  public DynamicAlgorithm<?, AlgorithmObservedData, Observable<AlgorithmObservedData>> getAlgorithm() {
+  public DynamicAlgorithm<?, AlgorithmObservedData2, Observable<AlgorithmObservedData2>> getAlgorithm() {
     return dynamicAlgorithm;
   }
 
@@ -96,8 +96,8 @@ public class LocalDirectoryOutputConsumer implements
   }
 
   @Override
-  public void update(Observable<AlgorithmObservedData> observable, AlgorithmObservedData data) {
-    AlgorithmObservedData algorithmResultData = (AlgorithmObservedData) data;
+  public void update(Observable<AlgorithmObservedData2> observable, AlgorithmObservedData2 data) {
+    AlgorithmObservedData2 algorithmResultData = (AlgorithmObservedData2) data;
     new SolutionListOutput(algorithmResultData.getSolutionList())
             .setSeparator("\t")
             .setFunFileOutputContext(new DefaultFileOutputContext(outputDirectoryName + "/FUN" + fileCounter + ".tsv"))

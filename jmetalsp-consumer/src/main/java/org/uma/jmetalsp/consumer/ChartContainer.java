@@ -18,6 +18,9 @@ import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
 import org.knowm.xchart.XYSeries;
+import org.knowm.xchart.style.Styler;
+import org.uma.jmetal.qualityindicator.impl.Hypervolume;
+import org.uma.jmetal.qualityindicator.impl.SetCoverage;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.front.imp.ArrayFront;
 import org.uma.jmetal.util.front.util.FrontUtils;
@@ -25,11 +28,8 @@ import org.uma.jmetal.util.front.util.FrontUtils;
 import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -51,7 +51,7 @@ public class ChartContainer {
     private int variable2;
     private Map<String, List<Integer>> iterations;
     private Map<String, List<Double>> indicatorValues;
-
+    private String referenceName;
     public ChartContainer(String name) {
         this(name, 0);
     }
@@ -62,6 +62,7 @@ public class ChartContainer {
         this.charts = new LinkedHashMap<String, XYChart>();
         this.iterations = new HashMap<String, List<Integer>>();
         this.indicatorValues = new HashMap<String, List<Double>>();
+        this.referenceName=null;
     }
 
     public void setFrontChart(int objective1, int objective2) throws FileNotFoundException {
@@ -74,7 +75,7 @@ public class ChartContainer {
         this.frontChart = new XYChartBuilder().xAxisTitle("Objective " + this.objective1)
                 .yAxisTitle("Objective " + this.objective2).build();
         this.frontChart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Scatter).setMarkerSize(5);
-
+        //changeColorFrontChart();
         if (referenceFrontFileName != null) {
             this.displayReferenceFront(referenceFrontFileName);
         }
@@ -90,17 +91,82 @@ public class ChartContainer {
     public void setReferencePoint(List<Double> referencePoint){
         double rp1 = referencePoint.get(this.objective1);
         double rp2 = referencePoint.get(this.objective2);
-        XYSeries referencePointSeries = this.frontChart.addSeries("Reference Point ["+ rp1 + ", " + rp2 + "]",
+        if(referenceName!=null) {
+         //this.changeColorFrontChart(Color.GRAY);
+          this.frontChart.removeSeries(referenceName);
+        }
+          referenceName="Reference Point ["+ rp1 + ", " + rp2 + "]";
+
+        XYSeries referencePointSeries = this.frontChart.addSeries(referenceName,
                                                                   new double[] { rp1 },
                                                                   new double[] { rp2 });
-        referencePointSeries.setMarkerColor(Color.green);
-    }
+      referencePointSeries.setShowInLegend(true);
+      orderAllFront();
 
+       // referencePointSeries.setMarkerColor(Color.green);
+
+    }
+    private void deleteAllFront(){
+      if(this.frontChart!=null && this.frontChart.getSeriesMap()!=null) {
+        Set<String> keys = this.frontChart.getSeriesMap().keySet();
+        if(keys!=null) {
+          Object[] obj = keys.toArray();
+          if(obj!=null) {
+            String[] listFront = new String[obj.length];
+            for (int i = 0; i < obj.length; i++) {
+              listFront[i] = obj[i].toString();
+            }
+            for (int i = 0; i < listFront.length; i++) {
+              String name = listFront[i];
+              if (name != this.name && !name.contains("Reference")&&this.frontChart.getSeriesMap().get(name).getMarkerColor()!=Color.GRAY) {
+                  this.frontChart.removeSeries(name);
+              }
+            }
+          }
+        }
+      }
+    }
+  private void orderAllFront(){
+    if(this.frontChart!=null && this.frontChart.getSeriesMap()!=null) {
+      Set<String> keys = this.frontChart.getSeriesMap().keySet();
+      if(keys!=null) {
+        Object[] obj = keys.toArray();
+        if(obj!=null) {
+          String[] listFront = new String[obj.length];
+          for (int i = 0; i < obj.length; i++) {
+            listFront[i] = obj[i].toString();
+          }
+          for (int i = 0; i < listFront.length; i++) {
+            String name = listFront[i];
+            if (name != this.name && !name.contains("Reference")) {
+              XYSeries xy=this.frontChart.getSeriesMap().get(name);
+              this.frontChart.removeSeries(name);
+              
+              this.frontChart.addSeries(name,generateArray(xy.getXData()),generateArray(xy.getYData()));
+            }
+          }
+          this.changeColorFrontChart(Color.GRAY);
+        }
+      }
+    }
+  }
+private  double[] generateArray(Collection collection){
+    double [] result=null;
+    if(collection!=null){
+      result= new double[collection.size()];
+      Object[] aux= collection.toArray();
+      for (int i=0; i<aux.length;i++){
+        result[i]=Double.parseDouble(aux[i].toString());
+      }
+    }
+    return result;
+}
     public void setVarChart(int variable1, int variable2) {
         this.variable1 = variable1;
         this.variable2 = variable2;
         this.varChart = new XYChartBuilder().xAxisTitle("Variable " + this.variable1)
                 .yAxisTitle("Variable " + this.variable2).build();
+
         this.varChart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Scatter).setMarkerSize(5);
 
         double[] xData = new double[] { 0 };
@@ -115,23 +181,48 @@ public class ChartContainer {
     public void initChart() {
         this.sw = new SwingWrapper<XYChart>(new ArrayList<XYChart>(this.charts.values()));
         this.sw.displayChartMatrix(this.name);
+
     }
 
     public void updateFrontCharts(List<DoubleSolution> solutionList, int counter) {
-        if (this.frontChart != null) {
-            this.frontChart.addSeries("Front." + counter,
-                                           this.getSolutionsForObjective(solutionList, this.objective1),
-                                           this.getSolutionsForObjective(solutionList, this.objective2),
-                                           null);
-        }
 
+        if (this.frontChart != null) {
+
+              if(this.frontChart.getSeriesMap()!=null){
+                // this.deleteAllFront();//delete the other fronts
+              }
+
+            this.frontChart.addSeries("Front." + counter,
+                    this.getSolutionsForObjective(solutionList, this.objective1),
+                    this.getSolutionsForObjective(solutionList, this.objective2),
+                    null);
+
+        }
         if (this.varChart != null) {
+
             this.varChart.updateXYSeries(this.name,
                                          this.getVariableValues(solutionList, this.variable1),
                                          this.getVariableValues(solutionList, this.variable2),
                                          null);
         }
     }
+
+
+  private void changeColorFrontChart(Color color){
+    if(this.frontChart.getSeriesMap()!=null){
+      Set<String>  keys= this.frontChart.getSeriesMap().keySet();
+      Iterator<String> it= keys.iterator();
+      while (it.hasNext()){
+        String name= it.next();
+        if(!name.contains("Reference") && name!=this.name) {
+          this.frontChart.getSeriesMap().get(name).setMarkerColor(color);
+        }
+      }
+
+    }
+  }
+
+
 
     public void refreshCharts() {
         this.refreshCharts(this.delay);
@@ -183,7 +274,7 @@ public class ChartContainer {
     public void repaint() {
         try {
             for (int i = 0; i < this.charts.values().size(); i++) {
-                System.out.println("Size: " + charts.values().size()) ;
+                //System.out.println("Size: " + charts.values().size()) ;
                 this.sw.repaintChart(i);
             }
         } catch (IndexOutOfBoundsException e) {

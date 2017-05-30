@@ -16,17 +16,19 @@ package org.uma.jmetalsp.consumer;
 import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetalsp.AlgorithmDataConsumer;
 import org.uma.jmetalsp.DynamicAlgorithm;
-import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
+import org.uma.jmetalsp.observeddata.AlgorithmObservedData2;
 import org.uma.jmetalsp.observer.Observable;
+
+import java.util.List;
 
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class SimpleSolutionListConsumer implements
-        AlgorithmDataConsumer<AlgorithmObservedData, DynamicAlgorithm<?, AlgorithmObservedData, Observable<AlgorithmObservedData>>> {
-  private DynamicAlgorithm<?, AlgorithmObservedData, Observable<AlgorithmObservedData>> dynamicAlgorithm;
+        AlgorithmDataConsumer<AlgorithmObservedData2, DynamicAlgorithm<?, AlgorithmObservedData2, Observable<AlgorithmObservedData2>>> {
+  private DynamicAlgorithm<?, AlgorithmObservedData2, Observable<AlgorithmObservedData2>> dynamicAlgorithm;
 
-  public SimpleSolutionListConsumer(DynamicAlgorithm<?, AlgorithmObservedData, Observable<AlgorithmObservedData>> algorithm) {
+  public SimpleSolutionListConsumer(DynamicAlgorithm<?, AlgorithmObservedData2, Observable<AlgorithmObservedData2>> algorithm) {
     this.dynamicAlgorithm = algorithm ;
   }
   /*
@@ -36,7 +38,7 @@ public class SimpleSolutionListConsumer implements
   }
 */
   @Override
-  public DynamicAlgorithm<?, AlgorithmObservedData, Observable<AlgorithmObservedData>> getAlgorithm() {
+  public DynamicAlgorithm<?, AlgorithmObservedData2, Observable<AlgorithmObservedData2>> getAlgorithm() {
     return dynamicAlgorithm;
   }
 
@@ -58,9 +60,9 @@ public class SimpleSolutionListConsumer implements
   }
 
   @Override
-  public void update(Observable<AlgorithmObservedData> observable, AlgorithmObservedData data) {
-    AlgorithmObservedData algorithmResultData = (AlgorithmObservedData) data;
-    System.out.println("Number of generated fronts: " + algorithmResultData.getIterations());
+  public void update(Observable<AlgorithmObservedData2> observable, AlgorithmObservedData2 data) {
+    AlgorithmObservedData2 algorithmResultData = (AlgorithmObservedData2) data;
+    System.out.println("Number of generated fronts: " +((List<Integer>) algorithmResultData.getAlgorithmData().get("numberOfIteration")).get(0));
     System.out.println("Size of the front: " + algorithmResultData.getSolutionList().size());
   }
 }

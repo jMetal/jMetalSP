@@ -80,10 +80,6 @@ public class JMetalSPApplication<
   public void run() throws IOException, InterruptedException {
     fieldChecking();
 
-    //for (C consumer : algorithmDataConsumerList) {
-    //  consumer.setAlgorithm(algorithm);
-    //}
-
     Thread algorithmThread = new Thread(algorithm);
     List<Thread> consumerThreadList = new ArrayList<Thread>(algorithmDataConsumerList.size());
     for (C consumer : algorithmDataConsumerList) {

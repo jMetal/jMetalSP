@@ -1,4 +1,4 @@
-package org.uma.jmetalsp.algorithm.wasfga;
+package org.uma.jmetalsp.algorithm.indm2;
 
 import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
@@ -9,7 +9,6 @@ import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetalsp.DynamicProblem;
-import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData2;
 import org.uma.jmetalsp.observer.Observable;
 
@@ -19,7 +18,7 @@ import java.util.List;
 /**
  * @author Cristobal Barba <cbarba@lcc.uma.es>
  */
-public class DynamicWASFGABuilder<
+public class InDM2Builder<
         S extends Solution<?>,
         P extends DynamicProblem<S, ?>,
         O extends Observable<AlgorithmObservedData2>> {
@@ -37,10 +36,10 @@ public class DynamicWASFGABuilder<
   private int maxIterations;
   private int populationSize;
 
-  public DynamicWASFGABuilder(CrossoverOperator<S> crossoverOperator,
-                              MutationOperator<S> mutationOperator,
-                              List<Double> referencePoint,
-                              O observable) {
+  public InDM2Builder(CrossoverOperator<S> crossoverOperator,
+                      MutationOperator<S> mutationOperator,
+                      List<Double> referencePoint,
+                      O observable) {
     this.crossover = crossoverOperator;
     this.mutation = mutationOperator;
     this.selection = new BinaryTournamentSelection<S>(new RankingAndCrowdingDistanceComparator<S>());
@@ -55,64 +54,64 @@ public class DynamicWASFGABuilder<
     this.referencePoint = referencePoint ;
   }
 
-  public DynamicWASFGABuilder<S, P, O> setCrossover(CrossoverOperator<S> crossover) {
+  public InDM2Builder<S, P, O> setCrossover(CrossoverOperator<S> crossover) {
     this.crossover = crossover;
     return this;
   }
 
-  public DynamicWASFGABuilder<S, P, O> setMutation(MutationOperator<S> mutation) {
+  public InDM2Builder<S, P, O> setMutation(MutationOperator<S> mutation) {
     this.mutation = mutation;
     return this;
   }
 
-  public DynamicWASFGABuilder<S, P, O> setSelection(SelectionOperator<List<S>, S> selection) {
+  public InDM2Builder<S, P, O> setSelection(SelectionOperator<List<S>, S> selection) {
     this.selection = selection;
     return this;
   }
 
-  public DynamicWASFGABuilder<S, P, O> setEvaluator(SolutionListEvaluator<S> evaluator) {
+  public InDM2Builder<S, P, O> setEvaluator(SolutionListEvaluator<S> evaluator) {
     this.evaluator = evaluator;
     return this;
   }
 
-  public DynamicWASFGABuilder<S, P, O> setCrossoverProbability(double crossoverProbability) {
+  public InDM2Builder<S, P, O> setCrossoverProbability(double crossoverProbability) {
     this.crossoverProbability = crossoverProbability;
     return this;
   }
 
-  public DynamicWASFGABuilder<S, P, O> setCrossoverDistributionIndex(double crossoverDistributionIndex) {
+  public InDM2Builder<S, P, O> setCrossoverDistributionIndex(double crossoverDistributionIndex) {
     this.crossoverDistributionIndex = crossoverDistributionIndex;
     return this;
   }
 
-  public DynamicWASFGABuilder<S, P, O> setMutationProbability(double mutationProbability) {
+  public InDM2Builder<S, P, O> setMutationProbability(double mutationProbability) {
     this.mutationProbability = mutationProbability;
     return this;
   }
 
-  public DynamicWASFGABuilder<S, P, O> setMutationDistributionIndex(double mutationDistributionIndex) {
+  public InDM2Builder<S, P, O> setMutationDistributionIndex(double mutationDistributionIndex) {
     this.mutationDistributionIndex = mutationDistributionIndex;
     return this;
   }
 
-  public DynamicWASFGABuilder<S, P, O> setMaxIterations(int maxIterations) {
+  public InDM2Builder<S, P, O> setMaxIterations(int maxIterations) {
     this.maxIterations = maxIterations;
     return this;
   }
 
-  public DynamicWASFGABuilder<S, P, O> setPopulationSize(int populationSize) {
+  public InDM2Builder<S, P, O> setPopulationSize(int populationSize) {
     this.populationSize = populationSize;
     return this;
   }
 
-  public DynamicWASFGABuilder<S, P, O> setReferencePoint(List<Double> referencePoint) {
+  public InDM2Builder<S, P, O> setReferencePoint(List<Double> referencePoint) {
     this.referencePoint = referencePoint;
     return this;
   }
 
-  public DynamicWASFGA<S, O> build(P problem) {
+  public InDM2<S> build(P problem) {
     mutationProbability = 1.0 / problem.getNumberOfVariables();
-    return new DynamicWASFGA(problem, populationSize, maxIterations, crossover, mutation, selection, evaluator, referencePoint, observable);
+    return new InDM2(problem, populationSize, maxIterations, crossover, mutation, selection, evaluator, referencePoint, observable);
 
   }
 }

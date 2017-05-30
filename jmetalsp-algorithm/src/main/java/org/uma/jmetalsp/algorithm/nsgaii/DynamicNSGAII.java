@@ -23,9 +23,12 @@ import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
+import org.uma.jmetalsp.observeddata.AlgorithmObservedData2;
 import org.uma.jmetalsp.observer.Observable;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Class implementing a dynamic version of NSGA-II. Most of the code of the original NSGA-II is
@@ -36,14 +39,15 @@ import java.util.List;
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DynamicNSGAII<S extends Solution<?>, O extends Observable<AlgorithmObservedData>>
+public class DynamicNSGAII<S extends Solution<?>, O extends Observable<AlgorithmObservedData2>>
     extends NSGAII<S>
-    implements DynamicAlgorithm<List<S>, AlgorithmObservedData, Observable<AlgorithmObservedData>> {
+    implements DynamicAlgorithm<List<S>, AlgorithmObservedData2, Observable<AlgorithmObservedData2>> {
 
   private int completedIterations ;
   private boolean stopAtTheEndOfTheCurrentIteration = false ;
 
 	O observable ;
+  private Map<String,List> algorithmData;
 
   public DynamicNSGAII(DynamicProblem<S, ?> problem, int maxEvaluations, int populationSize,
                        CrossoverOperator<S> crossoverOperator,
@@ -70,7 +74,10 @@ public class DynamicNSGAII<S extends Solution<?>, O extends Observable<Algorithm
   @Override protected boolean isStoppingConditionReached() {
     if (evaluations >= maxEvaluations) {
       observable.setChanged() ;
-      observable.notifyObservers(new AlgorithmObservedData(getPopulation(), completedIterations));
+      List<Integer> data= new ArrayList<>();
+      data.add(completedIterations);
+      algorithmData.put("numberOfIterations",data);
+      observable.notifyObservers(new AlgorithmObservedData2(getPopulation(), algorithmData));
 
       restart(100);
       evaluator.evaluate(getPopulation(), getDynamicProblem()) ;
