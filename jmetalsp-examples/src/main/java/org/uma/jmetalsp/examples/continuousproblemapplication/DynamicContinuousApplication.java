@@ -54,6 +54,7 @@ public class DynamicContinuousApplication {
 
     // Set the streaming data source
     Observable<SingleObservedData<Integer>> fdaObservable = new DefaultObservable<>("timeData") ;
+
     StreamingDataSource<SingleObservedData<Integer>, Observable<SingleObservedData<Integer>>> streamingDataSource =
             new SimpleStreamingCounterDataSource(fdaObservable, 2000) ;
 
