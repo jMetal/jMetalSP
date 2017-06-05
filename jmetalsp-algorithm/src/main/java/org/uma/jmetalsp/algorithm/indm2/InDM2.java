@@ -15,6 +15,9 @@ import org.uma.jmetalsp.observeddata.AlgorithmObservedData2;
 import org.uma.jmetalsp.observeddata.ListObservedData;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.Observer;
+import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
+import org.uma.jmetalsp.util.restartstrategy.impl.RestartRemovingNRandomSolutions;
+import org.uma.jmetalsp.util.restartstrategy.impl.RestartRemovingTheFirstNSolutions;
 
 import java.util.*;
 
@@ -29,6 +32,7 @@ public class InDM2<S extends Solution<?>>
   private boolean stopAtTheEndOfTheCurrentIteration = false;
   private Optional<S> newReferencePoint ;
   private Map<String,List> algorithmData;
+  private RestartStrategy<S> restartStrategy ;
 
   Observable<AlgorithmObservedData2> observable;
 
@@ -44,6 +48,7 @@ public class InDM2<S extends Solution<?>>
     maxEvaluations = maxIterations;
     newReferencePoint = Optional.ofNullable(null);
     this.algorithmData = new HashMap<>();
+    this.restartStrategy = new RestartRemovingTheFirstNSolutions<>(100) ;
   }
 
   @Override
@@ -63,7 +68,8 @@ public class InDM2<S extends Solution<?>>
 
   @Override
   public void restart(int percentageOfSolutionsToRemove) {
-    SolutionListUtils.restart(getPopulation(), getDynamicProblem(), percentageOfSolutionsToRemove);
+    //SolutionListUtils.restart(getPopulation(), getDynamicProblem(), percentageOfSolutionsToRemove);
+    this.restartStrategy.restart(this.getPopulation(), this.getDynamicProblem()) ;
     this.evaluatePopulation(this.getPopulation());
     this.initProgress();
     this.specificMOEAComputations();
@@ -144,5 +150,9 @@ public class InDM2<S extends Solution<?>>
     }
 
     newReferencePoint = Optional.of(solution) ;
+  }
+
+  public void setRestartStrategy(RestartStrategy<S> restartStrategy) {
+    this.restartStrategy = restartStrategy ;
   }
 }

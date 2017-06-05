@@ -27,6 +27,7 @@ import org.uma.jmetalsp.observeddata.AlgorithmObservedData2;
 import org.uma.jmetalsp.observer.Observable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -59,6 +60,7 @@ public class DynamicSMPSO<O extends Observable<AlgorithmObservedData2>>
     completedIterations = 0;
     this.evaluator = evaluator;
     this.observable = observable;
+    this.algorithmData = new HashMap<>();
   }
 
   @Override

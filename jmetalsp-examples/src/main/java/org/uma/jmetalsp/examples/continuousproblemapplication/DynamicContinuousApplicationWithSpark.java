@@ -60,7 +60,7 @@ public class DynamicContinuousApplicationWithSpark {
         MutationOperator<DoubleSolution> mutation =
                 new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);
 
-        String defaultAlgorithm = "WASFGA";
+        String defaultAlgorithm = "SMPSO";
 
         DynamicAlgorithm<List<DoubleSolution>, Observable<AlgorithmObservedData2>> algorithm;
         Observable<AlgorithmObservedData2> observable = new DefaultObservable<>("WASFGA");

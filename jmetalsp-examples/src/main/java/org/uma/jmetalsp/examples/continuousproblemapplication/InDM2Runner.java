@@ -22,6 +22,7 @@ import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.Observer;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
 import org.uma.jmetalsp.problem.fda.FDA2;
+import org.uma.jmetalsp.util.restartstrategy.impl.RestartRemovingNRandomSolutions;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -78,6 +79,8 @@ public class  InDM2Runner {
             .setMaxIterations(250)
             .setPopulationSize(100)
             .build(problem);
+
+    algorithm.setRestartStrategy(new RestartRemovingNRandomSolutions<>(100));
 
     algorithmObservable.register(algorithm);
 
