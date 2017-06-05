@@ -23,7 +23,7 @@ import java.util.Map;
  */
 public class DynamicWASFGA<S extends Solution<?>, O extends Observable<AlgorithmObservedData2>>
         extends WASFGA<S>
-        implements DynamicAlgorithm<List<S>, AlgorithmObservedData2, Observable<AlgorithmObservedData2>> {
+        implements DynamicAlgorithm<List<S>, Observable<AlgorithmObservedData2>> {
     private int completedIterations;
     private boolean stopAtTheEndOfTheCurrentIteration = false;
 

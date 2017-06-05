@@ -28,15 +28,15 @@ import java.io.File;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class LocalDirectoryOutputConsumer implements
-        AlgorithmDataConsumer<AlgorithmObservedData2, DynamicAlgorithm<?, AlgorithmObservedData2, Observable<AlgorithmObservedData2>>> {
+        AlgorithmDataConsumer<AlgorithmObservedData2, DynamicAlgorithm<?, Observable<AlgorithmObservedData2>>> {
   private String outputDirectoryName;
-  private DynamicAlgorithm<?, AlgorithmObservedData2, Observable<AlgorithmObservedData2>> dynamicAlgorithm;
+  private DynamicAlgorithm<?, Observable<AlgorithmObservedData2>> dynamicAlgorithm;
   private int fileCounter = 0;
 
   /**
    * Constructor
    */
-  public LocalDirectoryOutputConsumer(String outputDirectoryName, DynamicAlgorithm<?, AlgorithmObservedData2, Observable<AlgorithmObservedData2>> algorithm) {
+  public LocalDirectoryOutputConsumer(String outputDirectoryName, DynamicAlgorithm<?, Observable<AlgorithmObservedData2>> algorithm) {
     this.outputDirectoryName = outputDirectoryName;
     this.dynamicAlgorithm = algorithm ;
     createDataDirectory(this.outputDirectoryName);
@@ -53,7 +53,7 @@ public class LocalDirectoryOutputConsumer implements
   }
 */
   @Override
-  public DynamicAlgorithm<?, AlgorithmObservedData2, Observable<AlgorithmObservedData2>> getAlgorithm() {
+  public DynamicAlgorithm<?, Observable<AlgorithmObservedData2>> getAlgorithm() {
     return dynamicAlgorithm;
   }
 

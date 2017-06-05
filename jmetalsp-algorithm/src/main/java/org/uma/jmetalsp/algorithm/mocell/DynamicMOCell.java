@@ -45,7 +45,7 @@ import java.util.Map;
  */
 public class DynamicMOCell<S extends Solution<?>, O extends Observable<AlgorithmObservedData2>>
     extends MOCell<S>
-    implements DynamicAlgorithm<List<S>, AlgorithmObservedData2, Observable<AlgorithmObservedData2>> {
+    implements DynamicAlgorithm<List<S>, Observable<AlgorithmObservedData2>> {
 
   private int completedIterations ;
   private boolean stopAtTheEndOfTheCurrentIteration = false ;

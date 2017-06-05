@@ -80,8 +80,8 @@ public class ChartContainer {
             this.displayReferenceFront(referenceFrontFileName);
         }
 
-        double[] xData = new double[] { 0 };
-        double[] yData = new double[] { 0 };
+        double[] xData = new double[] { 1 };
+        double[] yData = new double[] { 1 };
         XYSeries frontChartSeries = this.frontChart.addSeries(this.name, xData, yData);
         frontChartSeries.setMarkerColor(Color.blue);
 
@@ -145,7 +145,7 @@ public class ChartContainer {
               this.frontChart.addSeries(name,generateArray(xy.getXData()),generateArray(xy.getYData()));
             }
           }
-          this.changeColorFrontChart(Color.GRAY);
+          this.changeColorFrontChart(Color.lightGray);
         }
       }
     }

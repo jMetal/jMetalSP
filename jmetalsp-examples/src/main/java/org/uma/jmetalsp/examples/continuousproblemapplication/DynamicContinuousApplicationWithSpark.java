@@ -45,10 +45,10 @@ public class DynamicContinuousApplicationWithSpark {
                 SingleObservedData<Integer>,
                 AlgorithmObservedData2,
                 DynamicProblem<DoubleSolution, SingleObservedData<Integer>>,
-                DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData2, Observable<AlgorithmObservedData2>>,
+                DynamicAlgorithm<List<DoubleSolution>, Observable<AlgorithmObservedData2>>,
                 SimpleStreamingCounterDataSource,
                 AlgorithmDataConsumer<AlgorithmObservedData2, DynamicAlgorithm<List<DoubleSolution>,
-                        AlgorithmObservedData2, Observable<AlgorithmObservedData2>>>> application;
+                        Observable<AlgorithmObservedData2>>>> application;
         application = new JMetalSPApplication<>();
 
         // Problem configuration
@@ -62,7 +62,7 @@ public class DynamicContinuousApplicationWithSpark {
 
         String defaultAlgorithm = "WASFGA";
 
-        DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData2, Observable<AlgorithmObservedData2>> algorithm;
+        DynamicAlgorithm<List<DoubleSolution>, Observable<AlgorithmObservedData2>> algorithm;
         Observable<AlgorithmObservedData2> observable = new DefaultObservable<>("WASFGA");
 
         switch (defaultAlgorithm) {

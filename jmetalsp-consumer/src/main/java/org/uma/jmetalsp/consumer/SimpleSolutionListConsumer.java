@@ -25,10 +25,11 @@ import java.util.List;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class SimpleSolutionListConsumer implements
-        AlgorithmDataConsumer<AlgorithmObservedData2, DynamicAlgorithm<?, AlgorithmObservedData2, Observable<AlgorithmObservedData2>>> {
-  private DynamicAlgorithm<?, AlgorithmObservedData2, Observable<AlgorithmObservedData2>> dynamicAlgorithm;
+        AlgorithmDataConsumer<AlgorithmObservedData2,
+                DynamicAlgorithm<?, Observable<AlgorithmObservedData2>>> {
+  private DynamicAlgorithm<?, Observable<AlgorithmObservedData2>> dynamicAlgorithm;
 
-  public SimpleSolutionListConsumer(DynamicAlgorithm<?, AlgorithmObservedData2, Observable<AlgorithmObservedData2>> algorithm) {
+  public SimpleSolutionListConsumer(DynamicAlgorithm<?, Observable<AlgorithmObservedData2>> algorithm) {
     this.dynamicAlgorithm = algorithm ;
   }
   /*
@@ -38,7 +39,7 @@ public class SimpleSolutionListConsumer implements
   }
 */
   @Override
-  public DynamicAlgorithm<?, AlgorithmObservedData2, Observable<AlgorithmObservedData2>> getAlgorithm() {
+  public DynamicAlgorithm<?, Observable<AlgorithmObservedData2>> getAlgorithm() {
     return dynamicAlgorithm;
   }
 

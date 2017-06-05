@@ -11,7 +11,6 @@ import org.uma.jmetal.util.SolutionListUtils;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.DynamicProblem;
-import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData2;
 import org.uma.jmetalsp.observeddata.ListObservedData;
 import org.uma.jmetalsp.observer.Observable;
@@ -24,7 +23,7 @@ import java.util.*;
  */
 public class InDM2<S extends Solution<?>>
         extends WASFGA<S>
-        implements DynamicAlgorithm<List<S>, AlgorithmObservedData2, Observable<AlgorithmObservedData2>>,
+        implements DynamicAlgorithm<List<S>, Observable<AlgorithmObservedData2>>,
         Observer<ListObservedData<Double>> {
   private int completedIterations;
   private boolean stopAtTheEndOfTheCurrentIteration = false;
@@ -93,7 +92,6 @@ public class InDM2<S extends Solution<?>>
   @Override
   protected boolean isStoppingConditionReached() {
     if (evaluations >= maxEvaluations) {
-      //System.out.println("End. Ref Point: " + this.getReferencePoint().get(0) + ", " + this.getReferencePoint().get(1)) ;
       observable.setChanged();
       List<Integer> data= new ArrayList<>();
       data.add(completedIterations);

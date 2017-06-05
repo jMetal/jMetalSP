@@ -41,8 +41,8 @@ import java.util.Map;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class ChartInDM2Consumer implements
-        AlgorithmDataConsumer<AlgorithmObservedData2, DynamicAlgorithm<?, AlgorithmObservedData2, Observable<AlgorithmObservedData2>>> {
-  private DynamicAlgorithm<?, AlgorithmObservedData2, Observable<AlgorithmObservedData2>> dynamicAlgorithm;
+        AlgorithmDataConsumer<AlgorithmObservedData2, DynamicAlgorithm<?, Observable<AlgorithmObservedData2>>> {
+  private DynamicAlgorithm<?, Observable<AlgorithmObservedData2>> dynamicAlgorithm;
 
   private ChartContainer chart ;
   private List<DoubleSolution> lastReceivedFront = null ;
@@ -51,7 +51,7 @@ public class ChartInDM2Consumer implements
   private Map<String,List<DoubleSolution>> historicalFronts;
   private String nameAnt=null;
 
-  public ChartInDM2Consumer(DynamicAlgorithm<?, AlgorithmObservedData2, Observable<AlgorithmObservedData2>> algorithm,
+  public ChartInDM2Consumer(DynamicAlgorithm<?, Observable<AlgorithmObservedData2>> algorithm,
                             List<Double> referencePoint) {
     this.dynamicAlgorithm = algorithm ;
     this.chart = null ;
@@ -61,7 +61,7 @@ public class ChartInDM2Consumer implements
   }
 
   @Override
-  public DynamicAlgorithm<?, AlgorithmObservedData2, Observable<AlgorithmObservedData2>> getAlgorithm() {
+  public DynamicAlgorithm<?, Observable<AlgorithmObservedData2>> getAlgorithm() {
     return dynamicAlgorithm;
   }
 

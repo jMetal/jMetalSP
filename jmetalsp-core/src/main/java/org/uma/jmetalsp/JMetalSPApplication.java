@@ -23,7 +23,7 @@ public class JMetalSPApplication<
         SD extends ObservedData,
         AD extends ObservedData,
         P extends DynamicProblem<? extends Solution<?>, SD>,
-        A extends DynamicAlgorithm<?, AD, ? extends Observable<AD>>,
+        A extends DynamicAlgorithm<?, ? extends Observable<AD>>,
         S extends StreamingDataSource<SD, ? extends Observable<SD>>,
         C extends AlgorithmDataConsumer<AD, A>> {
 

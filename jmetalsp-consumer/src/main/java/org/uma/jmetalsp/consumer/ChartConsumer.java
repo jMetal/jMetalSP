@@ -36,19 +36,19 @@ import java.util.List;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class ChartConsumer implements
-        AlgorithmDataConsumer<AlgorithmObservedData2, DynamicAlgorithm<?, AlgorithmObservedData2, Observable<AlgorithmObservedData2>>> {
-  private DynamicAlgorithm<?, AlgorithmObservedData2, Observable<AlgorithmObservedData2>> dynamicAlgorithm;
+        AlgorithmDataConsumer<AlgorithmObservedData2, DynamicAlgorithm<?, Observable<AlgorithmObservedData2>>> {
+  private DynamicAlgorithm<?, Observable<AlgorithmObservedData2>> dynamicAlgorithm;
 
   private ChartContainer chart ;
   List<DoubleSolution> lastReceivedFront = null ;
 
-  public ChartConsumer(DynamicAlgorithm<?, AlgorithmObservedData2, Observable<AlgorithmObservedData2>> algorithm) {
+  public ChartConsumer(DynamicAlgorithm<?, Observable<AlgorithmObservedData2>> algorithm) {
     this.dynamicAlgorithm = algorithm ;
     this.chart = null ;
   }
 
   @Override
-  public DynamicAlgorithm<?, AlgorithmObservedData2, Observable<AlgorithmObservedData2>> getAlgorithm() {
+  public DynamicAlgorithm<?, Observable<AlgorithmObservedData2>> getAlgorithm() {
     return dynamicAlgorithm;
   }
 

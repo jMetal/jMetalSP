@@ -41,7 +41,7 @@ import java.util.Map;
  */
 public class DynamicNSGAII<S extends Solution<?>, O extends Observable<AlgorithmObservedData2>>
     extends NSGAII<S>
-    implements DynamicAlgorithm<List<S>, AlgorithmObservedData2, Observable<AlgorithmObservedData2>> {
+    implements DynamicAlgorithm<List<S>, Observable<AlgorithmObservedData2>> {
 
   private int completedIterations ;
   private boolean stopAtTheEndOfTheCurrentIteration = false ;

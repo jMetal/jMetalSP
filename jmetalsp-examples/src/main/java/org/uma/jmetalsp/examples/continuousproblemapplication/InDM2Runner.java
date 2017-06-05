@@ -36,16 +36,16 @@ import java.util.List;
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class InDM2Runner {
+public class  InDM2Runner {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     JMetalSPApplication<
             SingleObservedData<Integer>,
             AlgorithmObservedData2,
             DynamicProblem<DoubleSolution, SingleObservedData<Integer>>,
-            DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData2, Observable<AlgorithmObservedData2>>,
+            DynamicAlgorithm<List<DoubleSolution>, Observable<AlgorithmObservedData2>>,
             SimpleStreamingCounterDataSource,
-            AlgorithmDataConsumer<AlgorithmObservedData2, DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData2,
+            AlgorithmDataConsumer<AlgorithmObservedData2, DynamicAlgorithm<List<DoubleSolution>,
                     Observable<AlgorithmObservedData2>>>> application;
     application = new JMetalSPApplication<>();
 
@@ -75,7 +75,7 @@ public class InDM2Runner {
     referencePoint.add(0.5);
 
     algorithm = new InDM2Builder<>(crossover, mutation, referencePoint, observable)
-            .setMaxIterations(500)
+            .setMaxIterations(250)
             .setPopulationSize(100)
             .build(problem);
 
