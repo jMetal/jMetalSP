@@ -8,7 +8,6 @@ import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetalsp.*;
 import org.uma.jmetalsp.algorithm.indm2.InDM2;
 import org.uma.jmetalsp.algorithm.indm2.InDM2Builder;
-import org.uma.jmetalsp.algorithm.wasfga.DynamicWASFGABuilder;
 import org.uma.jmetalsp.consumer.ChartInDM2Consumer;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingCounterDataSource;
@@ -19,10 +18,11 @@ import org.uma.jmetalsp.observeddata.AlgorithmObservedData2;
 import org.uma.jmetalsp.observeddata.ListObservedData;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.Observable;
-import org.uma.jmetalsp.observer.Observer;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
 import org.uma.jmetalsp.problem.fda.FDA2;
-import org.uma.jmetalsp.util.restartstrategy.impl.RestartRemovingNRandomSolutions;
+import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
+import org.uma.jmetalsp.util.restartstrategy.impl.RemoveFirstNSolutions;
+import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNRandomSolutions;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -75,12 +75,14 @@ public class  InDM2Runner {
     referencePoint.add(0.5);
     referencePoint.add(0.5);
 
+    int populationSize = 100 ;
     algorithm = new InDM2Builder<>(crossover, mutation, referencePoint, observable)
             .setMaxIterations(250)
-            .setPopulationSize(100)
+            .setPopulationSize(populationSize)
             .build(problem);
 
-    algorithm.setRestartStrategy(new RestartRemovingNRandomSolutions<>(100));
+    algorithm.setRemoveSolutionsStrategy(new RemoveNRandomSolutions<>(100)) ;
+    algorithm.setCreateNewSolutionsStrategy(new CreateNRandomSolutions<DoubleSolution>(100));
 
     algorithmObservable.register(algorithm);
 

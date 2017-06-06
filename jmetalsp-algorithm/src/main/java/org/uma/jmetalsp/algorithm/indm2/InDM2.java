@@ -7,7 +7,6 @@ import org.uma.jmetal.operator.SelectionOperator;
 import org.uma.jmetal.problem.Problem;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.JMetalException;
-import org.uma.jmetal.util.SolutionListUtils;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.DynamicProblem;
@@ -15,9 +14,10 @@ import org.uma.jmetalsp.observeddata.AlgorithmObservedData2;
 import org.uma.jmetalsp.observeddata.ListObservedData;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.Observer;
-import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
-import org.uma.jmetalsp.util.restartstrategy.impl.RestartRemovingNRandomSolutions;
-import org.uma.jmetalsp.util.restartstrategy.impl.RestartRemovingTheFirstNSolutions;
+import org.uma.jmetalsp.util.restartstrategy.CreateNewSolutionsStrategy;
+import org.uma.jmetalsp.util.restartstrategy.RemoveSolutionsStrategy;
+import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
+import org.uma.jmetalsp.util.restartstrategy.impl.RemoveFirstNSolutions;
 
 import java.util.*;
 
@@ -32,7 +32,8 @@ public class InDM2<S extends Solution<?>>
   private boolean stopAtTheEndOfTheCurrentIteration = false;
   private Optional<S> newReferencePoint ;
   private Map<String,List> algorithmData;
-  private RestartStrategy<S> restartStrategy ;
+  private RemoveSolutionsStrategy<S> removeSolutionsStrategy ;
+  private CreateNewSolutionsStrategy<S> createNewSolutionsStrategy  ;
 
   Observable<AlgorithmObservedData2> observable;
 
@@ -48,7 +49,8 @@ public class InDM2<S extends Solution<?>>
     maxEvaluations = maxIterations;
     newReferencePoint = Optional.ofNullable(null);
     this.algorithmData = new HashMap<>();
-    this.restartStrategy = new RestartRemovingTheFirstNSolutions<>(100) ;
+    this.removeSolutionsStrategy = new RemoveFirstNSolutions<S>(populationSize) ;
+    this.createNewSolutionsStrategy = new CreateNRandomSolutions<S>(populationSize) ;
   }
 
   @Override
@@ -69,7 +71,8 @@ public class InDM2<S extends Solution<?>>
   @Override
   public void restart(int percentageOfSolutionsToRemove) {
     //SolutionListUtils.restart(getPopulation(), getDynamicProblem(), percentageOfSolutionsToRemove);
-    this.restartStrategy.restart(this.getPopulation(), this.getDynamicProblem()) ;
+    this.removeSolutionsStrategy.remove(this.getPopulation(), this.getDynamicProblem());
+    this.createNewSolutionsStrategy.create(this.getPopulation(), this.getDynamicProblem());
     this.evaluatePopulation(this.getPopulation());
     this.initProgress();
     this.specificMOEAComputations();
@@ -152,7 +155,11 @@ public class InDM2<S extends Solution<?>>
     newReferencePoint = Optional.of(solution) ;
   }
 
-  public void setRestartStrategy(RestartStrategy<S> restartStrategy) {
-    this.restartStrategy = restartStrategy ;
+  public void setRemoveSolutionsStrategy(RemoveSolutionsStrategy<S> removeSolutionsStrategy) {
+    this.removeSolutionsStrategy = removeSolutionsStrategy ;
+  }
+
+  public void setCreateNewSolutionsStrategy(CreateNewSolutionsStrategy<S> createNewSolutionsStrategy) {
+    this.createNewSolutionsStrategy = createNewSolutionsStrategy ;
   }
 }
