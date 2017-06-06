@@ -5,6 +5,7 @@ import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
 import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
 import org.uma.jmetal.solution.DoubleSolution;
+import org.uma.jmetal.solution.PermutationSolution;
 import org.uma.jmetalsp.*;
 import org.uma.jmetalsp.algorithm.indm2.InDM2;
 import org.uma.jmetalsp.algorithm.indm2.InDM2Builder;
@@ -52,7 +53,7 @@ public class  InDM2Runner {
     // Set the streaming data source for the problem
     Observable<SingleObservedData<Integer>> fdaObservable = new DefaultObservable<>("timeData");
     StreamingDataSource<SingleObservedData<Integer>, Observable<SingleObservedData<Integer>>> streamingDataSource =
-            new SimpleStreamingCounterDataSource(fdaObservable, 500);
+            new SimpleStreamingCounterDataSource(fdaObservable, 1000);
 
     // Set the streaming data source for the algorithm
     Observable<ListObservedData<Double>> algorithmObservable = new DefaultObservable<>("Algorithm observable");
@@ -68,7 +69,7 @@ public class  InDM2Runner {
             new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);
 
     InDM2<DoubleSolution> algorithm;
-    Observable<AlgorithmObservedData2> observable = new DefaultObservable<>("InDM2");
+    Observable<AlgorithmObservedData2<DoubleSolution>> observable = new DefaultObservable<>("InDM2");
 
     List<Double> referencePoint = new ArrayList<>();
     referencePoint.add(0.5);

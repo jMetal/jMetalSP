@@ -85,29 +85,31 @@ public class InDM2Runner2 {
 
     selection = new BinaryTournamentSelection<>(
             new RankingAndCrowdingDistanceComparator<PermutationSolution<Integer>>()) ;
-/*
+
     InDM2<PermutationSolution<Integer>> algorithm;
-    Observable<AlgorithmObservedData2> observable = new DefaultObservable<>("InDM2");
+    Observable<AlgorithmObservedData2<PermutationSolution<Integer>>> observable = new DefaultObservable<>("InDM2");
 
     List<Double> referencePoint = new ArrayList<>();
     referencePoint.add(0.5);
     referencePoint.add(0.5);
 
     int populationSize = 50 ;
-    algorithm = new InDM2Builder<>(crossover, mutation, referencePoint, observable)
+    algorithm = new InDM2Builder<
+            PermutationSolution<Integer>,
+            DynamicProblem<PermutationSolution<Integer>,?>,
+            Observable<AlgorithmObservedData2<PermutationSolution<Integer>>>>(crossover, mutation, referencePoint, observable)
             .setMaxIterations(100)
             .setPopulationSize(populationSize)
             .build(problem);
 
-    algorithm.setRestartStrategyForProblemChange(new RestartStrategy<>(
+    algorithm.setRestartStrategyForProblemChange(new RestartStrategy<PermutationSolution<Integer>>(
             //new RemoveFirstNSolutions<>(50),
-            new RemoveNSolutionsAccordingToTheHypervolumeContribution<>(50),
-            new CreateNRandomSolutions<DoubleSolution>(50)));
+            new RemoveNSolutionsAccordingToTheHypervolumeContribution<PermutationSolution<Integer>>(50),
+            new CreateNRandomSolutions<PermutationSolution<Integer>>(50)));
 
-    algorithm.setRestartStrategyForReferencePointChange(new RestartStrategy<>(
+    algorithm.setRestartStrategyForReferencePointChange(new RestartStrategy<PermutationSolution<Integer>>(
             new RemoveNRandomSolutions<>(100),
-            new CreateNRandomSolutions<DoubleSolution>(100)));
-
+            new CreateNRandomSolutions<>(100)));
 
     algorithmObservable.register(algorithm);
 
@@ -121,6 +123,5 @@ public class InDM2Runner2 {
             .addAlgorithmDataConsumer(new ChartInDM2Consumer(algorithm, referencePoint))
             .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirectory", algorithm))
             .run();
-            */
   }
 }

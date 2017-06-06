@@ -9,17 +9,16 @@ import java.util.*;
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class AlgorithmObservedData2 implements ObservedData {
-	private List<DoubleSolution> solutionList;
+public class AlgorithmObservedData2<S extends Solution<?>> implements ObservedData {
+	private List<S> solutionList;
 
   Map<String, ?> algorithmData ;
 
-	public AlgorithmObservedData2(List<? extends Solution<?>> solutionList, Map<String, ?> algorithmData) {
-		this.solutionList = new ArrayList<DoubleSolution>();// solutionList;
+	public AlgorithmObservedData2(List<S> solutionList, Map<String, ?> algorithmData) {
+		this.solutionList = new ArrayList<>();// solutionList;
 
-    for (Solution aux:solutionList) {
-     DoubleSolution ds=(DoubleSolution)aux;
-     this.solutionList.add(ds);
+    for (S solution:solutionList) {
+     this.solutionList.add(solution);
     }
     this.algorithmData = algorithmData ;
 	}

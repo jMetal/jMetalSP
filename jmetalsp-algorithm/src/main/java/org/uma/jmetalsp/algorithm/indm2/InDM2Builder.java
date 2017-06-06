@@ -21,7 +21,7 @@ import java.util.List;
 public class InDM2Builder<
         S extends Solution<?>,
         P extends DynamicProblem<S, ?>,
-        O extends Observable<AlgorithmObservedData2>> {
+        O extends Observable<AlgorithmObservedData2<S>>> {
 
   private CrossoverOperator<S> crossover;
   private MutationOperator<S> mutation;
