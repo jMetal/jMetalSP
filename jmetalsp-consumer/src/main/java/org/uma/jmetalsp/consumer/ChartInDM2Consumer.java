@@ -134,7 +134,7 @@ public class ChartInDM2Consumer implements
         }
         */
 
-        if(coverageValue>0.001) {
+        if(coverageValue>0.005) {
           this.chart.updateFrontCharts(solutionList, iteraciones.get(0));//nameAnt
         //  nameAnt="Front." + iteraciones.get(0);
           //historicalFronts.put(nameAnt,solutionList);

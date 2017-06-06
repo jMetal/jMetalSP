@@ -2,26 +2,36 @@ package org.uma.jmetalsp.examples.continuousproblemapplication;
 
 import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
+import org.uma.jmetal.operator.SelectionOperator;
+import org.uma.jmetal.operator.impl.crossover.PMXCrossover;
 import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
+import org.uma.jmetal.operator.impl.mutation.PermutationSwapMutation;
 import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
+import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
 import org.uma.jmetal.solution.DoubleSolution;
+import org.uma.jmetal.solution.PermutationSolution;
+import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
 import org.uma.jmetalsp.*;
 import org.uma.jmetalsp.algorithm.indm2.InDM2;
 import org.uma.jmetalsp.algorithm.indm2.InDM2Builder;
 import org.uma.jmetalsp.consumer.ChartInDM2Consumer;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
+import org.uma.jmetalsp.examples.dynamictsp.StreamingTSPSource;
 import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingCounterDataSource;
 import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingDataSourceFromKeyboard;
 import org.uma.jmetalsp.impl.DefaultRuntime;
-
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData2;
 import org.uma.jmetalsp.observeddata.ListObservedData;
+import org.uma.jmetalsp.observeddata.MatrixObservedData;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
 import org.uma.jmetalsp.problem.fda.FDA2;
+import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPBuilderFromFiles;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
-import org.uma.jmetalsp.util.restartstrategy.impl.*;
+import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
+import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNRandomSolutions;
+import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNSolutionsAccordingToTheHypervolumeContribution;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,23 +46,22 @@ import java.util.List;
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class  InDM2Runner {
+public class InDM2Runner2 {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     JMetalSPApplication<
-            SingleObservedData<Integer>,
+            MatrixObservedData<Double>,
             AlgorithmObservedData2,
-            DynamicProblem<DoubleSolution, SingleObservedData<Integer>>,
-            DynamicAlgorithm<List<DoubleSolution>, Observable<AlgorithmObservedData2>>,
-            SimpleStreamingCounterDataSource,
-            AlgorithmDataConsumer<AlgorithmObservedData2, DynamicAlgorithm<List<DoubleSolution>,
-                    Observable<AlgorithmObservedData2>>>> application;
+            DynamicProblem<DoubleSolution, MatrixObservedData<Double>>,
+            DynamicAlgorithm<List<PermutationSolution<Integer>>, Observable<AlgorithmObservedData2>>,
+            StreamingTSPSource,
+            AlgorithmDataConsumer<AlgorithmObservedData2, DynamicAlgorithm<List<PermutationSolution<Integer>>, Observable<AlgorithmObservedData2>>>> application;
     application = new JMetalSPApplication<>();
 
     // Set the streaming data source for the problem
-    Observable<SingleObservedData<Integer>> fdaObservable = new DefaultObservable<>("timeData");
-    StreamingDataSource<SingleObservedData<Integer>, Observable<SingleObservedData<Integer>>> streamingDataSource =
-            new SimpleStreamingCounterDataSource(fdaObservable, 500);
+    Observable<MatrixObservedData<Double>> streamingTSPDataObservable =
+            new DefaultObservable<>("streamingTSPObservable") ;
+    StreamingDataSource<?, ?> streamingDataSource = new StreamingTSPSource(streamingTSPDataObservable, 5000) ;
 
     // Set the streaming data source for the algorithm
     Observable<ListObservedData<Double>> algorithmObservable = new DefaultObservable<>("Algorithm observable");
@@ -60,14 +69,24 @@ public class  InDM2Runner {
             new SimpleStreamingDataSourceFromKeyboard(algorithmObservable) ;
 
     // Problem configuration
-    DynamicProblem<DoubleSolution, SingleObservedData<Integer>> problem = new FDA2(fdaObservable);
+    DynamicProblem<PermutationSolution<Integer>, MatrixObservedData<Double>> problem ;
+    problem = new MultiobjectiveTSPBuilderFromFiles("kroA100.tsp", "kroB100.tsp")
+            .build(streamingTSPDataObservable) ;
 
     // Algorithm configuration
-    CrossoverOperator<DoubleSolution> crossover = new SBXCrossover(0.9, 20.0);
-    MutationOperator<DoubleSolution> mutation =
-            new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);
+    CrossoverOperator<PermutationSolution<Integer>> crossover;
+    MutationOperator<PermutationSolution<Integer>> mutation;
+    SelectionOperator<List<PermutationSolution<Integer>>, PermutationSolution<Integer>> selection;
 
-    InDM2<DoubleSolution> algorithm;
+    crossover = new PMXCrossover(0.9) ;
+
+    double mutationProbability = 0.2 ;
+    mutation = new PermutationSwapMutation<Integer>(mutationProbability) ;
+
+    selection = new BinaryTournamentSelection<>(
+            new RankingAndCrowdingDistanceComparator<PermutationSolution<Integer>>()) ;
+/*
+    InDM2<PermutationSolution<Integer>> algorithm;
     Observable<AlgorithmObservedData2> observable = new DefaultObservable<>("InDM2");
 
     List<Double> referencePoint = new ArrayList<>();
@@ -102,5 +121,6 @@ public class  InDM2Runner {
             .addAlgorithmDataConsumer(new ChartInDM2Consumer(algorithm, referencePoint))
             .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirectory", algorithm))
             .run();
+            */
   }
 }
