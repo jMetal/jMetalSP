@@ -17,6 +17,7 @@ import org.knowm.xchart.style.Styler;
 import org.uma.jmetal.qualityindicator.impl.InvertedGenerationalDistance;
 import org.uma.jmetal.qualityindicator.impl.SetCoverage;
 import org.uma.jmetal.solution.DoubleSolution;
+import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetal.util.front.Front;
 import org.uma.jmetal.util.front.imp.ArrayFront;
@@ -40,28 +41,23 @@ import java.util.Map;
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class ChartInDM2Consumer implements
-        AlgorithmDataConsumer<AlgorithmObservedData2, DynamicAlgorithm<?, Observable<AlgorithmObservedData2>>> {
-  private DynamicAlgorithm<?, Observable<AlgorithmObservedData2>> dynamicAlgorithm;
+public class ChartInDM2Consumer<S extends Solution<?>> implements
+        AlgorithmDataConsumer<AlgorithmObservedData2<S>, DynamicAlgorithm<?, Observable<AlgorithmObservedData2<S>>>> {
+  private DynamicAlgorithm<?, Observable<AlgorithmObservedData2<S>>> dynamicAlgorithm;
 
   private ChartContainer chart ;
-  private List<DoubleSolution> lastReceivedFront = null ;
+  private List<S> lastReceivedFront = null ;
   private List<Double> referencePoint ;
-  private int sizeIni;
-  private Map<String,List<DoubleSolution>> historicalFronts;
-  private String nameAnt=null;
 
-  public ChartInDM2Consumer(DynamicAlgorithm<?, Observable<AlgorithmObservedData2>> algorithm,
+  public ChartInDM2Consumer(DynamicAlgorithm<?, Observable<AlgorithmObservedData2<S>>> algorithm,
                             List<Double> referencePoint) {
     this.dynamicAlgorithm = algorithm ;
     this.chart = null ;
     this.referencePoint = referencePoint ;
-    this.historicalFronts= new HashMap<String,List<DoubleSolution>>();
-    this.nameAnt=null;
   }
 
   @Override
-  public DynamicAlgorithm<?, Observable<AlgorithmObservedData2>> getAlgorithm() {
+  public DynamicAlgorithm<?, Observable<AlgorithmObservedData2<S>>> getAlgorithm() {
     return dynamicAlgorithm;
   }
 
@@ -83,17 +79,16 @@ public class ChartInDM2Consumer implements
   }
 
   @Override
-  public void update(Observable<AlgorithmObservedData2> observable, AlgorithmObservedData2 data) {
+  public void update(Observable<AlgorithmObservedData2<S>> observable, AlgorithmObservedData2<S> data) {
     //System.out.println("Number of generated fronts: " + data.getIterations());
     double coverageValue=0;
     if (chart == null) {
       this.chart = new ChartContainer(dynamicAlgorithm.getName(), 200);
       try {
         this.chart.setFrontChart(0, 1, null);
-        sizeIni= this.chart.getFrontChart().getStyler().getMarkerSize();
+        //sizeIni= this.chart.getFrontChart().getStyler().getMarkerSize();
 
         this.chart.setReferencePoint(referencePoint);
-        //this.chart.getFrontChart().getStyler().setMarkerSize(15);
         this.chart.getFrontChart().getStyler().setLegendPosition(Styler.LegendPosition.InsideNE) ;
 
 
@@ -105,21 +100,21 @@ public class ChartInDM2Consumer implements
       if (data.getSolutionList().size() != 0) {
        // this.chart.getFrontChart().getStyler().setMarkerSize(5);
         List<Integer> iteraciones=(List<Integer> )data.getAlgorithmData().get("numberOfIterations");
-        List<DoubleSolution> solutionList=(List<DoubleSolution>) data.getSolutionList();
+        List<S> solutionList=(List<S>) data.getSolutionList();
 
         this.chart.getFrontChart().setTitle("Iteration: " + iteraciones.get(0));
         if (lastReceivedFront == null) {
-          lastReceivedFront = (List<DoubleSolution>) data.getSolutionList();
+          lastReceivedFront = (List<S>) data.getSolutionList();
         } else {
-          List<DoubleSolution> solution = (List<DoubleSolution>)data.getSolutionList();
+          List<S> solution = (List<S>)data.getSolutionList();
           Front referenceFront = new ArrayFront(lastReceivedFront);
          // Front front = new ArrayFront(solution);
 
          // FrontNormalizer frontNormalizer = new FrontNormalizer(referenceFront);
           //referenceFront = frontNormalizer.normalize(referenceFront);
           //lastReceivedFront = (List<DoubleSolution>)frontNormalizer.normalize(lastReceivedFront);
-          InvertedGenerationalDistance<DoubleSolution> igd =
-                  new InvertedGenerationalDistance<DoubleSolution>(referenceFront);
+          InvertedGenerationalDistance<S> igd =
+                  new InvertedGenerationalDistance<S>(referenceFront);
 
           //front = frontNormalizer.normalize(front);
           //System.out.println("IGD: " + igd.evaluate(solutionList));
@@ -136,8 +131,6 @@ public class ChartInDM2Consumer implements
 
         if(coverageValue>0.005) {
           this.chart.updateFrontCharts(solutionList, iteraciones.get(0));//nameAnt
-        //  nameAnt="Front." + iteraciones.get(0);
-          //historicalFronts.put(nameAnt,solutionList);
           lastReceivedFront=solutionList;
         }
 

@@ -16,6 +16,7 @@ package org.uma.jmetalsp.consumer;
 import org.knowm.xchart.style.Styler;
 import org.uma.jmetal.qualityindicator.impl.InvertedGenerationalDistance;
 import org.uma.jmetal.solution.DoubleSolution;
+import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetal.util.extremevalues.impl.FrontExtremeValues;
 import org.uma.jmetal.util.front.imp.ArrayFront;
@@ -35,20 +36,20 @@ import java.util.List;
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class ChartConsumer implements
-        AlgorithmDataConsumer<AlgorithmObservedData2, DynamicAlgorithm<?, Observable<AlgorithmObservedData2>>> {
-  private DynamicAlgorithm<?, Observable<AlgorithmObservedData2>> dynamicAlgorithm;
+public class ChartConsumer<S extends Solution<?>> implements
+        AlgorithmDataConsumer<AlgorithmObservedData2<S>, DynamicAlgorithm<?, Observable<AlgorithmObservedData2<S>>>> {
+  private DynamicAlgorithm<?, Observable<AlgorithmObservedData2<S>>> dynamicAlgorithm;
 
   private ChartContainer chart ;
-  List<DoubleSolution> lastReceivedFront = null ;
+  List<S> lastReceivedFront = null ;
 
-  public ChartConsumer(DynamicAlgorithm<?, Observable<AlgorithmObservedData2>> algorithm) {
+  public ChartConsumer(DynamicAlgorithm<?, Observable<AlgorithmObservedData2<S>>> algorithm) {
     this.dynamicAlgorithm = algorithm ;
     this.chart = null ;
   }
 
   @Override
-  public DynamicAlgorithm<?, Observable<AlgorithmObservedData2>> getAlgorithm() {
+  public DynamicAlgorithm<?, Observable<AlgorithmObservedData2<S>>> getAlgorithm() {
     return dynamicAlgorithm;
   }
 
@@ -70,7 +71,7 @@ public class ChartConsumer implements
   }
 
   @Override
-  public void update(Observable<AlgorithmObservedData2> observable, AlgorithmObservedData2 data) {
+  public void update(Observable<AlgorithmObservedData2<S>> observable, AlgorithmObservedData2<S> data) {
     System.out.println("Number of generated fronts: " + data.getAlgorithmData().get("numberOfIterations"));
     if (chart == null) {
       this.chart = new ChartContainer(dynamicAlgorithm.getName(), 200);
@@ -84,7 +85,7 @@ public class ChartConsumer implements
     } else {
       if (data.getSolutionList().size() != 0) {
         if (lastReceivedFront == null) {
-          lastReceivedFront = (List<DoubleSolution>) data.getSolutionList();
+          lastReceivedFront = (List<S>) data.getSolutionList();
         } else {
           InvertedGenerationalDistance<DoubleSolution> igd =
                   new InvertedGenerationalDistance<DoubleSolution>(new ArrayFront(lastReceivedFront));

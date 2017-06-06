@@ -30,6 +30,7 @@ import org.uma.jmetalsp.problem.fda.FDA2;
 import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPBuilderFromFiles;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
+import org.uma.jmetalsp.util.restartstrategy.impl.RemoveFirstNSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNRandomSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNSolutionsAccordingToTheHypervolumeContribution;
 
@@ -61,7 +62,7 @@ public class InDM2Runner2 {
     // Set the streaming data source for the problem
     Observable<MatrixObservedData<Double>> streamingTSPDataObservable =
             new DefaultObservable<>("streamingTSPObservable") ;
-    StreamingDataSource<?, ?> streamingDataSource = new StreamingTSPSource(streamingTSPDataObservable, 5000) ;
+    StreamingDataSource<?, ?> streamingDataSource = new StreamingTSPSource(streamingTSPDataObservable, 20000) ;
 
     // Set the streaming data source for the algorithm
     Observable<ListObservedData<Double>> algorithmObservable = new DefaultObservable<>("Algorithm observable");
@@ -90,21 +91,21 @@ public class InDM2Runner2 {
     Observable<AlgorithmObservedData2<PermutationSolution<Integer>>> observable = new DefaultObservable<>("InDM2");
 
     List<Double> referencePoint = new ArrayList<>();
-    referencePoint.add(0.5);
-    referencePoint.add(0.5);
+    referencePoint.add(30000.0);
+    referencePoint.add(30000.0);
 
-    int populationSize = 50 ;
+    int populationSize = 100 ;
     algorithm = new InDM2Builder<
             PermutationSolution<Integer>,
             DynamicProblem<PermutationSolution<Integer>,?>,
             Observable<AlgorithmObservedData2<PermutationSolution<Integer>>>>(crossover, mutation, referencePoint, observable)
-            .setMaxIterations(100)
+            .setMaxIterations(2500)
             .setPopulationSize(populationSize)
             .build(problem);
 
     algorithm.setRestartStrategyForProblemChange(new RestartStrategy<PermutationSolution<Integer>>(
-            //new RemoveFirstNSolutions<>(50),
-            new RemoveNSolutionsAccordingToTheHypervolumeContribution<PermutationSolution<Integer>>(50),
+            new RemoveFirstNSolutions<>(50),
+            //new RemoveNSolutionsAccordingToTheHypervolumeContribution<PermutationSolution<Integer>>(50),
             new CreateNRandomSolutions<PermutationSolution<Integer>>(50)));
 
     algorithm.setRestartStrategyForReferencePointChange(new RestartStrategy<PermutationSolution<Integer>>(
