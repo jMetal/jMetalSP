@@ -81,7 +81,7 @@ public class DynamicNSGAII<S extends Solution<?>, O extends Observable<Algorithm
       algorithmData.put("numberOfIterations",data);
       observable.notifyObservers(new AlgorithmObservedData2(getPopulation(), algorithmData));
 
-      restart(100);
+      restart();
       evaluator.evaluate(getPopulation(), getDynamicProblem()) ;
 
       initProgress();
@@ -97,7 +97,7 @@ public class DynamicNSGAII<S extends Solution<?>, O extends Observable<Algorithm
 
   @Override protected void updateProgress() {
     if (getDynamicProblem().hasTheProblemBeenModified()) {
-      restart(100);
+      restart();
 
       evaluator.evaluate(getPopulation(), getDynamicProblem()) ;
       getDynamicProblem().reset();
@@ -121,7 +121,7 @@ public class DynamicNSGAII<S extends Solution<?>, O extends Observable<Algorithm
   }
 
   @Override
-  public void restart(int percentageOfSolutionsToRemove) {
-    SolutionListUtils.restart(getPopulation(), getDynamicProblem(), percentageOfSolutionsToRemove);
+  public void restart() {
+    SolutionListUtils.restart(getPopulation(), getDynamicProblem(), 100);
   }
 }

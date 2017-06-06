@@ -16,6 +16,7 @@ import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.Observer;
 import org.uma.jmetalsp.util.restartstrategy.CreateNewSolutionsStrategy;
 import org.uma.jmetalsp.util.restartstrategy.RemoveSolutionsStrategy;
+import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveFirstNSolutions;
 
@@ -32,8 +33,8 @@ public class InDM2<S extends Solution<?>>
   private boolean stopAtTheEndOfTheCurrentIteration = false;
   private Optional<S> newReferencePoint ;
   private Map<String,List> algorithmData;
-  private RemoveSolutionsStrategy<S> removeSolutionsStrategy ;
-  private CreateNewSolutionsStrategy<S> createNewSolutionsStrategy  ;
+  private RestartStrategy<S> restartStrategyForProblemChange ;
+  private RestartStrategy<S> restartStrategyForReferencePointChange ;
 
   Observable<AlgorithmObservedData2> observable;
 
@@ -49,8 +50,13 @@ public class InDM2<S extends Solution<?>>
     maxEvaluations = maxIterations;
     newReferencePoint = Optional.ofNullable(null);
     this.algorithmData = new HashMap<>();
-    this.removeSolutionsStrategy = new RemoveFirstNSolutions<S>(populationSize) ;
-    this.createNewSolutionsStrategy = new CreateNRandomSolutions<S>(populationSize) ;
+    this.restartStrategyForProblemChange = new RestartStrategy<>(
+            new RemoveFirstNSolutions<S>(populationSize),
+            new CreateNRandomSolutions<S>(populationSize)) ;
+
+    this.restartStrategyForReferencePointChange = new RestartStrategy<>(
+            new RemoveFirstNSolutions<S>(populationSize),
+            new CreateNRandomSolutions<S>(populationSize)) ;
   }
 
   @Override
@@ -69,10 +75,7 @@ public class InDM2<S extends Solution<?>>
   }
 
   @Override
-  public void restart(int percentageOfSolutionsToRemove) {
-    //SolutionListUtils.restart(getPopulation(), getDynamicProblem(), percentageOfSolutionsToRemove);
-    this.removeSolutionsStrategy.remove(this.getPopulation(), this.getDynamicProblem());
-    this.createNewSolutionsStrategy.create(this.getPopulation(), this.getDynamicProblem());
+  public void restart() {
     this.evaluatePopulation(this.getPopulation());
     this.initProgress();
     this.specificMOEAComputations();
@@ -107,7 +110,8 @@ public class InDM2<S extends Solution<?>>
       algorithmData.put("numberOfIterations",data);
 
       observable.notifyObservers(new AlgorithmObservedData2(getPopulation(), algorithmData));
-      restart(100);
+      this.restartStrategyForProblemChange.restart(getPopulation(), (DynamicProblem<S, ?>) getProblem());
+      restart();
       completedIterations++;
     }
     return stopAtTheEndOfTheCurrentIteration;
@@ -116,13 +120,16 @@ public class InDM2<S extends Solution<?>>
   @Override
   protected void updateProgress() {
     if (getDynamicProblem().hasTheProblemBeenModified()) {
-      restart(100);
+      this.restartStrategyForProblemChange.restart(getPopulation(), (DynamicProblem<S, ?>) getProblem());
+      restart();
       getDynamicProblem().reset();
     }
 
     if (newReferencePoint.isPresent()) {
       this.updateNewReferencePoint(newReferencePoint.get());
-      restart(100) ;
+      this.restartStrategyForReferencePointChange.restart(getPopulation(), (DynamicProblem<S, ?>) getProblem());
+
+      restart() ;
       newReferencePoint = Optional.ofNullable(null);
     }
     evaluations++;
@@ -155,11 +162,11 @@ public class InDM2<S extends Solution<?>>
     newReferencePoint = Optional.of(solution) ;
   }
 
-  public void setRemoveSolutionsStrategy(RemoveSolutionsStrategy<S> removeSolutionsStrategy) {
-    this.removeSolutionsStrategy = removeSolutionsStrategy ;
+  public void setRestartStrategyForProblemChange(RestartStrategy<S> restartStrategyForProblemChange) {
+    this.restartStrategyForProblemChange = restartStrategyForProblemChange ;
   }
 
-  public void setCreateNewSolutionsStrategy(CreateNewSolutionsStrategy<S> createNewSolutionsStrategy) {
-    this.createNewSolutionsStrategy = createNewSolutionsStrategy ;
+  public void setRestartStrategyForReferencePointChange(RestartStrategy<S> restartStrategyForReferencePointChange) {
+    this.restartStrategyForReferencePointChange = restartStrategyForReferencePointChange ;
   }
 }

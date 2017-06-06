@@ -54,8 +54,8 @@ public class DynamicWASFGA<S extends Solution<?>, O extends Observable<Algorithm
     }
 
     @Override
-    public void restart(int percentageOfSolutionsToRemove) {
-        SolutionListUtils.restart(getPopulation(), getDynamicProblem(), percentageOfSolutionsToRemove);
+    public void restart() {
+        SolutionListUtils.restart(getPopulation(), getDynamicProblem(), 100);
         this.evaluatePopulation(this.getPopulation());
         this.initProgress();
         this.specificMOEAComputations();
@@ -89,7 +89,7 @@ public class DynamicWASFGA<S extends Solution<?>, O extends Observable<Algorithm
           data.add(completedIterations);
           algorithmData.put("numberOfIterations",data);
             observable.notifyObservers(new AlgorithmObservedData2(getPopulation(), algorithmData));
-            restart(100);
+            restart();
             completedIterations++;
         }
         return stopAtTheEndOfTheCurrentIteration;
@@ -98,7 +98,7 @@ public class DynamicWASFGA<S extends Solution<?>, O extends Observable<Algorithm
     @Override
     protected void updateProgress() {
         if (getDynamicProblem().hasTheProblemBeenModified()) {
-            restart(100);
+            restart();
             getDynamicProblem().reset();
         }
         evaluations++;

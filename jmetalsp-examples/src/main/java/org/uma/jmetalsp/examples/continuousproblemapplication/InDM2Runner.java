@@ -20,6 +20,7 @@ import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
 import org.uma.jmetalsp.problem.fda.FDA2;
+import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveFirstNSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNRandomSolutions;
@@ -81,8 +82,14 @@ public class  InDM2Runner {
             .setPopulationSize(populationSize)
             .build(problem);
 
-    algorithm.setRemoveSolutionsStrategy(new RemoveNRandomSolutions<>(100)) ;
-    algorithm.setCreateNewSolutionsStrategy(new CreateNRandomSolutions<DoubleSolution>(100));
+    algorithm.setRestartStrategyForProblemChange(new RestartStrategy<>(
+            new RemoveFirstNSolutions<>(100),
+            new CreateNRandomSolutions<DoubleSolution>(100)));
+
+    algorithm.setRestartStrategyForReferencePointChange(new RestartStrategy<>(
+            new RemoveNRandomSolutions<>(100),
+            new CreateNRandomSolutions<DoubleSolution>(100)));
+
 
     algorithmObservable.register(algorithm);
 

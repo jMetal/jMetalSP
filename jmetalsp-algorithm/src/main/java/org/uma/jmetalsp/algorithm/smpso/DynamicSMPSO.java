@@ -86,7 +86,7 @@ public class DynamicSMPSO<O extends Observable<AlgorithmObservedData2>>
   @Override
   protected void updateProgress() {
     if (getDynamicProblem().hasTheProblemBeenModified()) {
-      restart(100);
+      restart();
       getDynamicProblem().reset();
     }
     int cont = getIterations();
@@ -103,7 +103,7 @@ public class DynamicSMPSO<O extends Observable<AlgorithmObservedData2>>
       data.add(completedIterations);
       algorithmData.put("numberOfIterations",data);
       observable.notifyObservers(new AlgorithmObservedData2(getResult(), algorithmData));
-      restart(100);
+      restart();
       completedIterations++;
     }
     return stopAtTheEndOfTheCurrentIteration;
@@ -120,8 +120,8 @@ public class DynamicSMPSO<O extends Observable<AlgorithmObservedData2>>
   }
 
   @Override
-  public void restart(int percentageOfSolutionsToRemove) {
-    SolutionListUtils.restart(getSwarm(), (DoubleProblem) getDynamicProblem(), percentageOfSolutionsToRemove);
+  public void restart() {
+    SolutionListUtils.restart(getSwarm(), (DoubleProblem) getDynamicProblem(), 100);
     //setSwarm(createInitialSwarm());
     SolutionListUtils.removeSolutionsFromList(getResult(), getResult().size());
     evaluator.evaluate(getSwarm(), (DoubleProblem) getDynamicProblem());

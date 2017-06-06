@@ -87,7 +87,7 @@ public class DynamicMOCell<S extends Solution<?>, O extends Observable<Algorithm
       data.add(completedIterations);
       algorithmData.put("numberOfIterations",data);
       observable.notifyObservers(new AlgorithmObservedData2(getPopulation(), algorithmData));
-      restart(100);
+      restart();
       completedIterations++;
     }
     return stopAtTheEndOfTheCurrentIteration;
@@ -99,8 +99,8 @@ public class DynamicMOCell<S extends Solution<?>, O extends Observable<Algorithm
   }
 
   @Override
-  public void restart(int percentageOfSolutionsToRemove) {
-    SolutionListUtils.restart(getPopulation(), getDynamicProblem(), percentageOfSolutionsToRemove);
+  public void restart() {
+    SolutionListUtils.restart(getPopulation(), getDynamicProblem(), 100);
     location = new LocationAttribute<>(getPopulation());
     evaluator.evaluate(getPopulation(), getDynamicProblem()) ;
     initProgress();
@@ -108,7 +108,7 @@ public class DynamicMOCell<S extends Solution<?>, O extends Observable<Algorithm
 
   @Override protected void updateProgress() {
     if (getDynamicProblem().hasTheProblemBeenModified()) {
-      restart(100);
+      restart();
       getDynamicProblem().reset();
     }
     evaluations ++ ;

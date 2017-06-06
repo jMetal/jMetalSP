@@ -12,6 +12,6 @@ public interface DynamicAlgorithm<Result, O extends Observable<? extends Observe
   DynamicProblem<?, ?> getDynamicProblem() ;
   int getCompletedIterations() ;
   void stopTheAlgorithm() ;
-  void restart(int percentageOfSolutionsToRemove);
+  void restart();
   O getObservable() ;
 }
