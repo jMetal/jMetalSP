@@ -104,9 +104,9 @@ public class InDM2Runner2 {
             .build(problem);
 
     algorithm.setRestartStrategyForProblemChange(new RestartStrategy<PermutationSolution<Integer>>(
-            new RemoveFirstNSolutions<>(50),
+            new RemoveFirstNSolutions<>(100),
             //new RemoveNSolutionsAccordingToTheHypervolumeContribution<PermutationSolution<Integer>>(50),
-            new CreateNRandomSolutions<PermutationSolution<Integer>>(50)));
+            new CreateNRandomSolutions<PermutationSolution<Integer>>(100)));
 
     algorithm.setRestartStrategyForReferencePointChange(new RestartStrategy<PermutationSolution<Integer>>(
             new RemoveNRandomSolutions<>(100),

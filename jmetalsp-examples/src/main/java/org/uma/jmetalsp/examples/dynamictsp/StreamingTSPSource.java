@@ -47,7 +47,7 @@ public class StreamingTSPSource implements StreamingDataSource<MatrixObservedDat
 
       x = 0 ;
       y = 0 ;
-      value = 10000 ;
+      value = 0 ;
       updateData.setChanged();
 			updateData.notifyObservers(new MatrixObservedData<Double>("COST", x , y, value));
 
@@ -61,7 +61,7 @@ public class StreamingTSPSource implements StreamingDataSource<MatrixObservedDat
 
       x = 20 ;
       y = 20 ;
-      value = 10000 ;
+      value = 0 ;
       updateData.setChanged();
       updateData.notifyObservers(new MatrixObservedData<Double>("COST", x , y, value));
 
@@ -75,7 +75,7 @@ public class StreamingTSPSource implements StreamingDataSource<MatrixObservedDat
 
       x = 40 ;
       y = 40 ;
-      value = 10000 ;
+      value = 0 ;
       updateData.setChanged();
       updateData.notifyObservers(new MatrixObservedData<Double>("COST", x , y, value));
 
@@ -89,7 +89,7 @@ public class StreamingTSPSource implements StreamingDataSource<MatrixObservedDat
 
       x = 40 ;
       y = 60 ;
-      value = 10000 ;
+      value = 0 ;
       updateData.setChanged();
       updateData.notifyObservers(new MatrixObservedData<Double>("DISTANCE", x , y, value));
 
@@ -103,7 +103,7 @@ public class StreamingTSPSource implements StreamingDataSource<MatrixObservedDat
 
       x = 70 ;
       y = 70 ;
-      value = 10000 ;
+      value = 0 ;
       updateData.setChanged();
       updateData.notifyObservers(new MatrixObservedData<Double>("DISTANCE", x , y, value));
 
