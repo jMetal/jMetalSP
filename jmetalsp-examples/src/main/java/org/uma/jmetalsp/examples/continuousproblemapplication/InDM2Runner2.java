@@ -62,34 +62,34 @@ public class InDM2Runner2 {
 
     // Set the streaming data source for the problem
     Observable<MatrixObservedData<Double>> streamingTSPDataObservable =
-            new DefaultObservable<>("streamingTSPObservable") ;
-    StreamingDataSource<?, ?> streamingDataSource = new StreamingTSPSource(streamingTSPDataObservable, 20000) ;
+            new DefaultObservable<>("streamingTSPObservable");
+    StreamingDataSource<?, ?> streamingDataSource = new StreamingTSPSource(streamingTSPDataObservable, 20000);
 
     // Set the streaming data source for the algorithm
     Observable<ListObservedData<Double>> algorithmObservable = new DefaultObservable<>("Algorithm observable");
     StreamingDataSource<ListObservedData<Double>, Observable<ListObservedData<Double>>> streamingDataSource2 =
-            new SimpleStreamingDataSourceFromKeyboard(algorithmObservable) ;
+            new SimpleStreamingDataSourceFromKeyboard(algorithmObservable);
 
     // Problem configuration
-    DynamicProblem<PermutationSolution<Integer>, MatrixObservedData<Double>> problem ;
-   // problem = new MultiobjectiveTSPBuilderFromFiles("kroA100.tsp", "kroB100.tsp")
-     //       .build(streamingTSPDataObservable) ;
+    DynamicProblem<PermutationSolution<Integer>, MatrixObservedData<Double>> problem;
+    //problem = new MultiobjectiveTSPBuilderFromFiles("kroA100.tsp", "kroB100.tsp")
+    //        .build(streamingTSPDataObservable);
     problem = new MultiobjectiveTSPBuilderFromNY("initialDataFile.txt")
-            .build(streamingTSPDataObservable) ;
-   System.out.println(problem);
+            .build(streamingTSPDataObservable);
+    System.out.println(problem);
 
     // Algorithm configuration
     CrossoverOperator<PermutationSolution<Integer>> crossover;
     MutationOperator<PermutationSolution<Integer>> mutation;
     SelectionOperator<List<PermutationSolution<Integer>>, PermutationSolution<Integer>> selection;
 
-    crossover = new PMXCrossover(0.9) ;
+    crossover = new PMXCrossover(0.9);
 
-    double mutationProbability = 0.2 ;
-    mutation = new PermutationSwapMutation<Integer>(mutationProbability) ;
+    double mutationProbability = 0.2;
+    mutation = new PermutationSwapMutation<Integer>(mutationProbability);
 
     selection = new BinaryTournamentSelection<>(
-            new RankingAndCrowdingDistanceComparator<PermutationSolution<Integer>>()) ;
+            new RankingAndCrowdingDistanceComparator<PermutationSolution<Integer>>());
 
     InDM2<PermutationSolution<Integer>> algorithm;
     Observable<AlgorithmObservedData2<PermutationSolution<Integer>>> observable = new DefaultObservable<>("InDM2");
@@ -98,23 +98,23 @@ public class InDM2Runner2 {
     referencePoint.add(0.0);
     referencePoint.add(0.0);
 
-    int populationSize = 100 ;
+    int populationSize = 100;
     algorithm = new InDM2Builder<
             PermutationSolution<Integer>,
-            DynamicProblem<PermutationSolution<Integer>,?>,
+            DynamicProblem<PermutationSolution<Integer>, ?>,
             Observable<AlgorithmObservedData2<PermutationSolution<Integer>>>>(crossover, mutation, referencePoint, observable)
-            .setMaxIterations(2500)
+            .setMaxIterations(5000)
             .setPopulationSize(populationSize)
             .build(problem);
 
     algorithm.setRestartStrategyForProblemChange(new RestartStrategy<PermutationSolution<Integer>>(
-            new RemoveFirstNSolutions<>(100),
+            new RemoveNRandomSolutions<>(50),
             //new RemoveNSolutionsAccordingToTheHypervolumeContribution<PermutationSolution<Integer>>(50),
-            new CreateNRandomSolutions<PermutationSolution<Integer>>(100)));
+            new CreateNRandomSolutions<PermutationSolution<Integer>>(50)));
 
     algorithm.setRestartStrategyForReferencePointChange(new RestartStrategy<PermutationSolution<Integer>>(
-            new RemoveNRandomSolutions<>(100),
-            new CreateNRandomSolutions<>(100)));
+            new RemoveNRandomSolutions<>(80),
+            new CreateNRandomSolutions<>(20)));
 
     algorithmObservable.register(algorithm);
 

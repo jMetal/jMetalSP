@@ -4,6 +4,7 @@ import org.uma.jmetal.algorithm.multiobjective.wasfga.WASFGA;
 import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.SelectionOperator;
+import org.uma.jmetal.problem.ConstrainedProblem;
 import org.uma.jmetal.problem.Problem;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.SolutionListUtils;
@@ -61,7 +62,18 @@ public class DynamicWASFGA<S extends Solution<?>, O extends Observable<Algorithm
         this.specificMOEAComputations();
     }
 
-    @Override
+  @Override
+  protected List<S> evaluatePopulation(List<S> population) {
+    for (S solution : population) {
+      problem.evaluate(solution);
+      ((ConstrainedProblem)problem).evaluateConstraints(solution);
+    }
+
+    return population;
+  }
+
+
+  @Override
     protected void initProgress() {
         evaluations = 0;
     }
