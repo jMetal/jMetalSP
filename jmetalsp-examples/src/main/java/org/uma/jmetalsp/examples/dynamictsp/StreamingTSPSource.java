@@ -39,6 +39,7 @@ public class StreamingTSPSource implements StreamingDataSource<MatrixObservedDat
 			updateData.setChanged(); ;
 			updateData.notifyObservers(new MatrixObservedData<>("COST", x, y, value));
 			*/
+			/*
 			int x ;
 			int y ;
 			double value ;
@@ -111,7 +112,7 @@ public class StreamingTSPSource implements StreamingDataSource<MatrixObservedDat
         Thread.sleep(dataDelay);
       } catch (InterruptedException e) {
         e.printStackTrace();
-      }
+      }*/
     }
 	}
 }

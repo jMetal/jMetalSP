@@ -28,6 +28,7 @@ import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
 import org.uma.jmetalsp.problem.fda.FDA2;
 import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPBuilderFromFiles;
+import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPBuilderFromNY;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveFirstNSolutions;
@@ -71,8 +72,11 @@ public class InDM2Runner2 {
 
     // Problem configuration
     DynamicProblem<PermutationSolution<Integer>, MatrixObservedData<Double>> problem ;
-    problem = new MultiobjectiveTSPBuilderFromFiles("kroA100.tsp", "kroB100.tsp")
+   // problem = new MultiobjectiveTSPBuilderFromFiles("kroA100.tsp", "kroB100.tsp")
+     //       .build(streamingTSPDataObservable) ;
+    problem = new MultiobjectiveTSPBuilderFromNY("initialDataFile.txt")
             .build(streamingTSPDataObservable) ;
+   System.out.println(problem);
 
     // Algorithm configuration
     CrossoverOperator<PermutationSolution<Integer>> crossover;
@@ -91,8 +95,8 @@ public class InDM2Runner2 {
     Observable<AlgorithmObservedData2<PermutationSolution<Integer>>> observable = new DefaultObservable<>("InDM2");
 
     List<Double> referencePoint = new ArrayList<>();
-    referencePoint.add(30000.0);
-    referencePoint.add(30000.0);
+    referencePoint.add(0.0);
+    referencePoint.add(0.0);
 
     int populationSize = 100 ;
     algorithm = new InDM2Builder<
