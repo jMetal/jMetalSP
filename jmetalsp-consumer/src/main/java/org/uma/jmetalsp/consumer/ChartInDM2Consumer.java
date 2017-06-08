@@ -133,12 +133,13 @@ public class ChartInDM2Consumer<S extends Solution<?>> implements
           this.chart.updateFrontCharts(solutionList, iteraciones.get(0));//nameAnt
           lastReceivedFront=solutionList;
         }
-
-        if(data.getAlgorithmData().get("referencePoints")!=null){
-          this.chart.setReferencePoint((List<Double>)data.getAlgorithmData().get("referencePoints"));
-          data.getAlgorithmData().put("referencePoints",null);
-        }
         this.chart.refreshCharts();
+      } else {
+        if (data.getAlgorithmData().get("newReferencePoint") != null) {
+          this.chart.setReferencePoint((List<Double>) data.getAlgorithmData().get("newReferencePoint"));
+          data.getAlgorithmData().put("newReferencePoint", null);
+          this.chart.refreshCharts();
+        }
       }
     }
   }

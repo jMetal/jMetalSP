@@ -119,19 +119,18 @@ public class InDM2<S extends Solution<?>>
 
   @Override
   protected void updateProgress() {
-    if (getDynamicProblem().hasTheProblemBeenModified()) {
-      this.restartStrategyForProblemChange.restart(getPopulation(), (DynamicProblem<S, ?>) getProblem());
-      restart();
-      getDynamicProblem().reset();
-    }
-
     if (newReferencePoint.isPresent()) {
       this.updateNewReferencePoint(newReferencePoint.get());
       this.restartStrategyForReferencePointChange.restart(getPopulation(), (DynamicProblem<S, ?>) getProblem());
 
       restart() ;
       newReferencePoint = Optional.ofNullable(null);
+    } else if (getDynamicProblem().hasTheProblemBeenModified()) {
+      this.restartStrategyForProblemChange.restart(getPopulation(), (DynamicProblem<S, ?>) getProblem());
+      restart();
+      getDynamicProblem().reset();
     }
+
     evaluations++;
   }
 
@@ -140,11 +139,13 @@ public class InDM2<S extends Solution<?>>
             newReferencePoint.getObjective(0),
             newReferencePoint.getObjective(1)) ;
     this.updatePointOfInterest(referencePoint);
-    List<Integer> data= new ArrayList<>();
-    data.add(completedIterations);
-    algorithmData.put("numberOfIterations",data);
-    algorithmData.put("referencePoints",referencePoint);
-    observable.notifyObservers(new AlgorithmObservedData2(getPopulation(), algorithmData));
+    //List<Integer> data= new ArrayList<>();
+    //data.add(completedIterations);
+    //algorithmData.put("numberOfIterations",data);
+    algorithmData.put("newReferencePoint",referencePoint);
+    List<S> emptyList = new ArrayList<>();
+    observable.setChanged();
+    observable.notifyObservers(new AlgorithmObservedData2(emptyList, algorithmData));
   }
 
   @Override
