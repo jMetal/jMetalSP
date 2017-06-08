@@ -77,7 +77,7 @@ public class  InDM2Runner {
 
     int populationSize = 50 ;
     algorithm = new InDM2Builder<>(crossover, mutation, referencePoint, observable)
-            .setMaxIterations(100)
+            .setMaxIterations(250)
             .setPopulationSize(populationSize)
             .build(problem);
 

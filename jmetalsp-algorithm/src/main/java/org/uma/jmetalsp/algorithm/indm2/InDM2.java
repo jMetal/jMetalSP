@@ -125,13 +125,15 @@ public class InDM2<S extends Solution<?>>
 
       restart() ;
       newReferencePoint = Optional.ofNullable(null);
+      evaluations = 0 ;
     } else if (getDynamicProblem().hasTheProblemBeenModified()) {
       this.restartStrategyForProblemChange.restart(getPopulation(), (DynamicProblem<S, ?>) getProblem());
       restart();
       getDynamicProblem().reset();
+      evaluations = 0 ;
+    } else {
+      evaluations++;
     }
-
-    evaluations++;
   }
 
   public void updateNewReferencePoint(S newReferencePoint) {
