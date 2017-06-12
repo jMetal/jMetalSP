@@ -72,10 +72,10 @@ public class InDM2Runner2 {
 
     // Problem configuration
     DynamicProblem<PermutationSolution<Integer>, MatrixObservedData<Double>> problem;
-    problem = new MultiobjectiveTSPBuilderFromFiles("kroA100.tsp", "kroB100.tsp")
+    //problem = new MultiobjectiveTSPBuilderFromFiles("kroA100.tsp", "kroB100.tsp")
+    //        .build(streamingTSPDataObservable);
+    problem = new MultiobjectiveTSPBuilderFromNY("initialDataFile.txt")
             .build(streamingTSPDataObservable);
-    //problem = new MultiobjectiveTSPBuilderFromNY("initialDataFile.txt")
-            //.build(streamingTSPDataObservable);
     System.out.println(problem);
 
     // Algorithm configuration
@@ -95,15 +95,15 @@ public class InDM2Runner2 {
     Observable<AlgorithmObservedData2<PermutationSolution<Integer>>> observable = new DefaultObservable<>("InDM2");
 
     List<Double> referencePoint = new ArrayList<>();
-    referencePoint.add(0.0);
-    referencePoint.add(0.0);
+    referencePoint.add(140000.0);
+    referencePoint.add(7000.0);
 
     int populationSize = 100;
     algorithm = new InDM2Builder<
             PermutationSolution<Integer>,
             DynamicProblem<PermutationSolution<Integer>, ?>,
             Observable<AlgorithmObservedData2<PermutationSolution<Integer>>>>(crossover, mutation, referencePoint, observable)
-            .setMaxIterations(2000)
+            .setMaxIterations(20000)
             .setPopulationSize(populationSize)
             .build(problem);
 

@@ -38,16 +38,16 @@ public class InDM2<S extends Solution<?>>
 
   Observable<AlgorithmObservedData2> observable;
 
-  public InDM2(Problem<S> problem, int populationSize, int maxIterations, CrossoverOperator<S> crossoverOperator,
+  public InDM2(Problem<S> problem, int populationSize, int maxEvaluations, CrossoverOperator<S> crossoverOperator,
                MutationOperator<S> mutationOperator, SelectionOperator<List<S>, S> selectionOperator,
                SolutionListEvaluator<S> evaluator, List<Double> referencePoint,
                Observable<AlgorithmObservedData2> observable) {
-    super(problem, populationSize, maxIterations, crossoverOperator, mutationOperator, selectionOperator, evaluator,
+    super(problem, populationSize, maxEvaluations, crossoverOperator, mutationOperator, selectionOperator, evaluator,
             referencePoint);
     completedIterations = 0;
     this.observable = observable;
-    evaluations = 0;
-    maxEvaluations = maxIterations;
+    this.evaluations = 0;
+    this.maxEvaluations = maxEvaluations ;
     newReferencePoint = Optional.ofNullable(null);
     this.algorithmData = new HashMap<>();
     this.restartStrategyForProblemChange = new RestartStrategy<>(
@@ -132,7 +132,7 @@ public class InDM2<S extends Solution<?>>
       getDynamicProblem().reset();
       evaluations = 0 ;
     } else {
-      evaluations++;
+      evaluations+=this.getPopulationSize();
     }
   }
 

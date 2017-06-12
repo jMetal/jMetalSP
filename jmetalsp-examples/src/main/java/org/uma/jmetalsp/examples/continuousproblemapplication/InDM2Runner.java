@@ -52,8 +52,8 @@ public class  InDM2Runner {
 
     // Set the streaming data source for the problem
     Observable<SingleObservedData<Integer>> fdaObservable = new DefaultObservable<>("timeData");
-    StreamingDataSource<SingleObservedData<Integer>, Observable<SingleObservedData<Integer>>> streamingDataSource =
-            new SimpleStreamingCounterDataSource(fdaObservable, 1000);
+    StreamingDataSource<SingleObservedData<Integer>, Observable<SingleObservedData<Integer>>> streamingDataSource ;
+    streamingDataSource = new SimpleStreamingCounterDataSource(fdaObservable, 1000);
 
     // Set the streaming data source for the algorithm
     Observable<ListObservedData<Double>> algorithmObservable = new DefaultObservable<>("Algorithm observable");
@@ -72,18 +72,20 @@ public class  InDM2Runner {
     Observable<AlgorithmObservedData2<DoubleSolution>> observable = new DefaultObservable<>("InDM2");
 
     List<Double> referencePoint = new ArrayList<>();
-    referencePoint.add(0.5);
-    referencePoint.add(0.5);
+    referencePoint.add(0.0);
+    referencePoint.add(0.0);
 
     int populationSize = 50 ;
     algorithm = new InDM2Builder<>(crossover, mutation, referencePoint, observable)
-            .setMaxIterations(250)
+            .setMaxIterations(25000)
             .setPopulationSize(populationSize)
             .build(problem);
 
     algorithm.setRestartStrategyForProblemChange(new RestartStrategy<>(
             //new RemoveFirstNSolutions<>(50),
             new RemoveNSolutionsAccordingToTheHypervolumeContribution<>(50),
+            //new RemoveNSolutionsAccordingToTheCrowdingDistance<>(50),
+            //new RemoveNRandomSolutions(50),
             new CreateNRandomSolutions<DoubleSolution>(50)));
 
     algorithm.setRestartStrategyForReferencePointChange(new RestartStrategy<>(

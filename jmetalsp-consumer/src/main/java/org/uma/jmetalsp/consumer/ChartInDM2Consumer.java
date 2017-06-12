@@ -13,6 +13,7 @@
 
 package org.uma.jmetalsp.consumer;
 
+import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.style.Styler;
 import org.uma.jmetal.qualityindicator.impl.InvertedGenerationalDistance;
 import org.uma.jmetal.qualityindicator.impl.SetCoverage;
@@ -31,6 +32,7 @@ import org.uma.jmetalsp.observeddata.AlgorithmObservedData2;
 import org.uma.jmetalsp.observer.Observable;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -108,30 +110,22 @@ public class ChartInDM2Consumer<S extends Solution<?>> implements
         } else {
           List<S> solution = (List<S>)data.getSolutionList();
           Front referenceFront = new ArrayFront(lastReceivedFront);
-         // Front front = new ArrayFront(solution);
 
-         // FrontNormalizer frontNormalizer = new FrontNormalizer(referenceFront);
-          //referenceFront = frontNormalizer.normalize(referenceFront);
-          //lastReceivedFront = (List<DoubleSolution>)frontNormalizer.normalize(lastReceivedFront);
           InvertedGenerationalDistance<S> igd =
                   new InvertedGenerationalDistance<S>(referenceFront);
 
-          //front = frontNormalizer.normalize(front);
-          //System.out.println("IGD: " + igd.evaluate(solutionList));
           coverageValue=igd.evaluate(solutionList);
         }
-        /*
-        double coverageValue=0;
-        if(lastFront!=null) {
-
-          coverageValue=coverage.evaluate(solutionList,lastFront);
-          //System.out.println("Cobertura "+ coverageValue);
-        }
-        */
 
         if(coverageValue>0.005) {
-          this.chart.updateFrontCharts(solutionList, iteraciones.get(0));//nameAnt
+          this.chart.updateFrontCharts(solutionList, iteraciones.get(0));
           lastReceivedFront=solutionList;
+          try {
+            this.chart.saveChart(iteraciones.get(0) +".chart", BitmapEncoder.BitmapFormat.PNG);
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
+
         }
         this.chart.refreshCharts();
       } else {

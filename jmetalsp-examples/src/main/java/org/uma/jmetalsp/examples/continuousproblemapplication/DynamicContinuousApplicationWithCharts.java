@@ -54,7 +54,8 @@ public class DynamicContinuousApplicationWithCharts {
 
     // Set the streaming data source
     Observable<SingleObservedData<Integer>> fdaObservable = new DefaultObservable<>("timeData") ;
-    StreamingDataSource<SingleObservedData<Integer>, Observable<SingleObservedData<Integer>>> streamingDataSource = new SimpleStreamingCounterDataSource(fdaObservable, 2000) ;
+    StreamingDataSource<SingleObservedData<Integer>, Observable<SingleObservedData<Integer>>> streamingDataSource =
+            new SimpleStreamingCounterDataSource(fdaObservable, 2000) ;
 
     // Problem configuration
 	  DynamicProblem<DoubleSolution, SingleObservedData<Integer>> problem = new FDA2(fdaObservable);
