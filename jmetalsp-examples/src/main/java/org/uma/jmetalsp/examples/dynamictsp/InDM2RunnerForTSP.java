@@ -1,4 +1,4 @@
-package org.uma.jmetalsp.examples.continuousproblemapplication;
+package org.uma.jmetalsp.examples.dynamictsp;
 
 import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
@@ -38,17 +38,16 @@ import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNSolutionsAccordingToThe
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 /**
  * Example of SparkSP application.
  * Features:
- * - Algorithm: to choose among NSGA-II, SMPSO and MOCell
- * - Problem: Any of the FDA familiy
+ * - Algorithm: InDM2
+ * - Problem: Bi-objective TSP (using data files from TSPLIB)
  * - Default streaming runtime (Spark is not used)
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class InDM2Runner2 {
+public class InDM2RunnerForTSP {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     JMetalSPApplication<
@@ -72,11 +71,11 @@ public class InDM2Runner2 {
 
     // Problem configuration
     DynamicProblem<PermutationSolution<Integer>, MatrixObservedData<Double>> problem;
-    //problem = new MultiobjectiveTSPBuilderFromFiles("kroA100.tsp", "kroB100.tsp")
-    //        .build(streamingTSPDataObservable);
-    problem = new MultiobjectiveTSPBuilderFromNY("initialDataFile.txt")
+    problem = new MultiobjectiveTSPBuilderFromFiles("data/kroA100.tsp", "data/kroB100.tsp")
             .build(streamingTSPDataObservable);
-    System.out.println(problem);
+    //problem = new MultiobjectiveTSPBuilderFromNY("initialDataFile.txt")
+    //        .build(streamingTSPDataObservable);
+    //System.out.println(problem);
 
     // Algorithm configuration
     CrossoverOperator<PermutationSolution<Integer>> crossover;
@@ -95,22 +94,22 @@ public class InDM2Runner2 {
     Observable<AlgorithmObservedData2<PermutationSolution<Integer>>> observable = new DefaultObservable<>("InDM2");
 
     List<Double> referencePoint = new ArrayList<>();
-    referencePoint.add(140000.0);
-    referencePoint.add(7000.0);
+    referencePoint.add(180000.0);
+    referencePoint.add(60000.0);
 
-    int populationSize = 100;
+    int populationSize = 50;
     algorithm = new InDM2Builder<
             PermutationSolution<Integer>,
             DynamicProblem<PermutationSolution<Integer>, ?>,
             Observable<AlgorithmObservedData2<PermutationSolution<Integer>>>>(crossover, mutation, referencePoint, observable)
-            .setMaxIterations(20000)
+            .setMaxIterations(400000)
             .setPopulationSize(populationSize)
             .build(problem);
 
     algorithm.setRestartStrategyForProblemChange(new RestartStrategy<PermutationSolution<Integer>>(
-            new RemoveNRandomSolutions<>(50),
+            new RemoveNRandomSolutions<>(0),
             //new RemoveNSolutionsAccordingToTheHypervolumeContribution<PermutationSolution<Integer>>(50),
-            new CreateNRandomSolutions<PermutationSolution<Integer>>(50)));
+            new CreateNRandomSolutions<PermutationSolution<Integer>>(0)));
 
     algorithm.setRestartStrategyForReferencePointChange(new RestartStrategy<PermutationSolution<Integer>>(
             new RemoveNRandomSolutions<>(80),

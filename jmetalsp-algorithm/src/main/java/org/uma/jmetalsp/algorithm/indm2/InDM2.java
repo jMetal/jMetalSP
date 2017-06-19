@@ -23,6 +23,11 @@ import org.uma.jmetalsp.util.restartstrategy.impl.RemoveFirstNSolutions;
 import java.util.*;
 
 /**
+ * This class implements the InDM2 algorithm, which is described in:
+ * InDM2: Interactive Dynamic Multi-Objective Decision Making using Evolutionary Algorithms. Antonio J. Nebro,
+ * Ana B. Ruiz, Cristobal Barba-Gonzalez, Jose Garcia-Nieto, Jose F. Aldana, Mariano Luque. Submitted to Swarm and
+ * Evolutionary Computation. June 2017.
+ *
  * @author Cristobal Barba <cbarba@lcc.uma.es>
  */
 public class InDM2<S extends Solution<?>>
@@ -141,9 +146,6 @@ public class InDM2<S extends Solution<?>>
             newReferencePoint.getObjective(0),
             newReferencePoint.getObjective(1)) ;
     this.updatePointOfInterest(referencePoint);
-    //List<Integer> data= new ArrayList<>();
-    //data.add(completedIterations);
-    //algorithmData.put("numberOfIterations",data);
     algorithmData.put("newReferencePoint",referencePoint);
     List<S> emptyList = new ArrayList<>();
     observable.setChanged();

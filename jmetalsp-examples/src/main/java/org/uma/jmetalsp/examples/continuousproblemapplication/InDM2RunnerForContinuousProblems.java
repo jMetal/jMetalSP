@@ -31,13 +31,13 @@ import java.util.List;
 /**
  * Example of SparkSP application.
  * Features:
- * - Algorithm: to choose among NSGA-II, SMPSO and MOCell
+ * - Algorithm: InDM2
  * - Problem: Any of the FDA familiy
  * - Default streaming runtime (Spark is not used)
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class  InDM2Runner {
+public class InDM2RunnerForContinuousProblems {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     JMetalSPApplication<
@@ -72,8 +72,8 @@ public class  InDM2Runner {
     Observable<AlgorithmObservedData2<DoubleSolution>> observable = new DefaultObservable<>("InDM2");
 
     List<Double> referencePoint = new ArrayList<>();
-    referencePoint.add(0.0);
-    referencePoint.add(0.0);
+    referencePoint.add(0.5);
+    referencePoint.add(0.3);
 
     int populationSize = 50 ;
     algorithm = new InDM2Builder<>(crossover, mutation, referencePoint, observable)
