@@ -15,10 +15,12 @@ import org.uma.jmetalsp.JMetalSPApplication;
 import org.uma.jmetalsp.algorithm.mocell.DynamicMOCellBuilder;
 import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAIIBuilder;
 import org.uma.jmetalsp.algorithm.smpso.DynamicSMPSOBuilder;
+import org.uma.jmetalsp.algorithm.wasfga.DynamicWASFGA;
+import org.uma.jmetalsp.algorithm.wasfga.DynamicWASFGABuilder;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.consumer.SimpleSolutionListConsumer;
 import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingCounterDataSource;
-import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
+import org.uma.jmetalsp.observeddata.AlgorithmObservedData2;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
@@ -27,6 +29,7 @@ import org.uma.jmetalsp.spark.SparkRuntime;
 import org.uma.jmetalsp.spark.streamingdatasource.SimpleSparkStreamingCounterDataSource;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,65 +40,75 @@ import java.util.List;
  */
 public class DynamicContinuousApplicationWithSpark {
 
-  public static void main(String[] args) throws IOException, InterruptedException {
-    JMetalSPApplication<
-            SingleObservedData<Integer>,
-            AlgorithmObservedData,
-            DynamicProblem<DoubleSolution, SingleObservedData<Integer>>,
-            DynamicAlgorithm<List<DoubleSolution>,AlgorithmObservedData, Observable<AlgorithmObservedData>>,
-            SimpleStreamingCounterDataSource,
-            AlgorithmDataConsumer<AlgorithmObservedData, DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData, Observable<AlgorithmObservedData>>>> application;
-    application = new JMetalSPApplication<>();
+    public static void main(String[] args) throws IOException, InterruptedException {
+        JMetalSPApplication<
+                SingleObservedData<Integer>,
+                AlgorithmObservedData2,
+                DynamicProblem<DoubleSolution, SingleObservedData<Integer>>,
+                DynamicAlgorithm<List<DoubleSolution>, Observable<AlgorithmObservedData2>>,
+                SimpleStreamingCounterDataSource,
+                AlgorithmDataConsumer<AlgorithmObservedData2, DynamicAlgorithm<List<DoubleSolution>,
+                        Observable<AlgorithmObservedData2>>>> application;
+        application = new JMetalSPApplication<>();
 
-	  // Problem configuration
-    Observable<SingleObservedData<Integer>> fdaUpdateDataObservable = new DefaultObservable<>("timeData") ;
-	  DynamicProblem<DoubleSolution, SingleObservedData<Integer>> problem = new FDA2(fdaUpdateDataObservable);
+        // Problem configuration
+        Observable<SingleObservedData<Integer>> fdaUpdateDataObservable = new DefaultObservable<>("timeData");
+        DynamicProblem<DoubleSolution, SingleObservedData<Integer>> problem = new FDA2(fdaUpdateDataObservable);
 
-	  // Algorithm configuration
-    CrossoverOperator<DoubleSolution> crossover = new SBXCrossover(0.9, 20.0);
-    MutationOperator<DoubleSolution> mutation =
-            new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);
+        // Algorithm configuration
+        CrossoverOperator<DoubleSolution> crossover = new SBXCrossover(0.9, 20.0);
+        MutationOperator<DoubleSolution> mutation =
+                new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);
 
-    String defaultAlgorithm = "SMPSO";
+        String defaultAlgorithm = "SMPSO";
 
-    DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData, Observable<AlgorithmObservedData>> algorithm;
-    Observable<AlgorithmObservedData> observable = new DefaultObservable<>("NSGAII") ;
+        DynamicAlgorithm<List<DoubleSolution>, Observable<AlgorithmObservedData2>> algorithm;
+        Observable<AlgorithmObservedData2> observable = new DefaultObservable<>("WASFGA");
 
-    switch (defaultAlgorithm) {
-      case "NSGAII":
-        algorithm = new DynamicNSGAIIBuilder<>(crossover, mutation, observable)
-                .setMaxEvaluations(50000)
-                .setPopulationSize(100)
-                .build(problem);
-        break;
+        switch (defaultAlgorithm) {
+            case "NSGAII":
+                algorithm = new DynamicNSGAIIBuilder<>(crossover, mutation, observable)
+                        .setMaxEvaluations(50000)
+                        .setPopulationSize(100)
+                        .build(problem);
+                break;
 
-      case "MOCell":
-        algorithm = new DynamicMOCellBuilder<>(crossover, mutation, observable)
-                .setMaxEvaluations(50000)
-                .setPopulationSize(100)
-                .build(problem);
-        break;
+            case "MOCell":
+                algorithm = new DynamicMOCellBuilder<>(crossover, mutation, observable)
+                        .setMaxEvaluations(50000)
+                        .setPopulationSize(100)
+                        .build(problem);
+                break;
 
-      case "SMPSO":
-        algorithm = new DynamicSMPSOBuilder<>(
-                mutation, new CrowdingDistanceArchive<>(100), observable)
-                .setMaxIterations(500)
-                .setSwarmSize(100)
-                .build(problem);
-        break;
+            case "SMPSO":
+                algorithm = new DynamicSMPSOBuilder<>(
+                        mutation, new CrowdingDistanceArchive<>(100), observable)
+                        .setMaxIterations(500)
+                        .setSwarmSize(100)
+                        .build(problem);
+                break;
+            case "WASFGA":
+                List<Double> referencePoint = new ArrayList<>();
+                referencePoint.add(0.5);
+                referencePoint.add(0.5);
 
-      default:
-        algorithm = null;
+                algorithm = new DynamicWASFGABuilder<>(crossover, mutation, referencePoint, observable)
+                        .setMaxIterations(500)
+                        .setPopulationSize(100)
+                        .build(problem);
+                break;
+            default:
+                algorithm = null;
+        }
+
+        Logger.getLogger("org").setLevel(Level.OFF);
+
+        application.setStreamingRuntime(new SparkRuntime<SingleObservedData<Double>, Observable<SingleObservedData<Double>>>(5))
+                .setProblem(problem)
+                .setAlgorithm(algorithm)
+                .addStreamingDataSource(new SimpleSparkStreamingCounterDataSource(fdaUpdateDataObservable, "timeDirectory"))
+                .addAlgorithmDataConsumer(new SimpleSolutionListConsumer(algorithm))
+                .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirectory", algorithm))
+                .run();
     }
-
-    Logger.getLogger("org").setLevel(Level.OFF) ;
-
-    application.setStreamingRuntime(new SparkRuntime<SingleObservedData<Double>, Observable<SingleObservedData<Double>>>(5))
-            .setProblem(problem)
-            .setAlgorithm(algorithm)
-            .addStreamingDataSource(new SimpleSparkStreamingCounterDataSource(fdaUpdateDataObservable, "timeDirectory"))
-            .addAlgorithmDataConsumer(new SimpleSolutionListConsumer(algorithm))
-            .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirectory", algorithm))
-            .run();
-  }
 }

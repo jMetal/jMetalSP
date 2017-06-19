@@ -8,7 +8,7 @@ import org.uma.jmetalsp.observer.Observer;
  */
 public interface AlgorithmDataConsumer<
         D extends ObservedData,
-        A extends DynamicAlgorithm<?, D, ? extends Observable<D>>> extends Runnable, Observer<D> {
+        A extends DynamicAlgorithm<?, ? extends Observable<D>>> extends Runnable, Observer<D> {
 
   A getAlgorithm() ;
   @Override void run() ;

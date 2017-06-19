@@ -8,23 +8,24 @@ import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.archive.impl.CrowdingDistanceArchive;
 import org.uma.jmetalsp.AlgorithmDataConsumer;
 import org.uma.jmetalsp.DynamicAlgorithm;
+import org.uma.jmetalsp.DynamicProblem;
+import org.uma.jmetalsp.JMetalSPApplication;
 import org.uma.jmetalsp.StreamingDataSource;
 import org.uma.jmetalsp.algorithm.mocell.DynamicMOCellBuilder;
 import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAIIBuilder;
 import org.uma.jmetalsp.algorithm.smpso.DynamicSMPSOBuilder;
-import org.uma.jmetalsp.JMetalSPApplication;
 import org.uma.jmetalsp.algorithm.wasfga.DynamicWASFGABuilder;
 import org.uma.jmetalsp.consumer.ChartConsumer;
-import org.uma.jmetalsp.consumer.SimpleSolutionListConsumer;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
-import org.uma.jmetalsp.DynamicProblem;
+import org.uma.jmetalsp.consumer.SimpleSolutionListConsumer;
 import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingCounterDataSource;
 import org.uma.jmetalsp.impl.DefaultRuntime;
+
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData2;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
-import org.uma.jmetalsp.problem.fda.FDA2;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
+import org.uma.jmetalsp.problem.fda.FDA2;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ import java.util.List;
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DynamicContinuousApplication {
+public class DynamicContinuousApplicationWithCharts {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     JMetalSPApplication<
@@ -48,13 +49,11 @@ public class DynamicContinuousApplication {
             DynamicProblem<DoubleSolution, SingleObservedData<Integer>>,
             DynamicAlgorithm<List<DoubleSolution>, Observable<AlgorithmObservedData2>>,
             SimpleStreamingCounterDataSource,
-            AlgorithmDataConsumer<AlgorithmObservedData2, DynamicAlgorithm<List<DoubleSolution>,
-                    Observable<AlgorithmObservedData2>>>> application;
+            AlgorithmDataConsumer<AlgorithmObservedData2, DynamicAlgorithm<List<DoubleSolution>, Observable<AlgorithmObservedData2>>>> application;
     application = new JMetalSPApplication<>();
 
     // Set the streaming data source
     Observable<SingleObservedData<Integer>> fdaObservable = new DefaultObservable<>("timeData") ;
-
     StreamingDataSource<SingleObservedData<Integer>, Observable<SingleObservedData<Integer>>> streamingDataSource =
             new SimpleStreamingCounterDataSource(fdaObservable, 2000) ;
 
@@ -66,7 +65,7 @@ public class DynamicContinuousApplication {
     MutationOperator<DoubleSolution> mutation =
             new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);
 
-    String defaultAlgorithm = "WASFGA";
+    String defaultAlgorithm = "SMPSO";
 
     DynamicAlgorithm<List<DoubleSolution>, Observable<AlgorithmObservedData2>> algorithm;
     Observable<AlgorithmObservedData2> observable = new DefaultObservable<>("WASFGA") ;
@@ -112,8 +111,6 @@ public class DynamicContinuousApplication {
             .setProblem(problem)
             .setAlgorithm(algorithm)
             .addStreamingDataSource(streamingDataSource)
-            .addAlgorithmDataConsumer(new SimpleSolutionListConsumer(algorithm))
-            .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirectory", algorithm))
             .addAlgorithmDataConsumer(new ChartConsumer(algorithm))
             .run();
   }

@@ -23,22 +23,27 @@ import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
+import org.uma.jmetalsp.observeddata.AlgorithmObservedData2;
 import org.uma.jmetalsp.observer.Observable;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DynamicSMPSO<O extends Observable<AlgorithmObservedData>>
+public class DynamicSMPSO<O extends Observable<AlgorithmObservedData2>>
         extends SMPSO
-        implements DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData, Observable<AlgorithmObservedData>> {
+        implements DynamicAlgorithm<List<DoubleSolution>, Observable<AlgorithmObservedData2>> {
 
   private int completedIterations;
   private SolutionListEvaluator<DoubleSolution> evaluator;
   private DynamicProblem<DoubleSolution, ?> problem;
   private boolean stopAtTheEndOfTheCurrentIteration = false;
   private O observable;
+  private Map<String,List> algorithmData;
 
   public DynamicSMPSO(DynamicProblem<DoubleSolution, ?> problem, int swarmSize, BoundedArchive<DoubleSolution> leaders,
                       MutationOperator<DoubleSolution> mutationOperator,
@@ -55,6 +60,7 @@ public class DynamicSMPSO<O extends Observable<AlgorithmObservedData>>
     completedIterations = 0;
     this.evaluator = evaluator;
     this.observable = observable;
+    this.algorithmData = new HashMap<>();
   }
 
   @Override
@@ -80,7 +86,7 @@ public class DynamicSMPSO<O extends Observable<AlgorithmObservedData>>
   @Override
   protected void updateProgress() {
     if (getDynamicProblem().hasTheProblemBeenModified()) {
-      restart(100);
+      restart();
       getDynamicProblem().reset();
     }
     int cont = getIterations();
@@ -93,8 +99,11 @@ public class DynamicSMPSO<O extends Observable<AlgorithmObservedData>>
   protected boolean isStoppingConditionReached() {
     if (getIterations() >= getMaxIterations()) {
       observable.setChanged();
-      observable.notifyObservers(new AlgorithmObservedData(getResult(), completedIterations));
-      restart(100);
+      List<Integer> data= new ArrayList<>();
+      data.add(completedIterations);
+      algorithmData.put("numberOfIterations",data);
+      observable.notifyObservers(new AlgorithmObservedData2(getResult(), algorithmData));
+      restart();
       completedIterations++;
     }
     return stopAtTheEndOfTheCurrentIteration;
@@ -111,8 +120,8 @@ public class DynamicSMPSO<O extends Observable<AlgorithmObservedData>>
   }
 
   @Override
-  public void restart(int percentageOfSolutionsToRemove) {
-    SolutionListUtils.restart(getSwarm(), (DoubleProblem) getDynamicProblem(), percentageOfSolutionsToRemove);
+  public void restart() {
+    SolutionListUtils.restart(getSwarm(), (DoubleProblem) getDynamicProblem(), 100);
     //setSwarm(createInitialSwarm());
     SolutionListUtils.removeSolutionsFromList(getResult(), getResult().size());
     evaluator.evaluate(getSwarm(), (DoubleProblem) getDynamicProblem());

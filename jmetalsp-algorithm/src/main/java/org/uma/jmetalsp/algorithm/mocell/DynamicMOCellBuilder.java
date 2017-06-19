@@ -15,6 +15,7 @@ import org.uma.jmetal.util.neighborhood.Neighborhood;
 import org.uma.jmetal.util.neighborhood.impl.C9;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
+import org.uma.jmetalsp.observeddata.AlgorithmObservedData2;
 import org.uma.jmetalsp.observer.Observable;
 
 import java.util.List;
@@ -25,7 +26,7 @@ import java.util.List;
 public class DynamicMOCellBuilder<
 				S extends Solution<?>,
 				P extends DynamicProblem<S, ?>,
-				O extends Observable<AlgorithmObservedData>> {
+				O extends Observable<AlgorithmObservedData2>> {
 
 	private int maxEvaluations;
 	private int populationSize;

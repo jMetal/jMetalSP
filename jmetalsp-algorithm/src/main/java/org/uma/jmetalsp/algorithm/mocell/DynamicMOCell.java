@@ -26,9 +26,13 @@ import org.uma.jmetal.util.solutionattribute.impl.LocationAttribute;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
+import org.uma.jmetalsp.observeddata.AlgorithmObservedData2;
 import org.uma.jmetalsp.observer.Observable;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Class implementing a dynamic version of MOCell. Most of the code of the original MOCell algorithm
@@ -39,13 +43,14 @@ import java.util.List;
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DynamicMOCell<S extends Solution<?>, O extends Observable<AlgorithmObservedData>>
+public class DynamicMOCell<S extends Solution<?>, O extends Observable<AlgorithmObservedData2>>
     extends MOCell<S>
-    implements DynamicAlgorithm<List<S>, AlgorithmObservedData, Observable<AlgorithmObservedData>> {
+    implements DynamicAlgorithm<List<S>, Observable<AlgorithmObservedData2>> {
 
   private int completedIterations ;
   private boolean stopAtTheEndOfTheCurrentIteration = false ;
   private O observable ;
+  private Map<String,List> algorithmData;
 
   public DynamicMOCell(DynamicProblem<S, ?> problem,
                        int maxEvaluations,
@@ -62,6 +67,7 @@ public class DynamicMOCell<S extends Solution<?>, O extends Observable<Algorithm
 
     completedIterations = 0 ;
     this.observable = observable ;
+    this.algorithmData = new HashMap<>();
   }
 
   @Override
@@ -77,8 +83,11 @@ public class DynamicMOCell<S extends Solution<?>, O extends Observable<Algorithm
   @Override protected boolean isStoppingConditionReached() {
     if (evaluations >= maxEvaluations) {
       observable.setChanged() ;
-      observable.notifyObservers(new AlgorithmObservedData(getPopulation(), completedIterations));
-      restart(100);
+      List<Integer> data= new ArrayList<>();
+      data.add(completedIterations);
+      algorithmData.put("numberOfIterations",data);
+      observable.notifyObservers(new AlgorithmObservedData2(getPopulation(), algorithmData));
+      restart();
       completedIterations++;
     }
     return stopAtTheEndOfTheCurrentIteration;
@@ -90,8 +99,8 @@ public class DynamicMOCell<S extends Solution<?>, O extends Observable<Algorithm
   }
 
   @Override
-  public void restart(int percentageOfSolutionsToRemove) {
-    SolutionListUtils.restart(getPopulation(), getDynamicProblem(), percentageOfSolutionsToRemove);
+  public void restart() {
+    SolutionListUtils.restart(getPopulation(), getDynamicProblem(), 100);
     location = new LocationAttribute<>(getPopulation());
     evaluator.evaluate(getPopulation(), getDynamicProblem()) ;
     initProgress();
@@ -99,7 +108,7 @@ public class DynamicMOCell<S extends Solution<?>, O extends Observable<Algorithm
 
   @Override protected void updateProgress() {
     if (getDynamicProblem().hasTheProblemBeenModified()) {
-      restart(100);
+      restart();
       getDynamicProblem().reset();
     }
     evaluations ++ ;

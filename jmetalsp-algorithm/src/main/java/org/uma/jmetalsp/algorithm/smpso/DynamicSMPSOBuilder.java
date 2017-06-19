@@ -9,6 +9,7 @@ import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 import org.uma.jmetal.util.pseudorandom.PseudoRandomGenerator;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
+import org.uma.jmetalsp.observeddata.AlgorithmObservedData2;
 import org.uma.jmetalsp.observer.Observable;
 
 /**
@@ -16,7 +17,7 @@ import org.uma.jmetalsp.observer.Observable;
  */
 public class DynamicSMPSOBuilder<
 				P extends DynamicProblem<DoubleSolution, ?>,
-				O extends Observable<AlgorithmObservedData>> {
+				O extends Observable<AlgorithmObservedData2>> {
 
 	private double c1Max;
 	private double c1Min;

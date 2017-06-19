@@ -1,0 +1,38 @@
+package org.uma.jmetalsp.util.restartstrategy.impl;
+
+import org.uma.jmetal.solution.Solution;
+import org.uma.jmetal.util.JMetalException;
+import org.uma.jmetal.util.pseudorandom.JMetalRandom;
+import org.uma.jmetalsp.DynamicProblem;
+import org.uma.jmetalsp.util.restartstrategy.RemoveSolutionsStrategy;
+
+import java.util.List;
+import java.util.stream.IntStream;
+
+/**
+ * Created by antonio on 6/06/17.
+ */
+public class RemoveNRandomSolutions<S extends Solution<?>> implements RemoveSolutionsStrategy<S> {
+  private int percentageOfSolutionsToDelete ;
+
+  public RemoveNRandomSolutions(int percentageOfSolutionsToDelete) {
+    this.percentageOfSolutionsToDelete = percentageOfSolutionsToDelete ;
+  }
+
+  @Override
+  public void remove(List<S> solutionList, DynamicProblem<S, ?> problem) {
+    if (solutionList == null) {
+      throw new JMetalException("The solution list is null") ;
+    } else if (problem == null) {
+      throw new JMetalException("The problem is null") ;
+    }
+
+    int numberOfSolutionsToRemove = (int)(percentageOfSolutionsToDelete/100.0 * solutionList.size()) ;
+    IntStream.range(0, numberOfSolutionsToRemove)
+            .forEach(s -> {
+                      int chosen = JMetalRandom.getInstance().nextInt(0, solutionList.size()-1);
+                      solutionList.remove(chosen);
+                    }
+            );
+  }
+}
