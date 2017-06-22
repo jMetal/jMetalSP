@@ -20,8 +20,7 @@ import java.util.List;
  */
 public class DynamicNSGAIIBuilder<
 				S extends Solution<?>,
-				P extends DynamicProblem<S, ?>,
-				O extends Observable<AlgorithmObservedData>>  {
+				P extends DynamicProblem<S, ?>>  {
 
 	private int maxEvaluations;
 	private int populationSize;
@@ -29,11 +28,11 @@ public class DynamicNSGAIIBuilder<
 	private MutationOperator<S> mutationOperator;
 	private SelectionOperator<List<S>, S> selectionOperator;
 	private SolutionListEvaluator<S> evaluator;
-  private O observable ;
+  private Observable<AlgorithmObservedData<S>> observable ;
 
 	public DynamicNSGAIIBuilder(CrossoverOperator<S> crossoverOperator,
 	                            MutationOperator<S> mutationOperator,
-															O observable) {
+															Observable<AlgorithmObservedData<S>> observable) {
 		this.crossoverOperator = crossoverOperator ;
 		this.mutationOperator = mutationOperator;
 		this.maxEvaluations = 25000 ;
@@ -43,7 +42,7 @@ public class DynamicNSGAIIBuilder<
 		this.observable = observable ;
 	}
 
-	public DynamicNSGAIIBuilder<S,P,O> setMaxEvaluations(int maxEvaluations) {
+	public DynamicNSGAIIBuilder<S,P> setMaxEvaluations(int maxEvaluations) {
 		if (maxEvaluations < 0) {
 			throw new JMetalException("maxEvaluations is negative: " + maxEvaluations);
 		}
@@ -52,7 +51,7 @@ public class DynamicNSGAIIBuilder<
 		return this;
 	}
 
-	public DynamicNSGAIIBuilder<S,P,O> setPopulationSize(int populationSize) {
+	public DynamicNSGAIIBuilder<S,P> setPopulationSize(int populationSize) {
 		if (populationSize < 0) {
 			throw new JMetalException("Population size is negative: " + populationSize);
 		}
@@ -62,7 +61,7 @@ public class DynamicNSGAIIBuilder<
 		return this;
 	}
 
-	public DynamicNSGAIIBuilder<S,P,O> setSelectionOperator(SelectionOperator<List<S>, S> selectionOperator) {
+	public DynamicNSGAIIBuilder<S,P> setSelectionOperator(SelectionOperator<List<S>, S> selectionOperator) {
 		if (selectionOperator == null) {
 			throw new JMetalException("selectionOperator is null");
 		}
@@ -71,7 +70,7 @@ public class DynamicNSGAIIBuilder<
 		return this;
 	}
 
-	public DynamicNSGAIIBuilder<S,P,O> setSolutionListEvaluator(SolutionListEvaluator<S> evaluator) {
+	public DynamicNSGAIIBuilder<S,P> setSolutionListEvaluator(SolutionListEvaluator<S> evaluator) {
 		if (evaluator == null) {
 			throw new JMetalException("evaluator is null");
 		}
@@ -80,8 +79,8 @@ public class DynamicNSGAIIBuilder<
 		return this;
 	}
 
-	public DynamicNSGAII<S, O> build(P problem) {
-		return new DynamicNSGAII<S, O>(problem, maxEvaluations, populationSize, crossoverOperator, mutationOperator,
+	public DynamicNSGAII<S, ?> build(P problem) {
+		return new DynamicNSGAII(problem, maxEvaluations, populationSize, crossoverOperator, mutationOperator,
 						selectionOperator, evaluator, observable);
 	}
 }

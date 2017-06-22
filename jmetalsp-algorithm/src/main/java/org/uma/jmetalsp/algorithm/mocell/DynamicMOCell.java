@@ -42,9 +42,9 @@ import java.util.Map;
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DynamicMOCell<S extends Solution<?>, O extends Observable<AlgorithmObservedData>>
+public class DynamicMOCell<S extends Solution<?>, O extends Observable<AlgorithmObservedData<?>>>
     extends MOCell<S>
-    implements DynamicAlgorithm<List<S>, Observable<AlgorithmObservedData>> {
+    implements DynamicAlgorithm<List<S>, O> {
 
   private int completedIterations ;
   private boolean stopAtTheEndOfTheCurrentIteration = false ;
@@ -74,10 +74,6 @@ public class DynamicMOCell<S extends Solution<?>, O extends Observable<Algorithm
     return (DynamicProblem<S, ?>) super.getProblem();
   }
 
-  @Override
-  public int getCompletedIterations() {
-    return completedIterations ;
-  }
 
   @Override protected boolean isStoppingConditionReached() {
     if (evaluations >= maxEvaluations) {
@@ -90,11 +86,6 @@ public class DynamicMOCell<S extends Solution<?>, O extends Observable<Algorithm
       completedIterations++;
     }
     return stopAtTheEndOfTheCurrentIteration;
-  }
-
-  @Override
-  public void stopTheAlgorithm() {
-    stopAtTheEndOfTheCurrentIteration = true ;
   }
 
   @Override

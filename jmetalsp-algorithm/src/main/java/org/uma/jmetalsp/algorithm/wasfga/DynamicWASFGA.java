@@ -21,16 +21,25 @@ import java.util.Map;
 /**
  * @author Cristobal Barba <cbarba@lcc.uma.es>
  */
-public class DynamicWASFGA<S extends Solution<?>, O extends Observable<AlgorithmObservedData>>
+public class DynamicWASFGA<S extends Solution<?>, O extends Observable<AlgorithmObservedData<?>>>
         extends WASFGA<S>
-        implements DynamicAlgorithm<List<S>, Observable<AlgorithmObservedData>> {
+        implements DynamicAlgorithm<List<S>, O> {
     private int completedIterations;
     private boolean stopAtTheEndOfTheCurrentIteration = false;
 
     O observable;
+
   private Map<String,List> algorithmData;
 
-    public DynamicWASFGA(Problem<S> problem, int populationSize, int maxIterations, CrossoverOperator<S> crossoverOperator, MutationOperator<S> mutationOperator, SelectionOperator<List<S>, S> selectionOperator, SolutionListEvaluator<S> evaluator, List<Double> referencePoint, O observable) {
+    public DynamicWASFGA(Problem<S> problem,
+                         int populationSize,
+                         int maxIterations,
+                         CrossoverOperator<S> crossoverOperator,
+                         MutationOperator<S> mutationOperator,
+                         SelectionOperator<List<S>, S> selectionOperator,
+                         SolutionListEvaluator<S> evaluator,
+                         List<Double> referencePoint,
+                         O observable) {
         super(problem, populationSize, maxIterations, crossoverOperator, mutationOperator, selectionOperator, evaluator, referencePoint);
         completedIterations = 0;
         this.observable = observable;
@@ -41,16 +50,6 @@ public class DynamicWASFGA<S extends Solution<?>, O extends Observable<Algorithm
     @Override
     public DynamicProblem<S, ?> getDynamicProblem() {
         return (DynamicProblem<S, ?>) super.getProblem();
-    }
-
-    @Override
-    public int getCompletedIterations() {
-        return completedIterations;
-    }
-
-    @Override
-    public void stopTheAlgorithm() {
-        stopAtTheEndOfTheCurrentIteration = true;
     }
 
     @Override
@@ -78,7 +77,7 @@ public class DynamicWASFGA<S extends Solution<?>, O extends Observable<Algorithm
     }
 
     @Override
-    public Observable<AlgorithmObservedData> getObservable() {
+    public O getObservable() {
         return this.observable;
     }
 

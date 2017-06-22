@@ -1,8 +1,8 @@
 package org.uma.jmetalsp.problem.tsp;
 
 import org.uma.jmetal.util.JMetalException;
+import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.Observable;
-import org.uma.jmetalsp.observeddata.MatrixObservedData;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -26,7 +26,7 @@ public class MultiobjectiveTSPBuilderFromFiles  {
     this.costFileName = costFileName ;
   }
 
-  public DynamicMultiobjectiveTSP build(Observable<MatrixObservedData<Double>> observable) throws IOException {
+  public DynamicMultiobjectiveTSP build(Observable<SingleObservedData<TSPMatrixData>> observable) throws IOException {
     int         numberOfCities ;
     double [][] distanceMatrix ;
     double [][] costMatrix;
@@ -35,8 +35,7 @@ public class MultiobjectiveTSPBuilderFromFiles  {
     costMatrix = readProblem(costFileName) ;
     numberOfCities = distanceMatrix.length ;
 
-    DynamicMultiobjectiveTSP problem =
-            new DynamicMultiobjectiveTSP(numberOfCities, distanceMatrix, costMatrix);
+    DynamicMultiobjectiveTSP problem = new DynamicMultiobjectiveTSP(numberOfCities, distanceMatrix, costMatrix);
 
     observable.register(problem);
 

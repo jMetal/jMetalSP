@@ -33,15 +33,14 @@ import java.util.Map;
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DynamicSMPSO<O extends Observable<AlgorithmObservedData>>
-        extends SMPSO
-        implements DynamicAlgorithm<List<DoubleSolution>, Observable<AlgorithmObservedData>> {
+public class DynamicSMPSO extends SMPSO
+        implements DynamicAlgorithm<List<DoubleSolution>, Observable<AlgorithmObservedData<DoubleSolution>>> {
 
   private int completedIterations;
   private SolutionListEvaluator<DoubleSolution> evaluator;
   private DynamicProblem<DoubleSolution, ?> problem;
   private boolean stopAtTheEndOfTheCurrentIteration = false;
-  private O observable;
+  private Observable<AlgorithmObservedData<DoubleSolution>> observable;
   private Map<String,List> algorithmData;
 
   public DynamicSMPSO(DynamicProblem<DoubleSolution, ?> problem, int swarmSize, BoundedArchive<DoubleSolution> leaders,
@@ -52,7 +51,7 @@ public class DynamicSMPSO<O extends Observable<AlgorithmObservedData>>
                       double weightMin, double weightMax,
                       double changeVelocity1, double changeVelocity2,
                       SolutionListEvaluator<DoubleSolution> evaluator,
-                      O observable) {
+                      Observable<AlgorithmObservedData<DoubleSolution>> observable) {
     super((DoubleProblem) problem, swarmSize, leaders, mutationOperator, maxIterations, r1Min, r1Max, r2Min, r2Max,
             c1Min, c1Max, c2Min, c2Max, weightMin, weightMax, changeVelocity1, changeVelocity2, evaluator);
     this.problem = problem;
@@ -77,10 +76,6 @@ public class DynamicSMPSO<O extends Observable<AlgorithmObservedData>>
     return problem;
   }
 
-  @Override
-  public int getCompletedIterations() {
-    return completedIterations;
-  }
 
   @Override
   protected void updateProgress() {
@@ -109,13 +104,8 @@ public class DynamicSMPSO<O extends Observable<AlgorithmObservedData>>
   }
 
   @Override
-  public O getObservable() {
+  public Observable<AlgorithmObservedData<DoubleSolution>> getObservable() {
     return this.observable;
-  }
-
-  @Override
-  public void stopTheAlgorithm() {
-    stopAtTheEndOfTheCurrentIteration = true;
   }
 
   @Override

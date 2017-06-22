@@ -5,8 +5,8 @@ import org.uma.jmetal.problem.impl.AbstractIntegerPermutationProblem;
 import org.uma.jmetal.solution.PermutationSolution;
 import org.uma.jmetal.util.solutionattribute.impl.OverallConstraintViolation;
 import org.uma.jmetalsp.DynamicProblem;
+import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.Observable;
-import org.uma.jmetalsp.observeddata.MatrixObservedData;
 
 /**
  * Version of the multi-objective TSP aimed at being solving dynamically.
@@ -16,7 +16,7 @@ import org.uma.jmetalsp.observeddata.MatrixObservedData;
 public class DynamicMultiobjectiveTSP
     extends AbstractIntegerPermutationProblem
     implements ConstrainedProblem<PermutationSolution<Integer>>,
-    DynamicProblem<PermutationSolution<Integer>, MatrixObservedData<Double>> {
+    DynamicProblem<PermutationSolution<Integer>, SingleObservedData<TSPMatrixData>> {
   public static final double NON_CONNECTED = Double.POSITIVE_INFINITY ;
   private int         numberOfCities ;
   private double [][] distanceMatrix ;
@@ -156,12 +156,11 @@ public class DynamicMultiobjectiveTSP
   }
 
   @Override
-  public void update(Observable<MatrixObservedData<Double>> observable, MatrixObservedData<Double> data) {
-    MatrixObservedData<Double> tspData = (MatrixObservedData<Double>)data ;
-    if (data!=null && tspData.getMatrixIdentifier() == "COST") {
-      updateCostValue(tspData.getX(),tspData.getY(),tspData.getValue());
-    } else if(data!=null && tspData.getMatrixIdentifier() == "VALUE"){
-      updateDistanceValue(tspData.getX(),tspData.getY(),tspData.getValue());
+  public void update(Observable<SingleObservedData<TSPMatrixData>> observable, SingleObservedData<TSPMatrixData> data) {
+    if (data!=null && data.getData().getMatrixIdentifier() == "COST") {
+      updateCostValue(data.getData().getX(),data.getData().getY(),data.getData().getValue());
+    } else if(data!=null && data.getData().getMatrixIdentifier() == "VALUE"){
+      updateDistanceValue(data.getData().getX(),data.getData().getY(),data.getData().getValue());
     }
   }
 }

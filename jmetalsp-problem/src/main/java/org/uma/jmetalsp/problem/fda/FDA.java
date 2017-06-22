@@ -29,7 +29,7 @@ public abstract class FDA
 	@Override
 	public void update(Observable<SingleObservedData<Integer>> observable, SingleObservedData<Integer> counter) {
 
-    time = (1.0d/(double)nT) * Math.floor(counter.getValue()/(double)tauT) ;
+    time = (1.0d/(double)nT) * Math.floor(counter.getData()/(double)tauT) ;
 
 		if(time==0.0){
 			time=1.0;

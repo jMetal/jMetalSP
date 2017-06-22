@@ -30,7 +30,7 @@ import java.util.*;
  */
 public class InDM2<S extends Solution<?>>
         extends WASFGA<S>
-        implements DynamicAlgorithm<List<S>, Observable<AlgorithmObservedData>>,
+        implements DynamicAlgorithm<List<S>, Observable<AlgorithmObservedData<S>>>,
         Observer<ListObservedData<Double>> {
   private int completedIterations;
   private boolean stopAtTheEndOfTheCurrentIteration = false;
@@ -39,12 +39,12 @@ public class InDM2<S extends Solution<?>>
   private RestartStrategy<S> restartStrategyForProblemChange ;
   private RestartStrategy<S> restartStrategyForReferencePointChange ;
 
-  Observable<AlgorithmObservedData> observable;
+  Observable<AlgorithmObservedData<S>> observable;
 
   public InDM2(Problem<S> problem, int populationSize, int maxEvaluations, CrossoverOperator<S> crossoverOperator,
                MutationOperator<S> mutationOperator, SelectionOperator<List<S>, S> selectionOperator,
                SolutionListEvaluator<S> evaluator, List<Double> referencePoint,
-               Observable<AlgorithmObservedData> observable) {
+               Observable<AlgorithmObservedData<S>> observable) {
     super(problem, populationSize, maxEvaluations, crossoverOperator, mutationOperator, selectionOperator, evaluator,
             referencePoint);
     completedIterations = 0;
@@ -68,16 +68,6 @@ public class InDM2<S extends Solution<?>>
   }
 
   @Override
-  public int getCompletedIterations() {
-    return completedIterations;
-  }
-
-  @Override
-  public void stopTheAlgorithm() {
-    stopAtTheEndOfTheCurrentIteration = true;
-  }
-
-  @Override
   public void restart() {
     this.evaluatePopulation(this.getPopulation());
     this.initProgress();
@@ -90,7 +80,7 @@ public class InDM2<S extends Solution<?>>
   }
 
   @Override
-  public Observable<AlgorithmObservedData> getObservable() {
+  public Observable<AlgorithmObservedData<S>> getObservable() {
     return this.observable;
   }
 
@@ -152,14 +142,14 @@ public class InDM2<S extends Solution<?>>
 
   @Override
   public synchronized void update(Observable<ListObservedData<Double>> observable, ListObservedData<Double> data) {
-    if (data.getList().size() != getDynamicProblem().getNumberOfObjectives()) {
-      throw new JMetalException("The reference point size is not correct: " + data.getList().size()) ;
+    if (data.getData().size() != getDynamicProblem().getNumberOfObjectives()) {
+      throw new JMetalException("The reference point size is not correct: " + data.getData().size()) ;
     }
 
     S solution = getDynamicProblem().createSolution();
 
     for (int i = 0; i < getDynamicProblem().getNumberOfObjectives(); i++) {
-      solution.setObjective(i, data.getList().get(i));
+      solution.setObjective(i, data.getData().get(i));
     }
 
     newReferencePoint = Optional.of(solution) ;

@@ -8,7 +8,8 @@ import org.uma.jmetalsp.observer.Observable;
  * This class emits the value of a counter periodically after a given delay (in milliseconds)
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class SimpleStreamingCounterDataSource implements StreamingDataSource<SingleObservedData<Integer>, Observable<SingleObservedData<Integer>>> {
+public class SimpleStreamingCounterDataSource
+				implements StreamingDataSource<Observable<SingleObservedData<Integer>>> {
 	private Observable<SingleObservedData<Integer>> observable;
 	private int dataDelay ;
 

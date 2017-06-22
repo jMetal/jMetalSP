@@ -19,7 +19,6 @@ import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingDataSourceFr
 import org.uma.jmetalsp.impl.DefaultRuntime;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.ListObservedData;
-import org.uma.jmetalsp.observeddata.MatrixObservedData;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;

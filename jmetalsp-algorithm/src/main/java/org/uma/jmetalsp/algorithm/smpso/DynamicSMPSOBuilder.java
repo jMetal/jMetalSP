@@ -15,8 +15,7 @@ import org.uma.jmetalsp.observer.Observable;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class DynamicSMPSOBuilder<
-				P extends DynamicProblem<DoubleSolution, ?>,
-				O extends Observable<AlgorithmObservedData>> {
+				P extends DynamicProblem<DoubleSolution, ?>> {
 
 	private double c1Max;
 	private double c1Min;
@@ -35,14 +34,14 @@ public class DynamicSMPSOBuilder<
 	private int maxIterations;
 
 	protected MutationOperator<DoubleSolution> mutationOperator;
-  private O observable ;
+  private Observable<AlgorithmObservedData<DoubleSolution>> observable ;
 	private BoundedArchive<DoubleSolution> leaders;
 
 	private SolutionListEvaluator<DoubleSolution> evaluator;
 
 	public DynamicSMPSOBuilder(MutationOperator<DoubleSolution> mutationOperator,
 														 BoundedArchive<DoubleSolution> leaders,
-														 O observable) {
+														 Observable<AlgorithmObservedData<DoubleSolution>> observable) {
 		this.leaders = leaders;
 
 		swarmSize = 100;
@@ -66,103 +65,103 @@ public class DynamicSMPSOBuilder<
 		this.observable = observable ;
 	}
 
-	public DynamicSMPSOBuilder<P,O> setSwarmSize(int swarmSize) {
+	public DynamicSMPSOBuilder<P> setSwarmSize(int swarmSize) {
 		this.swarmSize = swarmSize;
 
 		return this;
 	}
 
-	public DynamicSMPSOBuilder<P,O> setMaxIterations(int maxIterations) {
+	public DynamicSMPSOBuilder<P> setMaxIterations(int maxIterations) {
 		this.maxIterations = maxIterations;
 
 		return this;
 	}
 
-	public DynamicSMPSOBuilder<P,O> setMutation(MutationOperator<DoubleSolution> mutation) {
+	public DynamicSMPSOBuilder<P> setMutation(MutationOperator<DoubleSolution> mutation) {
 		mutationOperator = mutation;
 
 		return this;
 	}
 
-	public DynamicSMPSOBuilder<P,O> setC1Max(double c1Max) {
+	public DynamicSMPSOBuilder<P> setC1Max(double c1Max) {
 		this.c1Max = c1Max;
 
 		return this;
 	}
 
-	public DynamicSMPSOBuilder<P,O> setC1Min(double c1Min) {
+	public DynamicSMPSOBuilder<P> setC1Min(double c1Min) {
 		this.c1Min = c1Min;
 
 		return this;
 	}
 
-	public DynamicSMPSOBuilder<P,O> setC2Max(double c2Max) {
+	public DynamicSMPSOBuilder<P> setC2Max(double c2Max) {
 		this.c2Max = c2Max;
 
 		return this;
 	}
 
-	public DynamicSMPSOBuilder<P,O> setC2Min(double c2Min) {
+	public DynamicSMPSOBuilder<P> setC2Min(double c2Min) {
 		this.c2Min = c2Min;
 
 		return this;
 	}
 
-	public DynamicSMPSOBuilder<P,O> setR1Max(double r1Max) {
+	public DynamicSMPSOBuilder<P> setR1Max(double r1Max) {
 		this.r1Max = r1Max;
 
 		return this;
 	}
 
-	public DynamicSMPSOBuilder<P,O> setR1Min(double r1Min) {
+	public DynamicSMPSOBuilder<P> setR1Min(double r1Min) {
 		this.r1Min = r1Min;
 
 		return this;
 	}
 
-	public DynamicSMPSOBuilder<P,O> setR2Max(double r2Max) {
+	public DynamicSMPSOBuilder<P> setR2Max(double r2Max) {
 		this.r2Max = r2Max;
 
 		return this;
 	}
 
-	public DynamicSMPSOBuilder<P,O> setR2Min(double r2Min) {
+	public DynamicSMPSOBuilder<P> setR2Min(double r2Min) {
 		this.r2Min = r2Min;
 
 		return this;
 	}
 
-	public DynamicSMPSOBuilder<P,O> setWeightMax(double weightMax) {
+	public DynamicSMPSOBuilder<P> setWeightMax(double weightMax) {
 		this.weightMax = weightMax;
 
 		return this;
 	}
 
-	public DynamicSMPSOBuilder<P,O> setWeightMin(double weightMin) {
+	public DynamicSMPSOBuilder<P> setWeightMin(double weightMin) {
 		this.weightMin = weightMin;
 
 		return this;
 	}
 
-	public DynamicSMPSOBuilder<P,O> setChangeVelocity1(double changeVelocity1) {
+	public DynamicSMPSOBuilder<P> setChangeVelocity1(double changeVelocity1) {
 		this.changeVelocity1 = changeVelocity1;
 
 		return this;
 	}
 
-	public DynamicSMPSOBuilder<P,O> setChangeVelocity2(double changeVelocity2) {
+	public DynamicSMPSOBuilder<P> setChangeVelocity2(double changeVelocity2) {
 		this.changeVelocity2 = changeVelocity2;
 
 		return this;
 	}
 
-	public DynamicSMPSOBuilder<P,O> setRandomGenerator(PseudoRandomGenerator randomGenerator) {
+	public DynamicSMPSOBuilder<P> setRandomGenerator(PseudoRandomGenerator randomGenerator) {
 		JMetalRandom.getInstance().setRandomGenerator(randomGenerator);
 
 		return this;
 	}
 
-	public DynamicSMPSOBuilder<P,O> setSolutionListEvaluator(SolutionListEvaluator<DoubleSolution> evaluator) {
+	public DynamicSMPSOBuilder<P> setSolutionListEvaluator(SolutionListEvaluator<DoubleSolution> evaluator) {
 		this.evaluator = evaluator ;
 
 		return this ;

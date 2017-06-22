@@ -24,8 +24,7 @@ import java.util.List;
  */
 public class DynamicMOCellBuilder<
 				S extends Solution<?>,
-				P extends DynamicProblem<S, ?>,
-				O extends Observable<AlgorithmObservedData>> {
+				P extends DynamicProblem<S, ?>> {
 
 	private int maxEvaluations;
 	private int populationSize;
@@ -37,10 +36,10 @@ public class DynamicMOCellBuilder<
 	protected Neighborhood<S> neighborhood ;
 	protected BoundedArchive<S> archive ;
 
-	private O observable ;
+	private Observable<AlgorithmObservedData<S>> observable ;
 	public DynamicMOCellBuilder(CrossoverOperator<S> crossoverOperator,
 	                            MutationOperator<S> mutationOperator,
-															O observable) {
+															Observable<AlgorithmObservedData<S>> observable) {
 		this.crossoverOperator = crossoverOperator ;
 		this.mutationOperator = mutationOperator;
 		this.maxEvaluations = 25000 ;
@@ -52,7 +51,7 @@ public class DynamicMOCellBuilder<
 		this.observable = observable ;
 	}
 
-	public DynamicMOCellBuilder<S,P,O> setMaxEvaluations(int maxEvaluations) {
+	public DynamicMOCellBuilder<S,P> setMaxEvaluations(int maxEvaluations) {
 		if (maxEvaluations < 0) {
 			throw new JMetalException("maxEvaluations is negative: " + maxEvaluations);
 		}
@@ -61,7 +60,7 @@ public class DynamicMOCellBuilder<
 		return this;
 	}
 
-	public DynamicMOCellBuilder<S,P,O> setPopulationSize(int populationSize) {
+	public DynamicMOCellBuilder<S,P> setPopulationSize(int populationSize) {
 		if (populationSize < 0) {
 			throw new JMetalException("Population size is negative: " + populationSize);
 		}
@@ -71,7 +70,7 @@ public class DynamicMOCellBuilder<
 		return this;
 	}
 
-	public DynamicMOCellBuilder<S,P,O> setSelectionOperator(SelectionOperator<List<S>, S> selectionOperator) {
+	public DynamicMOCellBuilder<S,P> setSelectionOperator(SelectionOperator<List<S>, S> selectionOperator) {
 		if (selectionOperator == null) {
 			throw new JMetalException("selectionOperator is null");
 		}
@@ -80,7 +79,7 @@ public class DynamicMOCellBuilder<
 		return this;
 	}
 
-	public DynamicMOCellBuilder<S,P,O> setSolutionListEvaluator(SolutionListEvaluator<S> evaluator) {
+	public DynamicMOCellBuilder<S,P> setSolutionListEvaluator(SolutionListEvaluator<S> evaluator) {
 		if (evaluator == null) {
 			throw new JMetalException("evaluator is null");
 		}
@@ -89,20 +88,20 @@ public class DynamicMOCellBuilder<
 		return this;
 	}
 
-	public DynamicMOCellBuilder<S,P,O> setArchive(BoundedArchive<S> archive) {
+	public DynamicMOCellBuilder<S,P> setArchive(BoundedArchive<S> archive) {
 		this.archive = archive ;
 
 		return this;
 	}
 
-	public DynamicMOCellBuilder<S,P,O> setNeighborhood(Neighborhood<S> neighborhood) {
+	public DynamicMOCellBuilder<S,P> setNeighborhood(Neighborhood<S> neighborhood) {
 		this.neighborhood = neighborhood;
 
 		return this;
 	}
 
-	public DynamicMOCell<S,O> build(P problem) {
-		return new DynamicMOCell<>(problem, maxEvaluations, populationSize, archive, neighborhood,
+	public DynamicMOCell build(P problem) {
+		return new DynamicMOCell(problem, maxEvaluations, populationSize, archive, neighborhood,
 						crossoverOperator, mutationOperator, selectionOperator, evaluator, observable);
 	}
 }

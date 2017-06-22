@@ -20,8 +20,7 @@ import java.util.stream.Collectors;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class SimpleStreamingDataSourceFromKeyboard implements
-        StreamingDataSource<ListObservedData<Double>,
-                Observable<ListObservedData<Double>>> {
+        StreamingDataSource<Observable<ListObservedData<Double>>> {
   private Observable<ListObservedData<Double>> observable;
 
   /**
