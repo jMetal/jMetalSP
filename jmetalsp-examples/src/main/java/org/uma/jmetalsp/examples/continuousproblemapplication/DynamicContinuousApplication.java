@@ -20,7 +20,7 @@ import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingCounterDataSource;
 import org.uma.jmetalsp.impl.DefaultRuntime;
-import org.uma.jmetalsp.observeddata.AlgorithmObservedData2;
+import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.problem.fda.FDA2;
 import org.uma.jmetalsp.observer.Observable;
@@ -44,12 +44,12 @@ public class DynamicContinuousApplication {
   public static void main(String[] args) throws IOException, InterruptedException {
     JMetalSPApplication<
             SingleObservedData<Integer>,
-            AlgorithmObservedData2,
+            AlgorithmObservedData,
             DynamicProblem<DoubleSolution, SingleObservedData<Integer>>,
-            DynamicAlgorithm<List<DoubleSolution>, Observable<AlgorithmObservedData2>>,
+            DynamicAlgorithm<List<DoubleSolution>, Observable<AlgorithmObservedData>>,
             SimpleStreamingCounterDataSource,
-            AlgorithmDataConsumer<AlgorithmObservedData2, DynamicAlgorithm<List<DoubleSolution>,
-                    Observable<AlgorithmObservedData2>>>> application;
+            AlgorithmDataConsumer<AlgorithmObservedData, DynamicAlgorithm<List<DoubleSolution>,
+                    Observable<AlgorithmObservedData>>>> application;
     application = new JMetalSPApplication<>();
 
     // Set the streaming data source
@@ -68,8 +68,8 @@ public class DynamicContinuousApplication {
 
     String defaultAlgorithm = "WASFGA";
 
-    DynamicAlgorithm<List<DoubleSolution>, Observable<AlgorithmObservedData2>> algorithm;
-    Observable<AlgorithmObservedData2> observable = new DefaultObservable<>("WASFGA") ;
+    DynamicAlgorithm<List<DoubleSolution>, Observable<AlgorithmObservedData>> algorithm;
+    Observable<AlgorithmObservedData> observable = new DefaultObservable<>("WASFGA") ;
 
     switch (defaultAlgorithm) {
       case "NSGAII":

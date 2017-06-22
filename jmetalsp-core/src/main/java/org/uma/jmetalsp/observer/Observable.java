@@ -5,7 +5,7 @@ import org.uma.jmetalsp.ObservedData;
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public interface Observable<D extends ObservedData> {
+public interface Observable<D extends ObservedData<?>> {
 	void register(Observer<D> observer) ;
 	void unregister(Observer<D> observer) ;
 

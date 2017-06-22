@@ -1,27 +1,34 @@
 package org.uma.jmetalsp.observeddata;
 
+import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetalsp.ObservedData;
 
-import java.util.List;
+import java.util.*;
 
 /**
+ * Data returned by algorithms to be sent to observers, in the form of a map structure
+ *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class AlgorithmObservedData implements ObservedData {
-	private List<? extends Solution<?>> solutionList;
-	private int numberOfIterations;
+public class AlgorithmObservedData<S extends Solution<?>> implements ObservedData<Map<String, Object>> {
+	private List<S> solutionList;
 
-	public AlgorithmObservedData(List<? extends Solution<?>> solutionList, int numberOfIterations) {
-		this.solutionList = solutionList;
-		this.numberOfIterations = numberOfIterations;
+  Map<String, Object> algorithmData ;
+
+	public AlgorithmObservedData(List<S> solutionList, Map<String, Object> algorithmData) {
+		this.solutionList = new ArrayList<>();
+
+    for (S solution:solutionList) {
+     this.solutionList.add(solution);
+    }
+
+    algorithmData.put("solutionList", this.solutionList) ;
+    this.algorithmData = algorithmData ;
 	}
 
-	public List<? extends Solution<?>> getSolutionList() {
-		return solutionList;
-	}
-
-	public int getIterations() {
-		return numberOfIterations;
-	}
+  @Override
+  public Map<String, Object> getData() {
+    return algorithmData;
+  }
 }

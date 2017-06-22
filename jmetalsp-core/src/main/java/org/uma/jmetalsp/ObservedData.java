@@ -1,9 +1,15 @@
 package org.uma.jmetalsp;
 
+import org.uma.jmetalsp.observer.Observable;
+import org.uma.jmetalsp.observer.Observer;
+
 import java.io.Serializable;
 
 /**
- * Created by ajnebro on 19/4/16.
+ * Class representing data observed by {@link Observer} entities and retrieved by {@link Observable} entities
+ *
+ * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public interface ObservedData extends Serializable {
+public interface ObservedData<T> extends Serializable {
+  T getData() ;
 }

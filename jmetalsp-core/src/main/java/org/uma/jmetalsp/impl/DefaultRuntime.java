@@ -8,16 +8,16 @@ import org.uma.jmetalsp.observer.Observable;
 import java.util.List;
 
 /**
- * Created by khaosdev on 2/9/17.
+ * Default, thread-based, implementation of the {@link StreamingRuntime} interface
+ *
+ * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DefaultRuntime<
-        D extends ObservedData,
-        O extends Observable<D>,
-        S extends StreamingDataSource<D,O>> implements StreamingRuntime<D, O, S> {
-	@Override
-	public void startStreamingDataSources(List<S> streamingDataSourceList) {
+public class DefaultRuntime implements StreamingRuntime{
 
-    for (StreamingDataSource<?, ?> streamingDataSource : streamingDataSourceList) {
+	@Override
+	public void startStreamingDataSources(List<StreamingDataSource<?>> streamingDataSourceList) {
+
+    for (StreamingDataSource<?> streamingDataSource : streamingDataSourceList) {
       Thread thread = new Thread(streamingDataSource);
       thread.start();
     }

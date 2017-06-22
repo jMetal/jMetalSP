@@ -23,7 +23,6 @@ import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
-import org.uma.jmetalsp.observeddata.AlgorithmObservedData2;
 import org.uma.jmetalsp.observer.Observable;
 
 import java.util.ArrayList;
@@ -40,9 +39,9 @@ import java.util.Map;
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DynamicNSGAII<S extends Solution<?>, O extends Observable<AlgorithmObservedData2>>
+public class DynamicNSGAII<S extends Solution<?>, O extends Observable<AlgorithmObservedData>>
     extends NSGAII<S>
-    implements DynamicAlgorithm<List<S>, Observable<AlgorithmObservedData2>> {
+    implements DynamicAlgorithm<List<S>, Observable<AlgorithmObservedData>> {
 
   private int completedIterations ;
   private boolean stopAtTheEndOfTheCurrentIteration = false ;
@@ -79,7 +78,7 @@ public class DynamicNSGAII<S extends Solution<?>, O extends Observable<Algorithm
       List<Integer> data= new ArrayList<>();
       data.add(completedIterations);
       algorithmData.put("numberOfIterations",data);
-      observable.notifyObservers(new AlgorithmObservedData2(getPopulation(), algorithmData));
+      observable.notifyObservers(new AlgorithmObservedData(getPopulation(), algorithmData));
 
       restart();
       evaluator.evaluate(getPopulation(), getDynamicProblem()) ;

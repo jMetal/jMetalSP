@@ -5,7 +5,6 @@ import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
 import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
 import org.uma.jmetal.solution.DoubleSolution;
-import org.uma.jmetal.solution.PermutationSolution;
 import org.uma.jmetalsp.*;
 import org.uma.jmetalsp.algorithm.indm2.InDM2;
 import org.uma.jmetalsp.algorithm.indm2.InDM2Builder;
@@ -15,7 +14,7 @@ import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingCounterDataS
 import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingDataSourceFromKeyboard;
 import org.uma.jmetalsp.impl.DefaultRuntime;
 
-import org.uma.jmetalsp.observeddata.AlgorithmObservedData2;
+import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.ListObservedData;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.Observable;
@@ -42,12 +41,12 @@ public class InDM2RunnerForContinuousProblems {
   public static void main(String[] args) throws IOException, InterruptedException {
     JMetalSPApplication<
             SingleObservedData<Integer>,
-            AlgorithmObservedData2,
+            AlgorithmObservedData,
             DynamicProblem<DoubleSolution, SingleObservedData<Integer>>,
-            DynamicAlgorithm<List<DoubleSolution>, Observable<AlgorithmObservedData2>>,
+            DynamicAlgorithm<List<DoubleSolution>, Observable<AlgorithmObservedData>>,
             SimpleStreamingCounterDataSource,
-            AlgorithmDataConsumer<AlgorithmObservedData2, DynamicAlgorithm<List<DoubleSolution>,
-                    Observable<AlgorithmObservedData2>>>> application;
+            AlgorithmDataConsumer<AlgorithmObservedData, DynamicAlgorithm<List<DoubleSolution>,
+                    Observable<AlgorithmObservedData>>>> application;
     application = new JMetalSPApplication<>();
 
     // Set the streaming data source for the problem
@@ -69,7 +68,7 @@ public class InDM2RunnerForContinuousProblems {
             new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);
 
     InDM2<DoubleSolution> algorithm;
-    Observable<AlgorithmObservedData2<DoubleSolution>> observable = new DefaultObservable<>("InDM2");
+    Observable<AlgorithmObservedData<DoubleSolution>> observable = new DefaultObservable<>("InDM2");
 
     List<Double> referencePoint = new ArrayList<>();
     referencePoint.add(0.5);

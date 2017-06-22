@@ -15,12 +15,11 @@ import org.uma.jmetalsp.JMetalSPApplication;
 import org.uma.jmetalsp.algorithm.mocell.DynamicMOCellBuilder;
 import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAIIBuilder;
 import org.uma.jmetalsp.algorithm.smpso.DynamicSMPSOBuilder;
-import org.uma.jmetalsp.algorithm.wasfga.DynamicWASFGA;
 import org.uma.jmetalsp.algorithm.wasfga.DynamicWASFGABuilder;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.consumer.SimpleSolutionListConsumer;
 import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingCounterDataSource;
-import org.uma.jmetalsp.observeddata.AlgorithmObservedData2;
+import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
@@ -43,12 +42,12 @@ public class DynamicContinuousApplicationWithSpark {
     public static void main(String[] args) throws IOException, InterruptedException {
         JMetalSPApplication<
                 SingleObservedData<Integer>,
-                AlgorithmObservedData2,
+                AlgorithmObservedData,
                 DynamicProblem<DoubleSolution, SingleObservedData<Integer>>,
-                DynamicAlgorithm<List<DoubleSolution>, Observable<AlgorithmObservedData2>>,
+                DynamicAlgorithm<List<DoubleSolution>, Observable<AlgorithmObservedData>>,
                 SimpleStreamingCounterDataSource,
-                AlgorithmDataConsumer<AlgorithmObservedData2, DynamicAlgorithm<List<DoubleSolution>,
-                        Observable<AlgorithmObservedData2>>>> application;
+                AlgorithmDataConsumer<AlgorithmObservedData, DynamicAlgorithm<List<DoubleSolution>,
+                        Observable<AlgorithmObservedData>>>> application;
         application = new JMetalSPApplication<>();
 
         // Problem configuration
@@ -62,8 +61,8 @@ public class DynamicContinuousApplicationWithSpark {
 
         String defaultAlgorithm = "SMPSO";
 
-        DynamicAlgorithm<List<DoubleSolution>, Observable<AlgorithmObservedData2>> algorithm;
-        Observable<AlgorithmObservedData2> observable = new DefaultObservable<>("WASFGA");
+        DynamicAlgorithm<List<DoubleSolution>, Observable<AlgorithmObservedData>> algorithm;
+        Observable<AlgorithmObservedData> observable = new DefaultObservable<>("WASFGA");
 
         switch (defaultAlgorithm) {
             case "NSGAII":

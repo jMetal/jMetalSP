@@ -10,7 +10,7 @@ import java.util.Set;
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DefaultObservable<D extends ObservedData> implements Observable<D> {
+public class DefaultObservable<D extends ObservedData<?>> implements Observable<D> {
 	private Set<Observer<D>> observers ;
 	private boolean dataHasChanged ;
 	private String name ;
@@ -22,12 +22,12 @@ public class DefaultObservable<D extends ObservedData> implements Observable<D> 
 	}
 
 	@Override
-	public void register(Observer observer) {
+	public void register(Observer<D> observer) {
 		observers.add(observer) ;
 	}
 
 	@Override
-	public void unregister(Observer observer) {
+	public void unregister(Observer<D> observer) {
 		observers.remove(observer) ;
 	}
 

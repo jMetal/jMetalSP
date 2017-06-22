@@ -16,25 +16,17 @@ package org.uma.jmetalsp.consumer;
 import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.style.Styler;
 import org.uma.jmetal.qualityindicator.impl.InvertedGenerationalDistance;
-import org.uma.jmetal.qualityindicator.impl.SetCoverage;
-import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetal.util.front.Front;
 import org.uma.jmetal.util.front.imp.ArrayFront;
-import org.uma.jmetal.util.front.util.FrontNormalizer;
-import org.uma.jmetal.util.front.util.FrontUtils;
-import org.uma.jmetal.util.point.util.PointSolution;
-import org.uma.jmetalsp.AlgorithmDataConsumer;
+import org.uma.jmetalsp.DataConsumer;
 import org.uma.jmetalsp.DynamicAlgorithm;
-import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
-import org.uma.jmetalsp.observeddata.AlgorithmObservedData2;
+import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.Observable;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,14 +36,14 @@ import java.util.Map;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class ChartInDM2Consumer<S extends Solution<?>> implements
-        AlgorithmDataConsumer<AlgorithmObservedData2<S>, DynamicAlgorithm<?, Observable<AlgorithmObservedData2<S>>>> {
-  private DynamicAlgorithm<?, Observable<AlgorithmObservedData2<S>>> dynamicAlgorithm;
+        DataConsumer<SingleObservedData<Map<String, Object>>> {
 
+  private DynamicAlgorithm<?, Observable<SingleObservedData<Map<String, Object>>>> dynamicAlgorithm;
   private ChartContainer chart ;
   private List<S> lastReceivedFront = null ;
   private List<Double> referencePoint ;
 
-  public ChartInDM2Consumer(DynamicAlgorithm<?, Observable<AlgorithmObservedData2<S>>> algorithm,
+  public ChartInDM2Consumer(DynamicAlgorithm<?, Observable<SingleObservedData<Map<String, Object>>>> algorithm,
                             List<Double> referencePoint) {
     this.dynamicAlgorithm = algorithm ;
     this.chart = null ;
@@ -59,8 +51,8 @@ public class ChartInDM2Consumer<S extends Solution<?>> implements
   }
 
   @Override
-  public DynamicAlgorithm<?, Observable<AlgorithmObservedData2<S>>> getAlgorithm() {
-    return dynamicAlgorithm;
+  public Observable<SingleObservedData<Map<String, Object>>> getObservable() {
+    return dynamicAlgorithm.getObservable();
   }
 
   @Override
@@ -80,8 +72,9 @@ public class ChartInDM2Consumer<S extends Solution<?>> implements
     }
   }
 
+  /*
   @Override
-  public void update(Observable<AlgorithmObservedData2<S>> observable, AlgorithmObservedData2<S> data) {
+  public void update(Observable<AlgorithmObservedData<S>> observable, AlgorithmObservedData<S> data) {
     //System.out.println("Number of generated fronts: " + data.getIterations());
     double coverageValue=0;
     if (chart == null) {
@@ -132,6 +125,74 @@ public class ChartInDM2Consumer<S extends Solution<?>> implements
         if (data.getAlgorithmData().get("newReferencePoint") != null) {
           this.chart.setReferencePoint((List<Double>) data.getAlgorithmData().get("newReferencePoint"));
           data.getAlgorithmData().put("newReferencePoint", null);
+          this.chart.refreshCharts();
+        }
+      }
+    }
+  }
+*/
+  @Override
+  public void update(Observable<SingleObservedData<Map<String, Object>>> observable, SingleObservedData<Map<String, Object>> data) {
+    int numberOfIterations = 0 ;
+    List<S> solutionList = null ;
+    List<Double> referencePoint = null ;
+    if (data.getData().containsKey("numberOfIterations")) {
+      numberOfIterations =  (int) data.getData().get("numberOfIterations");
+    }
+    if (data.getData().containsKey("solutionList")) {
+      solutionList = (List<S>) data.getData().get("solutionList");
+    }
+
+    if (data.getData().containsKey("referencePoint")) {
+      referencePoint = (List<Double>) data.getData().get("referencePoint");
+    }
+
+    // TODO: error handling if parameters are not included
+
+    double coverageValue=0;
+    if (chart == null) {
+      this.chart = new ChartContainer(dynamicAlgorithm.getName(), 200);
+      try {
+        this.chart.setFrontChart(0, 1, null);
+        //sizeIni= this.chart.getFrontChart().getStyler().getMarkerSize();
+
+        this.chart.setReferencePoint(referencePoint);
+        this.chart.getFrontChart().getStyler().setLegendPosition(Styler.LegendPosition.InsideNE) ;
+
+
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      }
+      this.chart.initChart();
+    } else {
+      if (solutionList.size() != 0) {
+        this.chart.getFrontChart().setTitle("Iteration: " + numberOfIterations);
+        if (lastReceivedFront == null) {
+          lastReceivedFront = solutionList ;
+        } else {
+          Front referenceFront = new ArrayFront(lastReceivedFront);
+
+          InvertedGenerationalDistance<S> igd =
+                  new InvertedGenerationalDistance<S>(referenceFront);
+
+          coverageValue=igd.evaluate(solutionList);
+        }
+
+        if(coverageValue>0.005) {
+          this.chart.updateFrontCharts(solutionList, numberOfIterations);
+          lastReceivedFront=solutionList;
+          try {
+            this.chart.saveChart(numberOfIterations +".chart", BitmapEncoder.BitmapFormat.PNG);
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
+
+        }
+        this.chart.refreshCharts();
+      } else {
+        if (referencePoint != null) {
+          this.chart.setReferencePoint(referencePoint);
+          //data.getAlgorithmData().put("newReferencePoint", null);
           this.chart.refreshCharts();
         }
       }

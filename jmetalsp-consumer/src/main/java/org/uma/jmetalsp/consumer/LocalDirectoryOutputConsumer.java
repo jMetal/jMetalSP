@@ -1,44 +1,34 @@
-//  This program is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU Lesser General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-//
-//  This program is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU Lesser General Public License for more details.
-//
-//  You should have received a copy of the GNU Lesser General Public License
-//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 package org.uma.jmetalsp.consumer;
 
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetal.util.fileoutput.SolutionListOutput;
 import org.uma.jmetal.util.fileoutput.impl.DefaultFileOutputContext;
-import org.uma.jmetalsp.AlgorithmDataConsumer;
+import org.uma.jmetalsp.DataConsumer;
 import org.uma.jmetalsp.DynamicAlgorithm;
-import org.uma.jmetalsp.observeddata.AlgorithmObservedData2;
+import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.Observer;
 
 import java.io.File;
+import java.util.List;
 
 /**
+ * This consumer receives lists of solutions and store them in a directory
+ *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class LocalDirectoryOutputConsumer<S extends Solution<?>> implements
-        AlgorithmDataConsumer<AlgorithmObservedData2<S>, DynamicAlgorithm<?, Observable<AlgorithmObservedData2<S>>>> {
+        DataConsumer<SingleObservedData<List<S>>> {
   private String outputDirectoryName;
-  private DynamicAlgorithm<?, Observable<AlgorithmObservedData2<S>>> dynamicAlgorithm;
+  private DynamicAlgorithm<?, Observable<SingleObservedData<List<S>>>> dynamicAlgorithm;
   private int fileCounter = 0;
 
   /**
    * Constructor
    */
   public LocalDirectoryOutputConsumer(String outputDirectoryName,
-                                      DynamicAlgorithm<?, Observable<AlgorithmObservedData2<S>>> algorithm) {
+                                      DynamicAlgorithm<?, Observable<SingleObservedData<List<S>>>> algorithm) {
     this.outputDirectoryName = outputDirectoryName;
     this.dynamicAlgorithm = algorithm ;
     createDataDirectory(this.outputDirectoryName);
@@ -53,16 +43,12 @@ public class LocalDirectoryOutputConsumer<S extends Solution<?>> implements
   public void setAlgorithm(DynamicAlgorithm<?, AlgorithmObservedData> algorithm) {
     this.dynamicAlgorithm = algorithm;
   }
-*/
-  @Override
-  public DynamicAlgorithm<?, Observable<AlgorithmObservedData2<S>>> getAlgorithm() {
-    return dynamicAlgorithm;
-  }
 
-  public Observer getObserver() {
+
+   public Observer getObserver() {
     return this;
   }
-  
+*/
   @Override
   public void run() {
     if (dynamicAlgorithm == null) {
@@ -81,6 +67,11 @@ public class LocalDirectoryOutputConsumer<S extends Solution<?>> implements
     }
   }
 
+  @Override
+  public Observable<SingleObservedData<List<S>>> getObservable() {
+    return dynamicAlgorithm.getObservable();
+  }
+
   private void createDataDirectory(String outputDirectoryName) {
     File outputDirectory = new File(outputDirectoryName);
 
@@ -97,15 +88,14 @@ public class LocalDirectoryOutputConsumer<S extends Solution<?>> implements
     }
   }
 
+
   @Override
-  public void update(Observable<AlgorithmObservedData2<S>> observable, AlgorithmObservedData2<S> data) {
-    AlgorithmObservedData2<S> algorithmResultData = data;
-    new SolutionListOutput(algorithmResultData.getSolutionList())
+  public void update(Observable<SingleObservedData<List<S>>> observable, SingleObservedData<List<S>> data) {
+    new SolutionListOutput(data.getData())
             .setSeparator("\t")
             .setFunFileOutputContext(new DefaultFileOutputContext(outputDirectoryName + "/FUN" + fileCounter + ".tsv"))
             .setVarFileOutputContext(new DefaultFileOutputContext(outputDirectoryName + "/VAR" + fileCounter + ".tsv"))
             .print();
     fileCounter++;
   }
-
 }

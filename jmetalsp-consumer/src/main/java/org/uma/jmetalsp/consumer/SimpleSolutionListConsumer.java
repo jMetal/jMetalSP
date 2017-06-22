@@ -13,34 +13,32 @@
 
 package org.uma.jmetalsp.consumer;
 
+import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.JMetalException;
-import org.uma.jmetalsp.AlgorithmDataConsumer;
+import org.uma.jmetalsp.DataConsumer;
 import org.uma.jmetalsp.DynamicAlgorithm;
-import org.uma.jmetalsp.observeddata.AlgorithmObservedData2;
+import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.Observable;
 
 import java.util.List;
 
 /**
+ * This consumer receives a list of solutions and prints information about it
+ *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class SimpleSolutionListConsumer implements
-        AlgorithmDataConsumer<AlgorithmObservedData2,
-                DynamicAlgorithm<?, Observable<AlgorithmObservedData2>>> {
-  private DynamicAlgorithm<?, Observable<AlgorithmObservedData2>> dynamicAlgorithm;
+public class SimpleSolutionListConsumer<S extends Solution<?>> implements
+        DataConsumer<SingleObservedData<List<S>>> {
 
-  public SimpleSolutionListConsumer(DynamicAlgorithm<?, Observable<AlgorithmObservedData2>> algorithm) {
+  private DynamicAlgorithm<?, Observable<SingleObservedData<List<S>>>> dynamicAlgorithm;
+
+  public SimpleSolutionListConsumer(DynamicAlgorithm<?, Observable<SingleObservedData<List<S>>>> algorithm) {
     this.dynamicAlgorithm = algorithm ;
   }
-  /*
+
   @Override
-  public void setAlgorithm(DynamicAlgorithm<?, AlgorithmObservedData> algorithm) {
-    this.dynamicAlgorithm = algorithm;
-  }
-*/
-  @Override
-  public DynamicAlgorithm<?, Observable<AlgorithmObservedData2>> getAlgorithm() {
-    return dynamicAlgorithm;
+  public Observable<SingleObservedData<List<S>>> getObservable() {
+    return dynamicAlgorithm.getObservable();
   }
 
   @Override
@@ -61,9 +59,8 @@ public class SimpleSolutionListConsumer implements
   }
 
   @Override
-  public void update(Observable<AlgorithmObservedData2> observable, AlgorithmObservedData2 data) {
-    AlgorithmObservedData2 algorithmResultData = (AlgorithmObservedData2) data;
-    System.out.println("Number of generated fronts: " +((List<Integer>) algorithmResultData.getAlgorithmData().get("numberOfIteration")).get(0));
-    System.out.println("Size of the front: " + algorithmResultData.getSolutionList().size());
+  public void update(Observable<SingleObservedData<List<S>>> observable, SingleObservedData<List<S>> data) {
+    System.out.println("Size of the list of solutions: " + data.getData().size());
+    System.out.println("First solution: " + data.getData().get(0)) ;
   }
 }

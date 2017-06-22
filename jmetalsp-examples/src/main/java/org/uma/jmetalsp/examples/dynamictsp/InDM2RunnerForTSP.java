@@ -4,9 +4,7 @@ import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.SelectionOperator;
 import org.uma.jmetal.operator.impl.crossover.PMXCrossover;
-import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
 import org.uma.jmetal.operator.impl.mutation.PermutationSwapMutation;
-import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
 import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.solution.PermutationSolution;
@@ -16,24 +14,19 @@ import org.uma.jmetalsp.algorithm.indm2.InDM2;
 import org.uma.jmetalsp.algorithm.indm2.InDM2Builder;
 import org.uma.jmetalsp.consumer.ChartInDM2Consumer;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
-import org.uma.jmetalsp.examples.dynamictsp.StreamingTSPSource;
 import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingCounterDataSource;
 import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingDataSourceFromKeyboard;
 import org.uma.jmetalsp.impl.DefaultRuntime;
-import org.uma.jmetalsp.observeddata.AlgorithmObservedData2;
+import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.ListObservedData;
 import org.uma.jmetalsp.observeddata.MatrixObservedData;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
-import org.uma.jmetalsp.problem.fda.FDA2;
 import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPBuilderFromFiles;
-import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPBuilderFromNY;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
-import org.uma.jmetalsp.util.restartstrategy.impl.RemoveFirstNSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNRandomSolutions;
-import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNSolutionsAccordingToTheHypervolumeContribution;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -52,11 +45,11 @@ public class InDM2RunnerForTSP {
   public static void main(String[] args) throws IOException, InterruptedException {
     JMetalSPApplication<
             MatrixObservedData<Double>,
-            AlgorithmObservedData2,
+            AlgorithmObservedData,
             DynamicProblem<DoubleSolution, MatrixObservedData<Double>>,
-            DynamicAlgorithm<List<PermutationSolution<Integer>>, Observable<AlgorithmObservedData2>>,
+            DynamicAlgorithm<List<PermutationSolution<Integer>>, Observable<AlgorithmObservedData>>,
             StreamingTSPSource,
-            AlgorithmDataConsumer<AlgorithmObservedData2, DynamicAlgorithm<List<PermutationSolution<Integer>>, Observable<AlgorithmObservedData2>>>> application;
+            AlgorithmDataConsumer<AlgorithmObservedData, DynamicAlgorithm<List<PermutationSolution<Integer>>, Observable<AlgorithmObservedData>>>> application;
     application = new JMetalSPApplication<>();
 
     // Set the streaming data source for the problem
@@ -91,7 +84,7 @@ public class InDM2RunnerForTSP {
             new RankingAndCrowdingDistanceComparator<PermutationSolution<Integer>>());
 
     InDM2<PermutationSolution<Integer>> algorithm;
-    Observable<AlgorithmObservedData2<PermutationSolution<Integer>>> observable = new DefaultObservable<>("InDM2");
+    Observable<AlgorithmObservedData<PermutationSolution<Integer>>> observable = new DefaultObservable<>("InDM2");
 
     List<Double> referencePoint = new ArrayList<>();
     referencePoint.add(180000.0);
@@ -101,7 +94,7 @@ public class InDM2RunnerForTSP {
     algorithm = new InDM2Builder<
             PermutationSolution<Integer>,
             DynamicProblem<PermutationSolution<Integer>, ?>,
-            Observable<AlgorithmObservedData2<PermutationSolution<Integer>>>>(crossover, mutation, referencePoint, observable)
+            Observable<AlgorithmObservedData<PermutationSolution<Integer>>>>(crossover, mutation, referencePoint, observable)
             .setMaxIterations(400000)
             .setPopulationSize(populationSize)
             .build(problem);

@@ -12,13 +12,15 @@ import java.util.List;
  *
  * @author Antonio J. Nebro
  *
- * @param <SD> Streaming Data (data produced by the streaming data sources)
- * @param <AD> Algorithm Data (data produced by the algorithm)
  * @param <P> Problem
  * @param <A> Algorithm
  * @param <S> Streaming data source
- * @param <C> Algorithm data consumer
  */
+public class JMetalSPApplication<
+        S extends Solution<?>,
+        P extends DynamicProblem<S, ?>,
+        A extends DynamicAlgorithm<?, ? extends Observable<?>>> {
+/*
 public class JMetalSPApplication<
         SD extends ObservedData,
         AD extends ObservedData,
@@ -26,9 +28,9 @@ public class JMetalSPApplication<
         A extends DynamicAlgorithm<?, ? extends Observable<AD>>,
         S extends StreamingDataSource<SD, ? extends Observable<SD>>,
         C extends AlgorithmDataConsumer<AD, A>> {
-
-  private List<S> streamingDataSourceList;
-  private List<C> algorithmDataConsumerList;
+ */
+  private List<StreamingDataSource<?>> streamingDataSourceList;
+  private List<DataConsumer<?>> algorithmDataConsumerList;
   private StreamingRuntime streamingRuntime;
 
   private P problem;
@@ -52,7 +54,7 @@ public class JMetalSPApplication<
     return this;
   }
 
-  public JMetalSPApplication addStreamingDataSource(S streamingDataSource) {
+  public JMetalSPApplication addStreamingDataSource(StreamingDataSource<?> streamingDataSource) {
     if (streamingDataSourceList == null) {
       streamingDataSourceList = new ArrayList<>();
     }
@@ -62,7 +64,7 @@ public class JMetalSPApplication<
     return this;
   }
 
-  public JMetalSPApplication addAlgorithmDataConsumer(C consumer) {
+  public JMetalSPApplication addAlgorithmDataConsumer(DataConsumer<?> consumer) {
     if (algorithmDataConsumerList == null) {
       algorithmDataConsumerList = new ArrayList<>();
     }
@@ -82,7 +84,7 @@ public class JMetalSPApplication<
 
     Thread algorithmThread = new Thread(algorithm);
     List<Thread> consumerThreadList = new ArrayList<Thread>(algorithmDataConsumerList.size());
-    for (C consumer : algorithmDataConsumerList) {
+    for (DataConsumer<?> consumer : algorithmDataConsumerList) {
       Thread thread = new Thread(consumer);
       consumerThreadList.add(thread);
       thread.start();

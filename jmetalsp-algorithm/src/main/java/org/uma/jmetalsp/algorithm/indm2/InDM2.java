@@ -10,12 +10,10 @@ import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.DynamicProblem;
-import org.uma.jmetalsp.observeddata.AlgorithmObservedData2;
+import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.ListObservedData;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.Observer;
-import org.uma.jmetalsp.util.restartstrategy.CreateNewSolutionsStrategy;
-import org.uma.jmetalsp.util.restartstrategy.RemoveSolutionsStrategy;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveFirstNSolutions;
@@ -32,7 +30,7 @@ import java.util.*;
  */
 public class InDM2<S extends Solution<?>>
         extends WASFGA<S>
-        implements DynamicAlgorithm<List<S>, Observable<AlgorithmObservedData2>>,
+        implements DynamicAlgorithm<List<S>, Observable<AlgorithmObservedData>>,
         Observer<ListObservedData<Double>> {
   private int completedIterations;
   private boolean stopAtTheEndOfTheCurrentIteration = false;
@@ -41,12 +39,12 @@ public class InDM2<S extends Solution<?>>
   private RestartStrategy<S> restartStrategyForProblemChange ;
   private RestartStrategy<S> restartStrategyForReferencePointChange ;
 
-  Observable<AlgorithmObservedData2> observable;
+  Observable<AlgorithmObservedData> observable;
 
   public InDM2(Problem<S> problem, int populationSize, int maxEvaluations, CrossoverOperator<S> crossoverOperator,
                MutationOperator<S> mutationOperator, SelectionOperator<List<S>, S> selectionOperator,
                SolutionListEvaluator<S> evaluator, List<Double> referencePoint,
-               Observable<AlgorithmObservedData2> observable) {
+               Observable<AlgorithmObservedData> observable) {
     super(problem, populationSize, maxEvaluations, crossoverOperator, mutationOperator, selectionOperator, evaluator,
             referencePoint);
     completedIterations = 0;
@@ -92,7 +90,7 @@ public class InDM2<S extends Solution<?>>
   }
 
   @Override
-  public Observable<AlgorithmObservedData2> getObservable() {
+  public Observable<AlgorithmObservedData> getObservable() {
     return this.observable;
   }
 
@@ -114,7 +112,7 @@ public class InDM2<S extends Solution<?>>
       data.add(completedIterations);
       algorithmData.put("numberOfIterations",data);
 
-      observable.notifyObservers(new AlgorithmObservedData2(getPopulation(), algorithmData));
+      observable.notifyObservers(new AlgorithmObservedData(getPopulation(), algorithmData));
       this.restartStrategyForProblemChange.restart(getPopulation(), (DynamicProblem<S, ?>) getProblem());
       restart();
       completedIterations++;
@@ -149,7 +147,7 @@ public class InDM2<S extends Solution<?>>
     algorithmData.put("newReferencePoint",referencePoint);
     List<S> emptyList = new ArrayList<>();
     observable.setChanged();
-    observable.notifyObservers(new AlgorithmObservedData2(emptyList, algorithmData));
+    observable.notifyObservers(new AlgorithmObservedData(emptyList, algorithmData));
   }
 
   @Override
