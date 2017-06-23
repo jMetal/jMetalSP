@@ -22,6 +22,7 @@ import org.uma.jmetal.util.front.Front;
 import org.uma.jmetal.util.front.imp.ArrayFront;
 import org.uma.jmetalsp.DataConsumer;
 import org.uma.jmetalsp.DynamicAlgorithm;
+import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.Observable;
 
@@ -36,14 +37,14 @@ import java.util.Map;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class ChartInDM2Consumer<S extends Solution<?>> implements
-        DataConsumer<SingleObservedData<Map<String, Object>>> {
+        DataConsumer<AlgorithmObservedData<S>> {
 
-  private DynamicAlgorithm<?, SingleObservedData<Map<String, Object>>> dynamicAlgorithm;
+  private DynamicAlgorithm<?, AlgorithmObservedData<S>> dynamicAlgorithm;
   private ChartContainer chart ;
   private List<S> lastReceivedFront = null ;
   private List<Double> referencePoint ;
 
-  public ChartInDM2Consumer(DynamicAlgorithm<?, SingleObservedData<Map<String, Object>>> algorithm,
+  public ChartInDM2Consumer(DynamicAlgorithm<?, AlgorithmObservedData<S>> algorithm,
                             List<Double> referencePoint) {
     this.dynamicAlgorithm = algorithm ;
     this.chart = null ;
@@ -51,7 +52,7 @@ public class ChartInDM2Consumer<S extends Solution<?>> implements
   }
 
   @Override
-  public Observable<SingleObservedData<Map<String, Object>>> getObservable() {
+  public Observable<AlgorithmObservedData<S>> getObservable() {
     return dynamicAlgorithm.getObservable();
   }
 
@@ -132,10 +133,10 @@ public class ChartInDM2Consumer<S extends Solution<?>> implements
   }
 */
   @Override
-  public void update(Observable<SingleObservedData<Map<String, Object>>> observable, SingleObservedData<Map<String, Object>> data) {
+  public void update(Observable<AlgorithmObservedData<S>> observable, AlgorithmObservedData<S> data) {
     int numberOfIterations = 0 ;
     List<S> solutionList = null ;
-    List<Double> referencePoint = null ;
+    List<Double> newReferencePoint = null ;
     if (data.getData().containsKey("numberOfIterations")) {
       numberOfIterations =  (int) data.getData().get("numberOfIterations");
     }
@@ -144,7 +145,7 @@ public class ChartInDM2Consumer<S extends Solution<?>> implements
     }
 
     if (data.getData().containsKey("referencePoint")) {
-      referencePoint = (List<Double>) data.getData().get("referencePoint");
+      newReferencePoint = (List<Double>) data.getData().get("referencePoint");
     }
 
     // TODO: error handling if parameters are not included
@@ -155,7 +156,7 @@ public class ChartInDM2Consumer<S extends Solution<?>> implements
       try {
         this.chart.setFrontChart(0, 1, null);
 
-        this.chart.setReferencePoint(referencePoint);
+        this.chart.setReferencePoint(this.referencePoint);
         this.chart.getFrontChart().getStyler().setLegendPosition(Styler.LegendPosition.InsideNE) ;
 
 
@@ -188,8 +189,8 @@ public class ChartInDM2Consumer<S extends Solution<?>> implements
         }
         this.chart.refreshCharts();
       } else {
-        if (referencePoint != null) {
-          this.chart.setReferencePoint(referencePoint);
+        if (newReferencePoint != null) {
+          this.chart.setReferencePoint(newReferencePoint);
           //data.getAlgorithmData().put("newReferencePoint", null);
           this.chart.refreshCharts();
         }

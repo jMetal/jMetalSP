@@ -37,6 +37,7 @@ public class DynamicMOCellBuilder<
 	protected BoundedArchive<S> archive ;
 
 	private Observable<AlgorithmObservedData<S>> observable ;
+
 	public DynamicMOCellBuilder(CrossoverOperator<S> crossoverOperator,
 	                            MutationOperator<S> mutationOperator,
 															Observable<AlgorithmObservedData<S>> observable) {

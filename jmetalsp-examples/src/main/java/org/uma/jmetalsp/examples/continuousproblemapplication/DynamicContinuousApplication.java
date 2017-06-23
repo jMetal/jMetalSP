@@ -61,7 +61,7 @@ public class DynamicContinuousApplication {
     algorithm.getObservable().register(localDirectoryOutputConsumer);
     algorithm.getObservable().register(chartConsumer) ;
 
-    // STEP 5. Create the application and run it
+    // STEP 5. Create the application and run
     JMetalSPApplication<
             DoubleSolution,
             DynamicProblem<DoubleSolution, SingleObservedData<Integer>>,

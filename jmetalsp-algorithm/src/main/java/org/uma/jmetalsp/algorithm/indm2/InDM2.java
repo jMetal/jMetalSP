@@ -12,6 +12,7 @@ import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.ListObservedData;
+import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.Observer;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
@@ -31,7 +32,7 @@ import java.util.*;
 public class InDM2<S extends Solution<?>>
         extends WASFGA<S>
         implements DynamicAlgorithm<List<S>, AlgorithmObservedData<S>>,
-        Observer<ListObservedData<Double>> {
+        Observer<SingleObservedData<List<Double>>> {
   private int completedIterations;
   private boolean stopAtTheEndOfTheCurrentIteration = false;
   private Optional<S> newReferencePoint ;
@@ -98,11 +99,11 @@ public class InDM2<S extends Solution<?>>
   protected boolean isStoppingConditionReached() {
     if (evaluations >= maxEvaluations) {
       observable.setChanged();
-      List<Integer> data= new ArrayList<>();
-      data.add(completedIterations);
-      algorithmData.put("numberOfIterations",data);
+      Map<String, Object> algorithmData = new HashMap<>() ;
 
-      observable.notifyObservers(new AlgorithmObservedData(getPopulation(), algorithmData));
+      algorithmData.put("numberOfIterations",completedIterations);
+      observable.notifyObservers(new AlgorithmObservedData<S>(getPopulation(), algorithmData));
+
       this.restartStrategyForProblemChange.restart(getPopulation(), (DynamicProblem<S, ?>) getProblem());
       restart();
       completedIterations++;
@@ -141,7 +142,9 @@ public class InDM2<S extends Solution<?>>
   }
 
   @Override
-  public synchronized void update(Observable<ListObservedData<Double>> observable, ListObservedData<Double> data) {
+  public synchronized void update(
+          Observable<SingleObservedData<List<Double>>> observable,
+          SingleObservedData<List<Double>> data) {
     if (data.getData().size() != getDynamicProblem().getNumberOfObjectives()) {
       throw new JMetalException("The reference point size is not correct: " + data.getData().size()) ;
     }

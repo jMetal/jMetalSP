@@ -5,6 +5,7 @@ import org.uma.jmetalsp.StreamingDataSource;
 import org.uma.jmetalsp.observeddata.ListObservedData;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.Observable;
+import org.uma.jmetalsp.observer.impl.DefaultObservable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,6 +31,11 @@ public class SimpleStreamingDataSourceFromKeyboard implements
   public SimpleStreamingDataSourceFromKeyboard(Observable<SingleObservedData<List<Double>>> observable) {
     this.observable = observable;
   }
+
+  public SimpleStreamingDataSourceFromKeyboard() {
+    this(new DefaultObservable<>());
+  }
+
 
   @Override
   public void run() {

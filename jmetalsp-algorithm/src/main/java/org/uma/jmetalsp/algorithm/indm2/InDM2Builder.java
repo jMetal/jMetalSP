@@ -20,8 +20,7 @@ import java.util.List;
  */
 public class InDM2Builder<
         S extends Solution<?>,
-        P extends DynamicProblem<S, ?>,
-        O extends Observable<AlgorithmObservedData<S>>> {
+        P extends DynamicProblem<S, ?>> {
 
   private CrossoverOperator<S> crossover;
   private MutationOperator<S> mutation;
@@ -31,7 +30,7 @@ public class InDM2Builder<
   private double crossoverProbability;
   private double crossoverDistributionIndex;
   private double mutationProbability;
-  private O observable;
+  private Observable<AlgorithmObservedData<S>> observable ;
   private double mutationDistributionIndex;
   private int maxIterations;
   private int populationSize;
@@ -39,7 +38,7 @@ public class InDM2Builder<
   public InDM2Builder(CrossoverOperator<S> crossoverOperator,
                       MutationOperator<S> mutationOperator,
                       List<Double> referencePoint,
-                      O observable) {
+                      Observable<AlgorithmObservedData<S>> observable) {
     this.crossover = crossoverOperator;
     this.mutation = mutationOperator;
     this.selection = new BinaryTournamentSelection<S>(new RankingAndCrowdingDistanceComparator<S>());
@@ -54,57 +53,57 @@ public class InDM2Builder<
     this.referencePoint = referencePoint ;
   }
 
-  public InDM2Builder<S, P, O> setCrossover(CrossoverOperator<S> crossover) {
+  public InDM2Builder<S, P> setCrossover(CrossoverOperator<S> crossover) {
     this.crossover = crossover;
     return this;
   }
 
-  public InDM2Builder<S, P, O> setMutation(MutationOperator<S> mutation) {
+  public InDM2Builder<S, P> setMutation(MutationOperator<S> mutation) {
     this.mutation = mutation;
     return this;
   }
 
-  public InDM2Builder<S, P, O> setSelection(SelectionOperator<List<S>, S> selection) {
+  public InDM2Builder<S, P> setSelection(SelectionOperator<List<S>, S> selection) {
     this.selection = selection;
     return this;
   }
 
-  public InDM2Builder<S, P, O> setEvaluator(SolutionListEvaluator<S> evaluator) {
+  public InDM2Builder<S, P> setEvaluator(SolutionListEvaluator<S> evaluator) {
     this.evaluator = evaluator;
     return this;
   }
 
-  public InDM2Builder<S, P, O> setCrossoverProbability(double crossoverProbability) {
+  public InDM2Builder<S, P> setCrossoverProbability(double crossoverProbability) {
     this.crossoverProbability = crossoverProbability;
     return this;
   }
 
-  public InDM2Builder<S, P, O> setCrossoverDistributionIndex(double crossoverDistributionIndex) {
+  public InDM2Builder<S, P> setCrossoverDistributionIndex(double crossoverDistributionIndex) {
     this.crossoverDistributionIndex = crossoverDistributionIndex;
     return this;
   }
 
-  public InDM2Builder<S, P, O> setMutationProbability(double mutationProbability) {
+  public InDM2Builder<S, P> setMutationProbability(double mutationProbability) {
     this.mutationProbability = mutationProbability;
     return this;
   }
 
-  public InDM2Builder<S, P, O> setMutationDistributionIndex(double mutationDistributionIndex) {
+  public InDM2Builder<S, P> setMutationDistributionIndex(double mutationDistributionIndex) {
     this.mutationDistributionIndex = mutationDistributionIndex;
     return this;
   }
 
-  public InDM2Builder<S, P, O> setMaxIterations(int maxIterations) {
+  public InDM2Builder<S, P> setMaxIterations(int maxIterations) {
     this.maxIterations = maxIterations;
     return this;
   }
 
-  public InDM2Builder<S, P, O> setPopulationSize(int populationSize) {
+  public InDM2Builder<S, P> setPopulationSize(int populationSize) {
     this.populationSize = populationSize;
     return this;
   }
 
-  public InDM2Builder<S, P, O> setReferencePoint(List<Double> referencePoint) {
+  public InDM2Builder<S, P> setReferencePoint(List<Double> referencePoint) {
     this.referencePoint = referencePoint;
     return this;
   }
