@@ -34,7 +34,7 @@ import java.util.Map;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class DynamicSMPSO extends SMPSO
-        implements DynamicAlgorithm<List<DoubleSolution>, Observable<AlgorithmObservedData<DoubleSolution>>> {
+        implements DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData<DoubleSolution>> {
 
   private int completedIterations;
   private SolutionListEvaluator<DoubleSolution> evaluator;

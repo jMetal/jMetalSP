@@ -38,12 +38,12 @@ import java.util.Map;
 public class ChartInDM2Consumer<S extends Solution<?>> implements
         DataConsumer<SingleObservedData<Map<String, Object>>> {
 
-  private DynamicAlgorithm<?, Observable<SingleObservedData<Map<String, Object>>>> dynamicAlgorithm;
+  private DynamicAlgorithm<?, SingleObservedData<Map<String, Object>>> dynamicAlgorithm;
   private ChartContainer chart ;
   private List<S> lastReceivedFront = null ;
   private List<Double> referencePoint ;
 
-  public ChartInDM2Consumer(DynamicAlgorithm<?, Observable<SingleObservedData<Map<String, Object>>>> algorithm,
+  public ChartInDM2Consumer(DynamicAlgorithm<?, SingleObservedData<Map<String, Object>>> algorithm,
                             List<Double> referencePoint) {
     this.dynamicAlgorithm = algorithm ;
     this.chart = null ;

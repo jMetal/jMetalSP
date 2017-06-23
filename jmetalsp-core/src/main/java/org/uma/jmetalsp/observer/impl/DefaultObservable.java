@@ -13,12 +13,10 @@ import java.util.Set;
 public class DefaultObservable<D extends ObservedData<?>> implements Observable<D> {
 	private Set<Observer<D>> observers ;
 	private boolean dataHasChanged ;
-	private String name ;
 
-	public DefaultObservable(String name){
+	public DefaultObservable() {
 		observers = new HashSet<>() ;
 		dataHasChanged = false ;
-		this.name = name ;
 	}
 
 	@Override
@@ -58,10 +56,4 @@ public class DefaultObservable<D extends ObservedData<?>> implements Observable<
 	public void clearChanged() {
 		dataHasChanged = false ;
 	}
-
-	@Override
-  public String getName() {
-	  return name ;
-  }
-
 }

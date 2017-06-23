@@ -2,6 +2,7 @@ package org.uma.jmetalsp;
 
 import org.uma.jmetal.problem.Problem;
 import org.uma.jmetal.solution.Solution;
+import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.Observer;
 
 /**
@@ -12,4 +13,5 @@ public interface DynamicProblem<S extends Solution<?>, D extends ObservedData<?>
 
   boolean hasTheProblemBeenModified() ;
 	void reset() ;
+  Observable<D> getObservable() ;
 }

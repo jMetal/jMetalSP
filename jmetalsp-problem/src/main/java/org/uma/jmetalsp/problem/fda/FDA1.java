@@ -4,6 +4,7 @@ import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.Observable;
+import org.uma.jmetalsp.observer.impl.DefaultObservable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -16,6 +17,10 @@ public class FDA1 extends FDA implements Serializable {
 
   public FDA1(Observable<SingleObservedData<Integer>> observable){
     this(100,2, observable);
+  }
+
+  public FDA1() {
+    this(new DefaultObservable<>("")) ;
   }
 
   public FDA1 (Integer numberOfVariables, Integer numberOfObjectives, Observable<SingleObservedData<Integer>> observer) throws JMetalException {

@@ -42,13 +42,13 @@ import java.util.Map;
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DynamicMOCell<S extends Solution<?>, O extends Observable<AlgorithmObservedData<?>>>
+public class DynamicMOCell<S extends Solution<?>>
     extends MOCell<S>
-    implements DynamicAlgorithm<List<S>, O> {
+    implements DynamicAlgorithm<List<S>,AlgorithmObservedData<S>> {
 
   private int completedIterations ;
   private boolean stopAtTheEndOfTheCurrentIteration = false ;
-  private O observable ;
+  Observable<AlgorithmObservedData<S>> observable ;
   private Map<String,List> algorithmData;
 
   public DynamicMOCell(DynamicProblem<S, ?> problem,
@@ -60,7 +60,7 @@ public class DynamicMOCell<S extends Solution<?>, O extends Observable<Algorithm
                        MutationOperator<S> mutationOperator,
                        SelectionOperator<List<S>, S> selectionOperator,
                        SolutionListEvaluator<S> evaluator,
-                       O observable) {
+                       Observable<AlgorithmObservedData<S>> observable) {
     super(problem, maxEvaluations, populationSize, archive, neighborhood, crossoverOperator, mutationOperator,
             selectionOperator, evaluator);
 
@@ -116,7 +116,7 @@ public class DynamicMOCell<S extends Solution<?>, O extends Observable<Algorithm
   }
 
   @Override
-  public O getObservable() {
+  public Observable<AlgorithmObservedData<S>> getObservable() {
     return this.observable ;
   }
 }

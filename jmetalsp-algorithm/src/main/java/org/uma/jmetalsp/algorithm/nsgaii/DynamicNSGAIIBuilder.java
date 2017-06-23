@@ -79,7 +79,7 @@ public class DynamicNSGAIIBuilder<
 		return this;
 	}
 
-	public DynamicNSGAII<S, ?> build(P problem) {
+	public DynamicNSGAII<S> build(P problem) {
 		return new DynamicNSGAII(problem, maxEvaluations, populationSize, crossoverOperator, mutationOperator,
 						selectionOperator, evaluator, observable);
 	}

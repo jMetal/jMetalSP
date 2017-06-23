@@ -17,6 +17,7 @@ import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetalsp.DataConsumer;
 import org.uma.jmetalsp.DynamicAlgorithm;
+import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.Observable;
 
@@ -28,16 +29,16 @@ import java.util.List;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class SimpleSolutionListConsumer<S extends Solution<?>> implements
-        DataConsumer<SingleObservedData<List<S>>> {
+        DataConsumer<AlgorithmObservedData<S>> {
 
-  private DynamicAlgorithm<?, Observable<SingleObservedData<List<S>>>> dynamicAlgorithm;
+  private DynamicAlgorithm<?, AlgorithmObservedData<S>> dynamicAlgorithm;
 
-  public SimpleSolutionListConsumer(DynamicAlgorithm<?, Observable<SingleObservedData<List<S>>>> algorithm) {
+  public SimpleSolutionListConsumer(DynamicAlgorithm<?, AlgorithmObservedData<S>> algorithm) {
     this.dynamicAlgorithm = algorithm ;
   }
 
   @Override
-  public Observable<SingleObservedData<List<S>>> getObservable() {
+  public Observable<AlgorithmObservedData<S>> getObservable() {
     return dynamicAlgorithm.getObservable();
   }
 
@@ -59,7 +60,7 @@ public class SimpleSolutionListConsumer<S extends Solution<?>> implements
   }
 
   @Override
-  public void update(Observable<SingleObservedData<List<S>>> observable, SingleObservedData<List<S>> data) {
+  public void update(Observable<AlgorithmObservedData<S>> observable, AlgorithmObservedData<S> data) {
     System.out.println("Size of the list of solutions: " + data.getData().size());
     System.out.println("First solution: " + data.getData().get(0)) ;
   }

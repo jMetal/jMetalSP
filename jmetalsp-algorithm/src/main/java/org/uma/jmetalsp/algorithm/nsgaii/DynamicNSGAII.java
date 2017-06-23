@@ -39,27 +39,25 @@ import java.util.Map;
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DynamicNSGAII<S extends Solution<?>, O extends Observable<AlgorithmObservedData<S>>>
+public class DynamicNSGAII<S extends Solution<?>>
     extends NSGAII<S>
-    implements DynamicAlgorithm<List<S>, O> {
+    implements DynamicAlgorithm<List<S>, AlgorithmObservedData<S>> {
 
   private int completedIterations ;
   private boolean stopAtTheEndOfTheCurrentIteration = false ;
 
-	O observable ;
-  private Map<String,List> algorithmData;
+	Observable<AlgorithmObservedData<S>> observable ;
 
   public DynamicNSGAII(DynamicProblem<S, ?> problem, int maxEvaluations, int populationSize,
                        CrossoverOperator<S> crossoverOperator,
                        MutationOperator<S> mutationOperator,
                        SelectionOperator<List<S>, S> selectionOperator,
                        SolutionListEvaluator<S> evaluator,
-                       O observable) {
+                       Observable<AlgorithmObservedData<S>> observable) {
     super(problem, maxEvaluations, populationSize, crossoverOperator, mutationOperator, selectionOperator, evaluator);
 
     completedIterations = 0 ;
     this.observable = observable ;
-    this.algorithmData = new HashMap<>();
   }
 
   @Override
@@ -72,8 +70,10 @@ public class DynamicNSGAII<S extends Solution<?>, O extends Observable<Algorithm
       observable.setChanged() ;
       List<Integer> data= new ArrayList<>();
       data.add(completedIterations);
+      Map<String, Object> algorithmData = new HashMap<>() ;
+
       algorithmData.put("numberOfIterations",data);
-      observable.notifyObservers(new AlgorithmObservedData(getPopulation(), algorithmData));
+      observable.notifyObservers(new AlgorithmObservedData<S>(getPopulation(), algorithmData));
 
       restart();
       evaluator.evaluate(getPopulation(), getDynamicProblem()) ;
@@ -106,7 +106,7 @@ public class DynamicNSGAII<S extends Solution<?>, O extends Observable<Algorithm
   }
 
   @Override
-  public O getObservable() {
+  public Observable<AlgorithmObservedData<S>> getObservable() {
     return this.observable ;
   }
 

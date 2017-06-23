@@ -5,6 +5,7 @@ import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.Observable;
+import org.uma.jmetalsp.observer.impl.DefaultObservable;
 
 import java.io.Serializable;
 
@@ -26,6 +27,10 @@ public abstract class FDA
 		observable.register(this);
 	}
 
+	public FDA () {
+		this(new DefaultObservable<>()) ;
+	}
+
 	@Override
 	public void update(Observable<SingleObservedData<Integer>> observable, SingleObservedData<Integer> counter) {
 
@@ -37,4 +42,9 @@ public abstract class FDA
 
 		theProblemHasBeenModified = true ;
 	}
+
+	@Override
+  public Observable<SingleObservedData<Integer>> getObservable() {
+	  return this.observable ;
+  }
 }

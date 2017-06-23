@@ -12,14 +12,14 @@ import java.util.List;
  *
  * @author Antonio J. Nebro
  *
+ * @param <S> Solution (encoding)
  * @param <P> Problem
  * @param <A> Algorithm
- * @param <S> Streaming data source
  */
 public class JMetalSPApplication<
         S extends Solution<?>,
         P extends DynamicProblem<S, ?>,
-        A extends DynamicAlgorithm<?, ? extends Observable<?>>> {
+        A extends DynamicAlgorithm<?, ? extends ObservedData<?>>> {
 /*
 public class JMetalSPApplication<
         SD extends ObservedData,

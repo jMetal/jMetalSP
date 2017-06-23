@@ -6,7 +6,6 @@ import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
 import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.archive.impl.CrowdingDistanceArchive;
-import org.uma.jmetalsp.AlgorithmDataConsumer;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.JMetalSPApplication;
@@ -30,9 +29,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Example of SparkSP application.
+ * Example of jMetalSP application.
  * Features:
- * - Algorithm: to choose among NSGA-II, SMPSO and MOCell
+ * - Algorithm: to choose among NSGA-II, SMPSO MOCell, and WAFG-GA
  * - Problem: Any of the FDA familiy
  * - Default streaming runtime (Spark is not used)
  *
@@ -42,42 +41,44 @@ public class DynamicContinuousApplicationWithCharts {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     JMetalSPApplication<
-            SingleObservedData<Integer>,
-            AlgorithmObservedData,
+            DoubleSolution,
             DynamicProblem<DoubleSolution, SingleObservedData<Integer>>,
-            DynamicAlgorithm<List<DoubleSolution>, Observable<AlgorithmObservedData>>,
-            SimpleStreamingCounterDataSource,
-            AlgorithmDataConsumer<AlgorithmObservedData, DynamicAlgorithm<List<DoubleSolution>, Observable<AlgorithmObservedData>>>> application;
+            DynamicAlgorithm<List<DoubleSolution>, Observable<AlgorithmObservedData<DoubleSolution>>>> application;
     application = new JMetalSPApplication<>();
 
-    // Set the streaming data source
-    Observable<SingleObservedData<Integer>> fdaObservable = new DefaultObservable<>("timeData") ;
-    StreamingDataSource<SingleObservedData<Integer>, Observable<SingleObservedData<Integer>>> streamingDataSource =
-            new SimpleStreamingCounterDataSource(fdaObservable, 2000) ;
+    // STEP 1. Create observable entities
+    // STEP 1.1. Observable to be attached to a streaming data source
+    Observable<SingleObservedData<Integer>> streamingObservable = new DefaultObservable<>("timeData") ;
 
-    // Problem configuration
-	  DynamicProblem<DoubleSolution, SingleObservedData<Integer>> problem = new FDA2(fdaObservable);
+    // STEP 1.1. Observable to be attached to the algorithm
+    Observable<AlgorithmObservedData<DoubleSolution>> algorithmObservable = new DefaultObservable<>("algorithm") ;
 
-	  // Algorithm configuration
+    // STEP 2. Create the streaming data source (only one in this example)
+    StreamingDataSource<Observable<SingleObservedData<Integer>>> streamingDataSource =
+            new SimpleStreamingCounterDataSource(streamingObservable, 2000) ;
+
+    // STEP 3. Create the problem, which has the streaming data source object as a parameter
+    DynamicProblem<DoubleSolution, SingleObservedData<Integer>> problem = new FDA2(streamingObservable);
+
+    // STEP 4. Algorithm configuration
     CrossoverOperator<DoubleSolution> crossover = new SBXCrossover(0.9, 20.0);
     MutationOperator<DoubleSolution> mutation =
             new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);
 
-    String defaultAlgorithm = "SMPSO";
+    DynamicAlgorithm<List<DoubleSolution>, Observable<AlgorithmObservedData<DoubleSolution>>> algorithm;
 
-    DynamicAlgorithm<List<DoubleSolution>, Observable<AlgorithmObservedData>> algorithm;
-    Observable<AlgorithmObservedData> observable = new DefaultObservable<>("WASFGA") ;
+    String defaultAlgorithm = "WASFGA";
 
     switch (defaultAlgorithm) {
       case "NSGAII":
-        algorithm = new DynamicNSGAIIBuilder<>(crossover, mutation, observable)
+        algorithm = new DynamicNSGAIIBuilder<>(crossover, mutation, algorithmObservable)
                 .setMaxEvaluations(50000)
                 .setPopulationSize(100)
                 .build(problem);
         break;
 
       case "MOCell":
-        algorithm = new DynamicMOCellBuilder<>(crossover, mutation, observable)
+        algorithm = new DynamicMOCellBuilder<>(crossover, mutation, algorithmObservable)
                 .setMaxEvaluations(50000)
                 .setPopulationSize(100)
                 .build(problem);
@@ -85,7 +86,7 @@ public class DynamicContinuousApplicationWithCharts {
 
       case "SMPSO":
         algorithm = new DynamicSMPSOBuilder<>(
-                mutation, new CrowdingDistanceArchive<>(100), observable)
+                mutation, new CrowdingDistanceArchive<>(100), algorithmObservable)
                 .setMaxIterations(500)
                 .setSwarmSize(100)
                 .build(problem);
@@ -95,7 +96,7 @@ public class DynamicContinuousApplicationWithCharts {
         referencePoint.add(0.5);
         referencePoint.add(0.5);
 
-        algorithm = new DynamicWASFGABuilder<>(crossover, mutation, referencePoint, observable)
+        algorithm = new DynamicWASFGABuilder<>(crossover, mutation, referencePoint, algorithmObservable)
                 .setMaxIterations(500)
                 .setPopulationSize(100)
                 .build(problem);
@@ -105,7 +106,7 @@ public class DynamicContinuousApplicationWithCharts {
         algorithm = null;
     }
 
-    application.setStreamingRuntime(new DefaultRuntime<SingleObservedData<Integer>, Observable<SingleObservedData<Integer>>, SimpleStreamingCounterDataSource>())
+    application.setStreamingRuntime(new DefaultRuntime())
             .setProblem(problem)
             .setAlgorithm(algorithm)
             .addStreamingDataSource(streamingDataSource)

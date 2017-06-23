@@ -30,7 +30,7 @@ import java.util.*;
  */
 public class InDM2<S extends Solution<?>>
         extends WASFGA<S>
-        implements DynamicAlgorithm<List<S>, Observable<AlgorithmObservedData<S>>>,
+        implements DynamicAlgorithm<List<S>, AlgorithmObservedData<S>>,
         Observer<ListObservedData<Double>> {
   private int completedIterations;
   private boolean stopAtTheEndOfTheCurrentIteration = false;

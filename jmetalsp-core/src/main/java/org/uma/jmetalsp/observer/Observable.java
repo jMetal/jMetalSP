@@ -14,5 +14,4 @@ public interface Observable<D extends ObservedData<?>> {
 	void setChanged() ;
 	boolean hasChanged() ;
 	void clearChanged() ;
-  String getName() ;
 }

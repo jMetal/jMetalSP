@@ -108,7 +108,7 @@ public class DynamicWASFGABuilder<
     return this;
   }
 
-  public DynamicWASFGA<S, ?> build(P problem) {
+  public DynamicWASFGA build(P problem) {
     mutationProbability = 1.0 / problem.getNumberOfVariables();
     return new DynamicWASFGA(problem, populationSize, maxIterations, crossover, mutation, selection, evaluator, referencePoint, observable);
 

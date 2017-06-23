@@ -40,14 +40,11 @@ public class InDM2RunnerForContinuousProblems {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     JMetalSPApplication<
-            SingleObservedData<Integer>,
-            AlgorithmObservedData,
+            DoubleSolution,
             DynamicProblem<DoubleSolution, SingleObservedData<Integer>>,
-            DynamicAlgorithm<List<DoubleSolution>, Observable<AlgorithmObservedData>>,
-            SimpleStreamingCounterDataSource,
-            AlgorithmDataConsumer<AlgorithmObservedData, DynamicAlgorithm<List<DoubleSolution>,
-                    Observable<AlgorithmObservedData>>>> application;
+            DynamicAlgorithm<List<DoubleSolution>, Observable<AlgorithmObservedData<DoubleSolution>>>> application;
     application = new JMetalSPApplication<>();
+
 
     // Set the streaming data source for the problem
     Observable<SingleObservedData<Integer>> fdaObservable = new DefaultObservable<>("timeData");

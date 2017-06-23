@@ -6,6 +6,7 @@ import org.uma.jmetal.util.fileoutput.SolutionListOutput;
 import org.uma.jmetal.util.fileoutput.impl.DefaultFileOutputContext;
 import org.uma.jmetalsp.DataConsumer;
 import org.uma.jmetalsp.DynamicAlgorithm;
+import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.Observer;
@@ -19,16 +20,16 @@ import java.util.List;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class LocalDirectoryOutputConsumer<S extends Solution<?>> implements
-        DataConsumer<SingleObservedData<List<S>>> {
+        DataConsumer<AlgorithmObservedData<S>> {
   private String outputDirectoryName;
-  private DynamicAlgorithm<?, Observable<SingleObservedData<List<S>>>> dynamicAlgorithm;
+  private DynamicAlgorithm<?, AlgorithmObservedData<S>> dynamicAlgorithm;
   private int fileCounter = 0;
 
   /**
    * Constructor
    */
   public LocalDirectoryOutputConsumer(String outputDirectoryName,
-                                      DynamicAlgorithm<?, Observable<SingleObservedData<List<S>>>> algorithm) {
+                                      DynamicAlgorithm<?, AlgorithmObservedData<S>> algorithm) {
     this.outputDirectoryName = outputDirectoryName;
     this.dynamicAlgorithm = algorithm ;
     createDataDirectory(this.outputDirectoryName);
@@ -68,7 +69,7 @@ public class LocalDirectoryOutputConsumer<S extends Solution<?>> implements
   }
 
   @Override
-  public Observable<SingleObservedData<List<S>>> getObservable() {
+  public Observable<AlgorithmObservedData<S>> getObservable() {
     return dynamicAlgorithm.getObservable();
   }
 
@@ -88,10 +89,10 @@ public class LocalDirectoryOutputConsumer<S extends Solution<?>> implements
     }
   }
 
-
   @Override
-  public void update(Observable<SingleObservedData<List<S>>> observable, SingleObservedData<List<S>> data) {
-    new SolutionListOutput(data.getData())
+  public void update(Observable<AlgorithmObservedData<S>> observable, AlgorithmObservedData<S> data) {
+    List<S> solutionList = (List<S>)data.getData().get("solutionList") ;
+    new SolutionListOutput(solutionList)
             .setSeparator("\t")
             .setFunFileOutputContext(new DefaultFileOutputContext(outputDirectoryName + "/FUN" + fileCounter + ".tsv"))
             .setVarFileOutputContext(new DefaultFileOutputContext(outputDirectoryName + "/VAR" + fileCounter + ".tsv"))

@@ -21,50 +21,50 @@ import java.util.Map;
 /**
  * @author Cristobal Barba <cbarba@lcc.uma.es>
  */
-public class DynamicWASFGA<S extends Solution<?>, O extends Observable<AlgorithmObservedData<?>>>
+public class DynamicWASFGA<S extends Solution<?>>
         extends WASFGA<S>
-        implements DynamicAlgorithm<List<S>, O> {
-    private int completedIterations;
-    private boolean stopAtTheEndOfTheCurrentIteration = false;
+        implements DynamicAlgorithm<List<S>, AlgorithmObservedData<S>> {
+  private int completedIterations;
+  private boolean stopAtTheEndOfTheCurrentIteration = false;
 
-    O observable;
+  Observable<AlgorithmObservedData<S>> observable ;
 
-  private Map<String,List> algorithmData;
+  private Map<String, List> algorithmData;
 
-    public DynamicWASFGA(Problem<S> problem,
-                         int populationSize,
-                         int maxIterations,
-                         CrossoverOperator<S> crossoverOperator,
-                         MutationOperator<S> mutationOperator,
-                         SelectionOperator<List<S>, S> selectionOperator,
-                         SolutionListEvaluator<S> evaluator,
-                         List<Double> referencePoint,
-                         O observable) {
-        super(problem, populationSize, maxIterations, crossoverOperator, mutationOperator, selectionOperator, evaluator, referencePoint);
-        completedIterations = 0;
-        this.observable = observable;
-        evaluations = 0;
-        maxEvaluations = maxIterations;
-    }
+  public DynamicWASFGA(Problem<S> problem,
+                       int populationSize,
+                       int maxIterations,
+                       CrossoverOperator<S> crossoverOperator,
+                       MutationOperator<S> mutationOperator,
+                       SelectionOperator<List<S>, S> selectionOperator,
+                       SolutionListEvaluator<S> evaluator,
+                       List<Double> referencePoint,
+                       Observable<AlgorithmObservedData<S>> observable) {
+    super(problem, populationSize, maxIterations, crossoverOperator, mutationOperator, selectionOperator, evaluator, referencePoint);
+    completedIterations = 0;
+    this.observable = observable;
+    evaluations = 0;
+    maxEvaluations = maxIterations;
+  }
 
-    @Override
-    public DynamicProblem<S, ?> getDynamicProblem() {
-        return (DynamicProblem<S, ?>) super.getProblem();
-    }
+  @Override
+  public DynamicProblem<S, ?> getDynamicProblem() {
+    return (DynamicProblem<S, ?>) super.getProblem();
+  }
 
-    @Override
-    public void restart() {
-        SolutionListUtils.restart(getPopulation(), getDynamicProblem(), 100);
-        this.evaluatePopulation(this.getPopulation());
-        this.initProgress();
-        this.specificMOEAComputations();
-    }
+  @Override
+  public void restart() {
+    SolutionListUtils.restart(getPopulation(), getDynamicProblem(), 100);
+    this.evaluatePopulation(this.getPopulation());
+    this.initProgress();
+    this.specificMOEAComputations();
+  }
 
   @Override
   protected List<S> evaluatePopulation(List<S> population) {
     for (S solution : population) {
       getProblem().evaluate(solution);
-      ((ConstrainedProblem)getDynamicProblem()).evaluateConstraints(solution);
+      ((ConstrainedProblem) getDynamicProblem()).evaluateConstraints(solution);
     }
 
     return population;
@@ -72,45 +72,45 @@ public class DynamicWASFGA<S extends Solution<?>, O extends Observable<Algorithm
 
 
   @Override
-    protected void initProgress() {
-        evaluations = 0;
-    }
+  protected void initProgress() {
+    evaluations = 0;
+  }
 
-    @Override
-    public O getObservable() {
-        return this.observable;
-    }
+  @Override
+  public Observable<AlgorithmObservedData<S>> getObservable() {
+    return this.observable;
+  }
 
-    @Override
-    public String getName() {
-        return "InDM2";
-    }
+  @Override
+  public String getName() {
+    return "InDM2";
+  }
 
-    @Override
-    public String getDescription() {
-        return "Dynamic version of algorithm WASFGA";
-    }
+  @Override
+  public String getDescription() {
+    return "Dynamic version of algorithm WASFGA";
+  }
 
-    @Override
-    protected boolean isStoppingConditionReached() {
-        if (evaluations >= maxEvaluations) {
-            observable.setChanged();
-          List<Integer> data= new ArrayList<>();
-          data.add(completedIterations);
-          algorithmData.put("numberOfIterations",data);
-            observable.notifyObservers(new AlgorithmObservedData(getPopulation(), algorithmData));
-            restart();
-            completedIterations++;
-        }
-        return stopAtTheEndOfTheCurrentIteration;
+  @Override
+  protected boolean isStoppingConditionReached() {
+    if (evaluations >= maxEvaluations) {
+      observable.setChanged();
+      List<Integer> data = new ArrayList<>();
+      data.add(completedIterations);
+      algorithmData.put("numberOfIterations", data);
+      observable.notifyObservers(new AlgorithmObservedData(getPopulation(), algorithmData));
+      restart();
+      completedIterations++;
     }
+    return stopAtTheEndOfTheCurrentIteration;
+  }
 
-    @Override
-    protected void updateProgress() {
-        if (getDynamicProblem().hasTheProblemBeenModified()) {
-            restart();
-            getDynamicProblem().reset();
-        }
-        evaluations++;
+  @Override
+  protected void updateProgress() {
+    if (getDynamicProblem().hasTheProblemBeenModified()) {
+      restart();
+      getDynamicProblem().reset();
     }
+    evaluations++;
+  }
 }

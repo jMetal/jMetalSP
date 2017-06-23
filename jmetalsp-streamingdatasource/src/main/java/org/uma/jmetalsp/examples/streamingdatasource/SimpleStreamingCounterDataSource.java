@@ -3,13 +3,17 @@ package org.uma.jmetalsp.examples.streamingdatasource;
 import org.uma.jmetalsp.StreamingDataSource;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.Observable;
+import org.uma.jmetalsp.observer.Observer;
+import org.uma.jmetalsp.observer.impl.DefaultObservable;
+
+import java.beans.SimpleBeanInfo;
 
 /**
  * This class emits the value of a counter periodically after a given delay (in milliseconds)
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class SimpleStreamingCounterDataSource
-				implements StreamingDataSource<Observable<SingleObservedData<Integer>>> {
+				implements StreamingDataSource<SingleObservedData<Integer>> {
 	private Observable<SingleObservedData<Integer>> observable;
 	private int dataDelay ;
 
@@ -22,6 +26,10 @@ public class SimpleStreamingCounterDataSource
 		this.observable = observable ;
 		this.dataDelay = dataDelay ;
 	}
+
+	public SimpleStreamingCounterDataSource(int dataDelay) {
+	  this(new DefaultObservable<>(), dataDelay);
+  }
 
 	@Override
 	public void run() {
@@ -38,4 +46,9 @@ public class SimpleStreamingCounterDataSource
 			counter ++ ;
 		}
 	}
+
+  @Override
+  public Observable<SingleObservedData<Integer>> getObservable() {
+    return this.observable;
+  }
 }

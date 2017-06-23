@@ -37,11 +37,11 @@ import java.util.Map;
 public class ChartConsumer<S extends Solution<?>> implements
         DataConsumer<SingleObservedData<Map<String, Object>>> {
 
-  private DynamicAlgorithm<?, Observable<SingleObservedData<Map<String, Object>>>> dynamicAlgorithm;
+  private DynamicAlgorithm<?, SingleObservedData<Map<String, Object>>> dynamicAlgorithm;
   private ChartContainer chart ;
   List<S> lastReceivedFront = null ;
 
-  public ChartConsumer(DynamicAlgorithm<?, Observable<SingleObservedData<Map<String, Object>>>> algorithm) {
+  public ChartConsumer(DynamicAlgorithm<?, SingleObservedData<Map<String, Object>>> algorithm) {
     this.dynamicAlgorithm = algorithm ;
     this.chart = null ;
   }
