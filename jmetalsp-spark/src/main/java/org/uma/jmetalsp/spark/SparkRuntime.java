@@ -15,8 +15,10 @@ package org.uma.jmetalsp.spark;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.streaming.Durations;
+import org.apache.spark.streaming.StreamingSource;
 import org.apache.spark.streaming.api.java.JavaStreamingContext;
 import org.uma.jmetalsp.ObservedData;
+import org.uma.jmetalsp.StreamingDataSource;
 import org.uma.jmetalsp.StreamingRuntime;
 import org.uma.jmetalsp.observer.Observable;
 
@@ -25,11 +27,7 @@ import java.util.List;
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class SparkRuntime {
-
-/*<
-        D extends ObservedData,
-        O extends Observable<D>> implements StreamingRuntime<D, O, SparkStreamingDataSource<D,O>> {
+public class SparkRuntime implements StreamingRuntime {
   private SparkConf sparkConf ;
   private JavaStreamingContext streamingContext ;
   private int duration ;
@@ -39,20 +37,35 @@ public class SparkRuntime {
     this.duration = duration ;
     streamingContext = new JavaStreamingContext(sparkConf, Durations.seconds(this.duration)) ;
   }
+/*
 
 	@Override
 	public void startStreamingDataSources(List<SparkStreamingDataSource<D, O>> streamingDataSourceList) {
-		for (SparkStreamingDataSource<D,?> streamingDataSource : streamingDataSourceList) {
-			streamingDataSource.setStreamingContext(streamingContext);
-			streamingDataSource.run();
-		}
+    for (SparkStreamingDataSource<D, ?> streamingDataSource : streamingDataSourceList) {
+      streamingDataSource.setStreamingContext(streamingContext);
+      streamingDataSource.run();
+    }
 
-		streamingContext.start();
-		try {
-			streamingContext.awaitTermination();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-	*/
+    streamingContext.start();
+    try {
+      streamingContext.awaitTermination();
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+  }
+*/
+  @Override
+  public void startStreamingDataSources(List<StreamingDataSource<?>> streamingDataSourceList) {
+    for (StreamingDataSource<?> streamingDataSource : streamingDataSourceList) {
+      ((SparkStreamingDataSource)streamingDataSource).setStreamingContext(streamingContext);
+      streamingDataSource.run();
+    }
+
+    streamingContext.start();
+    try {
+      streamingContext.awaitTermination();
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+  }
 }

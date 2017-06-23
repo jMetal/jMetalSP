@@ -5,6 +5,7 @@ import org.apache.spark.streaming.api.java.JavaStreamingContext;
 import org.uma.jmetal.util.JMetalLogger;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.Observable;
+import org.uma.jmetalsp.observer.impl.DefaultObservable;
 import org.uma.jmetalsp.spark.SparkStreamingDataSource;
 
 import java.util.List;
@@ -13,12 +14,10 @@ import java.util.List;
  * This class emits the value of a counter periodically after a given delay (in milliseconds)
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class SimpleSparkStreamingCounterDataSource {
 
-}
-/*
-public class SimpleSparkStreamingCounterDataSource implements SparkStreamingDataSource<SingleObservedData<Integer>, Observable<SingleObservedData<Integer>>> {
-	private Observable<SingleObservedData<Integer>> updateData ;
+public class SimpleSparkStreamingCounterDataSource
+        implements SparkStreamingDataSource<SingleObservedData<Integer>> {
+	private Observable<SingleObservedData<Integer>> observable;
 
 	private double time=1.0d;
 	private int tauT=5;
@@ -31,9 +30,13 @@ public class SimpleSparkStreamingCounterDataSource implements SparkStreamingData
 	public SimpleSparkStreamingCounterDataSource(
 					Observable<SingleObservedData<Integer>> observedData,
 					String directoryName) {
-		this.updateData = observedData ;
+		this.observable = observedData ;
 		this.directoryName = directoryName ;
 	}
+
+  public SimpleSparkStreamingCounterDataSource(String directoryName) {
+    this(new DefaultObservable<>(), directoryName) ;
+  }
 
 	@Override
 	public void run() {
@@ -47,17 +50,21 @@ public class SimpleSparkStreamingCounterDataSource implements SparkStreamingData
 		time.foreachRDD(numbers -> {
 			List<Integer> numberList = numbers.collect() ;
 			for (Integer number : numberList) {
-        updateData.setChanged();
-				updateData.notifyObservers(new SingleObservedData<Integer>(number));
+			  System.out.println(number) ;
+        observable.setChanged();
+				observable.notifyObservers(new SingleObservedData<Integer>(number));
 			}
-
 		}) ;
 	}
 
-	@Override
+  @Override
+  public Observable<SingleObservedData<Integer>> getObservable() {
+    return observable;
+  }
+
+  @Override
 	public void setStreamingContext(JavaStreamingContext streamingContext) {
 		this.streamingContext = streamingContext;
 	}
 
 }
-*/

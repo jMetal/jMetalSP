@@ -6,14 +6,11 @@ import org.uma.jmetalsp.ObservedData;
 import org.uma.jmetalsp.observer.Observable;
 
 /**
+ * Interface for Spark based streaming data sources
+ *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public interface SparkStreamingDataSource {
-
+public interface SparkStreamingDataSource<D extends ObservedData<?>> extends StreamingDataSource<D> {
+  void setStreamingContext(JavaStreamingContext streamingContext) ;
 }
-/*
-public interface SparkStreamingDataSource<D extends ObservedData, O extends Observable<D>> extends StreamingDataSource<D, O> {
-	void setStreamingContext(JavaStreamingContext streamingContext) ;
 
-}
-*/

@@ -36,8 +36,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spark.version>2.0.0</spark.version>
-        <jmetal.version>5.3-SNAPSHOT</jmetal.version>
+        <spark.version>2.1.1</spark.version>
+        <jmetal.version>5.3</jmetal.version>
     </properties>
 
     <scm>
@@ -239,18 +239,6 @@
                 <groupId>org.apache.spark</groupId>
                 <artifactId>spark-streaming_2.10</artifactId>
                 <version>${spark.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.spark</groupId>
-                <artifactId>spark-streaming-twitter_2.10</artifactId>
-                <version>1.6.2</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.spark</groupId>
-                <artifactId>spark-streaming-kafka_2.10</artifactId>
-                <version>1.6.2</version>
             </dependency>
 
             <dependency>

@@ -8,17 +8,16 @@ import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
 import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.archive.impl.CrowdingDistanceArchive;
-import org.uma.jmetalsp.DynamicAlgorithm;
-import org.uma.jmetalsp.DynamicProblem;
-import org.uma.jmetalsp.JMetalSPApplication;
-import org.uma.jmetalsp.StreamingDataSource;
+import org.uma.jmetalsp.*;
 import org.uma.jmetalsp.algorithm.mocell.DynamicMOCellBuilder;
 import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAIIBuilder;
 import org.uma.jmetalsp.algorithm.smpso.DynamicSMPSOBuilder;
 import org.uma.jmetalsp.algorithm.wasfga.DynamicWASFGABuilder;
+import org.uma.jmetalsp.consumer.ChartConsumer;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.consumer.SimpleSolutionListConsumer;
 import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingCounterDataSource;
+import org.uma.jmetalsp.impl.DefaultRuntime;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.Observable;
@@ -38,6 +37,47 @@ import java.util.List;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class DynamicContinuousApplicationWithSpark {
+
+  public static void main(String[] args) throws IOException, InterruptedException {
+    // STEP 1. Create the problem
+    DynamicProblem<DoubleSolution, SingleObservedData<Integer>> problem =
+            new FDA2();
+
+    // STEP 2. Create the algorithm
+    DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData<DoubleSolution>> algorithm =
+            AlgorithmFactory.getAlgorithm("NSGAII", problem) ;
+
+    // STEP 3. Create the streaming data source (only one in this example) and register the problem
+    SimpleSparkStreamingCounterDataSource streamingDataSource =
+            new SimpleSparkStreamingCounterDataSource("streamingDataDirectory") ;
+
+    streamingDataSource.getObservable().register(problem);
+
+    // STEP 4. Create the data consumers and register into the algorithm
+    DataConsumer<AlgorithmObservedData<DoubleSolution>> localDirectoryOutputConsumer =
+            new LocalDirectoryOutputConsumer<DoubleSolution>("outputDirectory", algorithm) ;
+    DataConsumer<AlgorithmObservedData<DoubleSolution>> chartConsumer =
+            new ChartConsumer<DoubleSolution>(algorithm) ;
+
+    algorithm.getObservable().register(localDirectoryOutputConsumer);
+    algorithm.getObservable().register(chartConsumer) ;
+
+    // STEP 5. Create the application and run
+    JMetalSPApplication<
+            DoubleSolution,
+            DynamicProblem<DoubleSolution, SingleObservedData<Integer>>,
+            DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData<DoubleSolution>>> application;
+
+    application = new JMetalSPApplication<>();
+
+    application.setStreamingRuntime(new SparkRuntime(1000))
+            .setProblem(problem)
+            .setAlgorithm(algorithm)
+            .addStreamingDataSource(streamingDataSource)
+            .addAlgorithmDataConsumer(localDirectoryOutputConsumer)
+            .addAlgorithmDataConsumer(chartConsumer)
+            .run();
+  }
 /*
   public static void main(String[] args) throws IOException, InterruptedException {
     JMetalSPApplication<

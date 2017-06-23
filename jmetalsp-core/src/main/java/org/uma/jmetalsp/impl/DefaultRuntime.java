@@ -12,11 +12,10 @@ import java.util.List;
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DefaultRuntime implements StreamingRuntime{
+public class DefaultRuntime implements StreamingRuntime {
 
 	@Override
 	public void startStreamingDataSources(List<StreamingDataSource<?>> streamingDataSourceList) {
-
     for (StreamingDataSource<?> streamingDataSource : streamingDataSourceList) {
       Thread thread = new Thread(streamingDataSource);
       thread.start();

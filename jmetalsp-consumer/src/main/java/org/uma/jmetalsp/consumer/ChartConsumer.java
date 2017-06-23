@@ -113,7 +113,6 @@ public class ChartConsumer<S extends Solution<?>> implements
                   new InvertedGenerationalDistance<S>(referenceFront);
 
           coverageValue=igd.evaluate(solutionList);
-          System.out.println("C: " + coverageValue) ;
         }
 
         if (coverageValue>0.005) {
