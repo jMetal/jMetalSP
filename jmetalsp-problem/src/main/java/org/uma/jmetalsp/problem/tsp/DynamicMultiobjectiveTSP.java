@@ -13,10 +13,11 @@ import org.uma.jmetalsp.observer.Observable;
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DynamicMultiobjectiveTSP
-    extends AbstractIntegerPermutationProblem
+public class DynamicMultiobjectiveTSP {
+    /* extends AbstractIntegerPermutationProblem
     implements ConstrainedProblem<PermutationSolution<Integer>>,
     DynamicProblem<PermutationSolution<Integer>, SingleObservedData<TSPMatrixData>> {
+  /*
   public static final double NON_CONNECTED = Double.POSITIVE_INFINITY ;
   private int         numberOfCities ;
   private double [][] distanceMatrix ;
@@ -121,7 +122,6 @@ public class DynamicMultiobjectiveTSP
     theProblemHasBeenModified = true ;
   }
 
-  /* Getters/Setters */
   public synchronized double[][] getDistanceMatrix() {
     return distanceMatrix;
   }
@@ -163,4 +163,5 @@ public class DynamicMultiobjectiveTSP
       updateDistanceValue(data.getData().getX(),data.getData().getY(),data.getData().getValue());
     }
   }
+  */
 }

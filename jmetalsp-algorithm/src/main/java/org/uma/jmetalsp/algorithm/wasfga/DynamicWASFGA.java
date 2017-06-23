@@ -15,6 +15,7 @@ import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observer.Observable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -64,7 +65,7 @@ public class DynamicWASFGA<S extends Solution<?>>
   protected List<S> evaluatePopulation(List<S> population) {
     for (S solution : population) {
       getProblem().evaluate(solution);
-      ((ConstrainedProblem) getDynamicProblem()).evaluateConstraints(solution);
+      //((ConstrainedProblem) getDynamicProblem()).evaluateConstraints(solution);
     }
 
     return population;
@@ -83,7 +84,7 @@ public class DynamicWASFGA<S extends Solution<?>>
 
   @Override
   public String getName() {
-    return "InDM2";
+    return "Dynamic WASF-GA";
   }
 
   @Override
@@ -95,10 +96,11 @@ public class DynamicWASFGA<S extends Solution<?>>
   protected boolean isStoppingConditionReached() {
     if (evaluations >= maxEvaluations) {
       observable.setChanged();
-      List<Integer> data = new ArrayList<>();
-      data.add(completedIterations);
-      algorithmData.put("numberOfIterations", data);
-      observable.notifyObservers(new AlgorithmObservedData(getPopulation(), algorithmData));
+      Map<String, Object> algorithmData = new HashMap<>() ;
+
+      algorithmData.put("numberOfIterations",completedIterations);
+      observable.notifyObservers(new AlgorithmObservedData<S>(getPopulation(), algorithmData));
+
       restart();
       completedIterations++;
     }

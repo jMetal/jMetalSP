@@ -20,7 +20,7 @@ public class AlgorithmObservedData<S extends Solution<?>> implements ObservedDat
 		this.solutionList = new ArrayList<>();
 
     for (S solution:solutionList) {
-     this.solutionList.add(solution);
+     this.solutionList.add((S) solution.copy());
     }
 
     algorithmData.put("solutionList", this.solutionList) ;

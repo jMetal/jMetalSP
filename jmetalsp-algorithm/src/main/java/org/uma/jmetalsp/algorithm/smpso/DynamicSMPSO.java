@@ -41,7 +41,6 @@ public class DynamicSMPSO extends SMPSO
   private DynamicProblem<DoubleSolution, ?> problem;
   private boolean stopAtTheEndOfTheCurrentIteration = false;
   private Observable<AlgorithmObservedData<DoubleSolution>> observable;
-  private Map<String,List> algorithmData;
 
   public DynamicSMPSO(DynamicProblem<DoubleSolution, ?> problem, int swarmSize, BoundedArchive<DoubleSolution> leaders,
                       MutationOperator<DoubleSolution> mutationOperator,
@@ -58,7 +57,6 @@ public class DynamicSMPSO extends SMPSO
     completedIterations = 0;
     this.evaluator = evaluator;
     this.observable = observable;
-    this.algorithmData = new HashMap<>();
   }
 
   @Override
@@ -93,10 +91,11 @@ public class DynamicSMPSO extends SMPSO
   protected boolean isStoppingConditionReached() {
     if (getIterations() >= getMaxIterations()) {
       observable.setChanged();
-      List<Integer> data= new ArrayList<>();
-      data.add(completedIterations);
-      algorithmData.put("numberOfIterations",data);
+      Map<String, Object> algorithmData = new HashMap<>() ;
+
+      algorithmData.put("numberOfIterations", completedIterations);
       observable.notifyObservers(new AlgorithmObservedData(getResult(), algorithmData));
+
       restart();
       completedIterations++;
     }

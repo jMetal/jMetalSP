@@ -23,7 +23,7 @@ public class FDA4 extends FDA implements Serializable {
   }
 
   public FDA4() {
-    this(new DefaultObservable<>("")) ;
+    this(new DefaultObservable<>()) ;
   }
 
   public FDA4(Integer numberOfVariables, Integer numberOfObjectives, Observable<SingleObservedData<Integer>> observable) throws JMetalException {

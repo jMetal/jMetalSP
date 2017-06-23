@@ -17,7 +17,7 @@ import java.io.StreamTokenizer;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class MultiobjectiveTSPBuilderFromFiles  {
-
+/*
   private String distanceFileName;
   private String costFileName ;
 
@@ -111,5 +111,5 @@ public class MultiobjectiveTSPBuilderFromFiles  {
     }
     return matrix;
   }
-
+*/
 }

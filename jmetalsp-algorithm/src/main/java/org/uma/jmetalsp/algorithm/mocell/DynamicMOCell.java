@@ -49,7 +49,6 @@ public class DynamicMOCell<S extends Solution<?>>
   private int completedIterations ;
   private boolean stopAtTheEndOfTheCurrentIteration = false ;
   Observable<AlgorithmObservedData<S>> observable ;
-  private Map<String,List> algorithmData;
 
   public DynamicMOCell(DynamicProblem<S, ?> problem,
                        int maxEvaluations,
@@ -66,7 +65,6 @@ public class DynamicMOCell<S extends Solution<?>>
 
     completedIterations = 0 ;
     this.observable = observable ;
-    this.algorithmData = new HashMap<>();
   }
 
   @Override
@@ -74,14 +72,14 @@ public class DynamicMOCell<S extends Solution<?>>
     return (DynamicProblem<S, ?>) super.getProblem();
   }
 
-
   @Override protected boolean isStoppingConditionReached() {
     if (evaluations >= maxEvaluations) {
       observable.setChanged() ;
-      List<Integer> data= new ArrayList<>();
-      data.add(completedIterations);
-      algorithmData.put("numberOfIterations",data);
-      observable.notifyObservers(new AlgorithmObservedData(getPopulation(), algorithmData));
+      Map<String, Object> algorithmData = new HashMap<>() ;
+
+      algorithmData.put("numberOfIterations",completedIterations);
+      observable.notifyObservers(new AlgorithmObservedData<S>(getResult(), algorithmData));
+
       restart();
       completedIterations++;
     }

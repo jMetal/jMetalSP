@@ -38,90 +38,43 @@ import java.util.List;
 public class DynamicContinuousApplication {
 
   public static void main(String[] args) throws IOException, InterruptedException {
+    // STEP 1. Create the problem
+	  DynamicProblem<DoubleSolution, SingleObservedData<Integer>> problem =
+            new FDA2();
+
+	  // STEP 2. Create the algorithm
+    DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData<DoubleSolution>> algorithm =
+            AlgorithmFactory.getAlgorithm("WASFGA", problem) ;
+
+    // STEP 3. Create the streaming data source (only one in this example) and register the problem
+    StreamingDataSource<SingleObservedData<Integer>> streamingDataSource =
+            new SimpleStreamingCounterDataSource(2000) ;
+
+    streamingDataSource.getObservable().register(problem);
+
+    // STEP 4. Create the data consumers and register into the algorithm
+    DataConsumer<AlgorithmObservedData<DoubleSolution>> localDirectoryOutputConsumer =
+            new LocalDirectoryOutputConsumer<DoubleSolution>("outputdirectory", algorithm) ;
+    DataConsumer<AlgorithmObservedData<DoubleSolution>> chartConsumer =
+            new ChartConsumer<DoubleSolution>(algorithm) ;
+
+    algorithm.getObservable().register(localDirectoryOutputConsumer);
+    algorithm.getObservable().register(chartConsumer) ;
+
+    // STEP 5. Create the application and run it
     JMetalSPApplication<
             DoubleSolution,
             DynamicProblem<DoubleSolution, SingleObservedData<Integer>>,
             DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData<DoubleSolution>>> application;
-    //application = new JMetalSPApplication<>();
 
-    // STEP 1. Create observable entities
-    // STEP 1.1. Observable to be attached to a streaming data source
-    //Observable<SingleObservedData<Integer>> streamingObservable = new DefaultObservable<>("timeData") ;
-
-    // STEP 1.1. Observable to be attached to the algorithm
-    //Observable<AlgorithmObservedData<DoubleSolution>> algorithmObservable = new DefaultObservable<>("algorithm") ;
-
-    // STEP 2. Create the streaming data source (only one in this example)
-    StreamingDataSource<SingleObservedData<Integer>> streamingDataSource =
-            new SimpleStreamingCounterDataSource(2000) ;
-
-    // STEP 3. Create the problem, which has the streaming data source object as a parameter
-	  DynamicProblem<DoubleSolution, SingleObservedData<Integer>> problem = new FDA2();
-
-    streamingDataSource.getObservable().register(problem);
-
-    // STEP 4. Algorithm configuration
-    CrossoverOperator<DoubleSolution> crossover = new SBXCrossover(0.9, 20.0);
-    MutationOperator<DoubleSolution> mutation =
-            new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);
-
-    DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData<DoubleSolution>> algorithm;
-    String defaultAlgorithm = "WASFGA";
-
-    switch (defaultAlgorithm) {
-      case "NSGAII":
-        algorithm = new DynamicNSGAIIBuilder<>(crossover, mutation, new DefaultObservable<>())
-                .setMaxEvaluations(50000)
-                .setPopulationSize(100)
-                .build(problem);
-        break;
-
-      case "MOCell":
-        algorithm = new DynamicMOCellBuilder<>(crossover, mutation, new DefaultObservable<>())
-                .setMaxEvaluations(50000)
-                .setPopulationSize(100)
-                .build(problem);
-        break;
-      case "SMPSO":
-        algorithm = new DynamicSMPSOBuilder<>(
-                mutation, new CrowdingDistanceArchive<>(100), new DefaultObservable<>())
-                .setMaxIterations(500)
-                .setSwarmSize(100)
-                .build(problem);
-        break;
-      case "WASFGA":
-        List<Double> referencePoint = new ArrayList<>();
-        referencePoint.add(0.5);
-        referencePoint.add(0.5);
-
-        algorithm = new DynamicWASFGABuilder<>(crossover, mutation, referencePoint, new DefaultObservable<>())
-                .setMaxIterations(500)
-                .setPopulationSize(100)
-                .build(problem);
-        break;
-
-      default:
-        algorithm = null;
-    }
-
-    algorithm.getObservable().register(
-            new LocalDirectoryOutputConsumer<DoubleSolution>("outputdirectory", algorithm));
-    algorithm.getObservable().register(
-            new SimpleSolutionListConsumer<>(algorithm));
-
-/*
-
-
-
+    application = new JMetalSPApplication<>();
 
     application.setStreamingRuntime(new DefaultRuntime())
             .setProblem(problem)
             .setAlgorithm(algorithm)
             .addStreamingDataSource(streamingDataSource)
-            .addAlgorithmDataConsumer(new SimpleSolutionListConsumer(algorithm))
-            .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirectory", algorithm))
-            .addAlgorithmDataConsumer(new ChartConsumer(algorithm))
+            .addAlgorithmDataConsumer(localDirectoryOutputConsumer)
+            .addAlgorithmDataConsumer(chartConsumer)
             .run();
-*/
   }
 }

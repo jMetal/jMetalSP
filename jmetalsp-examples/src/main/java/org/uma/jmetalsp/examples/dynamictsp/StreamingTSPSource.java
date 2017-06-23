@@ -10,17 +10,10 @@ import org.uma.jmetalsp.problem.tsp.TSPMatrixData;
  * This class emits a value periodically after a given delay (in milliseconds)
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class StreamingTSPSource
-        implements StreamingDataSource<Observable<SingleObservedData<TSPMatrixData>>> {
+public class StreamingTSPSource {
 
-  private Observable<SingleObservedData<TSPMatrixData>> updateData ;
-	private int dataDelay ;
-
-  /**
-   *
-   * @param updateData
-   * @param dataDelay Delay in milliseconds
-   */
+}
+/*
 	public StreamingTSPSource(Observable<SingleObservedData<TSPMatrixData>> updateData, int dataDelay) {
 		this.updateData = updateData ;
 		this.dataDelay = dataDelay ;
@@ -44,3 +37,4 @@ public class StreamingTSPSource
     }
 	}
 }
+*/

@@ -25,7 +25,9 @@ import java.util.List;
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class SparkRuntime<
+public class SparkRuntime {
+
+/*<
         D extends ObservedData,
         O extends Observable<D>> implements StreamingRuntime<D, O, SparkStreamingDataSource<D,O>> {
   private SparkConf sparkConf ;
@@ -52,4 +54,5 @@ public class SparkRuntime<
 			e.printStackTrace();
 		}
 	}
+	*/
 }

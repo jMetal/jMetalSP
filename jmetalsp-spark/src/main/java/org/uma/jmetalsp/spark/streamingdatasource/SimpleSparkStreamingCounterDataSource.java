@@ -13,6 +13,10 @@ import java.util.List;
  * This class emits the value of a counter periodically after a given delay (in milliseconds)
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
+public class SimpleSparkStreamingCounterDataSource {
+
+}
+/*
 public class SimpleSparkStreamingCounterDataSource implements SparkStreamingDataSource<SingleObservedData<Integer>, Observable<SingleObservedData<Integer>>> {
 	private Observable<SingleObservedData<Integer>> updateData ;
 
@@ -23,9 +27,7 @@ public class SimpleSparkStreamingCounterDataSource implements SparkStreamingData
 	private JavaStreamingContext streamingContext ;
 	private String directoryName ;
 
-	/**
-   * @param observedData
-   */
+
 	public SimpleSparkStreamingCounterDataSource(
 					Observable<SingleObservedData<Integer>> observedData,
 					String directoryName) {
@@ -56,4 +58,6 @@ public class SimpleSparkStreamingCounterDataSource implements SparkStreamingData
 	public void setStreamingContext(JavaStreamingContext streamingContext) {
 		this.streamingContext = streamingContext;
 	}
+
 }
+*/

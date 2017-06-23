@@ -1,5 +1,6 @@
 package org.uma.jmetalsp.examples.streamingdatasource;
 
+import org.uma.jmetal.solution.Solution;
 import org.uma.jmetalsp.StreamingDataSource;
 import org.uma.jmetalsp.observeddata.ListObservedData;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
@@ -20,13 +21,13 @@ import java.util.stream.Collectors;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class SimpleStreamingDataSourceFromKeyboard implements
-        StreamingDataSource<Observable<ListObservedData<Double>>> {
-  private Observable<ListObservedData<Double>> observable;
+        StreamingDataSource<SingleObservedData<List<Double>>> {
+  private Observable<SingleObservedData<List<Double>>> observable;
 
   /**
    * @param observable
    */
-  public SimpleStreamingDataSourceFromKeyboard(Observable<ListObservedData<Double>> observable) {
+  public SimpleStreamingDataSourceFromKeyboard(Observable<SingleObservedData<List<Double>>> observable) {
     this.observable = observable;
   }
 
@@ -34,8 +35,8 @@ public class SimpleStreamingDataSourceFromKeyboard implements
   public void run() {
     Scanner scanner = new Scanner(System.in);
 
-    double v1 ;//= 0.2 ;
-    double v2 ;//= 0.2 ;
+    double v1 ;
+    double v2 ;
 
     while (true) {
       System.out.println("Introduce the new reference point(between commas):");
@@ -53,61 +54,12 @@ public class SimpleStreamingDataSourceFromKeyboard implements
 
       observable.setChanged();
       List<Double> values = Arrays.asList(v1, v2) ;
-      observable.notifyObservers(new ListObservedData<>(values));
-
-      /*System.out.println("Introduce the new reference point 2:");
-
-      s = scanner.nextLine() ;
-
-      v1 = 0.3 ;
-      v2 = 0.6 ;
-
-      System.out.println("REF POINT 2: " + v1 + ", " + v2) ;
-
-      observable.setChanged();
-      values = Arrays.asList(v1, v2) ;
-      observable.notifyObservers(new ListObservedData<>(values));
-
-      System.out.println("Introduce the new reference point 3:");
-
-      s = scanner.nextLine() ;
-
-      v1 = 0.4 ;
-      v2 = 0.4 ;
-
-      System.out.println("REF POINT 3: " + v1 + ", " + v2) ;
-
-      observable.setChanged();
-      values = Arrays.asList(v1, v2) ;
-      observable.notifyObservers(new ListObservedData<>(values));
-
-      System.out.println("Introduce the new reference point 4:");
-
-      s = scanner.nextLine() ;
-
-      v1 = 0.6 ;
-      v2 = 0.6 ;
-
-      System.out.println("REF POINT 5: " + v1 + ", " + v2) ;
-
-      observable.setChanged();
-      values = Arrays.asList(v1, v2) ;
-      observable.notifyObservers(new ListObservedData<>(values));*/
-
-      /*
-      String line = scanner.nextLine();
-      System.out.println("LINE: " + line);
-
-      List<Double> values = Arrays.asList(line.split(" "))
-              .stream()
-              .map(value -> Double.valueOf(value))
-              .collect(Collectors.toList());
-
-      System.out.println("VALUES: " + line);
-      values
-              .stream()
-              .forEach(System.out::println);
-              */
+      observable.notifyObservers(new SingleObservedData<>(values));
     }
+  }
+
+  @Override
+  public Observable<SingleObservedData<List<Double>>> getObservable() {
+    return observable;
   }
 }

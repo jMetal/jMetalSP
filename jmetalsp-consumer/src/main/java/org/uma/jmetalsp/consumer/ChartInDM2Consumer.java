@@ -154,7 +154,6 @@ public class ChartInDM2Consumer<S extends Solution<?>> implements
       this.chart = new ChartContainer(dynamicAlgorithm.getName(), 200);
       try {
         this.chart.setFrontChart(0, 1, null);
-        //sizeIni= this.chart.getFrontChart().getStyler().getMarkerSize();
 
         this.chart.setReferencePoint(referencePoint);
         this.chart.getFrontChart().getStyler().setLegendPosition(Styler.LegendPosition.InsideNE) ;
@@ -186,7 +185,6 @@ public class ChartInDM2Consumer<S extends Solution<?>> implements
           } catch (IOException e) {
             e.printStackTrace();
           }
-
         }
         this.chart.refreshCharts();
       } else {

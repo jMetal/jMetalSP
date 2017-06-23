@@ -37,7 +37,7 @@ import java.util.List;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class InDM2RunnerForContinuousProblems {
-
+/*
   public static void main(String[] args) throws IOException, InterruptedException {
     JMetalSPApplication<
             DoubleSolution,
@@ -102,4 +102,5 @@ public class InDM2RunnerForContinuousProblems {
             .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirectory", algorithm))
             .run();
   }
+  */
 }

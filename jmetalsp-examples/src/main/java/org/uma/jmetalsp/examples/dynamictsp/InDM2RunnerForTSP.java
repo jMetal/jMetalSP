@@ -40,7 +40,7 @@ import java.util.List;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class InDM2RunnerForTSP {
-
+/*
   public static void main(String[] args) throws IOException, InterruptedException {
     JMetalSPApplication<
             MatrixObservedData<Double>,
@@ -120,4 +120,5 @@ public class InDM2RunnerForTSP {
             .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirectory", algorithm))
             .run();
   }
+  */
 }

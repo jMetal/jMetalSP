@@ -38,7 +38,7 @@ import java.util.List;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class DynamicContinuousApplicationWithSpark {
-
+/*
   public static void main(String[] args) throws IOException, InterruptedException {
     JMetalSPApplication<
             DoubleSolution,
@@ -115,4 +115,5 @@ public class DynamicContinuousApplicationWithSpark {
             .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirectory", algorithm))
             .run();
   }
+  */
 }

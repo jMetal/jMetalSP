@@ -68,11 +68,10 @@ public class DynamicNSGAII<S extends Solution<?>>
   @Override protected boolean isStoppingConditionReached() {
     if (evaluations >= maxEvaluations) {
       observable.setChanged() ;
-      List<Integer> data= new ArrayList<>();
-      data.add(completedIterations);
+
       Map<String, Object> algorithmData = new HashMap<>() ;
 
-      algorithmData.put("numberOfIterations",data);
+      algorithmData.put("numberOfIterations",completedIterations);
       observable.notifyObservers(new AlgorithmObservedData<S>(getPopulation(), algorithmData));
 
       restart();

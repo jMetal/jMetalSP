@@ -13,11 +13,13 @@
 
 package org.uma.jmetalsp.consumer;
 
+import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.style.Styler;
 import org.uma.jmetal.qualityindicator.impl.InvertedGenerationalDistance;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.JMetalException;
+import org.uma.jmetal.util.front.Front;
 import org.uma.jmetal.util.front.imp.ArrayFront;
 import org.uma.jmetalsp.DataConsumer;
 import org.uma.jmetalsp.DynamicAlgorithm;
@@ -26,6 +28,7 @@ import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.Observable;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -35,13 +38,13 @@ import java.util.Map;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class ChartConsumer<S extends Solution<?>> implements
-        DataConsumer<SingleObservedData<Map<String, Object>>> {
+        DataConsumer<AlgorithmObservedData<S>> {
 
-  private DynamicAlgorithm<?, SingleObservedData<Map<String, Object>>> dynamicAlgorithm;
+  private DynamicAlgorithm<?, AlgorithmObservedData<S>> dynamicAlgorithm;
   private ChartContainer chart ;
   List<S> lastReceivedFront = null ;
 
-  public ChartConsumer(DynamicAlgorithm<?, SingleObservedData<Map<String, Object>>> algorithm) {
+  public ChartConsumer(DynamicAlgorithm<?, AlgorithmObservedData<S>> algorithm) {
     this.dynamicAlgorithm = algorithm ;
     this.chart = null ;
   }
@@ -65,110 +68,12 @@ public class ChartConsumer<S extends Solution<?>> implements
   }
 
   @Override
-  public Observable<SingleObservedData<Map<String, Object>>> getObservable() {
+  public Observable<AlgorithmObservedData<S>> getObservable() {
     return dynamicAlgorithm.getObservable();
   }
-/*
+
+  @Override
   public void update(Observable<AlgorithmObservedData<S>> observable, AlgorithmObservedData<S> data) {
-    System.out.println("Number of generated fronts: " + data.getAlgorithmData().get("numberOfIterations"));
-    if (chart == null) {
-      this.chart = new ChartContainer(dynamicAlgorithm.getName(), 200);
-      try {
-        this.chart.setFrontChart(0, 1, null);
-        this.chart.getFrontChart().getStyler().setLegendPosition(Styler.LegendPosition.InsideNE) ;
-      } catch (FileNotFoundException e) {
-        e.printStackTrace();
-      }
-      this.chart.initChart();
-    } else {
-      if (data.getSolutionList().size() != 0) {
-        if (lastReceivedFront == null) {
-          lastReceivedFront = (List<S>) data.getSolutionList();
-        } else {
-          InvertedGenerationalDistance<DoubleSolution> igd =
-                  new InvertedGenerationalDistance<DoubleSolution>(new ArrayFront(lastReceivedFront));
-          System.out.println("IGD: " + igd.evaluate((List<DoubleSolution>) data.getSolutionList())) ;
-        }
-        List<Integer> iteraciones=(List<Integer> )data.getAlgorithmData().get("numberOfIterations");
-        this.chart.getFrontChart().setTitle("Iteration: " + iteraciones.get(0));
-        //String nameAnt="Front." + iteraciones.get(0);
-        this.chart.updateFrontCharts((List<DoubleSolution>) data.getSolutionList(), iteraciones.get(0));
-        if(data.getAlgorithmData().get("referencePoints")!=null){
-          this.chart.setReferencePoint((List<Double>)data.getAlgorithmData().get("referencePoints"));
-        }
-        this.chart.refreshCharts();
-      }
-    }
-  }
-
-  @Override
-  public void update(Observable<SingleObservedData<List<S>>> observable, SingleObservedData<List<S>> data) {
-    System.out.println("Number of generated fronts: " + data.getData().get("numberOfIterations"));
-    if (chart == null) {
-      this.chart = new ChartContainer(dynamicAlgorithm.getName(), 200);
-      try {
-        this.chart.setFrontChart(0, 1, null);
-        this.chart.getFrontChart().getStyler().setLegendPosition(Styler.LegendPosition.InsideNE) ;
-      } catch (FileNotFoundException e) {
-        e.printStackTrace();
-      }
-      this.chart.initChart();
-    } else {
-      if (data.getSolutionList().size() != 0) {
-        if (lastReceivedFront == null) {
-          lastReceivedFront = (List<S>) data.getSolutionList();
-        } else {
-          InvertedGenerationalDistance<DoubleSolution> igd =
-                  new InvertedGenerationalDistance<DoubleSolution>(new ArrayFront(lastReceivedFront));
-          System.out.println("IGD: " + igd.evaluate((List<DoubleSolution>) data.getSolutionList())) ;
-        }
-        List<Integer> iteraciones=(List<Integer> )data.getAlgorithmData().get("numberOfIterations");
-        this.chart.getFrontChart().setTitle("Iteration: " + iteraciones.get(0));
-        //String nameAnt="Front." + iteraciones.get(0);
-        this.chart.updateFrontCharts((List<DoubleSolution>) data.getSolutionList(), iteraciones.get(0));
-        if(data.getAlgorithmData().get("referencePoints")!=null){
-          this.chart.setReferencePoint((List<Double>)data.getAlgorithmData().get("referencePoints"));
-        }
-        this.chart.refreshCharts();
-      }
-    }
-  }
-
-  @Override
-  public void update(Observable<SingleObservedData<Map<String, ?>>> observable, SingleObservedData<Map<String, ?>> data) {
-    System.out.println("Number of generated fronts: " + data.getData().get("numberOfIterations"));
-    if (chart == null) {
-      this.chart = new ChartContainer(dynamicAlgorithm.getName(), 200);
-      try {
-        this.chart.setFrontChart(0, 1, null);
-        this.chart.getFrontChart().getStyler().setLegendPosition(Styler.LegendPosition.InsideNE) ;
-      } catch (FileNotFoundException e) {
-        e.printStackTrace();
-      }
-      this.chart.initChart();
-    } else {
-      if (data.getSolutionList().size() != 0) {
-        if (lastReceivedFront == null) {
-          lastReceivedFront = (List<S>) data.getSolutionList();
-        } else {
-          InvertedGenerationalDistance<DoubleSolution> igd =
-                  new InvertedGenerationalDistance<DoubleSolution>(new ArrayFront(lastReceivedFront));
-          System.out.println("IGD: " + igd.evaluate((List<DoubleSolution>) data.getSolutionList())) ;
-        }
-        List<Integer> iteraciones=(List<Integer> )data.getAlgorithmData().get("numberOfIterations");
-        this.chart.getFrontChart().setTitle("Iteration: " + iteraciones.get(0));
-        //String nameAnt="Front." + iteraciones.get(0);
-        this.chart.updateFrontCharts((List<DoubleSolution>) data.getSolutionList(), iteraciones.get(0));
-        if(data.getAlgorithmData().get("referencePoints")!=null){
-          this.chart.setReferencePoint((List<Double>)data.getAlgorithmData().get("referencePoints"));
-        }
-        this.chart.refreshCharts();
-      }
-    }
-  }
-*/
-  @Override
-  public void update(Observable<SingleObservedData<Map<String, Object>>> observable, SingleObservedData<Map<String, Object>> data) {
     int numberOfIterations = 0 ;
     List<S> solutionList = null ;
     List<Double> referencePoint = null ;
@@ -197,18 +102,28 @@ public class ChartConsumer<S extends Solution<?>> implements
       this.chart.initChart();
     } else {
       if (solutionList.size() != 0) {
-        if (lastReceivedFront == null) {
-          lastReceivedFront = solutionList;
-        } else {
-          InvertedGenerationalDistance<S> igd =
-                  new InvertedGenerationalDistance<S>(new ArrayFront(lastReceivedFront));
-          System.out.println("IGD: " + igd.evaluate(solutionList)) ;
-        }
+        double coverageValue = 0;
         this.chart.getFrontChart().setTitle("Iteration: " + numberOfIterations);
+        if (lastReceivedFront == null) {
+          lastReceivedFront = solutionList ;
+        } else {
+          Front referenceFront = new ArrayFront(lastReceivedFront);
 
-        this.chart.updateFrontCharts(solutionList, numberOfIterations);
-        if(referencePoint != null){
-          this.chart.setReferencePoint(referencePoint);
+          InvertedGenerationalDistance<S> igd =
+                  new InvertedGenerationalDistance<S>(referenceFront);
+
+          coverageValue=igd.evaluate(solutionList);
+          System.out.println("C: " + coverageValue) ;
+        }
+
+        if (coverageValue>0.005) {
+          this.chart.updateFrontCharts(solutionList, numberOfIterations);
+          lastReceivedFront=solutionList;
+          try {
+            this.chart.saveChart(numberOfIterations +".chart", BitmapEncoder.BitmapFormat.PNG);
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
         }
         this.chart.refreshCharts();
       }
