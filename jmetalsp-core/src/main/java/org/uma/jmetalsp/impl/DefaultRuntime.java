@@ -1,9 +1,7 @@
 package org.uma.jmetalsp.impl;
 
-import org.uma.jmetalsp.ObservedData;
 import org.uma.jmetalsp.StreamingDataSource;
 import org.uma.jmetalsp.StreamingRuntime;
-import org.uma.jmetalsp.observer.Observable;
 
 import java.util.List;
 

@@ -1,35 +1,5 @@
 package org.uma.jmetalsp.examples.dynamictsp;
 
-import org.uma.jmetal.operator.CrossoverOperator;
-import org.uma.jmetal.operator.MutationOperator;
-import org.uma.jmetal.operator.SelectionOperator;
-import org.uma.jmetal.operator.impl.crossover.PMXCrossover;
-import org.uma.jmetal.operator.impl.mutation.PermutationSwapMutation;
-import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
-import org.uma.jmetal.solution.DoubleSolution;
-import org.uma.jmetal.solution.PermutationSolution;
-import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
-import org.uma.jmetalsp.*;
-import org.uma.jmetalsp.algorithm.indm2.InDM2;
-import org.uma.jmetalsp.algorithm.indm2.InDM2Builder;
-import org.uma.jmetalsp.consumer.ChartInDM2Consumer;
-import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
-import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingCounterDataSource;
-import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingDataSourceFromKeyboard;
-import org.uma.jmetalsp.impl.DefaultRuntime;
-import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
-import org.uma.jmetalsp.observeddata.ListObservedData;
-import org.uma.jmetalsp.observeddata.SingleObservedData;
-import org.uma.jmetalsp.observer.Observable;
-import org.uma.jmetalsp.observer.impl.DefaultObservable;
-import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPBuilderFromFiles;
-import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
-import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
-import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNRandomSolutions;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 /**
  * Example of SparkSP application.
  * Features:
@@ -63,7 +33,7 @@ public class InDM2RunnerForTSP {
 
     // Problem configuration
     DynamicProblem<PermutationSolution<Integer>, MatrixObservedData<Double>> problem;
-    problem = new MultiobjectiveTSPBuilderFromFiles("data/kroA100.tsp", "data/kroB100.tsp")
+    problem = new MultiobjectiveTSPBuilderFromTSPLIBFiles("data/kroA100.tsp", "data/kroB100.tsp")
             .build(streamingTSPDataObservable);
     //problem = new MultiobjectiveTSPBuilderFromNY("initialDataFile.txt")
     //        .build(streamingTSPDataObservable);

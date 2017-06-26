@@ -14,7 +14,6 @@ package org.uma.jmetalsp.application.biobjectivetsp.sparkutil;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.uma.jmetalsp.spark.util.spark.StreamingConfiguration;
-
 import twitter4j.auth.Authorization;
 import twitter4j.auth.AuthorizationFactory;
 import twitter4j.conf.Configuration;

@@ -3,7 +3,6 @@ package org.uma.jmetalsp.util.restartstrategy.impl;
 import org.uma.jmetal.qualityindicator.impl.hypervolume.PISAHypervolume;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.JMetalException;
-import org.uma.jmetal.util.archive.impl.CrowdingDistanceArchive;
 import org.uma.jmetal.util.archive.impl.HypervolumeArchive;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.util.restartstrategy.RemoveSolutionsStrategy;

@@ -8,8 +8,6 @@ import org.uma.jmetalsp.util.restartstrategy.RemoveSolutionsStrategy;
 
 import java.util.List;
 
-import static org.uma.jmetal.util.SolutionListUtils.removeSolutionsFromList;
-
 /**
  * Created by antonio on 6/06/17.
  */

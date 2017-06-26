@@ -1,5 +1,6 @@
 package  org.uma.jmetalsp.application.fda.streamingDataSource;
 
+import kafka.serializer.StringDecoder;
 import org.apache.spark.streaming.api.java.JavaDStream;
 import org.apache.spark.streaming.api.java.JavaPairInputDStream;
 import org.apache.spark.streaming.api.java.JavaStreamingContext;
@@ -15,8 +16,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-
-import kafka.serializer.StringDecoder;
 
 /**
  * @author Cristóbal Barba <cbarba@lcc.uma.es>

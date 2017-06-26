@@ -13,15 +13,7 @@
 
 package org.uma.jmetalsp.consumer;
 
-import org.knowm.xchart.BitmapEncoder;
-import org.knowm.xchart.SwingWrapper;
-import org.knowm.xchart.XYChart;
-import org.knowm.xchart.XYChartBuilder;
-import org.knowm.xchart.XYSeries;
-import org.knowm.xchart.style.Styler;
-import org.uma.jmetal.qualityindicator.impl.Hypervolume;
-import org.uma.jmetal.qualityindicator.impl.SetCoverage;
-import org.uma.jmetal.solution.DoubleSolution;
+import org.knowm.xchart.*;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.front.imp.ArrayFront;
 import org.uma.jmetal.util.front.util.FrontUtils;

@@ -1,7 +1,5 @@
 package org.uma.jmetalsp;
 
-import org.uma.jmetalsp.observer.Observable;
-
 import java.util.List;
 
 /**

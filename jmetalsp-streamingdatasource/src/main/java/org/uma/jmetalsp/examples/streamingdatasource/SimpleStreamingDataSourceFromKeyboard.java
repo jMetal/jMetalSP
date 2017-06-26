@@ -1,20 +1,13 @@
 package org.uma.jmetalsp.examples.streamingdatasource;
 
-import org.uma.jmetal.solution.Solution;
 import org.uma.jmetalsp.StreamingDataSource;
-import org.uma.jmetalsp.observeddata.ListObservedData;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 /**
  * This class reads double values from the keyboard and returns them as a list

@@ -18,10 +18,7 @@ import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetalsp.DataConsumer;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
-import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.Observable;
-
-import java.util.List;
 
 /**
  * This consumer receives a list of solutions and prints information about it

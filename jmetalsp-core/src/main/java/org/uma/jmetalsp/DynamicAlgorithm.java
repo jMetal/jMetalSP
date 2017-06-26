@@ -2,7 +2,6 @@ package org.uma.jmetalsp;
 
 import org.uma.jmetal.algorithm.Algorithm;
 import org.uma.jmetalsp.observer.Observable;
-import org.uma.jmetalsp.observer.Observer;
 
 
 /**

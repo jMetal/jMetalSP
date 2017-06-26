@@ -24,7 +24,6 @@ import org.uma.jmetalsp.application.biobjectivetsp.sparkutil.StreamingConfigurat
 import org.uma.jmetalsp.problem.DynamicProblem;
 import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPUpdateData;
 import org.uma.jmetalsp.streamingdatasource.StreamingDataSource;
-
 import twitter4j.Status;
 import twitter4j.auth.Authorization;
 

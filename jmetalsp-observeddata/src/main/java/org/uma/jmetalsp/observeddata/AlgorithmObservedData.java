@@ -1,10 +1,11 @@
 package org.uma.jmetalsp.observeddata;
 
-import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetalsp.ObservedData;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Data returned by algorithms to be sent to observers, in the form of a map structure

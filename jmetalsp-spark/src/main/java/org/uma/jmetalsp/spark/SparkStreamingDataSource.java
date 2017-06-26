@@ -1,9 +1,8 @@
 package org.uma.jmetalsp.spark;
 
 import org.apache.spark.streaming.api.java.JavaStreamingContext;
-import org.uma.jmetalsp.StreamingDataSource;
 import org.uma.jmetalsp.ObservedData;
-import org.uma.jmetalsp.observer.Observable;
+import org.uma.jmetalsp.StreamingDataSource;
 
 /**
  * Interface for Spark based streaming data sources

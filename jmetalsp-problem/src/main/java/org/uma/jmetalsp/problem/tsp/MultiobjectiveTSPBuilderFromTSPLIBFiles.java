@@ -3,30 +3,35 @@ package org.uma.jmetalsp.problem.tsp;
 import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.Observable;
+import org.uma.jmetalsp.observer.impl.DefaultObservable;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StreamTokenizer;
+import java.io.*;
 
 /**
- * Class for initializing a dynamic multiobjective TSP from data files
+ * Class for initializing a dynamic multiobjective TSP from data files having format TSPLib. Both files must have the
+ * same number of cities
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class MultiobjectiveTSPBuilderFromFiles  {
-/*
+public class MultiobjectiveTSPBuilderFromTSPLIBFiles {
+
   private String distanceFileName;
   private String costFileName ;
+  private Observable<SingleObservedData<TSPMatrixData>> observable ;
 
-  public MultiobjectiveTSPBuilderFromFiles(String distanceFileName, String costFileName) {
-    this.distanceFileName = distanceFileName ;
-    this.costFileName = costFileName ;
+  public MultiobjectiveTSPBuilderFromTSPLIBFiles(String distanceFileName, String costFileName) {
+    this(distanceFileName, costFileName, new DefaultObservable<>()) ;
   }
 
-  public DynamicMultiobjectiveTSP build(Observable<SingleObservedData<TSPMatrixData>> observable) throws IOException {
+  public MultiobjectiveTSPBuilderFromTSPLIBFiles(String distanceFileName,
+                                                 String costFileName,
+                                                 Observable<SingleObservedData<TSPMatrixData>> observable) {
+    this.distanceFileName = distanceFileName ;
+    this.costFileName = costFileName ;
+    this.observable = observable ;
+  }
+
+  public DynamicMultiobjectiveTSP build() throws IOException {
     int         numberOfCities ;
     double [][] distanceMatrix ;
     double [][] costMatrix;
@@ -35,9 +40,7 @@ public class MultiobjectiveTSPBuilderFromFiles  {
     costMatrix = readProblem(costFileName) ;
     numberOfCities = distanceMatrix.length ;
 
-    DynamicMultiobjectiveTSP problem = new DynamicMultiobjectiveTSP(numberOfCities, distanceMatrix, costMatrix);
-
-    observable.register(problem);
+    DynamicMultiobjectiveTSP problem = new DynamicMultiobjectiveTSP(numberOfCities, distanceMatrix, costMatrix, observable);
 
     return problem ;
   }
@@ -111,5 +114,4 @@ public class MultiobjectiveTSPBuilderFromFiles  {
     }
     return matrix;
   }
-*/
 }

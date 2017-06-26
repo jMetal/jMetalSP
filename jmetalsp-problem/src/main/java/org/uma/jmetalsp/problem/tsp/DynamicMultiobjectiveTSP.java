@@ -7,33 +7,36 @@ import org.uma.jmetal.util.solutionattribute.impl.OverallConstraintViolation;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.Observable;
+import org.uma.jmetalsp.observer.impl.DefaultObservable;
 
 /**
  * Version of the multi-objective TSP aimed at being solving dynamically.
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DynamicMultiobjectiveTSP {
-    /* extends AbstractIntegerPermutationProblem
+public class DynamicMultiobjectiveTSP
+    extends AbstractIntegerPermutationProblem
     implements ConstrainedProblem<PermutationSolution<Integer>>,
     DynamicProblem<PermutationSolution<Integer>, SingleObservedData<TSPMatrixData>> {
-  /*
+
   public static final double NON_CONNECTED = Double.POSITIVE_INFINITY ;
   private int         numberOfCities ;
   private double [][] distanceMatrix ;
   private double [][] costMatrix;
+  private Observable<SingleObservedData<TSPMatrixData>> observable ;
 
   private boolean theProblemHasBeenModified;
 
   public OverallConstraintViolation<PermutationSolution<Integer>> overallConstraintViolationDegree ;
 
-
   public DynamicMultiobjectiveTSP(int numberOfCities,
                                   double[][] distanceMatrix,
-                                  double[][] costMatrix) {
+                                  double[][] costMatrix,
+                                  Observable<SingleObservedData<TSPMatrixData>> observable) {
     this.numberOfCities = numberOfCities ;
     this.distanceMatrix = distanceMatrix ;
     this.costMatrix = costMatrix ;
+    this.observable = observable ;
 
     theProblemHasBeenModified = false ;
 
@@ -43,6 +46,12 @@ public class DynamicMultiobjectiveTSP {
     setNumberOfConstraints(1);
 
     overallConstraintViolationDegree = new OverallConstraintViolation<PermutationSolution<Integer>>() ;
+  }
+
+  public DynamicMultiobjectiveTSP(int numberOfCities,
+                                  double[][] distanceMatrix,
+                                  double[][] costMatrix) {
+    this(numberOfCities, distanceMatrix, costMatrix, new DefaultObservable<>()) ;
   }
 
   @Override
@@ -143,6 +152,11 @@ public class DynamicMultiobjectiveTSP {
     theProblemHasBeenModified = false ;
   }
 
+  @Override
+  public Observable<SingleObservedData<TSPMatrixData>> getObservable() {
+    return this.observable;
+  }
+
   public String toString() {
     String result = "" ;
     for (int i = 0; i < numberOfCities; i++) {
@@ -163,5 +177,4 @@ public class DynamicMultiobjectiveTSP {
       updateDistanceValue(data.getData().getX(),data.getData().getY(),data.getData().getValue());
     }
   }
-  */
 }
