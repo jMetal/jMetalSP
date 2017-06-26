@@ -70,7 +70,7 @@ public class DynamicContinuousApplicationWithSpark {
 
     application = new JMetalSPApplication<>();
 
-    application.setStreamingRuntime(new SparkRuntime(1000))
+    application.setStreamingRuntime(new SparkRuntime(2))
             .setProblem(problem)
             .setAlgorithm(algorithm)
             .addStreamingDataSource(streamingDataSource)
