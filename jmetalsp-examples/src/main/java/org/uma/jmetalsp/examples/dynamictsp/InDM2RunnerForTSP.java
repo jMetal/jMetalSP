@@ -54,7 +54,8 @@ public class InDM2RunnerForTSP {
   public static void main(String[] args) throws IOException, InterruptedException {
     // STEP 1. Create the problem
     DynamicProblem<PermutationSolution<Integer>, SingleObservedData<TSPMatrixData>> problem;
-    problem = new MultiobjectiveTSPBuilderFromTSPLIBFiles("data/kroA100.tsp", "data/kroB100.tsp").build();
+    problem = new MultiobjectiveTSPBuilderFromTSPLIBFiles("data/kroA100.tsp", "data/kroB100.tsp")
+            .build();
 
     // STEP 2. Create and configure the algorithm
     List<Double> referencePoint = new ArrayList<>();
