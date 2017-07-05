@@ -31,7 +31,7 @@ public class DynamicContinuousApplication {
 
 	  // STEP 2. Create the algorithm
     DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData<DoubleSolution>> algorithm =
-            AlgorithmFactory.getAlgorithm("WASFGA", problem) ;
+            AlgorithmFactory.getAlgorithm("SMPSO", problem) ;
 
     // STEP 3. Create the streaming data source (only one in this example) and register the problem
     StreamingDataSource<SingleObservedData<Integer>> streamingDataSource =

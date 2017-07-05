@@ -56,8 +56,8 @@ public class AlgorithmFactory {
         break;
       case "WASFGA":
         List<Double> referencePoint = new ArrayList<>();
-        referencePoint.add(0.0);
-        referencePoint.add(0.0);
+        referencePoint.add(0.5);
+        referencePoint.add(0.5);
 
         algorithm = new DynamicWASFGABuilder<>(crossover, mutation, referencePoint, new DefaultObservable<>())
                 .setMaxIterations(500)
