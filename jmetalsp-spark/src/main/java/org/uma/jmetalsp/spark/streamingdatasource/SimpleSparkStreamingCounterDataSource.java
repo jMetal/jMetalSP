@@ -28,9 +28,9 @@ public class SimpleSparkStreamingCounterDataSource
 
 
 	public SimpleSparkStreamingCounterDataSource(
-					Observable<SingleObservedData<Integer>> observedData,
+					Observable<SingleObservedData<Integer>> observable,
 					String directoryName) {
-		this.observable = observedData ;
+		this.observable = observable ;
 		this.directoryName = directoryName ;
 	}
 
