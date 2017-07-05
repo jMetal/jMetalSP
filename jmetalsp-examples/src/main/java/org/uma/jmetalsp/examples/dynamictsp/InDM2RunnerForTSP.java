@@ -1,5 +1,45 @@
 package org.uma.jmetalsp.examples.dynamictsp;
 
+import org.uma.jmetal.operator.CrossoverOperator;
+import org.uma.jmetal.operator.MutationOperator;
+import org.uma.jmetal.operator.SelectionOperator;
+import org.uma.jmetal.operator.impl.crossover.PMXCrossover;
+import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
+import org.uma.jmetal.operator.impl.mutation.PermutationSwapMutation;
+import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
+import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
+import org.uma.jmetal.solution.DoubleSolution;
+import org.uma.jmetal.solution.PermutationSolution;
+import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
+import org.uma.jmetalsp.DataConsumer;
+import org.uma.jmetalsp.DynamicAlgorithm;
+import org.uma.jmetalsp.DynamicProblem;
+import org.uma.jmetalsp.JMetalSPApplication;
+import org.uma.jmetalsp.StreamingDataSource;
+import org.uma.jmetalsp.algorithm.indm2.InDM2;
+import org.uma.jmetalsp.algorithm.indm2.InDM2Builder;
+import org.uma.jmetalsp.consumer.ChartConsumer;
+import org.uma.jmetalsp.consumer.ChartInDM2Consumer;
+import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
+import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingCounterDataSource;
+import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingDataSourceFromKeyboard;
+import org.uma.jmetalsp.impl.DefaultRuntime;
+import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
+import org.uma.jmetalsp.observeddata.SingleObservedData;
+import org.uma.jmetalsp.observer.impl.DefaultObservable;
+import org.uma.jmetalsp.problem.fda.FDA2;
+import org.uma.jmetalsp.problem.tsp.DynamicMultiobjectiveTSP;
+import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPBuilderFromTSPLIBFiles;
+import org.uma.jmetalsp.problem.tsp.TSPMatrixData;
+import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
+import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
+import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNRandomSolutions;
+import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNSolutionsAccordingToTheHypervolumeContribution;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Example of SparkSP application.
  * Features:
@@ -10,85 +50,77 @@ package org.uma.jmetalsp.examples.dynamictsp;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class InDM2RunnerForTSP {
-/*
+
   public static void main(String[] args) throws IOException, InterruptedException {
-    JMetalSPApplication<
-            MatrixObservedData<Double>,
-            AlgorithmObservedData,
-            DynamicProblem<DoubleSolution, MatrixObservedData<Double>>,
-            DynamicAlgorithm<List<PermutationSolution<Integer>>, Observable<AlgorithmObservedData>>,
-            StreamingTSPSource,
-            AlgorithmDataConsumer<AlgorithmObservedData, DynamicAlgorithm<List<PermutationSolution<Integer>>, Observable<AlgorithmObservedData>>>> application;
-    application = new JMetalSPApplication<>();
+    // STEP 1. Create the problem
+    DynamicProblem<PermutationSolution<Integer>, SingleObservedData<TSPMatrixData>> problem;
+    problem = new MultiobjectiveTSPBuilderFromTSPLIBFiles("data/kroA100.tsp", "data/kroB100.tsp").build();
 
-    // Set the streaming data source for the problem
-    Observable<MatrixObservedData<Double>> streamingTSPDataObservable =
-            new DefaultObservable<>("streamingTSPObservable");
-    StreamingDataSource<?, ?> streamingDataSource = new StreamingTSPSource(streamingTSPDataObservable, 20000);
+    // STEP 2. Create and configure the algorithm
+    List<Double> referencePoint = new ArrayList<>();
+    referencePoint.add(0.0);
+    referencePoint.add(0.0);
 
-    // Set the streaming data source for the algorithm
-    Observable<ListObservedData<Double>> algorithmObservable = new DefaultObservable<>("Algorithm observable");
-    StreamingDataSource<ListObservedData<Double>, Observable<ListObservedData<Double>>> streamingDataSource2 =
-            new SimpleStreamingDataSourceFromKeyboard(algorithmObservable);
-
-    // Problem configuration
-    DynamicProblem<PermutationSolution<Integer>, MatrixObservedData<Double>> problem;
-    problem = new MultiobjectiveTSPBuilderFromTSPLIBFiles("data/kroA100.tsp", "data/kroB100.tsp")
-            .build(streamingTSPDataObservable);
-    //problem = new MultiobjectiveTSPBuilderFromNY("initialDataFile.txt")
-    //        .build(streamingTSPDataObservable);
-    //System.out.println(problem);
-
-    // Algorithm configuration
     CrossoverOperator<PermutationSolution<Integer>> crossover;
     MutationOperator<PermutationSolution<Integer>> mutation;
-    SelectionOperator<List<PermutationSolution<Integer>>, PermutationSolution<Integer>> selection;
 
     crossover = new PMXCrossover(0.9);
 
     double mutationProbability = 0.2;
     mutation = new PermutationSwapMutation<Integer>(mutationProbability);
 
-    selection = new BinaryTournamentSelection<>(
-            new RankingAndCrowdingDistanceComparator<PermutationSolution<Integer>>());
 
-    InDM2<PermutationSolution<Integer>> algorithm;
-    Observable<AlgorithmObservedData<PermutationSolution<Integer>>> observable = new DefaultObservable<>("InDM2");
-
-    List<Double> referencePoint = new ArrayList<>();
-    referencePoint.add(180000.0);
-    referencePoint.add(60000.0);
-
-    int populationSize = 50;
-    algorithm = new InDM2Builder<
-            PermutationSolution<Integer>,
-            DynamicProblem<PermutationSolution<Integer>, ?>,
-            Observable<AlgorithmObservedData<PermutationSolution<Integer>>>>(crossover, mutation, referencePoint, observable)
-            .setMaxIterations(400000)
-            .setPopulationSize(populationSize)
+    InDM2<PermutationSolution<Integer>> algorithm = new InDM2Builder<>(crossover, mutation, referencePoint, new DefaultObservable<>())
+            .setMaxIterations(25000)
+            .setPopulationSize(50)
             .build(problem);
 
-    algorithm.setRestartStrategyForProblemChange(new RestartStrategy<PermutationSolution<Integer>>(
-            new RemoveNRandomSolutions<>(0),
-            //new RemoveNSolutionsAccordingToTheHypervolumeContribution<PermutationSolution<Integer>>(50),
-            new CreateNRandomSolutions<PermutationSolution<Integer>>(0)));
+    algorithm.setRestartStrategyForProblemChange(new RestartStrategy<>(
+            //new RemoveFirstNSolutions<>(50),
+            new RemoveNSolutionsAccordingToTheHypervolumeContribution<>(50),
+            //new RemoveNSolutionsAccordingToTheCrowdingDistance<>(50),
+            //new RemoveNRandomSolutions(50),
+            new CreateNRandomSolutions<>(50)));
 
-    algorithm.setRestartStrategyForReferencePointChange(new RestartStrategy<PermutationSolution<Integer>>(
-            new RemoveNRandomSolutions<>(80),
-            new CreateNRandomSolutions<>(20)));
+    algorithm.setRestartStrategyForReferencePointChange(new RestartStrategy<>(
+            new RemoveNRandomSolutions<>(100),
+            new CreateNRandomSolutions<PermutationSolution<Integer>>(100)));
 
-    algorithmObservable.register(algorithm);
+    // STEP 3. Create a streaming data source for the problem and register
+    StreamingTSPSource streamingTSPSource = new StreamingTSPSource(new DefaultObservable<>(), 2000);
 
-    application.setStreamingRuntime(new DefaultRuntime<SingleObservedData<Integer>,
-            Observable<SingleObservedData<Integer>>,
-            SimpleStreamingCounterDataSource>())
+    streamingTSPSource.getObservable().register(problem);
+
+    // STEP 4. Create a streaming data source for the algorithm and register
+    StreamingDataSource<SingleObservedData<List<Double>>> keyboardstreamingDataSource =
+            new SimpleStreamingDataSourceFromKeyboard() ;
+
+    keyboardstreamingDataSource.getObservable().register(algorithm);
+
+    // STEP 5. Create the data consumers and register into the algorithm
+    DataConsumer<AlgorithmObservedData<PermutationSolution<Integer>>> localDirectoryOutputConsumer =
+            new LocalDirectoryOutputConsumer<PermutationSolution<Integer>>("outputdirectory", algorithm);
+    DataConsumer<AlgorithmObservedData<PermutationSolution<Integer>>> chartConsumer =
+            new ChartConsumer<PermutationSolution<Integer>>(algorithm);
+
+    algorithm.getObservable().register(localDirectoryOutputConsumer);
+    algorithm.getObservable().register(chartConsumer) ;
+
+    // STEP 6. Create the application and run
+    JMetalSPApplication<
+            PermutationSolution<Integer>,
+            DynamicProblem<PermutationSolution<Integer>, SingleObservedData<Integer>>,
+            DynamicAlgorithm<List<PermutationSolution<Integer>>, AlgorithmObservedData<PermutationSolution<Integer>>>> application;
+
+    application = new JMetalSPApplication<>();
+
+    application.setStreamingRuntime(new DefaultRuntime())
             .setProblem(problem)
             .setAlgorithm(algorithm)
-            .addStreamingDataSource(streamingDataSource)
-            .addStreamingDataSource(streamingDataSource2)
-            .addAlgorithmDataConsumer(new ChartInDM2Consumer(algorithm, referencePoint))
-            .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirectory", algorithm))
+            .addStreamingDataSource(streamingTSPSource)
+            .addStreamingDataSource(keyboardstreamingDataSource)
+            .addAlgorithmDataConsumer(localDirectoryOutputConsumer)
+            .addAlgorithmDataConsumer(chartConsumer)
             .run();
   }
-  */
 }
