@@ -72,14 +72,12 @@
         <module>jmetalsp-core</module>
         <module>jmetalsp-observeddata</module>
         <module>jmetalsp-algorithm</module>
-       <!-- <module>jmetalsp-application</module>-->
         <module>jmetalsp-consumer</module>
         <module>jmetalsp-problem</module>
         <module>jmetalsp-examples</module>
         <module>jmetalsp-externalsource</module>
         <module>jmetalsp-streamingdatasource</module>
         <module>jmetalsp-spark</module>
-        <!--<modobservertion</module>-->
     </modules>
 
     <profiles>
