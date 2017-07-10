@@ -11,8 +11,6 @@ import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observer.Observable;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -49,7 +47,6 @@ public class DynamicWASFGABuilder<
     this.maxIterations = 25000;
     this.populationSize = 100;
     this.observable = observable;
-    this.referencePoint = new ArrayList<>();
     this.referencePoint = referencePoint ;
   }
 
