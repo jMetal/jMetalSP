@@ -19,15 +19,7 @@ public class JMetalSPApplication<
         S extends Solution<?>,
         P extends DynamicProblem<S, ?>,
         A extends DynamicAlgorithm<?, ? extends ObservedData<?>>> {
-/*
-public class JMetalSPApplication<
-        SD extends ObservedData,
-        AD extends ObservedData,
-        P extends DynamicProblem<? extends Solution<?>, SD>,
-        A extends DynamicAlgorithm<?, ? extends Observable<AD>>,
-        S extends StreamingDataSource<SD, ? extends Observable<SD>>,
-        C extends AlgorithmDataConsumer<AD, A>> {
- */
+
   private List<StreamingDataSource<?>> streamingDataSourceList;
   private List<DataConsumer<?>> algorithmDataConsumerList;
   private StreamingRuntime streamingRuntime;

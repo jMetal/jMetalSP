@@ -17,8 +17,23 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Example of application to solve a dynamic continuous problem (any of the FDA family) with NSGA-II, SMPSO or MOCell
- * using Apache Spark.
+ * Example of jMetalSP application.
+ * Features:
+ * - Algorithm: to choose among NSGA-II, SMPSO, MOCell, and WASF-GA
+ * - Problem: Any of the FDA familiy
+ * - Spark streaming runtime
+ *
+ * Steps to compile and run the example:
+ * 1. Compile the project:
+      mvn package
+ * 2. Run the program with the name of the output directory where the fronts will be stored:
+      spark-submit --class="org.uma.jmetalsp.examples.continuousproblemapplication.DynamicContinuousApplicationWithSpark" \
+      jmetalsp-examples/target/jmetalsp-examples-1.1-SNAPSHOT-jar-with-dependencies.jar outputDirectory
+ * 3. At the same time, run the program to simulate the streaming data source that generates time:
+      java -cp jmetalsp-externalsource/target/jmetalsp-externalsource-1-SNAPSHOT-jar-with-dependencies.jar \
+      org.uma.jmetalsp.externalsources.CounterProvider outputDirectory 2000
+ * where "outputDirectory" must the same used in Step 3, and the second argument is the frequency of
+ * data generation (2000 milliseconds in this example)
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
@@ -64,82 +79,4 @@ public class DynamicContinuousApplicationWithSpark {
             .addAlgorithmDataConsumer(chartConsumer)
             .run();
   }
-/*
-  public static void main(String[] args) throws IOException, InterruptedException {
-    JMetalSPApplication<
-            DoubleSolution,
-            DynamicProblem<DoubleSolution, SingleObservedData<Integer>>,
-            DynamicAlgorithm<List<DoubleSolution>, Observable<AlgorithmObservedData<DoubleSolution>>>> application;
-    application = new JMetalSPApplication<>();
-
-    // STEP 1. Create observable entities
-    // STEP 1.1. Observable to be attached to a streaming data source
-    Observable<SingleObservedData<Integer>> streamingObservable = new DefaultObservable<>("timeData");
-
-    // STEP 1.1. Observable to be attached to the algorithm
-    Observable<AlgorithmObservedData<DoubleSolution>> algorithmObservable = new DefaultObservable<>("algorithm");
-
-    // STEP 2. Create the streaming data source (only one in this example)
-    StreamingDataSource<Observable<SingleObservedData<Integer>>> streamingDataSource =
-            new SimpleStreamingCounterDataSource(streamingObservable, 2000);
-
-    // STEP 3. Create the problem, which has the streaming data source object as a parameter
-    DynamicProblem<DoubleSolution, SingleObservedData<Integer>> problem = new FDA2(streamingObservable);
-
-    // STEP 4. Algorithm configuration
-    CrossoverOperator<DoubleSolution> crossover = new SBXCrossover(0.9, 20.0);
-    MutationOperator<DoubleSolution> mutation =
-            new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);
-
-    DynamicAlgorithm<List<DoubleSolution>, Observable<AlgorithmObservedData<DoubleSolution>>> algorithm;
-
-    String defaultAlgorithm = "WASFGA";
-
-    switch (defaultAlgorithm) {
-      case "NSGAII":
-        algorithm = new DynamicNSGAIIBuilder<>(crossover, mutation, algorithmObservable)
-                .setMaxEvaluations(50000)
-                .setPopulationSize(100)
-                .build(problem);
-        break;
-
-      case "MOCell":
-        algorithm = new DynamicMOCellBuilder<>(crossover, mutation, algorithmObservable)
-                .setMaxEvaluations(50000)
-                .setPopulationSize(100)
-                .build(problem);
-        break;
-
-      case "SMPSO":
-        algorithm = new DynamicSMPSOBuilder<>(
-                mutation, new CrowdingDistanceArchive<>(100), algorithmObservable)
-                .setMaxIterations(500)
-                .setSwarmSize(100)
-                .build(problem);
-        break;
-      case "WASFGA":
-        List<Double> referencePoint = new ArrayList<>();
-        referencePoint.add(0.5);
-        referencePoint.add(0.5);
-
-        algorithm = new DynamicWASFGABuilder<>(crossover, mutation, referencePoint, algorithmObservable)
-                .setMaxIterations(500)
-                .setPopulationSize(100)
-                .build(problem);
-        break;
-
-      default:
-        algorithm = null;
-    }
-    Logger.getLogger("org").setLevel(Level.OFF);
-
-    application.setStreamingRuntime(new SparkRuntime<SingleObservedData<Double>, Observable<SingleObservedData<Double>>>(5))
-            .setProblem(problem)
-            .setAlgorithm(algorithm)
-            .addStreamingDataSource(new SimpleSparkStreamingCounterDataSource(streamingObservable, "timeDirectory"))
-            .addAlgorithmDataConsumer(new SimpleSolutionListConsumer(algorithm))
-            .addAlgorithmDataConsumer(new LocalDirectoryOutputConsumer("outputDirectory", algorithm))
-            .run();
-  }
-  */
 }

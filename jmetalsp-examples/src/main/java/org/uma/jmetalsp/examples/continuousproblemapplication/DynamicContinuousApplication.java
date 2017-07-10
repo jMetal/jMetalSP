@@ -20,6 +20,13 @@ import java.util.List;
  * - Problem: Any of the FDA familiy
  * - Default streaming runtime (Spark is not used)
  *
+ * Steps to compile and run the example:
+ * 1. Compile the project:
+     mvn package
+ * 2. Run the program:
+    java -cp jmetalsp-examples/target/jmetalsp-examples-1.1-SNAPSHOTar-with-dependencies.jar \
+    org.uma.jmetalsp.examples.continuousproblemapplication.DynamicContinuousApplication
+
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class DynamicContinuousApplication {
@@ -31,7 +38,7 @@ public class DynamicContinuousApplication {
 
 	  // STEP 2. Create the algorithm
     DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData<DoubleSolution>> algorithm =
-            AlgorithmFactory.getAlgorithm("SMPSO", problem) ;
+            AlgorithmFactory.getAlgorithm("MOCell", problem) ;
 
     // STEP 3. Create the streaming data source (only one in this example) and register the problem
     StreamingDataSource<SingleObservedData<Integer>> streamingDataSource =
