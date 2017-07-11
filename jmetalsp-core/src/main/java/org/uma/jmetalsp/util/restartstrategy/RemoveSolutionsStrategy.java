@@ -6,8 +6,14 @@ import org.uma.jmetalsp.DynamicProblem;
 import java.util.List;
 
 /**
- * Created by antonio on 6/06/17.
+ * @author Antonio J. Nebro
  */
 public interface RemoveSolutionsStrategy<S extends Solution<?>> {
-  void remove(List<S> solutionList, DynamicProblem<S, ?> problem) ;
+  /**
+   * Remove a number of solutions of a list of {@link Solution} objects
+   * @param solutionList
+   * @param problem
+   * @return the number of deleted solutions
+   */
+  int remove(List<S> solutionList, DynamicProblem<S, ?> problem) ;
 }

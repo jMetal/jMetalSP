@@ -13,23 +13,21 @@ import java.util.List;
  * Created by antonio on 6/06/17.
  */
 public class RemoveNSolutionsAccordingToTheHypervolumeContribution<S extends Solution<?>> implements RemoveSolutionsStrategy<S> {
-  private int percentageOfSolutionsToDelete ;
+  private int numberOfSolutionsToDelete ;
 
-  public RemoveNSolutionsAccordingToTheHypervolumeContribution(int percentageOfSolutionsToDelete) {
-    this.percentageOfSolutionsToDelete = percentageOfSolutionsToDelete ;
+  public RemoveNSolutionsAccordingToTheHypervolumeContribution(int numberOfSolutionsToDelete) {
+    this.numberOfSolutionsToDelete = numberOfSolutionsToDelete ;
   }
 
   @Override
-  public void remove(List<S> solutionList, DynamicProblem<S, ?> problem) {
+  public int remove(List<S> solutionList, DynamicProblem<S, ?> problem) {
     if (solutionList == null) {
       throw new JMetalException("The solution list is null") ;
     } else if (problem == null) {
       throw new JMetalException("The problem is null") ;
     }
 
-    HypervolumeArchive<S> archive = new HypervolumeArchive<>(
-            (int)(percentageOfSolutionsToDelete/100.0 * solutionList.size()),
-            new PISAHypervolume<>()) ;
+    HypervolumeArchive<S> archive = new HypervolumeArchive<>(numberOfSolutionsToDelete,  new PISAHypervolume<>()) ;
     for (S solution: solutionList) {
       archive.add(solution) ;
     }
@@ -38,5 +36,7 @@ public class RemoveNSolutionsAccordingToTheHypervolumeContribution<S extends Sol
     for (S solution: archive.getSolutionList()) {
       solutionList.add(solution) ;
     }
+
+    return numberOfSolutionsToDelete ;
   }
 }

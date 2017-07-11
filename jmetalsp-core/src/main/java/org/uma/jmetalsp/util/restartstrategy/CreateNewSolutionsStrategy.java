@@ -6,8 +6,14 @@ import org.uma.jmetalsp.DynamicProblem;
 import java.util.List;
 
 /**
- * Created by antonio on 6/06/17.
+ * @author Antonio J. Nebro
  */
 public interface CreateNewSolutionsStrategy<S extends Solution<?>> {
-  void create(List<S> solutionList, DynamicProblem<S, ?> problem) ;
+  /**
+   * Add a number of new solutions to a list of {@link Solution} objects
+   * @param solutionList
+   * @param problem
+   * @param numberOfNewSolutions
+   */
+  void create(List<S> solutionList, DynamicProblem<S, ?> problem, int numberOfNewSolutions) ;
 }

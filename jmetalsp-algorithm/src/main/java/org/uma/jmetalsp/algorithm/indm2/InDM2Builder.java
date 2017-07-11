@@ -110,7 +110,8 @@ public class InDM2Builder<
 
   public InDM2<S> build(P problem) {
     mutationProbability = 1.0 / problem.getNumberOfVariables();
-    return new InDM2(problem, populationSize, maxIterations, crossover, mutation, selection, evaluator, referencePoint, observable);
+    return new InDM2(problem, populationSize, maxIterations, crossover, mutation, selection, evaluator,
+            referencePoint, observable);
 
   }
 }

@@ -5,6 +5,7 @@ import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.SelectionOperator;
 import org.uma.jmetal.problem.Problem;
+import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.SolutionListUtils;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
@@ -12,6 +13,7 @@ import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observer.Observable;
+import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +27,7 @@ public class DynamicWASFGA<S extends Solution<?>>
         implements DynamicAlgorithm<List<S>, AlgorithmObservedData<S>> {
   private int completedIterations;
   private boolean stopAtTheEndOfTheCurrentIteration = false;
+  private RestartStrategy<S> restartStrategyForProblemChange ;
 
   Observable<AlgorithmObservedData<S>> observable ;
 
@@ -53,7 +56,7 @@ public class DynamicWASFGA<S extends Solution<?>>
 
   @Override
   public void restart() {
-    SolutionListUtils.restart(getPopulation(), getDynamicProblem(), 100);
+    this.restartStrategyForProblemChange.restart(getPopulation(), (DynamicProblem<S, ?>)getProblem());
     this.evaluatePopulation(this.getPopulation());
     this.initProgress();
     this.specificMOEAComputations();
@@ -112,5 +115,10 @@ public class DynamicWASFGA<S extends Solution<?>>
       getDynamicProblem().reset();
     }
     evaluations++;
+  }
+
+  @Override
+  public void setRestartStrategy(RestartStrategy<?> restartStrategy) {
+    this.restartStrategyForProblemChange = (RestartStrategy<S>) restartStrategy;
   }
 }
