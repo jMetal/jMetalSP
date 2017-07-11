@@ -24,6 +24,9 @@ import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observer.Observable;
+import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
+import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
+import org.uma.jmetalsp.util.restartstrategy.impl.RemoveFirstNSolutions;
 
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +47,7 @@ public class DynamicNSGAII<S extends Solution<?>>
 
   private int completedIterations ;
   private boolean stopAtTheEndOfTheCurrentIteration = false ;
+  private RestartStrategy<S> restartStrategyForProblemChange ;
 
 	Observable<AlgorithmObservedData<S>> observable ;
 
@@ -57,6 +61,9 @@ public class DynamicNSGAII<S extends Solution<?>>
 
     completedIterations = 0 ;
     this.observable = observable ;
+    this.restartStrategyForProblemChange = new RestartStrategy<>(
+            new RemoveFirstNSolutions<S>(populationSize),
+            new CreateNRandomSolutions<S>()) ;
   }
 
   @Override
@@ -110,6 +117,11 @@ public class DynamicNSGAII<S extends Solution<?>>
 
   @Override
   public void restart() {
-    SolutionListUtils.restart(getPopulation(), getDynamicProblem(), 100);
+    this.restartStrategyForProblemChange.restart(getPopulation(), (DynamicProblem<S, ?>)getProblem());
+  }
+
+  @Override
+  public void setRestartStrategy(RestartStrategy<?> restartStrategy) {
+    this.restartStrategyForProblemChange = (RestartStrategy<S>) restartStrategy;
   }
 }

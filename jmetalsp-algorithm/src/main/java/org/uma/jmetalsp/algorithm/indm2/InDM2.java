@@ -27,6 +27,7 @@ import java.util.*;
  * Evolutionary Computation. June 2017.
  *
  * @author Cristobal Barba <cbarba@lcc.uma.es>
+ * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class InDM2<S extends Solution<?>>
         extends WASFGA<S>
@@ -55,11 +56,11 @@ public class InDM2<S extends Solution<?>>
     this.algorithmData = new HashMap<>();
     this.restartStrategyForProblemChange = new RestartStrategy<>(
             new RemoveFirstNSolutions<S>(populationSize),
-            new CreateNRandomSolutions<S>(populationSize)) ;
+            new CreateNRandomSolutions<S>()) ;
 
     this.restartStrategyForReferencePointChange = new RestartStrategy<>(
             new RemoveFirstNSolutions<S>(populationSize),
-            new CreateNRandomSolutions<S>(populationSize)) ;
+            new CreateNRandomSolutions<S>()) ;
   }
 
   @Override
@@ -104,7 +105,7 @@ public class InDM2<S extends Solution<?>>
       observable.notifyObservers(new AlgorithmObservedData<S>(getPopulation(), algorithmData));
 
       this.restartStrategyForProblemChange.restart(getPopulation(), (DynamicProblem<S, ?>) getProblem());
-      restart();
+      restart() ;
       completedIterations++;
     }
     return stopAtTheEndOfTheCurrentIteration;
@@ -121,7 +122,7 @@ public class InDM2<S extends Solution<?>>
       evaluations = 0 ;
     } else if (getDynamicProblem().hasTheProblemBeenModified()) {
       this.restartStrategyForProblemChange.restart(getPopulation(), (DynamicProblem<S, ?>) getProblem());
-      restart();
+      restart() ;
       getDynamicProblem().reset();
       evaluations = 0 ;
     } else {
@@ -157,8 +158,9 @@ public class InDM2<S extends Solution<?>>
     newReferencePoint = Optional.of(solution) ;
   }
 
-  public void setRestartStrategyForProblemChange(RestartStrategy<S> restartStrategyForProblemChange) {
-    this.restartStrategyForProblemChange = restartStrategyForProblemChange ;
+  @Override
+  public void setRestartStrategy(RestartStrategy<?> restartStrategyForProblemChange) {
+    this.restartStrategyForProblemChange = (RestartStrategy<S>) restartStrategyForProblemChange;
   }
 
   public void setRestartStrategyForReferencePointChange(RestartStrategy<S> restartStrategyForReferencePointChange) {

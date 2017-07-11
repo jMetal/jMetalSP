@@ -24,6 +24,9 @@ import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observer.Observable;
+import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
+import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
+import org.uma.jmetalsp.util.restartstrategy.impl.RemoveFirstNSolutions;
 
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +42,8 @@ public class DynamicSMPSO extends SMPSO
   private SolutionListEvaluator<DoubleSolution> evaluator;
   private DynamicProblem<DoubleSolution, ?> problem;
   private boolean stopAtTheEndOfTheCurrentIteration = false;
+  private RestartStrategy<DoubleSolution> restartStrategyForProblemChange ;
+
   private Observable<AlgorithmObservedData<DoubleSolution>> observable;
 
   public DynamicSMPSO(DynamicProblem<DoubleSolution, ?> problem, int swarmSize, BoundedArchive<DoubleSolution> leaders,
@@ -56,6 +61,9 @@ public class DynamicSMPSO extends SMPSO
     completedIterations = 0;
     this.evaluator = evaluator;
     this.observable = observable;
+    this.restartStrategyForProblemChange = new RestartStrategy<>(
+            new RemoveFirstNSolutions<>(swarmSize),
+            new CreateNRandomSolutions<>()) ;
   }
 
   @Override
@@ -69,7 +77,7 @@ public class DynamicSMPSO extends SMPSO
   }
 
   @Override
-  public DynamicProblem<?, ?> getDynamicProblem() {
+  public DynamicProblem<DoubleSolution, ?> getDynamicProblem() {
     return problem;
   }
 
@@ -82,7 +90,6 @@ public class DynamicSMPSO extends SMPSO
     }
     int cont = getIterations();
     this.setIterations(cont + 1);
-    //completedIterations++;
     updateLeadersDensityEstimator();
   }
 
@@ -108,13 +115,18 @@ public class DynamicSMPSO extends SMPSO
 
   @Override
   public void restart() {
-    SolutionListUtils.restart(getSwarm(), (DoubleProblem) getDynamicProblem(), 100);
-    //setSwarm(createInitialSwarm());
+    this.restartStrategyForProblemChange.restart(getSwarm(), getDynamicProblem());
+    //SolutionListUtils.restart(getSwarm(), (DoubleProblem) getDynamicProblem(), 100);
     SolutionListUtils.removeSolutionsFromList(getResult(), getResult().size());
     evaluator.evaluate(getSwarm(), (DoubleProblem) getDynamicProblem());
     initializeVelocity(getSwarm());
     initializeParticlesMemory(getSwarm());
     initializeLeader(getSwarm());
     initProgress();
+  }
+
+  @Override
+  public void setRestartStrategy(RestartStrategy<?> restartStrategy) {
+    this.restartStrategyForProblemChange = (RestartStrategy<DoubleSolution>) restartStrategy;
   }
 }

@@ -56,16 +56,16 @@ public class InDM2RunnerForContinuousProblems {
             .setPopulationSize(50)
             .build(problem);
 
-    algorithm.setRestartStrategyForProblemChange(new RestartStrategy<>(
+    algorithm.setRestartStrategy(new RestartStrategy<>(
             //new RemoveFirstNSolutions<>(50),
-            new RemoveNSolutionsAccordingToTheHypervolumeContribution<>(50),
+            //new RemoveNSolutionsAccordingToTheHypervolumeContribution<>(50),
             //new RemoveNSolutionsAccordingToTheCrowdingDistance<>(50),
-            //new RemoveNRandomSolutions(50),
-            new CreateNRandomSolutions<DoubleSolution>(50)));
+            new RemoveNRandomSolutions(50),
+            new CreateNRandomSolutions<DoubleSolution>()));
 
     algorithm.setRestartStrategyForReferencePointChange(new RestartStrategy<>(
-            new RemoveNRandomSolutions<>(100),
-            new CreateNRandomSolutions<DoubleSolution>(100)));
+            new RemoveNRandomSolutions<>(50),
+            new CreateNRandomSolutions<DoubleSolution>()));
 
     // STEP 3. Create a streaming data source for the problem and register
     StreamingDataSource<SingleObservedData<Integer>> streamingDataSource =

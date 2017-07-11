@@ -1,7 +1,9 @@
 package org.uma.jmetalsp;
 
 import org.uma.jmetal.algorithm.Algorithm;
+import org.uma.jmetal.solution.Solution;
 import org.uma.jmetalsp.observer.Observable;
+import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 
 
 /**
@@ -11,5 +13,6 @@ public interface DynamicAlgorithm<Result, T extends ObservedData<?>> extends Alg
   DynamicProblem<?, ?> getDynamicProblem() ;
 
   void restart();
+  void setRestartStrategy(RestartStrategy<?> restartStrategy);
   Observable<T> getObservable() ;
 }

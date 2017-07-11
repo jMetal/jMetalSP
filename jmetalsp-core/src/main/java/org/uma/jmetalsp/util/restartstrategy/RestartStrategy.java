@@ -20,7 +20,7 @@ public class RestartStrategy<S extends Solution<?>> {
   }
 
   public void restart(List<S> solutionList, DynamicProblem<S,?> problem) {
-    removeSolutionsStrategy.remove(solutionList, problem); ;
-    createNewSolutionsStrategy.create(solutionList, problem); ;
+    int numberOfRemovedSolutions = removeSolutionsStrategy.remove(solutionList, problem);
+    createNewSolutionsStrategy.create(solutionList, problem, numberOfRemovedSolutions); ;
   }
 }

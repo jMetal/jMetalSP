@@ -27,6 +27,9 @@ import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observer.Observable;
+import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
+import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
+import org.uma.jmetalsp.util.restartstrategy.impl.RemoveFirstNSolutions;
 
 import java.util.HashMap;
 import java.util.List;
@@ -48,6 +51,8 @@ public class DynamicMOCell<S extends Solution<?>>
   private int completedIterations ;
   private boolean stopAtTheEndOfTheCurrentIteration = false ;
   Observable<AlgorithmObservedData<S>> observable ;
+  private RestartStrategy<S> restartStrategyForProblemChange ;
+
 
   public DynamicMOCell(DynamicProblem<S, ?> problem,
                        int maxEvaluations,
@@ -64,6 +69,9 @@ public class DynamicMOCell<S extends Solution<?>>
 
     completedIterations = 0 ;
     this.observable = observable ;
+    this.restartStrategyForProblemChange = new RestartStrategy<>(
+            new RemoveFirstNSolutions<S>(populationSize),
+            new CreateNRandomSolutions<S>()) ;
   }
 
   @Override
@@ -87,7 +95,8 @@ public class DynamicMOCell<S extends Solution<?>>
 
   @Override
   public void restart() {
-    SolutionListUtils.restart(getPopulation(), getDynamicProblem(), 100);
+    this.restartStrategyForProblemChange.restart(getPopulation(), (DynamicProblem<S, ?>)getProblem());
+
     location = new LocationAttribute<>(getPopulation());
     evaluator.evaluate(getPopulation(), getDynamicProblem()) ;
     initProgress();
@@ -115,5 +124,10 @@ public class DynamicMOCell<S extends Solution<?>>
   @Override
   public Observable<AlgorithmObservedData<S>> getObservable() {
     return this.observable ;
+  }
+
+  @Override
+  public void setRestartStrategy(RestartStrategy<?> restartStrategy) {
+    this.restartStrategyForProblemChange = (RestartStrategy<S>) restartStrategy;
   }
 }

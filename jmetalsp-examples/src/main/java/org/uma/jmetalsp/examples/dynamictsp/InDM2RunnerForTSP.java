@@ -76,16 +76,16 @@ public class InDM2RunnerForTSP {
             .setPopulationSize(50)
             .build(problem);
 
-    algorithm.setRestartStrategyForProblemChange(new RestartStrategy<>(
+    algorithm.setRestartStrategy(new RestartStrategy<>(
             //new RemoveFirstNSolutions<>(50),
             new RemoveNSolutionsAccordingToTheHypervolumeContribution<>(50),
             //new RemoveNSolutionsAccordingToTheCrowdingDistance<>(50),
             //new RemoveNRandomSolutions(50),
-            new CreateNRandomSolutions<>(50)));
+            new CreateNRandomSolutions<>()));
 
     algorithm.setRestartStrategyForReferencePointChange(new RestartStrategy<>(
             new RemoveNRandomSolutions<>(100),
-            new CreateNRandomSolutions<PermutationSolution<Integer>>(100)));
+            new CreateNRandomSolutions<PermutationSolution<Integer>>()));
 
     // STEP 3. Create a streaming data source for the problem and register
     StreamingTSPSource streamingTSPSource = new StreamingTSPSource(new DefaultObservable<>(), 2000);

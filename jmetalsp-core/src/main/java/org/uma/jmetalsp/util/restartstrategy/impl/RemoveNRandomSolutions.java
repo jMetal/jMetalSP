@@ -13,26 +13,29 @@ import java.util.stream.IntStream;
  * Created by antonio on 6/06/17.
  */
 public class RemoveNRandomSolutions<S extends Solution<?>> implements RemoveSolutionsStrategy<S> {
-  private int percentageOfSolutionsToDelete ;
+  private int numberOfSolutionsToDelete ;
 
-  public RemoveNRandomSolutions(int percentageOfSolutionsToDelete) {
-    this.percentageOfSolutionsToDelete = percentageOfSolutionsToDelete ;
+  public RemoveNRandomSolutions(int numberOfSolutionsToDelete) {
+    this.numberOfSolutionsToDelete = numberOfSolutionsToDelete ;
   }
 
   @Override
-  public void remove(List<S> solutionList, DynamicProblem<S, ?> problem) {
+  public int remove(List<S> solutionList, DynamicProblem<S, ?> problem) {
     if (solutionList == null) {
       throw new JMetalException("The solution list is null") ;
     } else if (problem == null) {
       throw new JMetalException("The problem is null") ;
+    } else if (solutionList.size() == 0) {
+      throw new JMetalException("The solution list is empty") ;
     }
 
-    int numberOfSolutionsToRemove = (int)(percentageOfSolutionsToDelete/100.0 * solutionList.size()) ;
+    int numberOfSolutionsToRemove = numberOfSolutionsToDelete ;
     IntStream.range(0, numberOfSolutionsToRemove)
             .forEach(s -> {
                       int chosen = JMetalRandom.getInstance().nextInt(0, solutionList.size()-1);
                       solutionList.remove(chosen);
                     }
             );
+    return numberOfSolutionsToDelete ;
   }
 }
