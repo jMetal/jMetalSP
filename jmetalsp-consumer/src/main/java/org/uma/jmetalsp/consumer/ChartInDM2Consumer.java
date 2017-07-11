@@ -167,6 +167,8 @@ public class ChartInDM2Consumer<S extends Solution<?>> implements
         this.chart.getFrontChart().setTitle("Iteration: " + numberOfIterations);
         if (lastReceivedFront == null) {
           lastReceivedFront = solutionList ;
+          this.chart.updateFrontCharts(solutionList, numberOfIterations);
+          this.chart.refreshCharts();
         } else {
           Front referenceFront = new ArrayFront(lastReceivedFront);
 

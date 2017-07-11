@@ -43,14 +43,14 @@ public class DynamicContinuousApplication {
 
 	  // STEP 2. Create the algorithm
     DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData<DoubleSolution>> algorithm =
-            AlgorithmFactory.getAlgorithm("NSGAII", problem) ;
+            AlgorithmFactory.getAlgorithm("WASFGA", problem) ;
 
 
     algorithm.setRestartStrategy(new RestartStrategy<>(
             //new RemoveFirstNSolutions<>(50),
             //new RemoveNSolutionsAccordingToTheHypervolumeContribution<>(50),
             //new RemoveNSolutionsAccordingToTheCrowdingDistance<>(50),
-            new RemoveNRandomSolutions(100),
+            new RemoveNRandomSolutions(50),
             new CreateNRandomSolutions<DoubleSolution>()));
 
     // STEP 3. Create the streaming data source (only one in this example) and register the problem
