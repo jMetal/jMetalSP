@@ -187,11 +187,14 @@ public class ChartInDM2Consumer<S extends Solution<?>> implements
             e.printStackTrace();
           }
         }
+
+        if (newReferencePoint != null) {
+          this.chart.setReferencePoint(newReferencePoint);
+        }
         this.chart.refreshCharts();
       } else {
         if (newReferencePoint != null) {
           this.chart.setReferencePoint(newReferencePoint);
-          //data.getAlgorithmData().put("newReferencePoint", null);
           this.chart.refreshCharts();
         }
       }

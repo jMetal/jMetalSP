@@ -135,7 +135,7 @@ public class InDM2<S extends Solution<?>>
             newReferencePoint.getObjective(0),
             newReferencePoint.getObjective(1)) ;
     this.updatePointOfInterest(referencePoint);
-    algorithmData.put("newReferencePoint",referencePoint);
+    algorithmData.put("referencePoint",referencePoint);
     List<S> emptyList = new ArrayList<>();
     observable.setChanged();
     observable.notifyObservers(new AlgorithmObservedData(emptyList, algorithmData));
