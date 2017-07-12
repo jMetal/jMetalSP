@@ -66,11 +66,6 @@ public class LocalDirectoryOutputConsumer<S extends Solution<?>> implements
     }
   }
 
-  @Override
-  public Observable<AlgorithmObservedData<S>> getObservable() {
-    return dynamicAlgorithm.getObservable();
-  }
-
   private void createDataDirectory(String outputDirectoryName) {
     File outputDirectory = new File(outputDirectoryName);
 

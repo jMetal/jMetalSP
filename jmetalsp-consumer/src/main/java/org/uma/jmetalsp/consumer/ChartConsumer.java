@@ -65,11 +65,6 @@ public class ChartConsumer<S extends Solution<?>> implements
   }
 
   @Override
-  public Observable<AlgorithmObservedData<S>> getObservable() {
-    return dynamicAlgorithm.getObservable();
-  }
-
-  @Override
   public void update(Observable<AlgorithmObservedData<S>> observable, AlgorithmObservedData<S> data) {
     int numberOfIterations = 0 ;
     List<S> solutionList = null ;

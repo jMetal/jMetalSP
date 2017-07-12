@@ -13,5 +13,4 @@ public interface DynamicProblem<S extends Solution<?>, D extends ObservedData<?>
 
   boolean hasTheProblemBeenModified() ;
 	void reset() ;
-  Observable<D> getObservable() ;
 }

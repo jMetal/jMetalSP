@@ -50,11 +50,6 @@ public class ChartInDM2Consumer<S extends Solution<?>> implements
   }
 
   @Override
-  public Observable<AlgorithmObservedData<S>> getObservable() {
-    return dynamicAlgorithm.getObservable();
-  }
-
-  @Override
   public void run() {
     if (dynamicAlgorithm == null) {
       throw new JMetalException("The algorithm is null");
@@ -71,65 +66,6 @@ public class ChartInDM2Consumer<S extends Solution<?>> implements
     }
   }
 
-  /*
-  @Override
-  public void update(Observable<AlgorithmObservedData<S>> observable, AlgorithmObservedData<S> data) {
-    //System.out.println("Number of generated fronts: " + data.getIterations());
-    double coverageValue=0;
-    if (chart == null) {
-      this.chart = new ChartContainer(dynamicAlgorithm.getName(), 200);
-      try {
-        this.chart.setFrontChart(0, 1, null);
-        //sizeIni= this.chart.getFrontChart().getStyler().getMarkerSize();
-
-        this.chart.setReferencePoint(referencePoint);
-        this.chart.getFrontChart().getStyler().setLegendPosition(Styler.LegendPosition.InsideNE) ;
-
-
-      } catch (FileNotFoundException e) {
-        e.printStackTrace();
-      }
-      this.chart.initChart();
-    } else {
-      if (data.getSolutionList().size() != 0) {
-       // this.chart.getFrontChart().getStyler().setMarkerSize(5);
-        List<Integer> iteraciones=(List<Integer> )data.getAlgorithmData().get("numberOfIterations");
-        List<S> solutionList=(List<S>) data.getSolutionList();
-
-        this.chart.getFrontChart().setTitle("Iteration: " + iteraciones.get(0));
-        if (lastReceivedFront == null) {
-          lastReceivedFront = (List<S>) data.getSolutionList();
-        } else {
-          List<S> solution = (List<S>)data.getSolutionList();
-          Front referenceFront = new ArrayFront(lastReceivedFront);
-
-          InvertedGenerationalDistance<S> igd =
-                  new InvertedGenerationalDistance<S>(referenceFront);
-
-          coverageValue=igd.evaluate(solutionList);
-        }
-
-        if(coverageValue>0.005) {
-          this.chart.updateFrontCharts(solutionList, iteraciones.get(0));
-          lastReceivedFront=solutionList;
-          try {
-            this.chart.saveChart(iteraciones.get(0) +".chart", BitmapEncoder.BitmapFormat.PNG);
-          } catch (IOException e) {
-            e.printStackTrace();
-          }
-
-        }
-        this.chart.refreshCharts();
-      } else {
-        if (data.getAlgorithmData().get("newReferencePoint") != null) {
-          this.chart.setReferencePoint((List<Double>) data.getAlgorithmData().get("newReferencePoint"));
-          data.getAlgorithmData().put("newReferencePoint", null);
-          this.chart.refreshCharts();
-        }
-      }
-    }
-  }
-*/
   @Override
   public void update(Observable<AlgorithmObservedData<S>> observable, AlgorithmObservedData<S> data) {
     int numberOfIterations = 0 ;

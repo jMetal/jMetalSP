@@ -35,11 +35,6 @@ public class SimpleSolutionListConsumer<S extends Solution<?>> implements
   }
 
   @Override
-  public Observable<AlgorithmObservedData<S>> getObservable() {
-    return dynamicAlgorithm.getObservable();
-  }
-
-  @Override
   public void run() {
     if (dynamicAlgorithm == null) {
       throw new JMetalException("The algorithm is null");

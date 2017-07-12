@@ -152,11 +152,6 @@ public class DynamicMultiobjectiveTSP
     theProblemHasBeenModified = false ;
   }
 
-  @Override
-  public Observable<SingleObservedData<TSPMatrixData>> getObservable() {
-    return this.observable;
-  }
-
   public String toString() {
     String result = "" ;
     for (int i = 0; i < numberOfCities; i++) {

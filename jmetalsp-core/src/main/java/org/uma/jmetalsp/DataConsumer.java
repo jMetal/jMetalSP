@@ -9,6 +9,4 @@ import org.uma.jmetalsp.observer.Observer;
 public interface DataConsumer<D extends ObservedData<?>> extends Runnable, Observer<D> {
   @Override
   void run() ;
-
-  Observable<D> getObservable() ;
 }

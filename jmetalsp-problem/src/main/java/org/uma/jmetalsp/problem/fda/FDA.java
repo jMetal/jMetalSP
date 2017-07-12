@@ -42,9 +42,4 @@ public abstract class FDA
 
 		theProblemHasBeenModified = true ;
 	}
-
-	@Override
-  public Observable<SingleObservedData<Integer>> getObservable() {
-	  return this.observable ;
-  }
 }
