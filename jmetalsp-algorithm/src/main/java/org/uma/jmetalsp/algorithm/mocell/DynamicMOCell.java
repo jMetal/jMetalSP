@@ -17,9 +17,11 @@ import org.uma.jmetal.algorithm.multiobjective.mocell.MOCell;
 import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.SelectionOperator;
+import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.SolutionListUtils;
 import org.uma.jmetal.util.archive.BoundedArchive;
+import org.uma.jmetal.util.archive.impl.CrowdingDistanceArchive;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetal.util.neighborhood.Neighborhood;
 import org.uma.jmetal.util.solutionattribute.impl.LocationAttribute;
@@ -83,10 +85,8 @@ public class DynamicMOCell<S extends Solution<?>>
     if (evaluations >= maxEvaluations) {
       observable.setChanged() ;
       Map<String, Object> algorithmData = new HashMap<>() ;
-
       algorithmData.put("numberOfIterations",completedIterations);
       observable.notifyObservers(new AlgorithmObservedData<S>(getResult(), algorithmData));
-
       restart();
       completedIterations++;
     }
@@ -96,7 +96,7 @@ public class DynamicMOCell<S extends Solution<?>>
   @Override
   public void restart() {
     this.restartStrategyForProblemChange.restart(getPopulation(), (DynamicProblem<S, ?>)getProblem());
-
+    SolutionListUtils.removeSolutionsFromList(getResult(),getResult().size());//clean archive
     location = new LocationAttribute<>(getPopulation());
     evaluator.evaluate(getPopulation(), getDynamicProblem()) ;
     initProgress();
