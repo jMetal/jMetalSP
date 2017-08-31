@@ -2,8 +2,10 @@ package org.uma.jmetalsp.examples.continuousproblemapplication;
 
 import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
+import org.uma.jmetal.operator.SelectionOperator;
 import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
 import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
+import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetal.util.archive.impl.CrowdingDistanceArchive;
@@ -11,6 +13,7 @@ import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.algorithm.mocell.DynamicMOCellBuilder;
 import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAIIBuilder;
+import org.uma.jmetalsp.algorithm.nsgaiii.DynamicNSGAIIIBuilder;
 import org.uma.jmetalsp.algorithm.smpso.DynamicSMPSOBuilder;
 import org.uma.jmetalsp.algorithm.wasfga.DynamicWASFGABuilder;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
@@ -32,6 +35,7 @@ public class AlgorithmFactory {
     CrossoverOperator<DoubleSolution> crossover = new SBXCrossover(0.9, 20.0);
     MutationOperator<DoubleSolution> mutation =
             new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);
+    SelectionOperator<List<DoubleSolution>, DoubleSolution> selection=new BinaryTournamentSelection<DoubleSolution>();;
 
     switch (algorithmName) {
       case "NSGAII":
@@ -65,6 +69,16 @@ public class AlgorithmFactory {
                 .build(problem);
         break;
 
+
+      case "NSGAIII":
+        algorithm = (DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData<DoubleSolution>>) new DynamicNSGAIIIBuilder<>(problem,new DefaultObservable<>())
+                .setCrossoverOperator(crossover)
+                .setMutationOperator(mutation)
+                .setSelectionOperator(selection)
+                .setMaxIterations(50000)
+                .build();
+
+        break;
       default:
         throw new JMetalException("Algorithm " + algorithmName + " does not exist") ;
     }

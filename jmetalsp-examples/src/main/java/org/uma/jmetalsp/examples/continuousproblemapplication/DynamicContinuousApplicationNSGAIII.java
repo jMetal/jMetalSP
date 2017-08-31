@@ -9,11 +9,10 @@ import org.uma.jmetalsp.impl.DefaultRuntime;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.problem.fda.FDA2;
+import org.uma.jmetalsp.problem.fda.FDA5;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
-import org.uma.jmetalsp.util.restartstrategy.impl.RemoveFirstNSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNRandomSolutions;
-import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNSolutionsAccordingToTheHypervolumeContribution;
 
 import java.io.IOException;
 import java.util.List;
@@ -34,12 +33,12 @@ import java.util.List;
 
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DynamicContinuousApplication {
+public class DynamicContinuousApplicationNSGAIII {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     // STEP 1. Create the problem
 	  DynamicProblem<DoubleSolution, SingleObservedData<Integer>> problem =
-            new FDA2();
+            new FDA5();
 
 	  // STEP 2. Create the algorithm
     DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData<DoubleSolution>> algorithm =
