@@ -43,7 +43,7 @@ public class DynamicContinuousApplication {
 
 	  // STEP 2. Create the algorithm
     DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData<DoubleSolution>> algorithm =
-            AlgorithmFactory.getAlgorithm("NSGAIII", problem) ;
+            AlgorithmFactory.getAlgorithm("RNSGAII", problem) ;
 
 
     algorithm.setRestartStrategy(new RestartStrategy<>(
