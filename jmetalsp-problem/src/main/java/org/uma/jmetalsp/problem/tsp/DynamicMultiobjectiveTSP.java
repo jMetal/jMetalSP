@@ -121,14 +121,18 @@ public class DynamicMultiobjectiveTSP
   }
 
   public synchronized void updateCostValue(int row, int col, double newValue) {
-    costMatrix[row][col] = newValue ;
-    theProblemHasBeenModified = true ;
+    if(costMatrix.length<row &&  costMatrix[row].length<col) {
+      costMatrix[row][col] = newValue;
+      theProblemHasBeenModified = true;
+    }
     //JMetalLogger.logger.info("Updated cost: " + row + ", " + col + ": " + newValue) ;
   }
 
   public synchronized void updateDistanceValue(int row, int col, double newValue) {
-    distanceMatrix[row][col] = newValue ;
-    theProblemHasBeenModified = true ;
+    if(costMatrix.length<row &&  costMatrix[row].length<col) {
+      distanceMatrix[row][col] = newValue;
+      theProblemHasBeenModified = true;
+    }
   }
 
   public synchronized double[][] getDistanceMatrix() {
