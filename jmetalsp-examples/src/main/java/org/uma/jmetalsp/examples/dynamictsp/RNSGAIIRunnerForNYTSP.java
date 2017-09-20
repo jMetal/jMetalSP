@@ -52,12 +52,15 @@ public class RNSGAIIRunnerForNYTSP {
 
     // STEP 2. Create and configure the algorithm
     List<Double> referencePoint = new ArrayList<>();
-    referencePoint.add(40000.0);
-    referencePoint.add(8000.0);
-    referencePoint.add(10000.0);
-    referencePoint.add(8500.0);
-    referencePoint.add(14000.0);
-    referencePoint.add(9000.0);
+    
+    referencePoint.add(160000.0);
+    referencePoint.add(9500.0);
+    referencePoint.add(167000.0);
+    referencePoint.add(9400.0);
+    referencePoint.add(168500.0);
+    referencePoint.add(9300.0);
+    referencePoint.add(169000.0);
+    referencePoint.add(9200.0);
 
     CrossoverOperator<PermutationSolution<Integer>> crossover;
     MutationOperator<PermutationSolution<Integer>> mutation;

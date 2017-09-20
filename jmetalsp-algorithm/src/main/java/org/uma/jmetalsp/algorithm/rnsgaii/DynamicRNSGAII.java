@@ -86,7 +86,8 @@ public class DynamicRNSGAII<S extends Solution<?>>
       Map<String, Object> algorithmData = new HashMap<>() ;
 
       algorithmData.put("numberOfIterations",completedIterations);
-      observable.notifyObservers(new AlgorithmObservedData<S>(getPopulation(), algorithmData));
+      //getPopulation
+      observable.notifyObservers(new AlgorithmObservedData<S>(getResult(), algorithmData));
 
       restart();
       evaluator.evaluate(getPopulation(), getDynamicProblem()) ;
