@@ -49,7 +49,13 @@ public class ComplexStreamingDataSourceFromKeyboard implements
         values.add(0.0);
         values.add(0.0);
       }
-      System.out.println("REF POINT: " + values.toArray()) ;
+      String cad="[";
+      int i=0;
+      for (Double val:values) {
+        cad+=val +" ";
+      }
+      cad+="]";
+      System.out.println("REF POINT: " + cad) ;
 
       observable.setChanged();
 

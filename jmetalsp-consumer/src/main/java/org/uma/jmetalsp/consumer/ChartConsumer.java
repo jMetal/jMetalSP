@@ -82,7 +82,7 @@ public class ChartConsumer<S extends Solution<?>> implements
 
     // TODO: error handling if parameters are not included
 
-    System.out.println("Number of generated fronts: " + data.getData().get("numberOfIterations"));
+   // System.out.println("Number of generated fronts: " + data.getData().get("numberOfIterations"));
     if (chart == null) {
       this.chart = new ChartContainer(dynamicAlgorithm.getName(), 200);
       try {

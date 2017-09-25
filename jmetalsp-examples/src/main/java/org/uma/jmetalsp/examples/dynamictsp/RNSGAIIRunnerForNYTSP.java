@@ -13,6 +13,7 @@ import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAIIBuilder;
 import org.uma.jmetalsp.algorithm.rnsgaii.DynamicRNSGAII;
 import org.uma.jmetalsp.algorithm.rnsgaii.DynamicRNSGAIIBuilder;
 import org.uma.jmetalsp.consumer.ChartConsumer;
+import org.uma.jmetalsp.consumer.ChartMultipleConsumer;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.examples.streamingdatasource.ComplexStreamingDataSourceFromKeyboard;
 import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingDataSourceFromKeyboard;
@@ -52,15 +53,48 @@ public class RNSGAIIRunnerForNYTSP {
 
     // STEP 2. Create and configure the algorithm
     List<Double> referencePoint = new ArrayList<>();
-    
-    referencePoint.add(160000.0);
+
+    /*referencePoint.add(160000.0);
     referencePoint.add(9500.0);
     referencePoint.add(167000.0);
     referencePoint.add(9400.0);
     referencePoint.add(168500.0);
     referencePoint.add(9300.0);
     referencePoint.add(169000.0);
-    referencePoint.add(9200.0);
+    referencePoint.add(9200.0);*/
+
+    /*referencePoint.add(0.0);
+    referencePoint.add(0.0);
+    referencePoint.add(2000.0);
+    referencePoint.add(2000.0);
+    referencePoint.add(10000.0);
+    referencePoint.add(7000.0);
+    referencePoint.add(16000.0);
+    referencePoint.add(9000.0);*/
+
+
+    referencePoint.add(171000.0);
+    referencePoint.add(11000.0);
+    /*
+    referencePoint.add(171000.0);
+    referencePoint.add(11000.0);
+    referencePoint.add(172000.0);
+    referencePoint.add(10400.0);
+
+    referencePoint.add(172500.0);
+    referencePoint.add(10000.0);
+
+    referencePoint.add(174000.0);
+    referencePoint.add(9000.0);
+
+    referencePoint.add(175000.0);
+    referencePoint.add(8900.0);
+
+    referencePoint.add(176000.0);
+    referencePoint.add(8700.0);*/
+
+    ////171000.0,11000.0,172000.0,10400.0,172500.0,10000.0,174000.0,9000.0,175000.0,8900.0,176000.0,8700.0
+
 
     CrossoverOperator<PermutationSolution<Integer>> crossover;
     MutationOperator<PermutationSolution<Integer>> mutation;
@@ -71,8 +105,8 @@ public class RNSGAIIRunnerForNYTSP {
     mutation = new PermutationSwapMutation<Integer>(mutationProbability);
 
     double epsilon = 0.001D;
-    DynamicRNSGAII<PermutationSolution<Integer>> algorithm = new DynamicRNSGAIIBuilder<>(crossover, mutation, new DefaultObservable<>(),referencePoint,epsilon)
-    //DynamicNSGAII<PermutationSolution<Integer>> algorithm =  algorithm = new DynamicNSGAIIBuilder<>(crossover, mutation, new DefaultObservable<>())
+    //DynamicRNSGAII<PermutationSolution<Integer>> algorithm = new DynamicRNSGAIIBuilder<>(crossover, mutation, new DefaultObservable<>(),referencePoint,epsilon)
+    DynamicNSGAII<PermutationSolution<Integer>> algorithm =  algorithm = new DynamicNSGAIIBuilder<>(crossover, mutation, new DefaultObservable<>())
             .setMaxEvaluations(70000)
             .setPopulationSize(100)
             .build(problem);
@@ -97,13 +131,13 @@ public class RNSGAIIRunnerForNYTSP {
     StreamingDataSource<SingleObservedData<List<Double>>> keyboardstreamingDataSource =
             new ComplexStreamingDataSourceFromKeyboard() ;
 
-    keyboardstreamingDataSource.getObservable().register(algorithm);
+    //keyboardstreamingDataSource.getObservable().register(algorithm);
 
     // STEP 5. Create the data consumers and register into the algorithm
     DataConsumer<AlgorithmObservedData<PermutationSolution<Integer>>> localDirectoryOutputConsumer =
             new LocalDirectoryOutputConsumer<PermutationSolution<Integer>>("outputdirectory", algorithm);
     DataConsumer<AlgorithmObservedData<PermutationSolution<Integer>>> chartConsumer =
-            new ChartConsumer<PermutationSolution<Integer>>(algorithm);
+            new ChartMultipleConsumer<PermutationSolution<Integer>>(algorithm,referencePoint,problem.getNumberOfObjectives());
 
     algorithm.getObservable().register(localDirectoryOutputConsumer);
     algorithm.getObservable().register(chartConsumer) ;

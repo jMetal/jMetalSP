@@ -47,7 +47,7 @@ public class RNSGAIIRunnerForContinuousProblems {
     List<Double> referencePoint = new ArrayList<>();
     referencePoint.add(0.0);
     referencePoint.add(0.0);
-    referencePoint.add(0.5);
+    /*referencePoint.add(0.5);
     referencePoint.add(0.5);
     referencePoint.add(1.0);
     referencePoint.add(0.0);
@@ -60,7 +60,7 @@ public class RNSGAIIRunnerForContinuousProblems {
     referencePoint.add(0.1);
     referencePoint.add(0.9);
     referencePoint.add(0.9);
-    referencePoint.add(0.7);
+    referencePoint.add(0.7);*/
 
     CrossoverOperator<DoubleSolution> crossover = new SBXCrossover(0.9, 20.0);
     MutationOperator<DoubleSolution> mutation =
