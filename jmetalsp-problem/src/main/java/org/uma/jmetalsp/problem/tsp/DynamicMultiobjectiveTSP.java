@@ -3,6 +3,7 @@ package org.uma.jmetalsp.problem.tsp;
 import org.uma.jmetal.problem.ConstrainedProblem;
 import org.uma.jmetal.problem.impl.AbstractIntegerPermutationProblem;
 import org.uma.jmetal.solution.PermutationSolution;
+import org.uma.jmetal.util.solutionattribute.impl.NumberOfViolatedConstraints;
 import org.uma.jmetal.util.solutionattribute.impl.OverallConstraintViolation;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
@@ -28,6 +29,7 @@ public class DynamicMultiobjectiveTSP
   private boolean theProblemHasBeenModified;
 
   public OverallConstraintViolation<PermutationSolution<Integer>> overallConstraintViolationDegree ;
+  public NumberOfViolatedConstraints<PermutationSolution<Integer>> numberOfViolatedConstraints ;
 
   public DynamicMultiobjectiveTSP(int numberOfCities,
                                   double[][] distanceMatrix,
@@ -46,6 +48,7 @@ public class DynamicMultiobjectiveTSP
     setNumberOfConstraints(1);
 
     overallConstraintViolationDegree = new OverallConstraintViolation<PermutationSolution<Integer>>() ;
+    numberOfViolatedConstraints = new NumberOfViolatedConstraints<PermutationSolution<Integer>>() ;
   }
 
   public DynamicMultiobjectiveTSP(int numberOfCities,
@@ -91,6 +94,7 @@ public class DynamicMultiobjectiveTSP
 
   public synchronized void evaluateConstraints(PermutationSolution<Integer> solution) {
     int nonConnectedLinks = 0 ;
+    int connectedLinks = 0;
     for (int i = 0; i < (numberOfCities - 1); i++) {
       int x ;
       int y ;
@@ -100,6 +104,8 @@ public class DynamicMultiobjectiveTSP
 
       if (distanceMatrix[x][y] == NON_CONNECTED) {
         nonConnectedLinks ++ ;
+      }else{
+        connectedLinks ++;
       }
     }
 
@@ -110,8 +116,15 @@ public class DynamicMultiobjectiveTSP
 
     if (distanceMatrix[firstCity][lastCity] == NON_CONNECTED) {
       nonConnectedLinks ++ ;
+    }else{
+      connectedLinks ++;
+    }
+    if(connectedLinks>15){
+      int x=0;
+      x++;
     }
     overallConstraintViolationDegree.setAttribute(solution, -1.0 * nonConnectedLinks);
+    numberOfViolatedConstraints.setAttribute(solution,nonConnectedLinks-numberOfCities+9);
     //System.out.println("Violation: " + nonConnectedLinks + ". Fitness: " + solution.getObjective(0)) ;
   }
 

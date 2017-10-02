@@ -6,28 +6,21 @@ import org.uma.jmetal.operator.impl.crossover.PMXCrossover;
 import org.uma.jmetal.operator.impl.mutation.PermutationSwapMutation;
 import org.uma.jmetal.solution.PermutationSolution;
 import org.uma.jmetalsp.*;
-import org.uma.jmetalsp.algorithm.indm2.InDM2;
-import org.uma.jmetalsp.algorithm.indm2.InDM2Builder;
-import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAII;
-import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAIIBuilder;
 import org.uma.jmetalsp.algorithm.rnsgaii.DynamicRNSGAII;
 import org.uma.jmetalsp.algorithm.rnsgaii.DynamicRNSGAIIBuilder;
-import org.uma.jmetalsp.consumer.ChartConsumer;
+import org.uma.jmetalsp.algorithm.wasfga.DynamicWASFGAConstraints;
+import org.uma.jmetalsp.algorithm.wasfga.DynamicWASFGAContraintsBuilder;
 import org.uma.jmetalsp.consumer.ChartMultipleConsumer;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.examples.streamingdatasource.ComplexStreamingDataSourceFromKeyboard;
-import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingDataSourceFromKeyboard;
 import org.uma.jmetalsp.impl.DefaultRuntime;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
 import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPBuilderFromNYData;
-import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPBuilderFromTSPLIBFiles;
 import org.uma.jmetalsp.problem.tsp.TSPMatrixData;
-import org.uma.jmetalsp.spark.SparkRuntime;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
-import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNRandomSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNSolutionsAccordingToTheHypervolumeContribution;
 
 import java.io.IOException;
@@ -43,7 +36,7 @@ import java.util.List;
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class RNSGAIIRunnerForNYTSP {
+public class WASFGARunnerForNYTSP {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     // STEP 1. Create the problem
@@ -73,8 +66,8 @@ public class RNSGAIIRunnerForNYTSP {
     referencePoint.add(9000.0);*/
 
 
-    referencePoint.add(0.0);
-    referencePoint.add(0.0);
+    referencePoint.add(15000.0);
+    referencePoint.add(5000.0);
     /*
     referencePoint.add(171000.0);
     referencePoint.add(11000.0);
@@ -105,9 +98,9 @@ public class RNSGAIIRunnerForNYTSP {
     mutation = new PermutationSwapMutation<Integer>(mutationProbability);
 
     double epsilon = 0.001D;
-    DynamicRNSGAII<PermutationSolution<Integer>> algorithm = new DynamicRNSGAIIBuilder<>(crossover, mutation, new DefaultObservable<>(),referencePoint,epsilon)
+    DynamicWASFGAConstraints<PermutationSolution<Integer>> algorithm = new DynamicWASFGAContraintsBuilder<>(crossover, mutation,referencePoint, new DefaultObservable<>())
     //DynamicNSGAII<PermutationSolution<Integer>> algorithm =  algorithm = new DynamicNSGAIIBuilder<>(crossover, mutation, new DefaultObservable<>())
-            .setMaxEvaluations(70000)
+            .setMaxIterations(2500)
             .setPopulationSize(100)
             .build(problem);
 
@@ -131,7 +124,7 @@ public class RNSGAIIRunnerForNYTSP {
     StreamingDataSource<SingleObservedData<List<Double>>> keyboardstreamingDataSource =
             new ComplexStreamingDataSourceFromKeyboard() ;
 
-    keyboardstreamingDataSource.getObservable().register(algorithm);
+    //keyboardstreamingDataSource.getObservable().register(algorithm);
 
     // STEP 5. Create the data consumers and register into the algorithm
     DataConsumer<AlgorithmObservedData<PermutationSolution<Integer>>> localDirectoryOutputConsumer =

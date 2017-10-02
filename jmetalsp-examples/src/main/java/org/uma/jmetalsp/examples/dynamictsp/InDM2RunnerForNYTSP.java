@@ -8,10 +8,6 @@ import org.uma.jmetal.solution.PermutationSolution;
 import org.uma.jmetalsp.*;
 import org.uma.jmetalsp.algorithm.indm2.InDM2;
 import org.uma.jmetalsp.algorithm.indm2.InDM2Builder;
-import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAII;
-import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAIIBuilder;
-import org.uma.jmetalsp.algorithm.rnsgaii.DynamicRNSGAII;
-import org.uma.jmetalsp.algorithm.rnsgaii.DynamicRNSGAIIBuilder;
 import org.uma.jmetalsp.consumer.ChartConsumer;
 import org.uma.jmetalsp.consumer.ChartMultipleConsumer;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
@@ -24,7 +20,6 @@ import org.uma.jmetalsp.observer.impl.DefaultObservable;
 import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPBuilderFromNYData;
 import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPBuilderFromTSPLIBFiles;
 import org.uma.jmetalsp.problem.tsp.TSPMatrixData;
-import org.uma.jmetalsp.spark.SparkRuntime;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNRandomSolutions;
@@ -43,58 +38,20 @@ import java.util.List;
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class RNSGAIIRunnerForNYTSP {
+public class InDM2RunnerForNYTSP {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     // STEP 1. Create the problem
     DynamicProblem<PermutationSolution<Integer>, SingleObservedData<TSPMatrixData>> problem;
+    //problem = new MultiobjectiveTSPBuilderFromTSPLIBFiles("data/kroA100.tsp", "data/kroB100.tsp")
+    //        .build();
     problem = new MultiobjectiveTSPBuilderFromNYData("data/nyData.txt")
             .build();
 
     // STEP 2. Create and configure the algorithm
     List<Double> referencePoint = new ArrayList<>();
-
-    /*referencePoint.add(160000.0);
-    referencePoint.add(9500.0);
-    referencePoint.add(167000.0);
-    referencePoint.add(9400.0);
-    referencePoint.add(168500.0);
-    referencePoint.add(9300.0);
-    referencePoint.add(169000.0);
-    referencePoint.add(9200.0);*/
-
-    /*referencePoint.add(0.0);
-    referencePoint.add(0.0);
-    referencePoint.add(2000.0);
-    referencePoint.add(2000.0);
-    referencePoint.add(10000.0);
-    referencePoint.add(7000.0);
-    referencePoint.add(16000.0);
-    referencePoint.add(9000.0);*/
-
-
-    referencePoint.add(0.0);
-    referencePoint.add(0.0);
-    /*
     referencePoint.add(171000.0);
     referencePoint.add(11000.0);
-    referencePoint.add(172000.0);
-    referencePoint.add(10400.0);
-
-    referencePoint.add(172500.0);
-    referencePoint.add(10000.0);
-
-    referencePoint.add(174000.0);
-    referencePoint.add(9000.0);
-
-    referencePoint.add(175000.0);
-    referencePoint.add(8900.0);
-
-    referencePoint.add(176000.0);
-    referencePoint.add(8700.0);*/
-
-    ////171000.0,11000.0,172000.0,10400.0,172500.0,10000.0,174000.0,9000.0,175000.0,8900.0,176000.0,8700.0
-
 
     CrossoverOperator<PermutationSolution<Integer>> crossover;
     MutationOperator<PermutationSolution<Integer>> mutation;
@@ -104,10 +61,9 @@ public class RNSGAIIRunnerForNYTSP {
     double mutationProbability = 0.2;
     mutation = new PermutationSwapMutation<Integer>(mutationProbability);
 
-    double epsilon = 0.001D;
-    DynamicRNSGAII<PermutationSolution<Integer>> algorithm = new DynamicRNSGAIIBuilder<>(crossover, mutation, new DefaultObservable<>(),referencePoint,epsilon)
-    //DynamicNSGAII<PermutationSolution<Integer>> algorithm =  algorithm = new DynamicNSGAIIBuilder<>(crossover, mutation, new DefaultObservable<>())
-            .setMaxEvaluations(70000)
+
+    InDM2<PermutationSolution<Integer>> algorithm = new InDM2Builder<>(crossover, mutation, referencePoint, new DefaultObservable<>())
+            .setMaxIterations(25000)
             .setPopulationSize(100)
             .build(problem);
 
@@ -118,12 +74,12 @@ public class RNSGAIIRunnerForNYTSP {
             //new RemoveNRandomSolutions(50),
             new CreateNRandomSolutions<>()));
 
-    //algorithm.setRestartStrategyForReferencePointChange(new RestartStrategy<>(
-     //       new RemoveNRandomSolutions<>(100),
-     //       new CreateNRandomSolutions<PermutationSolution<Integer>>()));
+    algorithm.setRestartStrategyForReferencePointChange(new RestartStrategy<>(
+            new RemoveNRandomSolutions<>(100),
+            new CreateNRandomSolutions<PermutationSolution<Integer>>()));
 
     // STEP 3. Create a streaming data source for the problem and register
-    StreamingTSPFileSource streamingTSPSource = new StreamingTSPFileSource(new DefaultObservable<>(), 10000);
+    StreamingTSPFileSource streamingTSPSource = new StreamingTSPFileSource(new DefaultObservable<>(), 2000);
 
     streamingTSPSource.getObservable().register(problem);
 
@@ -137,7 +93,7 @@ public class RNSGAIIRunnerForNYTSP {
     DataConsumer<AlgorithmObservedData<PermutationSolution<Integer>>> localDirectoryOutputConsumer =
             new LocalDirectoryOutputConsumer<PermutationSolution<Integer>>("outputdirectory", algorithm);
     DataConsumer<AlgorithmObservedData<PermutationSolution<Integer>>> chartConsumer =
-            new ChartMultipleConsumer<PermutationSolution<Integer>>(algorithm,referencePoint,problem.getNumberOfObjectives());
+            new ChartMultipleConsumer<PermutationSolution<Integer>>(algorithm,referencePoint,problem.getNumberOfObjectives());//ChartMultipleConsumer
 
     algorithm.getObservable().register(localDirectoryOutputConsumer);
     algorithm.getObservable().register(chartConsumer) ;

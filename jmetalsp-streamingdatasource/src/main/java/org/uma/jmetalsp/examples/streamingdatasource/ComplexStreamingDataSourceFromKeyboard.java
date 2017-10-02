@@ -35,8 +35,9 @@ public class ComplexStreamingDataSourceFromKeyboard implements
   public void run() {
     Scanner scanner = new Scanner(System.in);
 
-    List<Double> values = new ArrayList<>();
+
     while (true) {
+      List<Double> values = new ArrayList<>();
       System.out.println("Introduce the new reference point(between commas):");
       String s = scanner.nextLine() ;
       Scanner sl= new Scanner(s);
