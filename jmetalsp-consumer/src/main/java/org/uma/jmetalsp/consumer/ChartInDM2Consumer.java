@@ -38,15 +38,15 @@ public class ChartInDM2Consumer<S extends Solution<?>> implements
         DataConsumer<AlgorithmObservedData<S>> {
 
   private DynamicAlgorithm<?, AlgorithmObservedData<S>> dynamicAlgorithm;
-  private ChartContainer chart ;
-  private List<S> lastReceivedFront = null ;
-  private List<Double> referencePoint ;
+  private ChartContainer chart;
+  private List<S> lastReceivedFront = null;
+  private List<Double> referencePoint;
 
   public ChartInDM2Consumer(DynamicAlgorithm<?, AlgorithmObservedData<S>> algorithm,
                             List<Double> referencePoint) {
-    this.dynamicAlgorithm = algorithm ;
-    this.chart = null ;
-    this.referencePoint = referencePoint ;
+    this.dynamicAlgorithm = algorithm;
+    this.chart = null;
+    this.referencePoint = referencePoint;
   }
 
   @Override
@@ -68,11 +68,11 @@ public class ChartInDM2Consumer<S extends Solution<?>> implements
 
   @Override
   public void update(Observable<AlgorithmObservedData<S>> observable, AlgorithmObservedData<S> data) {
-    int numberOfIterations = 0 ;
-    List<S> solutionList = null ;
-    List<Double> newReferencePoint = null ;
+    int numberOfIterations = 0;
+    List<S> solutionList = null;
+    List<Double> newReferencePoint = null;
     if (data.getData().containsKey("numberOfIterations")) {
-      numberOfIterations =  (int) data.getData().get("numberOfIterations");
+      numberOfIterations = (int) data.getData().get("numberOfIterations");
     }
     if (data.getData().containsKey("solutionList")) {
       solutionList = (List<S>) data.getData().get("solutionList");
@@ -84,14 +84,14 @@ public class ChartInDM2Consumer<S extends Solution<?>> implements
 
     // TODO: error handling if parameters are not included
 
-    double coverageValue=0;
+    double coverageValue = 0;
     if (chart == null) {
       this.chart = new ChartContainer(dynamicAlgorithm.getName(), 200);
       try {
         this.chart.setFrontChart(0, 1, null);
 
         this.chart.setReferencePoint(this.referencePoint);
-        this.chart.getFrontChart().getStyler().setLegendPosition(Styler.LegendPosition.InsideNE) ;
+        this.chart.getFrontChart().getStyler().setLegendPosition(Styler.LegendPosition.InsideNE);
 
 
       } catch (FileNotFoundException e) {
@@ -102,7 +102,7 @@ public class ChartInDM2Consumer<S extends Solution<?>> implements
       if (solutionList.size() != 0) {
         this.chart.getFrontChart().setTitle("Iteration: " + numberOfIterations);
         if (lastReceivedFront == null) {
-          lastReceivedFront = solutionList ;
+          lastReceivedFront = solutionList;
           this.chart.updateFrontCharts(solutionList, numberOfIterations);
           this.chart.refreshCharts();
         } else {
@@ -111,14 +111,14 @@ public class ChartInDM2Consumer<S extends Solution<?>> implements
           InvertedGenerationalDistance<S> igd =
                   new InvertedGenerationalDistance<S>(referenceFront);
 
-          coverageValue=igd.evaluate(solutionList);
+          coverageValue = igd.evaluate(solutionList);
         }
 
-        if(coverageValue>0.005) {
+        if (coverageValue > 0.005) {
           this.chart.updateFrontCharts(solutionList, numberOfIterations);
-          lastReceivedFront=solutionList;
+          lastReceivedFront = solutionList;
           try {
-            this.chart.saveChart(numberOfIterations +".chart", BitmapEncoder.BitmapFormat.PNG);
+            this.chart.saveChart(numberOfIterations + ".chart", BitmapEncoder.BitmapFormat.PNG);
           } catch (IOException e) {
             e.printStackTrace();
           }
