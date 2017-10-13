@@ -34,7 +34,7 @@ public class InDM2Builder<
   private double mutationDistributionIndex;
   private int maxIterations;
   private int populationSize;
-
+  private String weightVectorsFileName;
   public InDM2Builder(CrossoverOperator<S> crossoverOperator,
                       MutationOperator<S> mutationOperator,
                       List<Double> referencePoint,
@@ -51,6 +51,14 @@ public class InDM2Builder<
     this.observable = observable;
     this.referencePoint = new ArrayList<>();
     this.referencePoint = referencePoint ;
+    this.weightVectorsFileName = ""
+;  }
+  public InDM2Builder(CrossoverOperator<S> crossoverOperator,
+      MutationOperator<S> mutationOperator,
+      List<Double> referencePoint,
+      Observable<AlgorithmObservedData<S>> observable,String weightVectorsFileName) {
+    this(crossoverOperator,mutationOperator,referencePoint,observable);
+    this.weightVectorsFileName=weightVectorsFileName;
   }
 
   public InDM2Builder<S, P> setCrossover(CrossoverOperator<S> crossover) {
@@ -111,7 +119,7 @@ public class InDM2Builder<
   public InDM2<S> build(P problem) {
     mutationProbability = 1.0 / problem.getNumberOfVariables();
     return new InDM2(problem, populationSize, maxIterations, crossover, mutation, selection, evaluator,
-            referencePoint, observable);
+            referencePoint, observable,weightVectorsFileName);
 
   }
 }

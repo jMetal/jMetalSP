@@ -52,10 +52,10 @@ public class InDM2RunnerForContinuousProblems3D {
     CrossoverOperator<DoubleSolution> crossover = new SBXCrossover(0.9, 20.0);
     MutationOperator<DoubleSolution> mutation =
             new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);
-
-    InDM2<DoubleSolution> algorithm = new InDM2Builder<>(crossover, mutation, referencePoint, new DefaultObservable<>())
+    String weightVectorsFileName ="MOEAD_Weights/W3D_100.dat";
+    InDM2<DoubleSolution> algorithm = new InDM2Builder<>(crossover, mutation, referencePoint, new DefaultObservable<>(),weightVectorsFileName)
             .setMaxIterations(25000)
-            .setPopulationSize(50)
+            .setPopulationSize(100)
             .build(problem);
 
     algorithm.setRestartStrategy(new RestartStrategy<>(

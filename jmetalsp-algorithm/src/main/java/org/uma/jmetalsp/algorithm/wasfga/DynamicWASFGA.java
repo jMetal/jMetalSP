@@ -28,7 +28,7 @@ public class DynamicWASFGA<S extends Solution<?>>
   private int completedIterations;
   private boolean stopAtTheEndOfTheCurrentIteration = false;
   private RestartStrategy<S> restartStrategyForProblemChange ;
-
+  private String weightVectorsFileName;
   Observable<AlgorithmObservedData<S>> observable ;
 
   private Map<String, List> algorithmData;
@@ -47,6 +47,23 @@ public class DynamicWASFGA<S extends Solution<?>>
     this.observable = observable;
     evaluations = 0;
     maxEvaluations = maxIterations;
+    weightVectorsFileName= null;
+  }
+  public DynamicWASFGA(Problem<S> problem,
+      int populationSize,
+      int maxIterations,
+      CrossoverOperator<S> crossoverOperator,
+      MutationOperator<S> mutationOperator,
+      SelectionOperator<List<S>, S> selectionOperator,
+      SolutionListEvaluator<S> evaluator,
+      List<Double> referencePoint,
+      Observable<AlgorithmObservedData<S>> observable,String weightVectorsFileName) {
+    super(problem, populationSize, maxIterations, crossoverOperator, mutationOperator, selectionOperator, evaluator, referencePoint,weightVectorsFileName);
+    completedIterations = 0;
+    this.observable = observable;
+    evaluations = 0;
+    maxEvaluations = maxIterations;
+    this.weightVectorsFileName= weightVectorsFileName;
   }
 
   @Override

@@ -40,8 +40,8 @@ public class InDM2<S extends Solution<?>>
   private RestartStrategy<S> restartStrategyForProblemChange ;
   private RestartStrategy<S> restartStrategyForReferencePointChange ;
 
-  Observable<AlgorithmObservedData<S>> observable;
-
+  protected Observable<AlgorithmObservedData<S>> observable;
+  private String weightVectorsFileName="";
   public InDM2(Problem<S> problem, int populationSize, int maxEvaluations, CrossoverOperator<S> crossoverOperator,
                MutationOperator<S> mutationOperator, SelectionOperator<List<S>, S> selectionOperator,
                SolutionListEvaluator<S> evaluator, List<Double> referencePoint,
@@ -61,6 +61,27 @@ public class InDM2<S extends Solution<?>>
     this.restartStrategyForReferencePointChange = new RestartStrategy<>(
             new RemoveFirstNSolutions<S>(populationSize),
             new CreateNRandomSolutions<S>()) ;
+  }
+  public InDM2(Problem<S> problem, int populationSize, int maxEvaluations, CrossoverOperator<S> crossoverOperator,
+      MutationOperator<S> mutationOperator, SelectionOperator<List<S>, S> selectionOperator,
+      SolutionListEvaluator<S> evaluator, List<Double> referencePoint,
+      Observable<AlgorithmObservedData<S>> observable,String weightVectorsFileName) {
+    super(problem, populationSize, maxEvaluations, crossoverOperator, mutationOperator, selectionOperator, evaluator,
+        referencePoint,weightVectorsFileName);
+    completedIterations = 0;
+    this.observable = observable;
+    this.evaluations = 0;
+    this.maxEvaluations = maxEvaluations ;
+    newReferencePoint = Optional.ofNullable(null);
+    this.algorithmData = new HashMap<>();
+    this.restartStrategyForProblemChange = new RestartStrategy<>(
+        new RemoveFirstNSolutions<S>(populationSize),
+        new CreateNRandomSolutions<S>()) ;
+
+    this.restartStrategyForReferencePointChange = new RestartStrategy<>(
+        new RemoveFirstNSolutions<S>(populationSize),
+        new CreateNRandomSolutions<S>()) ;
+     this.weightVectorsFileName = weightVectorsFileName;
   }
 
   @Override
