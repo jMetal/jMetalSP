@@ -18,6 +18,7 @@ import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
 import org.uma.jmetalsp.problem.fda.FDA2;
+import org.uma.jmetalsp.problem.fda.FDA5;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNRandomSolutions;
@@ -40,10 +41,11 @@ public class InDM2RunnerForContinuousProblems3D {
   public static void main(String[] args) throws IOException, InterruptedException {
     // STEP 1. Create the problem
     DynamicProblem<DoubleSolution, SingleObservedData<Integer>> problem =
-            new FDA2();
+            new FDA5();
 
     // STEP 2. Create and configure the algorithm
     List<Double> referencePoint = new ArrayList<>();
+    referencePoint.add(0.0);
     referencePoint.add(0.0);
     referencePoint.add(0.0);
 

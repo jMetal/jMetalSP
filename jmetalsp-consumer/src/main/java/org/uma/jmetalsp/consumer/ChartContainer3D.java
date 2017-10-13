@@ -107,7 +107,7 @@ public class ChartContainer3D<S extends Solution<?>> {
       int objective1 = Integer.parseInt(entry.getKey().substring(0, 1)) ;
       int objective2 = Integer.parseInt(entry.getKey().substring(2, 3)) ;
 
-      entry.getValue().updateXYSeries("Front." + counter,
+      entry.getValue().updateXYSeries(this.name,
               this.getSolutionsForObjective(solutionList, objective1),
               this.getSolutionsForObjective(solutionList, objective2), null) ;
     }
