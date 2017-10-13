@@ -39,7 +39,7 @@ public class ChartContainer3D<S extends Solution<?>> {
   private int delay;
   private Map<String, List<Integer>> iterations;
   private String referenceName;
-
+  private Map<String,List<String>> referencesPointsNames;
   public ChartContainer3D(String name) {
     this(name, 0);
   }
@@ -50,6 +50,7 @@ public class ChartContainer3D<S extends Solution<?>> {
     this.charts = new LinkedHashMap<String, XYChart>();
     this.iterations = new HashMap<String, List<Integer>>();
     this.referenceName = null;
+    this.referencesPointsNames = new TreeMap<>();
   }
 
   public void addFrontChart(int objective1, int objective2) {
@@ -70,13 +71,53 @@ public class ChartContainer3D<S extends Solution<?>> {
   public void setReferencePoint(List<Double> referencePoint) {
     for (int i = 0; i < referencePoint.size(); i++) {
       for (int j = i +1 ; j < referencePoint.size(); j++) {
+
         String key = "" + i + "," + j ;
+        orderAllFront(charts.get(key));
         System.out.println(key) ;
         XYSeries referencePointSeries = charts.get(key).addSeries("Reference Point [" + referencePoint.get(i) + ", " + referencePoint.get(j) + "]",
                 new double[]{referencePoint.get(i)},
                 new double[]{referencePoint.get(j)});
+        List<String> names = referencesPointsNames.getOrDefault(key,new ArrayList<>());
+        for (String name:names) {
+          charts.get(key).removeSeries(referenceName);
+        }
+
+        names = new ArrayList<>();
+        names.add("Reference Point [" + referencePoint.get(i) + ", " + referencePoint.get(j) + "]");
         referencePointSeries.setMarkerColor(Color.green);
+
       }
+    }
+
+  }
+
+  private void orderAllFront(XYChart frontChart) {
+    try{
+      if (frontChart != null && frontChart.getSeriesMap() != null) {
+        Set<String> keys = frontChart.getSeriesMap().keySet();
+        if (keys != null) {
+          Object[] obj = keys.toArray();
+          if (obj != null) {
+            String[] listFront = new String[obj.length];
+            for (int i = 0; i < obj.length; i++) {
+              listFront[i] = obj[i].toString();
+            }
+            for (int i = 0; i < listFront.length; i++) {
+              String name = listFront[i];
+              if (name != this.name && name.contains("Reference")) {
+               // XYSeries xy = frontChart.getSeriesMap().get(name);
+                frontChart.removeSeries(name);
+
+               // frontChart.addSeries(name, generateArray(xy.getXData()), generateArray(xy.getYData()));
+              }
+            }
+           // this.changeColorFrontChart(Color.lightGray);
+          }
+        }
+      }
+    }catch (Exception e){
+
     }
   }
 

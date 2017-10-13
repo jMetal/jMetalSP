@@ -11,6 +11,7 @@ import org.uma.jmetalsp.algorithm.indm2.InDM2Builder;
 import org.uma.jmetalsp.consumer.ChartInDM2Consumer;
 import org.uma.jmetalsp.consumer.ChartInDM2Consumer3D;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
+import org.uma.jmetalsp.examples.streamingdatasource.ComplexStreamingDataSourceFromKeyboard;
 import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingCounterDataSource;
 import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingDataSourceFromKeyboard;
 import org.uma.jmetalsp.impl.DefaultRuntime;
@@ -77,7 +78,7 @@ public class InDM2RunnerForContinuousProblems3D {
 
     // STEP 4. Create a streaming data source for the algorithm and register
     StreamingDataSource<SingleObservedData<List<Double>>> keyboardstreamingDataSource =
-            new SimpleStreamingDataSourceFromKeyboard() ;
+            new ComplexStreamingDataSourceFromKeyboard() ;
 
     keyboardstreamingDataSource.getObservable().register(algorithm);
 
