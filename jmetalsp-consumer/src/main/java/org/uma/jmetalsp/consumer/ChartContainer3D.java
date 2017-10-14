@@ -54,42 +54,55 @@ public class ChartContainer3D<S extends Solution<?>> {
   }
 
   public void addFrontChart(int objective1, int objective2) {
-    XYChart chart = new XYChartBuilder()
-            .xAxisTitle("Objective " + objective1)
-            .yAxisTitle("Objective " + objective2)
-            .build();
-    chart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Scatter).setMarkerSize(5);
+    try {
+      XYChart chart = new XYChartBuilder()
+          .xAxisTitle("Objective " + objective1)
+          .yAxisTitle("Objective " + objective2)
+          .build();
+      chart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Scatter)
+          .setMarkerSize(5);
 
-    double[] xData = new double[]{0};
-    double[] yData = new double[]{0};
-    XYSeries frontChartSeries = chart.addSeries(this.name, xData, yData);
-    frontChartSeries.setMarkerColor(Color.blue);
+      double[] xData = new double[]{0};
+      double[] yData = new double[]{0};
+      XYSeries frontChartSeries = chart.addSeries(this.name, xData, yData);
+      frontChartSeries.setMarkerColor(Color.blue);
 
-    this.charts.put("" + objective1 + "," + objective2, chart) ;
+      this.charts.put("" + objective1 + "," + objective2, chart);
+    }catch (Exception e){
+      
+    }
   }
 
   public void setReferencePoint(List<Double> referencePoint) {
-    for (int i = 0; i < referencePoint.size(); i++) {
-      for (int j = i +1 ; j < referencePoint.size(); j++) {
+    try {
+      for (int i = 0; i < referencePoint.size(); i++) {
+        for (int j = i + 1; j < referencePoint.size(); j++) {
 
-        String key = "" + i + "," + j ;
-        orderAllFront(charts.get(key));
-        System.out.println(key) ;
-        XYSeries referencePointSeries = charts.get(key).addSeries("Reference Point [" + referencePoint.get(i) + ", " + referencePoint.get(j) + "]",
-                new double[]{referencePoint.get(i)},
-                new double[]{referencePoint.get(j)});
-        List<String> names = referencesPointsNames.getOrDefault(key,new ArrayList<>());
-        for (String name:names) {
-          charts.get(key).removeSeries(referenceName);
+          String key = "" + i + "," + j;
+          this.changeColorFrontChart(Color.GRAY);
+
+          System.out.println(key);
+          List<String> names = referencesPointsNames.getOrDefault(key, new ArrayList<>());
+          for (String name : names) {
+            charts.get(key).removeSeries(name);
+          }
+          XYSeries referencePointSeries = charts.get(key).addSeries(
+              "Reference Point [" + referencePoint.get(i) + ", " + referencePoint.get(j) + "]",
+              new double[]{referencePoint.get(i)},
+              new double[]{referencePoint.get(j)});
+
+          orderAllFront(charts.get(key));
+          names = new ArrayList<>();
+          names.add(
+              "Reference Point [" + referencePoint.get(i) + ", " + referencePoint.get(j) + "]");
+          referencesPointsNames.put(key, names);
+          referencePointSeries.setMarkerColor(Color.green);
+
         }
-
-        names = new ArrayList<>();
-        names.add("Reference Point [" + referencePoint.get(i) + ", " + referencePoint.get(j) + "]");
-        referencePointSeries.setMarkerColor(Color.green);
-
       }
-    }
+    }catch (Exception e){
 
+    }
   }
 
   private void orderAllFront(XYChart frontChart) {
@@ -105,17 +118,56 @@ public class ChartContainer3D<S extends Solution<?>> {
             }
             for (int i = 0; i < listFront.length; i++) {
               String name = listFront[i];
-              if (name != this.name && name.contains("Reference")) {
-               // XYSeries xy = frontChart.getSeriesMap().get(name);
+              if (name != this.name && !name.contains("Reference")) {
+                XYSeries xy = frontChart.getSeriesMap().get(name);
                 frontChart.removeSeries(name);
 
-               // frontChart.addSeries(name, generateArray(xy.getXData()), generateArray(xy.getYData()));
+                frontChart.addSeries(name, generateArray(xy.getXData()), generateArray(xy.getYData()));
               }
             }
-           // this.changeColorFrontChart(Color.lightGray);
+            this.changeColorFrontChart(Color.lightGray);
           }
         }
       }
+    }catch (Exception e){
+
+    }
+  }
+  private void deleteReference() {
+    try{
+      Set<String> keysChart=charts.keySet();
+      for (String key:
+          keysChart) {
+        XYChart frontChart =charts.get(key);
+        boolean enc=false;
+        if (frontChart != null && frontChart.getSeriesMap() != null) {
+          Set<String> keys = frontChart.getSeriesMap().keySet();
+          if (keys != null) {
+            Object[] obj = keys.toArray();
+            if (obj != null) {
+              String[] listFront = new String[obj.length];
+              for (int i = 0; i < obj.length; i++) {
+                listFront[i] = obj[i].toString();
+              }
+              int i=0;
+              while (!enc && i<listFront.length){
+                String name = listFront[i];
+                if (name != this.name && name.contains("Reference")) {
+                  // XYSeries xy = frontChart.getSeriesMap().get(name);
+                  frontChart.removeSeries(name);
+                  enc=true;
+
+                  // frontChart.addSeries(name, generateArray(xy.getXData()), generateArray(xy.getYData()));
+                }
+                i++;
+              }
+
+              this.changeColorFrontChart(Color.lightGray);
+            }
+          }
+        }
+      }
+
     }catch (Exception e){
 
     }
@@ -148,9 +200,15 @@ public class ChartContainer3D<S extends Solution<?>> {
       int objective1 = Integer.parseInt(entry.getKey().substring(0, 1)) ;
       int objective2 = Integer.parseInt(entry.getKey().substring(2, 3)) ;
 
-      entry.getValue().updateXYSeries(this.name,
+      /*entry.getValue().updateXYSeries(this.name,
               this.getSolutionsForObjective(solutionList, objective1),
-              this.getSolutionsForObjective(solutionList, objective2), null) ;
+              this.getSolutionsForObjective(solutionList, objective2), null) ;*/
+
+      entry.getValue().addSeries("Front." + counter,
+       this.getSolutionsForObjective(solutionList, objective1),
+       this.getSolutionsForObjective(solutionList, objective2),
+       null);
+
     }
   }
 
