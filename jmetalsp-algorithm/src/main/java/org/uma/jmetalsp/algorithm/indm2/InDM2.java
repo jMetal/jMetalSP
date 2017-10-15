@@ -152,9 +152,14 @@ public class InDM2<S extends Solution<?>>
   }
 
   public void updateNewReferencePoint(S newReferencePoint) {
-    List<Double> referencePoint = Arrays.asList(
-            newReferencePoint.getObjective(0),
-            newReferencePoint.getObjective(1)) ;
+    List<Double> referencePoint = new ArrayList<>();
+
+       // Arrays.asList(
+        //    newReferencePoint.getObjective(0),
+        //    newReferencePoint.getObjective(1)) ;
+    for (int i = 0; i < newReferencePoint.getNumberOfObjectives(); i++) {
+      referencePoint.add(newReferencePoint.getObjective(i));
+    }
     this.updatePointOfInterest(referencePoint);
     algorithmData.put("referencePoint",referencePoint);
     List<S> emptyList = new ArrayList<>();

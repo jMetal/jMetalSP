@@ -69,7 +69,7 @@ public class ChartContainer3D<S extends Solution<?>> {
 
       this.charts.put("" + objective1 + "," + objective2, chart);
     }catch (Exception e){
-      
+
     }
   }
 
