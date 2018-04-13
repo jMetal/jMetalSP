@@ -1,11 +1,13 @@
 package org.uma.jmetalsp.algorithm.nsgaii;
 
+import java.util.Comparator;
 import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.SelectionOperator;
 import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.JMetalException;
+import org.uma.jmetal.util.comparator.DominanceComparator;
 import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
@@ -29,7 +31,7 @@ public class DynamicNSGAIIBuilder<
 	private SelectionOperator<List<S>, S> selectionOperator;
 	private SolutionListEvaluator<S> evaluator;
   private Observable<AlgorithmObservedData<S>> observable ;
-
+  private Comparator<S> dominanceComparator;
 	public DynamicNSGAIIBuilder(CrossoverOperator<S> crossoverOperator,
 	                            MutationOperator<S> mutationOperator,
 															Observable<AlgorithmObservedData<S>> observable) {
@@ -40,6 +42,7 @@ public class DynamicNSGAIIBuilder<
 		this.selectionOperator = new BinaryTournamentSelection<S>(new RankingAndCrowdingDistanceComparator<S>()) ;
 		this.evaluator = new SequentialSolutionListEvaluator<S>();
 		this.observable = observable ;
+		this.dominanceComparator = new DominanceComparator<>();
 	}
 
 	public DynamicNSGAIIBuilder<S,P> setMaxEvaluations(int maxEvaluations) {
@@ -79,8 +82,34 @@ public class DynamicNSGAIIBuilder<
 		return this;
 	}
 
+	public DynamicNSGAIIBuilder<S,P>  setCrossoverOperator(CrossoverOperator<S> crossoverOperator) {
+		this.crossoverOperator = crossoverOperator;
+		return this;
+	}
+
+	public DynamicNSGAIIBuilder<S,P>  setMutationOperator(MutationOperator<S> mutationOperator) {
+		this.mutationOperator = mutationOperator;
+		return this;
+	}
+
+	public DynamicNSGAIIBuilder<S,P>  setEvaluator(SolutionListEvaluator<S> evaluator) {
+		this.evaluator = evaluator;
+		return this;
+	}
+
+	public DynamicNSGAIIBuilder<S,P>  setObservable(
+			Observable<AlgorithmObservedData<S>> observable) {
+		this.observable = observable;
+		return this;
+	}
+
+	public DynamicNSGAIIBuilder<S,P>  setDominanceComparator(Comparator<S> dominanceComparator) {
+		this.dominanceComparator = dominanceComparator;
+		return this;
+	}
+
 	public DynamicNSGAII<S> build(P problem) {
 		return new DynamicNSGAII(problem, maxEvaluations, populationSize, crossoverOperator, mutationOperator,
-						selectionOperator, evaluator, observable);
+						selectionOperator, evaluator, dominanceComparator,observable);
 	}
 }

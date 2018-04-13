@@ -1,0 +1,73 @@
+package org.uma.jmetalsp.algorithm.rnsgaii;
+
+import java.util.List;
+import org.uma.jmetal.algorithm.multiobjective.rnsgaii.RNSGAII;
+import org.uma.jmetal.operator.CrossoverOperator;
+import org.uma.jmetal.operator.MutationOperator;
+import org.uma.jmetal.operator.SelectionOperator;
+import org.uma.jmetal.problem.Problem;
+import org.uma.jmetal.solution.Solution;
+import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
+import org.uma.jmetalsp.DynamicProblem;
+import org.uma.jmetalsp.InteractiveAlgorithm;
+import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
+
+public class InteractiveRNSGAII<S extends Solution<?>> extends RNSGAII<S> implements InteractiveAlgorithm<S,List<S>> {
+
+  private List<S> offspringPopulation;
+  private List<S> matingPopulation;
+  /**
+   * Constructor
+   */
+
+  public InteractiveRNSGAII(Problem problem,  int populationSize,int maxEvaluations,
+      CrossoverOperator crossoverOperator,
+      MutationOperator mutationOperator,
+      SelectionOperator selectionOperator,
+      SolutionListEvaluator evaluator, List interestPoint,
+      double epsilon) {
+    super(problem, maxEvaluations, populationSize, crossoverOperator, mutationOperator,
+        selectionOperator, evaluator, interestPoint, epsilon);
+  }
+
+
+  @Override
+  public void restart(RestartStrategy restartStrategy) {
+    restartStrategy.restart(getPopulation(), (DynamicProblem<S, ?>)getProblem());
+    this.initProgress();
+  }
+  @Override
+  public void compute() {
+    /**
+     *   List<S> offspringPopulation;
+     *     List<S> matingPopulation;
+     *
+     *     population = createInitialPopulation();
+     *     population = evaluatePopulation(population);
+     *     initProgress();
+     *     while (!isStoppingConditionReached()) {
+     *       matingPopulation = selection(population);
+     *       offspringPopulation = reproduction(matingPopulation);
+     *       offspringPopulation = evaluatePopulation(offspringPopulation);
+     *       population = replacement(population, offspringPopulation);
+     *       updateProgress();
+     *     }
+     */
+    matingPopulation = selection(this.getPopulation());
+    offspringPopulation = reproduction(matingPopulation);
+    offspringPopulation = evaluatePopulation(offspringPopulation);
+    setPopulation(replacement(this.getPopulation(), offspringPopulation));
+  }
+
+  @Override
+  public List<S> initializePopulation() {
+    setPopulation(createInitialPopulation());
+    return getPopulation();
+  }
+
+  @Override
+  public void evaluate(List<S> population) {
+    setPopulation(this.evaluatePopulation(population));
+  }
+
+}

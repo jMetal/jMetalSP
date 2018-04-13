@@ -32,10 +32,12 @@ public class DynamicWASFGABuilder<
   private double mutationDistributionIndex;
   private int maxIterations;
   private int populationSize;
+  private double epsilon;
 
   public DynamicWASFGABuilder(CrossoverOperator<S> crossoverOperator,
                               MutationOperator<S> mutationOperator,
                               List<Double> referencePoint,
+                              double epsilon,
                               Observable<AlgorithmObservedData<S>> observable) {
     this.crossover = crossoverOperator;
     this.mutation = mutationOperator;
@@ -48,6 +50,7 @@ public class DynamicWASFGABuilder<
     this.populationSize = 100;
     this.observable = observable;
     this.referencePoint = referencePoint ;
+    this.epsilon = epsilon;
   }
 
   public DynamicWASFGABuilder<S, P> setCrossover(CrossoverOperator<S> crossover) {
@@ -107,7 +110,8 @@ public class DynamicWASFGABuilder<
 
   public DynamicWASFGA build(P problem) {
     mutationProbability = 1.0 / problem.getNumberOfVariables();
-    return new DynamicWASFGA(problem, populationSize, maxIterations, crossover, mutation, selection, evaluator, referencePoint, observable);
+
+    return new DynamicWASFGA(problem, populationSize, maxIterations, crossover, mutation, selection, evaluator,referencePoint,epsilon, observable);
 
   }
 }

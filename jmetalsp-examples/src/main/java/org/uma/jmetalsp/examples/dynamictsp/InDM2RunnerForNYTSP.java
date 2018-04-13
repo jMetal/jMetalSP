@@ -4,10 +4,14 @@ import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.impl.crossover.PMXCrossover;
 import org.uma.jmetal.operator.impl.mutation.PermutationSwapMutation;
+import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
 import org.uma.jmetal.solution.PermutationSolution;
+import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
+import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetalsp.*;
 import org.uma.jmetalsp.algorithm.indm2.InDM2;
 import org.uma.jmetalsp.algorithm.indm2.InDM2Builder;
+import org.uma.jmetalsp.algorithm.wasfga.InteractiveWASFGA;
 import org.uma.jmetalsp.consumer.ChartConsumer;
 import org.uma.jmetalsp.consumer.ChartMultipleConsumer;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
@@ -62,10 +66,12 @@ public class InDM2RunnerForNYTSP {
     mutation = new PermutationSwapMutation<Integer>(mutationProbability);
 
 
-    InDM2<PermutationSolution<Integer>> algorithm = new InDM2Builder<>(crossover, mutation, referencePoint, new DefaultObservable<>())
-            .setMaxIterations(25000)
-            .setPopulationSize(100)
-            .build(problem);
+    InteractiveAlgorithm<PermutationSolution<Integer>,List<PermutationSolution<Integer>>> iWasfga = new InteractiveWASFGA<>(problem,25000,100,crossover,mutation,
+        new BinaryTournamentSelection<PermutationSolution<Integer>>(new RankingAndCrowdingDistanceComparator<>()), new SequentialSolutionListEvaluator<PermutationSolution<Integer>>(),0.005,referencePoint );
+    InDM2<PermutationSolution<Integer>> algorithm = new InDM2Builder<>(iWasfga, new DefaultObservable<>())
+        .setMaxIterations(25000)
+        .setPopulationSize(100)
+        .build(problem);
 
     algorithm.setRestartStrategy(new RestartStrategy<>(
             //new RemoveFirstNSolutions<>(50),

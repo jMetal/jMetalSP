@@ -64,7 +64,7 @@ public class AlgorithmFactory {
         referencePoint.add(0.5);
         referencePoint.add(0.5);
 
-        algorithm = new DynamicWASFGABuilder<>(crossover, mutation, referencePoint, new DefaultObservable<>())
+        algorithm = new DynamicWASFGABuilder<>(crossover, mutation, referencePoint,0.005, new DefaultObservable<>())
                 .setMaxIterations(500)
                 .setPopulationSize(100)
                 .build(problem);

@@ -4,10 +4,14 @@ import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
 import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
+import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
 import org.uma.jmetal.solution.DoubleSolution;
+import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
+import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetalsp.*;
 import org.uma.jmetalsp.algorithm.indm2.InDM2;
 import org.uma.jmetalsp.algorithm.indm2.InDM2Builder;
+import org.uma.jmetalsp.algorithm.wasfga.InteractiveWASFGA;
 import org.uma.jmetalsp.consumer.ChartInDM2Consumer;
 import org.uma.jmetalsp.consumer.ChartInDM2Consumer3D;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
@@ -54,7 +58,12 @@ public class InDM2RunnerForContinuousProblems3D {
     MutationOperator<DoubleSolution> mutation =
             new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);
     String weightVectorsFileName ="MOEAD_Weights/W3D_100.dat";
-    InDM2<DoubleSolution> algorithm = new InDM2Builder<>(crossover, mutation, referencePoint, new DefaultObservable<>(),weightVectorsFileName)
+
+    InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> iWasfga = new InteractiveWASFGA<>(problem,25000,100,crossover,mutation,
+        new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>()), new SequentialSolutionListEvaluator<>(),0.005,referencePoint,weightVectorsFileName );
+
+
+    InDM2<DoubleSolution> algorithm = new InDM2Builder<>(iWasfga, new DefaultObservable<>())
             .setMaxIterations(25000)
             .setPopulationSize(100)
             .build(problem);

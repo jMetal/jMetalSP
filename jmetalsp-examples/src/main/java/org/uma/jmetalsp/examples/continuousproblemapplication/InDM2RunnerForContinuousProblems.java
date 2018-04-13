@@ -2,12 +2,20 @@ package org.uma.jmetalsp.examples.continuousproblemapplication;
 
 import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
+import org.uma.jmetal.operator.impl.crossover.PMXCrossover;
 import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
+import org.uma.jmetal.operator.impl.mutation.PermutationSwapMutation;
 import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
+import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
 import org.uma.jmetal.solution.DoubleSolution;
+import org.uma.jmetal.solution.PermutationSolution;
+import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
+import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetalsp.*;
 import org.uma.jmetalsp.algorithm.indm2.InDM2;
 import org.uma.jmetalsp.algorithm.indm2.InDM2Builder;
+import org.uma.jmetalsp.algorithm.rnsgaii.InteractiveRNSGAII;
+import org.uma.jmetalsp.algorithm.wasfga.InteractiveWASFGA;
 import org.uma.jmetalsp.consumer.ChartInDM2Consumer;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingCounterDataSource;
@@ -51,9 +59,30 @@ public class InDM2RunnerForContinuousProblems {
     MutationOperator<DoubleSolution> mutation =
             new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);
 
-    InDM2<DoubleSolution> algorithm = new InDM2Builder<>(crossover, mutation, referencePoint, new DefaultObservable<>())
-            .setMaxIterations(25000)
-            .setPopulationSize(50)
+
+    //InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> iWASFGA = new InteractiveWASFGA<>(problem,100,25000,crossover,mutation,
+     //   new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>()), new SequentialSolutionListEvaluator<>(),0.01,referencePoint );
+
+    /**
+     * (Problem problem, int maxEvaluations, int populationSize,
+     *       CrossoverOperator crossoverOperator,
+     *       MutationOperator mutationOperator,
+     *       SelectionOperator selectionOperator,
+     *       SolutionListEvaluator evaluator, List interestPoint,
+     *       double epsilon
+     */
+
+
+
+    double epsilon = 0.001D;
+
+    InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> iRNSGAII = new InteractiveRNSGAII<>(problem,100,25000,crossover,mutation,
+        new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>()), new SequentialSolutionListEvaluator<>(),referencePoint,epsilon );
+
+
+    InDM2<DoubleSolution> algorithm = new InDM2Builder<>(iRNSGAII, new DefaultObservable<>())
+            .setMaxIterations(50000)
+            .setPopulationSize(100)
             .build(problem);
 
     algorithm.setRestartStrategy(new RestartStrategy<>(

@@ -32,7 +32,7 @@ public class DynamicWASFGA<S extends Solution<?>>
   Observable<AlgorithmObservedData<S>> observable ;
 
   private Map<String, List> algorithmData;
-
+  private double epsilon;
   public DynamicWASFGA(Problem<S> problem,
                        int populationSize,
                        int maxIterations,
@@ -41,13 +41,15 @@ public class DynamicWASFGA<S extends Solution<?>>
                        SelectionOperator<List<S>, S> selectionOperator,
                        SolutionListEvaluator<S> evaluator,
                        List<Double> referencePoint,
+                        double epsilon,
                        Observable<AlgorithmObservedData<S>> observable) {
-    super(problem, populationSize, maxIterations, crossoverOperator, mutationOperator, selectionOperator, evaluator, referencePoint);
-    completedIterations = 0;
+    super(problem, populationSize, maxIterations, crossoverOperator, mutationOperator, selectionOperator, evaluator,epsilon, referencePoint);
+    this.completedIterations = 0;
     this.observable = observable;
-    evaluations = 0;
-    maxEvaluations = maxIterations;
-    weightVectorsFileName= null;
+    this.evaluations = 0;
+    this.maxEvaluations = maxIterations;
+    this.weightVectorsFileName= null;
+    this.epsilon = epsilon;
   }
   public DynamicWASFGA(Problem<S> problem,
       int populationSize,
@@ -57,13 +59,15 @@ public class DynamicWASFGA<S extends Solution<?>>
       SelectionOperator<List<S>, S> selectionOperator,
       SolutionListEvaluator<S> evaluator,
       List<Double> referencePoint,
+      double epsilon,
       Observable<AlgorithmObservedData<S>> observable,String weightVectorsFileName) {
-    super(problem, populationSize, maxIterations, crossoverOperator, mutationOperator, selectionOperator, evaluator, referencePoint,weightVectorsFileName);
-    completedIterations = 0;
+    super(problem, populationSize, maxIterations, crossoverOperator, mutationOperator, selectionOperator, evaluator,epsilon, referencePoint,weightVectorsFileName);
+    this.completedIterations = 0;
     this.observable = observable;
-    evaluations = 0;
-    maxEvaluations = maxIterations;
+    this.evaluations = 0;
+    this.maxEvaluations = maxIterations;
     this.weightVectorsFileName= weightVectorsFileName;
+    this.epsilon = epsilon;
   }
 
   @Override

@@ -161,7 +161,7 @@ public class DynamicRNSGAII<S extends Solution<?>>
       }
     }
 
-    this.updateReferencePoint(referencePoint);
+    super.updatePointOfInterest(referencePoint);
     algorithmData.put("referencePoint",referencePoint);
     List<S> emptyList = new ArrayList<>();
     observable.setChanged();

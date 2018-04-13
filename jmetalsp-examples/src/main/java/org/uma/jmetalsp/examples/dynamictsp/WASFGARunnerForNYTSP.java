@@ -6,10 +6,10 @@ import org.uma.jmetal.operator.impl.crossover.PMXCrossover;
 import org.uma.jmetal.operator.impl.mutation.PermutationSwapMutation;
 import org.uma.jmetal.solution.PermutationSolution;
 import org.uma.jmetalsp.*;
-import org.uma.jmetalsp.algorithm.rnsgaii.DynamicRNSGAII;
-import org.uma.jmetalsp.algorithm.rnsgaii.DynamicRNSGAIIBuilder;
-import org.uma.jmetalsp.algorithm.wasfga.DynamicWASFGAConstraints;
-import org.uma.jmetalsp.algorithm.wasfga.DynamicWASFGAContraintsBuilder;
+
+import org.uma.jmetalsp.algorithm.wasfga.DynamicWASFGA;
+import org.uma.jmetalsp.algorithm.wasfga.DynamicWASFGABuilder;
+
 import org.uma.jmetalsp.consumer.ChartMultipleConsumer;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.examples.streamingdatasource.ComplexStreamingDataSourceFromKeyboard;
@@ -98,7 +98,8 @@ public class WASFGARunnerForNYTSP {
     mutation = new PermutationSwapMutation<Integer>(mutationProbability);
 
     double epsilon = 0.001D;
-    DynamicWASFGAConstraints<PermutationSolution<Integer>> algorithm = new DynamicWASFGAContraintsBuilder<>(crossover, mutation,referencePoint, new DefaultObservable<>())
+
+    DynamicWASFGA<PermutationSolution<Integer>> algorithm = new DynamicWASFGABuilder<>(crossover, mutation,referencePoint,0.005, new DefaultObservable<>())
     //DynamicNSGAII<PermutationSolution<Integer>> algorithm =  algorithm = new DynamicNSGAIIBuilder<>(crossover, mutation, new DefaultObservable<>())
             .setMaxIterations(2500)
             .setPopulationSize(100)
