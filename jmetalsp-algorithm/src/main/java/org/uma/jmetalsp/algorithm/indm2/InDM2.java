@@ -108,8 +108,9 @@ public class InDM2<S extends Solution<?>>
       algorithmData.put("numberOfIterations",completedIterations);
       observable.notifyObservers(new AlgorithmObservedData<S>(interactiveAlgorithm.getResult(), algorithmData));
 
-      this.restartStrategyForProblemChange.restart(interactiveAlgorithm.getPopulation(), (DynamicProblem<S, ?>)this.problem);
+      //this.restartStrategyForProblemChange.restart(interactiveAlgorithm.getPopulation(), (DynamicProblem<S, ?>)this.problem);
       restart() ;
+      initProgress();
       completedIterations++;
     }
     return stopAtTheEndOfTheCurrentIteration;

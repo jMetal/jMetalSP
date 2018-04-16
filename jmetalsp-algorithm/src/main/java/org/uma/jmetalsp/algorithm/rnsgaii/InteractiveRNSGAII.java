@@ -34,6 +34,7 @@ public class InteractiveRNSGAII<S extends Solution<?>> extends RNSGAII<S> implem
   @Override
   public void restart(RestartStrategy restartStrategy) {
     restartStrategy.restart(getPopulation(), (DynamicProblem<S, ?>)getProblem());
+    this.evaluate(getPopulation()) ;
     this.initProgress();
   }
   @Override

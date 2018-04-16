@@ -62,21 +62,11 @@ public class InDM2RunnerForContinuousProblems {
 
     //InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> iWASFGA = new InteractiveWASFGA<>(problem,100,25000,crossover,mutation,
      //   new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>()), new SequentialSolutionListEvaluator<>(),0.01,referencePoint );
-
-    /**
-     * (Problem problem, int maxEvaluations, int populationSize,
-     *       CrossoverOperator crossoverOperator,
-     *       MutationOperator mutationOperator,
-     *       SelectionOperator selectionOperator,
-     *       SolutionListEvaluator evaluator, List interestPoint,
-     *       double epsilon
-     */
-
-
+    
 
     double epsilon = 0.001D;
 
-    InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> iRNSGAII = new InteractiveRNSGAII<>(problem,100,25000,crossover,mutation,
+    InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> iRNSGAII = new InteractiveRNSGAII<>(problem,100,50000,crossover,mutation,
         new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>()), new SequentialSolutionListEvaluator<>(),referencePoint,epsilon );
 
 
@@ -89,11 +79,11 @@ public class InDM2RunnerForContinuousProblems {
             //new RemoveFirstNSolutions<>(50),
             //new RemoveNSolutionsAccordingToTheHypervolumeContribution<>(50),
             //new RemoveNSolutionsAccordingToTheCrowdingDistance<>(50),
-            new RemoveNRandomSolutions(50),
+            new RemoveNRandomSolutions(10),
             new CreateNRandomSolutions<DoubleSolution>()));
 
     algorithm.setRestartStrategyForReferencePointChange(new RestartStrategy<>(
-            new RemoveNRandomSolutions<>(50),
+            new RemoveNRandomSolutions<>(10),
             new CreateNRandomSolutions<DoubleSolution>()));
 
     // STEP 3. Create a streaming data source for the problem and register
