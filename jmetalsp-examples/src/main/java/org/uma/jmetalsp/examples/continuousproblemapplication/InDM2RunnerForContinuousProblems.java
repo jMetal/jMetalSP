@@ -60,17 +60,17 @@ public class InDM2RunnerForContinuousProblems {
             new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);
 
 
-    //InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> iWASFGA = new InteractiveWASFGA<>(problem,100,25000,crossover,mutation,
-     //   new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>()), new SequentialSolutionListEvaluator<>(),0.01,referencePoint );
-    
+    InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> iWASFGA = new InteractiveWASFGA<>(problem,100,crossover,mutation,
+        new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>()), new SequentialSolutionListEvaluator<>(),0.01,referencePoint );
+
 
     double epsilon = 0.001D;
 
-    InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> iRNSGAII = new InteractiveRNSGAII<>(problem,100,50000,crossover,mutation,
-        new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>()), new SequentialSolutionListEvaluator<>(),referencePoint,epsilon );
+ //  InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> iRNSGAII = new InteractiveRNSGAII<>(problem,100,crossover,mutation,
+   //     new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>()), new SequentialSolutionListEvaluator<>(),referencePoint,epsilon );
 
 
-    InDM2<DoubleSolution> algorithm = new InDM2Builder<>(iRNSGAII, new DefaultObservable<>())
+    InDM2<DoubleSolution> algorithm = new InDM2Builder<>(iWASFGA, new DefaultObservable<>())
             .setMaxIterations(50000)
             .setPopulationSize(100)
             .build(problem);
@@ -79,11 +79,11 @@ public class InDM2RunnerForContinuousProblems {
             //new RemoveFirstNSolutions<>(50),
             //new RemoveNSolutionsAccordingToTheHypervolumeContribution<>(50),
             //new RemoveNSolutionsAccordingToTheCrowdingDistance<>(50),
-            new RemoveNRandomSolutions(10),
+            new RemoveNRandomSolutions(50),
             new CreateNRandomSolutions<DoubleSolution>()));
 
     algorithm.setRestartStrategyForReferencePointChange(new RestartStrategy<>(
-            new RemoveNRandomSolutions<>(10),
+            new RemoveNRandomSolutions<>(50),
             new CreateNRandomSolutions<DoubleSolution>()));
 
     // STEP 3. Create a streaming data source for the problem and register

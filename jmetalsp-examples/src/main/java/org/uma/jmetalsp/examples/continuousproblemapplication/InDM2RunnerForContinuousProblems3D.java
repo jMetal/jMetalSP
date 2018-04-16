@@ -59,7 +59,7 @@ public class InDM2RunnerForContinuousProblems3D {
             new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);
     String weightVectorsFileName ="MOEAD_Weights/W3D_100.dat";
 
-    InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> iWasfga = new InteractiveWASFGA<>(problem,25000,100,crossover,mutation,
+    InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> iWasfga = new InteractiveWASFGA<>(problem,100,crossover,mutation,
         new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>()), new SequentialSolutionListEvaluator<>(),0.005,referencePoint,weightVectorsFileName );
 
 

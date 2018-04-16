@@ -72,7 +72,7 @@ public class InDM2ConstraintRunnerForNYTSP {
      *       SolutionListEvaluator<S> evaluator, double epsilon,
      *       List<Double> referencePoint
      */
-    InteractiveAlgorithm<PermutationSolution<Integer>,List<PermutationSolution<Integer>>> iWasfga = new InteractiveWASFGA<>(problem,25000,100,crossover,mutation,
+    InteractiveAlgorithm<PermutationSolution<Integer>,List<PermutationSolution<Integer>>> iWasfga = new InteractiveWASFGA<>(problem,100,crossover,mutation,
         new BinaryTournamentSelection<PermutationSolution<Integer>>(new RankingAndCrowdingDistanceComparator<>()), new SequentialSolutionListEvaluator<PermutationSolution<Integer>>(),0.005,referencePoint );
     InDM2<PermutationSolution<Integer>> algorithm = new InDM2Builder<>(iWasfga, new DefaultObservable<>())
             .setMaxIterations(25000)

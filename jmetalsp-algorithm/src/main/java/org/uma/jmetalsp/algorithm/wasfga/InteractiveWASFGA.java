@@ -19,23 +19,23 @@ public class InteractiveWASFGA <S extends Solution<?>> extends WASFGA<S> impleme
   List<S> matingPopulation;
 
   public InteractiveWASFGA(Problem<S> problem, int populationSize,
-      int maxIterations,
+
       CrossoverOperator<S> crossoverOperator,
       MutationOperator<S> mutationOperator,
       SelectionOperator<List<S>, S> selectionOperator,
       SolutionListEvaluator<S> evaluator, double epsilon,
       List<Double> referencePoint, String weightVectorsFileName) {
-    super(problem, populationSize, maxIterations, crossoverOperator, mutationOperator,
+    super(problem, populationSize, 25000, crossoverOperator, mutationOperator,
         selectionOperator, evaluator, epsilon, referencePoint, weightVectorsFileName);
   }
 
-  public InteractiveWASFGA(Problem<S> problem, int populationSize, int maxIterations,
+  public InteractiveWASFGA(Problem<S> problem, int populationSize,
       CrossoverOperator<S> crossoverOperator,
       MutationOperator<S> mutationOperator,
       SelectionOperator<List<S>, S> selectionOperator,
       SolutionListEvaluator<S> evaluator, double epsilon,
       List<Double> referencePoint) {
-    super(problem, populationSize, maxIterations, crossoverOperator, mutationOperator,
+    super(problem, populationSize, 25000, crossoverOperator, mutationOperator,
         selectionOperator, evaluator, epsilon, referencePoint);
   }
 

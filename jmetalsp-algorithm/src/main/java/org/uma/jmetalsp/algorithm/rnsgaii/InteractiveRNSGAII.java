@@ -20,13 +20,13 @@ public class InteractiveRNSGAII<S extends Solution<?>> extends RNSGAII<S> implem
    * Constructor
    */
 
-  public InteractiveRNSGAII(Problem problem,  int populationSize,int maxEvaluations,
+  public InteractiveRNSGAII(Problem problem,  int populationSize,
       CrossoverOperator crossoverOperator,
       MutationOperator mutationOperator,
       SelectionOperator selectionOperator,
       SolutionListEvaluator evaluator, List interestPoint,
       double epsilon) {
-    super(problem, maxEvaluations, populationSize, crossoverOperator, mutationOperator,
+    super(problem, 25000, populationSize, crossoverOperator, mutationOperator,
         selectionOperator, evaluator, interestPoint, epsilon);
   }
 
@@ -39,21 +39,6 @@ public class InteractiveRNSGAII<S extends Solution<?>> extends RNSGAII<S> implem
   }
   @Override
   public void compute() {
-    /**
-     *   List<S> offspringPopulation;
-     *     List<S> matingPopulation;
-     *
-     *     population = createInitialPopulation();
-     *     population = evaluatePopulation(population);
-     *     initProgress();
-     *     while (!isStoppingConditionReached()) {
-     *       matingPopulation = selection(population);
-     *       offspringPopulation = reproduction(matingPopulation);
-     *       offspringPopulation = evaluatePopulation(offspringPopulation);
-     *       population = replacement(population, offspringPopulation);
-     *       updateProgress();
-     *     }
-     */
     matingPopulation = selection(this.getPopulation());
     offspringPopulation = reproduction(matingPopulation);
     offspringPopulation = evaluatePopulation(offspringPopulation);
