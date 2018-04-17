@@ -16,6 +16,7 @@ import org.uma.jmetalsp.examples.streamingdatasource.ComplexStreamingDataSourceF
 import org.uma.jmetalsp.impl.DefaultRuntime;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
+import org.uma.jmetalsp.observer.Observer;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
 import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPBuilderFromNYData;
 import org.uma.jmetalsp.problem.tsp.TSPMatrixData;
@@ -129,7 +130,7 @@ public class WASFGARunnerForNYTSP {
 
     // STEP 5. Create the data consumers and register into the algorithm
     DataConsumer<AlgorithmObservedData<PermutationSolution<Integer>>> localDirectoryOutputConsumer =
-            new LocalDirectoryOutputConsumer<PermutationSolution<Integer>>("outputdirectory", algorithm);
+            new LocalDirectoryOutputConsumer<PermutationSolution<Integer>>("outputdirectory");
     DataConsumer<AlgorithmObservedData<PermutationSolution<Integer>>> chartConsumer =
             new ChartMultipleConsumer<PermutationSolution<Integer>>(algorithm,referencePoint,problem.getNumberOfObjectives());
 
@@ -147,8 +148,8 @@ public class WASFGARunnerForNYTSP {
     application.setStreamingRuntime(new DefaultRuntime())
             .setProblem(problem)
             .setAlgorithm(algorithm)
-            .addStreamingDataSource(streamingTSPSource)
-            .addStreamingDataSource(keyboardstreamingDataSource)
+            .addStreamingDataSource(streamingTSPSource,problem)
+            .addStreamingDataSource(keyboardstreamingDataSource,algorithm)
             .addAlgorithmDataConsumer(localDirectoryOutputConsumer)
             .addAlgorithmDataConsumer(chartConsumer)
             .run();

@@ -135,7 +135,7 @@ public class RNSGAIIRunnerForNYTSP {
 
     // STEP 5. Create the data consumers and register into the algorithm
     DataConsumer<AlgorithmObservedData<PermutationSolution<Integer>>> localDirectoryOutputConsumer =
-            new LocalDirectoryOutputConsumer<PermutationSolution<Integer>>("outputdirectory", algorithm);
+            new LocalDirectoryOutputConsumer<PermutationSolution<Integer>>("outputdirectory");
     DataConsumer<AlgorithmObservedData<PermutationSolution<Integer>>> chartConsumer =
             new ChartMultipleConsumer<PermutationSolution<Integer>>(algorithm,referencePoint,problem.getNumberOfObjectives());
 
@@ -153,8 +153,8 @@ public class RNSGAIIRunnerForNYTSP {
     application.setStreamingRuntime(new DefaultRuntime())
             .setProblem(problem)
             .setAlgorithm(algorithm)
-            .addStreamingDataSource(streamingTSPSource)
-            .addStreamingDataSource(keyboardstreamingDataSource)
+            .addStreamingDataSource(streamingTSPSource,problem)
+            .addStreamingDataSource(keyboardstreamingDataSource,algorithm)
             .addAlgorithmDataConsumer(localDirectoryOutputConsumer)
             .addAlgorithmDataConsumer(chartConsumer)
             .run();

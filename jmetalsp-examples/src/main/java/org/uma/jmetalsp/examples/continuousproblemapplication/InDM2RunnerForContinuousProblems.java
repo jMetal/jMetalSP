@@ -18,6 +18,7 @@ import org.uma.jmetalsp.algorithm.rnsgaii.InteractiveRNSGAII;
 import org.uma.jmetalsp.algorithm.wasfga.InteractiveWASFGA;
 import org.uma.jmetalsp.consumer.ChartInDM2Consumer;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
+import org.uma.jmetalsp.examples.streamingdatasource.ComplexStreamingDataSourceFromKeyboard;
 import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingCounterDataSource;
 import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingDataSourceFromKeyboard;
 import org.uma.jmetalsp.impl.DefaultRuntime;
@@ -66,11 +67,11 @@ public class InDM2RunnerForContinuousProblems {
 
     double epsilon = 0.001D;
 
- //  InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> iRNSGAII = new InteractiveRNSGAII<>(problem,100,crossover,mutation,
-   //     new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>()), new SequentialSolutionListEvaluator<>(),referencePoint,epsilon );
+   InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> iRNSGAII = new InteractiveRNSGAII<>(problem,100,crossover,mutation,
+        new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>()), new SequentialSolutionListEvaluator<>(),referencePoint,epsilon );
 
 
-    InDM2<DoubleSolution> algorithm = new InDM2Builder<>(iWASFGA, new DefaultObservable<>())
+    InDM2<DoubleSolution> algorithm = new InDM2Builder<>(iRNSGAII, new DefaultObservable<>())
             .setMaxIterations(50000)
             .setPopulationSize(100)
             .build(problem);
@@ -90,22 +91,22 @@ public class InDM2RunnerForContinuousProblems {
     StreamingDataSource<SingleObservedData<Integer>> streamingDataSource =
             new SimpleStreamingCounterDataSource(2000) ;
 
-    streamingDataSource.getObservable().register(problem);
+    //streamingDataSource.getObservable().register(problem);
 
     // STEP 4. Create a streaming data source for the algorithm and register
     StreamingDataSource<SingleObservedData<List<Double>>> keyboardstreamingDataSource =
-            new SimpleStreamingDataSourceFromKeyboard() ;
+            new ComplexStreamingDataSourceFromKeyboard() ;
 
-    keyboardstreamingDataSource.getObservable().register(algorithm);
+    //keyboardstreamingDataSource.getObservable().register(algorithm);
 
     // STEP 5. Create the data consumers and register into the algorithm
     DataConsumer<AlgorithmObservedData<DoubleSolution>> localDirectoryOutputConsumer =
-            new LocalDirectoryOutputConsumer<DoubleSolution>("outputdirectory", algorithm) ;
+            new LocalDirectoryOutputConsumer<DoubleSolution>("outputdirectory") ;//algorithm
     DataConsumer<AlgorithmObservedData<DoubleSolution>> chartConsumer =
-            new ChartInDM2Consumer<DoubleSolution>(algorithm, referencePoint) ;
+            new ChartInDM2Consumer<DoubleSolution>(algorithm.getName(), referencePoint) ;
 
-    algorithm.getObservable().register(localDirectoryOutputConsumer);
-    algorithm.getObservable().register(chartConsumer) ;
+    //algorithm.getObservable().register(localDirectoryOutputConsumer);
+    //algorithm.getObservable().register(chartConsumer) ;
 
     // STEP 6. Create the application and run
     JMetalSPApplication<
@@ -113,13 +114,11 @@ public class InDM2RunnerForContinuousProblems {
             DynamicProblem<DoubleSolution, SingleObservedData<Integer>>,
             DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData<DoubleSolution>>> application;
 
-    application = new JMetalSPApplication<>();
+    application = new JMetalSPApplication<>(problem,algorithm);
 
     application.setStreamingRuntime(new DefaultRuntime())
-            .setProblem(problem)
-            .setAlgorithm(algorithm)
-            .addStreamingDataSource(streamingDataSource)
-            .addStreamingDataSource(keyboardstreamingDataSource)
+            .addStreamingDataSource(streamingDataSource,problem)
+            .addStreamingDataSource(keyboardstreamingDataSource,algorithm)
             .addAlgorithmDataConsumer(localDirectoryOutputConsumer)
             .addAlgorithmDataConsumer(chartConsumer)
             .run();

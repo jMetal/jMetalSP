@@ -96,9 +96,9 @@ public class RNSGAIIRunnerForContinuousProblems {
 
     // STEP 5. Create the data consumers and register into the algorithm
     DataConsumer<AlgorithmObservedData<DoubleSolution>> localDirectoryOutputConsumer =
-            new LocalDirectoryOutputConsumer<DoubleSolution>("outputdirectory", algorithm) ;
+            new LocalDirectoryOutputConsumer<DoubleSolution>("outputdirectory") ;
     DataConsumer<AlgorithmObservedData<DoubleSolution>> chartConsumer =
-            new ChartInDM2Consumer<DoubleSolution>(algorithm, referencePoint) ;
+            new ChartInDM2Consumer<DoubleSolution>(algorithm.getName(), referencePoint) ;
 
     algorithm.getObservable().register(localDirectoryOutputConsumer);
     algorithm.getObservable().register(chartConsumer) ;
@@ -114,8 +114,8 @@ public class RNSGAIIRunnerForContinuousProblems {
     application.setStreamingRuntime(new DefaultRuntime())
             .setProblem(problem)
             .setAlgorithm(algorithm)
-            .addStreamingDataSource(streamingDataSource)
-            .addStreamingDataSource(keyboardstreamingDataSource)
+            .addStreamingDataSource(streamingDataSource,problem)
+            .addStreamingDataSource(keyboardstreamingDataSource,algorithm)
             .addAlgorithmDataConsumer(localDirectoryOutputConsumer)
             .addAlgorithmDataConsumer(chartConsumer)
             .run();

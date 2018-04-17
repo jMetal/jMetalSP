@@ -1,5 +1,7 @@
 package org.uma.jmetalsp.algorithm.wasfga;
 
+import java.util.ArrayList;
+import java.util.Optional;
 import org.uma.jmetal.algorithm.multiobjective.wasfga.WASFGA;
 import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
@@ -12,27 +14,33 @@ import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
+import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.Observable;
+import org.uma.jmetalsp.observer.Observer;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
+import org.uma.jmetalsp.util.restartstrategy.impl.RemoveFirstNSolutions;
 
 /**
  * @author Cristobal Barba <cbarba@lcc.uma.es>
  */
 public class DynamicWASFGA<S extends Solution<?>>
         extends WASFGA<S>
-        implements DynamicAlgorithm<List<S>, AlgorithmObservedData<S>> {
+    implements DynamicAlgorithm<List<S>, AlgorithmObservedData<S>>,
+    Observer<SingleObservedData<List<Double>>> {
   private int completedIterations;
   private boolean stopAtTheEndOfTheCurrentIteration = false;
   private RestartStrategy<S> restartStrategyForProblemChange ;
   private String weightVectorsFileName;
   Observable<AlgorithmObservedData<S>> observable ;
-
+  private Optional<List<S>> newReferencePoint ;
   private Map<String, List> algorithmData;
   private double epsilon;
+  private RestartStrategy<S> restartStrategyForReferencePointChange ;
   public DynamicWASFGA(Problem<S> problem,
                        int populationSize,
                        int maxIterations,
@@ -50,6 +58,13 @@ public class DynamicWASFGA<S extends Solution<?>>
     this.maxEvaluations = maxIterations;
     this.weightVectorsFileName= null;
     this.epsilon = epsilon;
+    this.newReferencePoint = Optional.ofNullable(null);
+    this.restartStrategyForProblemChange = new RestartStrategy<>(
+        new RemoveFirstNSolutions<S>(populationSize),
+        new CreateNRandomSolutions<S>()) ;
+    this.restartStrategyForReferencePointChange = new RestartStrategy<>(
+        new RemoveFirstNSolutions<S>(populationSize),
+        new CreateNRandomSolutions<S>()) ;
   }
   public DynamicWASFGA(Problem<S> problem,
       int populationSize,
@@ -68,6 +83,13 @@ public class DynamicWASFGA<S extends Solution<?>>
     this.maxEvaluations = maxIterations;
     this.weightVectorsFileName= weightVectorsFileName;
     this.epsilon = epsilon;
+    this.newReferencePoint = Optional.ofNullable(null);
+    this.restartStrategyForProblemChange = new RestartStrategy<>(
+        new RemoveFirstNSolutions<S>(populationSize),
+        new CreateNRandomSolutions<S>()) ;
+    this.restartStrategyForReferencePointChange = new RestartStrategy<>(
+        new RemoveFirstNSolutions<S>(populationSize),
+        new CreateNRandomSolutions<S>()) ;
   }
 
   @Override
@@ -131,15 +153,72 @@ public class DynamicWASFGA<S extends Solution<?>>
 
   @Override
   protected void updateProgress() {
-    if (getDynamicProblem().hasTheProblemBeenModified()) {
+    /*if (getDynamicProblem().hasTheProblemBeenModified()) {
       restart();
       getDynamicProblem().reset();
     }
-    evaluations++;
+    evaluations++;*/
+
+    if (newReferencePoint.isPresent()) {
+      this.updateNewReferencePoint(newReferencePoint.get());
+      this.restartStrategyForReferencePointChange.restart(getPopulation(), (DynamicProblem<S, ?>) getProblem());
+      restart() ;
+      evaluator.evaluate(getPopulation(), getDynamicProblem()) ;
+      newReferencePoint = Optional.ofNullable(null);
+      evaluations = 0 ;
+    } else if (getDynamicProblem().hasTheProblemBeenModified()) {
+      this.restartStrategyForProblemChange.restart(getPopulation(), (DynamicProblem<S, ?>) getProblem());
+      restart() ;
+      getDynamicProblem().reset();
+      evaluations = 0 ;
+    } else {
+      evaluations ++ ;
+    }
+
+  }
+  public void updateNewReferencePoint(List<S> newReferencePoints) {
+    List<Double> referencePoint = new ArrayList<>();
+    //Arrays.asList(
+    //newReferencePoint.getObjective(0),
+    //newReferencePoint.getObjective(1)) ;
+    for (S point:newReferencePoints) {
+      for (int i = 0; i < point.getNumberOfObjectives(); i++) {
+        referencePoint.add(point.getObjective(i));
+      }
+    }
+
+    super.updatePointOfInterest(referencePoint);
+    algorithmData.put("referencePoint",referencePoint);
+    List<S> emptyList = new ArrayList<>();
+    observable.setChanged();
+    observable.notifyObservers(new AlgorithmObservedData(emptyList, algorithmData));
   }
 
   @Override
   public void setRestartStrategy(RestartStrategy<?> restartStrategy) {
     this.restartStrategyForProblemChange = (RestartStrategy<S>) restartStrategy;
+  }
+
+  @Override
+  public void update(Observable<SingleObservedData<List<Double>>> observable,
+      SingleObservedData<List<Double>> data) {
+
+  }
+
+  public RestartStrategy<S> getRestartStrategyForProblemChange() {
+    return restartStrategyForProblemChange;
+  }
+
+  public void setRestartStrategyForProblemChange(
+      RestartStrategy<S> restartStrategyForProblemChange) {
+    this.restartStrategyForProblemChange = restartStrategyForProblemChange;
+  }
+
+  public String getWeightVectorsFileName() {
+    return weightVectorsFileName;
+  }
+
+  public void setWeightVectorsFileName(String weightVectorsFileName) {
+    this.weightVectorsFileName = weightVectorsFileName;
   }
 }

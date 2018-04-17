@@ -61,7 +61,7 @@ public class DynamicContinuousApplication {
 
     // STEP 4. Create the data consumers and register into the algorithm
     DataConsumer<AlgorithmObservedData<DoubleSolution>> localDirectoryOutputConsumer =
-            new LocalDirectoryOutputConsumer<DoubleSolution>("outputdirectory", algorithm) ;
+            new LocalDirectoryOutputConsumer<DoubleSolution>("outputdirectory") ;
     DataConsumer<AlgorithmObservedData<DoubleSolution>> chartConsumer =
             new ChartConsumer<DoubleSolution>(algorithm) ;
 
@@ -79,7 +79,7 @@ public class DynamicContinuousApplication {
     application.setStreamingRuntime(new DefaultRuntime())
             .setProblem(problem)
             .setAlgorithm(algorithm)
-            .addStreamingDataSource(streamingDataSource)
+            .addStreamingDataSource(streamingDataSource,problem)
             .addAlgorithmDataConsumer(localDirectoryOutputConsumer)
             .addAlgorithmDataConsumer(chartConsumer)
             .run();

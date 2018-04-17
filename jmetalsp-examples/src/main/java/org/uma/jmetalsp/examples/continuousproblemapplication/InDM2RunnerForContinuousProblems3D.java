@@ -93,7 +93,7 @@ public class InDM2RunnerForContinuousProblems3D {
 
     // STEP 5. Create the data consumers and register into the algorithm
     DataConsumer<AlgorithmObservedData<DoubleSolution>> localDirectoryOutputConsumer =
-            new LocalDirectoryOutputConsumer<DoubleSolution>("outputdirectory", algorithm) ;
+            new LocalDirectoryOutputConsumer<DoubleSolution>("outputdirectory") ;
     DataConsumer<AlgorithmObservedData<DoubleSolution>> chartConsumer =
             new ChartInDM2Consumer3D<DoubleSolution>(algorithm, referencePoint) ;
 
@@ -111,8 +111,8 @@ public class InDM2RunnerForContinuousProblems3D {
     application.setStreamingRuntime(new DefaultRuntime())
             .setProblem(problem)
             .setAlgorithm(algorithm)
-            .addStreamingDataSource(streamingDataSource)
-            .addStreamingDataSource(keyboardstreamingDataSource)
+            .addStreamingDataSource(streamingDataSource,problem)
+            .addStreamingDataSource(keyboardstreamingDataSource,algorithm)
             .addAlgorithmDataConsumer(localDirectoryOutputConsumer)
             .addAlgorithmDataConsumer(chartConsumer)
             .run();

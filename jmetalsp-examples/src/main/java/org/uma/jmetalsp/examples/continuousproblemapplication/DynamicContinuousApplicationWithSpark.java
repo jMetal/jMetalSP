@@ -66,7 +66,7 @@ public class DynamicContinuousApplicationWithSpark {
 
     // STEP 4. Create the data consumers and register into the algorithm
     DataConsumer<AlgorithmObservedData<DoubleSolution>> localDirectoryOutputConsumer =
-            new LocalDirectoryOutputConsumer<DoubleSolution>("outputDirectory", algorithm) ;
+            new LocalDirectoryOutputConsumer<DoubleSolution>("outputDirectory") ;
     DataConsumer<AlgorithmObservedData<DoubleSolution>> chartConsumer =
             new ChartConsumer<DoubleSolution>(algorithm) ;
 
@@ -84,7 +84,7 @@ public class DynamicContinuousApplicationWithSpark {
     application.setStreamingRuntime(new SparkRuntime(2))
             .setProblem(problem)
             .setAlgorithm(algorithm)
-            .addStreamingDataSource(streamingDataSource)
+            .addStreamingDataSource(streamingDataSource,problem)
             .addAlgorithmDataConsumer(localDirectoryOutputConsumer)
             .addAlgorithmDataConsumer(chartConsumer)
             .run();

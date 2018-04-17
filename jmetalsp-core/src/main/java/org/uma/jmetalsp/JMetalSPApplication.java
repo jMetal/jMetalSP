@@ -6,6 +6,7 @@ import org.uma.jmetal.util.JMetalException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.uma.jmetalsp.observer.Observer;
 
 /**
  *
@@ -33,6 +34,12 @@ public class JMetalSPApplication<
     this.streamingRuntime = null;
   }
 
+  public JMetalSPApplication(P problem,A algorithm) {
+    this();
+    this.problem = problem;
+    this.algorithm = algorithm;
+  }
+
   public JMetalSPApplication setProblem(P problem) {
     this.problem = problem;
 
@@ -45,10 +52,11 @@ public class JMetalSPApplication<
     return this;
   }
 
-  public JMetalSPApplication addStreamingDataSource(StreamingDataSource<?> streamingDataSource) {
+  public JMetalSPApplication addStreamingDataSource(StreamingDataSource<?> streamingDataSource,Observer observer) {
     if (streamingDataSourceList == null) {
       streamingDataSourceList = new ArrayList<>();
     }
+      streamingDataSource.getObservable().register(observer);
 
     streamingDataSourceList.add(streamingDataSource);
 
@@ -59,6 +67,8 @@ public class JMetalSPApplication<
     if (algorithmDataConsumerList == null) {
       algorithmDataConsumerList = new ArrayList<>();
     }
+
+    this.algorithm.getObservable().register((Observer)consumer);
     algorithmDataConsumerList.add(consumer);
 
     return this;

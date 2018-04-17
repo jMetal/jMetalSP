@@ -37,25 +37,26 @@ import java.util.List;
 public class ChartInDM2Consumer<S extends Solution<?>> implements
         DataConsumer<AlgorithmObservedData<S>> {
 
-  private DynamicAlgorithm<?, AlgorithmObservedData<S>> dynamicAlgorithm;
+ // private DynamicAlgorithm<?, AlgorithmObservedData<S>> dynamicAlgorithm;
+  private String nameAlgorithm;
   private ChartContainer chart;
   private List<S> lastReceivedFront = null;
   private List<Double> referencePoint;
 
-  public ChartInDM2Consumer(DynamicAlgorithm<?, AlgorithmObservedData<S>> algorithm,
+  public ChartInDM2Consumer(String nameAlgorithm,
                             List<Double> referencePoint) {
-    this.dynamicAlgorithm = algorithm;
+    this.nameAlgorithm = nameAlgorithm;
     this.chart = null;
     this.referencePoint = referencePoint;
   }
 
   @Override
   public void run() {
-    if (dynamicAlgorithm == null) {
-      throw new JMetalException("The algorithm is null");
-    }
+   // if (dynamicAlgorithm == null) {
+   //   throw new JMetalException("The algorithm is null");
+    //}
 
-    dynamicAlgorithm.getObservable().register(this);
+   // dynamicAlgorithm.getObservable().register(this);
 
     while (true) {
       try {
@@ -86,7 +87,7 @@ public class ChartInDM2Consumer<S extends Solution<?>> implements
 
     double coverageValue = 0;
     if (chart == null) {
-      this.chart = new ChartContainer(dynamicAlgorithm.getName(), 200);
+      this.chart = new ChartContainer(this.nameAlgorithm, 200);
       try {
         this.chart.setFrontChart(0, 1, null);
 
