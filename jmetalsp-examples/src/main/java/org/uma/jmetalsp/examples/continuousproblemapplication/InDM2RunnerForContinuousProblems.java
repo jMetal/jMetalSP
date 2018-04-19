@@ -17,6 +17,7 @@ import org.uma.jmetalsp.algorithm.indm2.InDM2Builder;
 import org.uma.jmetalsp.algorithm.rnsgaii.InteractiveRNSGAII;
 import org.uma.jmetalsp.algorithm.wasfga.InteractiveWASFGA;
 import org.uma.jmetalsp.consumer.ChartInDM2Consumer;
+import org.uma.jmetalsp.consumer.ChartInDM2Consumer3D;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.examples.streamingdatasource.ComplexStreamingDataSourceFromKeyboard;
 import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingCounterDataSource;
@@ -67,11 +68,11 @@ public class InDM2RunnerForContinuousProblems {
 
     double epsilon = 0.001D;
 
-   InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> iRNSGAII = new InteractiveRNSGAII<>(problem,100,crossover,mutation,
-        new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>()), new SequentialSolutionListEvaluator<>(),referencePoint,epsilon );
+  // InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> iRNSGAII = new InteractiveRNSGAII<>(problem,100,crossover,mutation,
+  //      new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>()), new SequentialSolutionListEvaluator<>(),referencePoint,epsilon );
 
 
-    InDM2<DoubleSolution> algorithm = new InDM2Builder<>(iRNSGAII, new DefaultObservable<>())
+    InDM2<DoubleSolution> algorithm = new InDM2Builder<>(iWASFGA, new DefaultObservable<>())
             .setMaxIterations(50000)
             .setPopulationSize(100)
             .build(problem);
@@ -103,7 +104,7 @@ public class InDM2RunnerForContinuousProblems {
     DataConsumer<AlgorithmObservedData<DoubleSolution>> localDirectoryOutputConsumer =
             new LocalDirectoryOutputConsumer<DoubleSolution>("outputdirectory") ;//algorithm
     DataConsumer<AlgorithmObservedData<DoubleSolution>> chartConsumer =
-            new ChartInDM2Consumer<DoubleSolution>(algorithm.getName(), referencePoint) ;
+            new ChartInDM2Consumer<DoubleSolution>(algorithm.getName(), referencePoint,problem.getNumberOfObjectives()) ;
 
     //algorithm.getObservable().register(localDirectoryOutputConsumer);
     //algorithm.getObservable().register(chartConsumer) ;

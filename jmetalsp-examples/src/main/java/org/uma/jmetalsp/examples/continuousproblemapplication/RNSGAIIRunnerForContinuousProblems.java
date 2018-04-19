@@ -98,7 +98,7 @@ public class RNSGAIIRunnerForContinuousProblems {
     DataConsumer<AlgorithmObservedData<DoubleSolution>> localDirectoryOutputConsumer =
             new LocalDirectoryOutputConsumer<DoubleSolution>("outputdirectory") ;
     DataConsumer<AlgorithmObservedData<DoubleSolution>> chartConsumer =
-            new ChartInDM2Consumer<DoubleSolution>(algorithm.getName(), referencePoint) ;
+            new ChartInDM2Consumer<DoubleSolution>(algorithm.getName(), referencePoint,problem.getNumberOfObjectives()) ;
 
     algorithm.getObservable().register(localDirectoryOutputConsumer);
     algorithm.getObservable().register(chartConsumer) ;

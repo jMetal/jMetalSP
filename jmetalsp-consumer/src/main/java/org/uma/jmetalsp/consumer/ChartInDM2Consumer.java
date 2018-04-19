@@ -42,12 +42,13 @@ public class ChartInDM2Consumer<S extends Solution<?>> implements
   private ChartContainer chart;
   private List<S> lastReceivedFront = null;
   private List<Double> referencePoint;
-
+  private int numObjective;
   public ChartInDM2Consumer(String nameAlgorithm,
-                            List<Double> referencePoint) {
+                            List<Double> referencePoint,int numObj) {
     this.nameAlgorithm = nameAlgorithm;
     this.chart = null;
     this.referencePoint = referencePoint;
+    this.numObjective =numObj;
   }
 
   @Override
@@ -87,7 +88,7 @@ public class ChartInDM2Consumer<S extends Solution<?>> implements
 
     double coverageValue = 0;
     if (chart == null) {
-      this.chart = new ChartContainer(this.nameAlgorithm, 200);
+      this.chart = new ChartContainer(this.nameAlgorithm, 200,this.numObjective);
       try {
         this.chart.setFrontChart(0, 1, null);
 

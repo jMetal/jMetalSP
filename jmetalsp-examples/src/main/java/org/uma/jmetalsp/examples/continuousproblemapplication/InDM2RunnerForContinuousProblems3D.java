@@ -95,7 +95,7 @@ public class InDM2RunnerForContinuousProblems3D {
     DataConsumer<AlgorithmObservedData<DoubleSolution>> localDirectoryOutputConsumer =
             new LocalDirectoryOutputConsumer<DoubleSolution>("outputdirectory") ;
     DataConsumer<AlgorithmObservedData<DoubleSolution>> chartConsumer =
-            new ChartInDM2Consumer3D<DoubleSolution>(algorithm, referencePoint) ;
+            new ChartInDM2Consumer3D<DoubleSolution>(algorithm.getName(), referencePoint) ;
 
     algorithm.getObservable().register(localDirectoryOutputConsumer);
     algorithm.getObservable().register(chartConsumer) ;

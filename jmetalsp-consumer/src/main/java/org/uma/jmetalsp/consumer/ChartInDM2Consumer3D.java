@@ -41,25 +41,27 @@ import java.util.Set;
 public class ChartInDM2Consumer3D<S extends Solution<?>> implements
         DataConsumer<AlgorithmObservedData<S>> {
 
-  private DynamicAlgorithm<?, AlgorithmObservedData<S>> dynamicAlgorithm;
+  //private DynamicAlgorithm<?, AlgorithmObservedData<S>> dynamicAlgorithm;
+  private String nameAlgorithm;
   private ChartContainer3D<S> chart;
   private List<S> lastReceivedFront = null;
   private List<Double> referencePoint;
 
-  public ChartInDM2Consumer3D(DynamicAlgorithm<?, AlgorithmObservedData<S>> algorithm,
+  public ChartInDM2Consumer3D(String nameAlgorithm,
                               List<Double> referencePoint) {
-    this.dynamicAlgorithm = algorithm;
+    //this.dynamicAlgorithm = algorithm;
+    this.nameAlgorithm = nameAlgorithm;
     this.chart = null;
     this.referencePoint = referencePoint;
   }
 
   @Override
   public void run() {
-    if (dynamicAlgorithm == null) {
-      throw new JMetalException("The algorithm is null");
-    }
+   // if (dynamicAlgorithm == null) {
+   //   throw new JMetalException("The algorithm is null");
+  //  }
 
-    dynamicAlgorithm.getObservable().register(this);
+   // dynamicAlgorithm.getObservable().register(this);
 
     while (true) {
       try {
@@ -90,7 +92,7 @@ public class ChartInDM2Consumer3D<S extends Solution<?>> implements
 
     double coverageValue = 0;
     if (chart == null) {
-      this.chart = new ChartContainer3D<S>(dynamicAlgorithm.getName(), 200);
+      this.chart = new ChartContainer3D<S>(this.nameAlgorithm, 200);
       chart.addFrontChart(0, 1);
       chart.addFrontChart(0, 2);
       chart.addFrontChart(1, 2);

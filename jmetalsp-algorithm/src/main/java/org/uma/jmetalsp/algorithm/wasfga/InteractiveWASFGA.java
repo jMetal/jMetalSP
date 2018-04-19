@@ -49,33 +49,10 @@ public class InteractiveWASFGA <S extends Solution<?>> extends WASFGA<S> impleme
 
   @Override
   public void compute() {
-    /**
-     *
-     * List<S> offspringPopulation;
-     * 		List<S> matingPopulation;
-     *
-     * 		this.setPopulation(createInitialPopulation());
-     * 		this.evaluatePopulation(this.getPopulation());
-     * 		initProgress();
-     * 		//specific GA needed computations
-     * 		this.specificMOEAComputations();
-     * 		while (!isStoppingConditionReached()) {
-     * 			matingPopulation = selection(this.getPopulation());
-     * 			offspringPopulation = reproduction(matingPopulation);
-     * 			offspringPopulation = evaluatePopulation(offspringPopulation);
-     * 			this.setPopulation(replacement(this.getPopulation(), offspringPopulation));
-     * 			updateProgress();
-     * 			// specific GA needed computations
-     * 			this.specificMOEAComputations();
-     *        }
-     *
-     */
-
     matingPopulation = selection(this.getPopulation());
     offspringPopulation = reproduction(matingPopulation);
     offspringPopulation = evaluatePopulation(offspringPopulation);
     this.setPopulation(replacement(this.getPopulation(), offspringPopulation));
-    //updateProgress();
     // specific GA needed computations
     this.specificMOEAComputations();
   }
@@ -86,7 +63,6 @@ public class InteractiveWASFGA <S extends Solution<?>> extends WASFGA<S> impleme
     this.evaluatePopulation(this.getPopulation());
     this.specificMOEAComputations();
     return this.getPopulation();
-
   }
 
   @Override

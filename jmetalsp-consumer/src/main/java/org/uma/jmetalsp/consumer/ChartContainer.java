@@ -45,18 +45,21 @@ public class ChartContainer<S extends Solution<?>> {
   private Map<String, List<Integer>> iterations;
   private Map<String, List<Double>> indicatorValues;
   private String referenceName;
-
-  public ChartContainer(String name) {
-    this(name, 0);
+  private List<String> referencesPointsNames;
+  private int numberOfObjectives;
+  public ChartContainer(String name,int numObj) {
+    this(name, 0,numObj);
   }
 
-  public ChartContainer(String name, int delay) {
+  public ChartContainer(String name, int delay,int numberOfObjectives) {
     this.name = name;
     this.delay = delay;
     this.charts = new LinkedHashMap<String, XYChart>();
     this.iterations = new HashMap<String, List<Integer>>();
     this.indicatorValues = new HashMap<String, List<Double>>();
     this.referenceName = null;
+    this.referencesPointsNames = new ArrayList<>();
+    this.numberOfObjectives = numberOfObjectives;
   }
 
   public void setFrontChart(int objective1, int objective2) throws FileNotFoundException {
@@ -88,6 +91,53 @@ public class ChartContainer<S extends Solution<?>> {
 
   public void setReferencePoint(List<Double> referencePoint) {
     try {
+     // int indexPoint=0;
+
+      for (String name : referencesPointsNames) {
+        this.frontChart.removeSeries(name);
+      }
+      referencesPointsNames = new ArrayList<>();
+      this.changeColorFrontChart(Color.GRAY);
+      int indexPoint = 0;
+      while ( indexPoint < referencePoint.size()) {
+
+        List<Double> auxInterestPoint = nextInterestPoint(indexPoint,numberOfObjectives,referencePoint);
+
+        int j=0;
+        String name="";
+        while(auxInterestPoint!=null && j<auxInterestPoint.size()-1) {
+          name= "Reference Point [" + auxInterestPoint.get(j) + ", " + auxInterestPoint.get(j+1) + "]";
+
+              referencesPointsNames.add(name);
+          XYSeries referencePointSeries = this.frontChart.addSeries(
+              name,
+              new double[]{auxInterestPoint.get(j)},
+              new double[]{auxInterestPoint.get(j+1)});
+          referencePointSeries.setMarkerColor(Color.green);
+          j+=2;
+        }
+        indexPoint+=numberOfObjectives;
+
+      }
+      orderAllFront();
+
+    }catch (Exception e){
+//e.printStackTrace();
+    }
+  }
+  private List<Double> nextInterestPoint(int index, int size,List<Double> interestPoint){
+    List<Double> result= null;
+    if(index<interestPoint.size()){
+      result = new ArrayList<>(size);
+      for(int i=0;i<size;i++){
+        result.add(interestPoint.get(index));
+        index++;
+      }
+    }
+    return  result;
+  }
+  /*public void setReferencePoint(List<Double> referencePoint) {
+    try {
       double rp1 = referencePoint.get(this.objective1);
       double rp2 = referencePoint.get(this.objective2);
       if (referenceName != null) {
@@ -107,7 +157,7 @@ public class ChartContainer<S extends Solution<?>> {
 
     }
 
-  }
+  }*/
 
   private void deleteAllFront() {
     if (this.frontChart != null && this.frontChart.getSeriesMap() != null) {
@@ -158,6 +208,7 @@ public class ChartContainer<S extends Solution<?>> {
 
     }
   }
+
 
   private double[] generateArray(Collection collection) {
     double[] result = null;

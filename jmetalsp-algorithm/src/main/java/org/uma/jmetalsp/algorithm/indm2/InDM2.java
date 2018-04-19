@@ -37,7 +37,7 @@ public class InDM2<S extends Solution<?>>
         Observer<SingleObservedData<List<Double>>> {
   private int completedIterations;
   private boolean stopAtTheEndOfTheCurrentIteration = false;
-  private Optional<S> newReferencePoint ;
+  private Optional<List<Double>> newReferencePoint ;
   private Map<String,List> algorithmData;
   private RestartStrategy<S> restartStrategyForProblemChange ;
   private RestartStrategy<S> restartStrategyForReferencePointChange ;
@@ -134,18 +134,11 @@ public class InDM2<S extends Solution<?>>
     }
   }
 
-  public void updateNewReferencePoint(S newReferencePoint) {
-    List<Double> referencePoint = new ArrayList<>();
+  public void updateNewReferencePoint(List<Double> newReferencePoint) {
 
-       // Arrays.asList(
-        //    newReferencePoint.getObjective(0),
-        //    newReferencePoint.getObjective(1)) ;
-    for (int i = 0; i < newReferencePoint.getNumberOfObjectives(); i++) {
-      referencePoint.add(newReferencePoint.getObjective(i));
-    }
-    interactiveAlgorithm.updatePointOfInterest(referencePoint);
+    interactiveAlgorithm.updatePointOfInterest(newReferencePoint);
     //this.updatePointOfInterest(referencePoint);
-    algorithmData.put("referencePoint",referencePoint);
+    algorithmData.put("referencePoint",newReferencePoint);
     List<S> emptyList = new ArrayList<>();
     observable.setChanged();
     observable.notifyObservers(new AlgorithmObservedData(emptyList, algorithmData));
@@ -155,17 +148,14 @@ public class InDM2<S extends Solution<?>>
   public synchronized void update(
           Observable<SingleObservedData<List<Double>>> observable,
           SingleObservedData<List<Double>> data) {
-    if (data.getData().size() != getDynamicProblem().getNumberOfObjectives()) {
+    if ((data.getData().size() % getDynamicProblem().getNumberOfObjectives())!=0) {
       throw new JMetalException("The reference point size is not correct: " + data.getData().size()) ;
     }
 
-    S solution = getDynamicProblem().createSolution();
 
-    for (int i = 0; i < getDynamicProblem().getNumberOfObjectives(); i++) {
-      solution.setObjective(i, data.getData().get(i));
-    }
 
-    newReferencePoint = Optional.of(solution) ;
+
+    newReferencePoint = Optional.of(data.getData()) ;
   }
 
   @Override
