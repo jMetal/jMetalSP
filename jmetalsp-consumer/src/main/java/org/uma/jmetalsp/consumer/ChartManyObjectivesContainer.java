@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
  * @author Jorge Rodriguez Ordonez
  */
 
-public class ChartContainer<S extends Solution<?>> {
+public class ChartManyObjectivesContainer<S extends Solution<?>> {
   private Map<String, XYChart> charts;
   private XYChart frontChart;
   private XYChart varChart;
@@ -45,21 +45,24 @@ public class ChartContainer<S extends Solution<?>> {
   private Map<String, List<Integer>> iterations;
   private Map<String, List<Double>> indicatorValues;
   private String referenceName;
-  private List<String> referencesPointsNames;
-  private int numberOfObjectives;
-  public ChartContainer(String name,int numObj) {
-    this(name, 0,numObj);
+  private int numberObjectives;
+  private List<String> referenceNames;
+  private String algorithm;
+
+  public ChartManyObjectivesContainer(String name,int numberObjectives) {
+    this(name, 0,numberObjectives);
   }
 
-  public ChartContainer(String name, int delay,int numberOfObjectives) {
+  public ChartManyObjectivesContainer(String name, int delay,int numberObjectives) {
     this.name = name;
+    this.algorithm = name;
     this.delay = delay;
     this.charts = new LinkedHashMap<String, XYChart>();
     this.iterations = new HashMap<String, List<Integer>>();
     this.indicatorValues = new HashMap<String, List<Double>>();
     this.referenceName = null;
-    this.referencesPointsNames = new ArrayList<>();
-    this.numberOfObjectives = numberOfObjectives;
+    this.numberObjectives = numberObjectives;
+    this.referenceNames = new ArrayList<>();
   }
 
   public void setFrontChart(int objective1, int objective2) throws FileNotFoundException {
@@ -78,78 +81,41 @@ public class ChartContainer<S extends Solution<?>> {
         this.displayReferenceFront(referenceFrontFileName);
       }
 
-      double[] xData = new double[]{1};
-      double[] yData = new double[]{1};
+      double[] xData = new double[]{15000.0};
+      double[] yData = new double[]{5000.0};
       XYSeries frontChartSeries = this.frontChart.addSeries(this.name, xData, yData);
-      frontChartSeries.setMarkerColor(Color.blue);
+      frontChartSeries.setMarkerColor(Color.WHITE);
 
       this.charts.put("Front", this.frontChart);
     }catch (Exception e){
-
+      e.printStackTrace();
     }
   }
 
   public void setReferencePoint(List<Double> referencePoint) {
     try {
-     // int indexPoint=0;
 
-      for (String name : referencesPointsNames) {
-        this.frontChart.removeSeries(name);
-      }
-      referencesPointsNames = new ArrayList<>();
-      this.changeColorFrontChart(Color.GRAY);
-      int indexPoint = 0;
-      while ( indexPoint < referencePoint.size()) {
 
-        List<Double> auxInterestPoint = nextInterestPoint(indexPoint,numberOfObjectives,referencePoint);
-
-        int j=0;
-        String name="";
-        while(auxInterestPoint!=null && j<auxInterestPoint.size()-1) {
-          name= "Reference Point [" + auxInterestPoint.get(j) + ", " + auxInterestPoint.get(j+1) + "]";
-
-              referencesPointsNames.add(name);
-          XYSeries referencePointSeries = this.frontChart.addSeries(
-              name,
-              new double[]{auxInterestPoint.get(j)},
-              new double[]{auxInterestPoint.get(j+1)});
-          referencePointSeries.setMarkerColor(Color.green);
-          j+=2;
-        }
-        indexPoint+=numberOfObjectives;
-
-      }
-      orderAllFront();
-
-    }catch (Exception e){
-//e.printStackTrace();
-    }
-  }
-  private List<Double> nextInterestPoint(int index, int size,List<Double> interestPoint){
-    List<Double> result= null;
-    if(index<interestPoint.size()){
-      result = new ArrayList<>(size);
-      for(int i=0;i<size;i++){
-        result.add(interestPoint.get(index));
-        index++;
-      }
-    }
-    return  result;
-  }
-  /*public void setReferencePoint(List<Double> referencePoint) {
-    try {
-      double rp1 = referencePoint.get(this.objective1);
-      double rp2 = referencePoint.get(this.objective2);
-      if (referenceName != null) {
+      if (referenceNames != null) {
         //this.changeColorFrontChart(Color.GRAY);
-        this.frontChart.removeSeries(referenceName);
+        for (String name:
+             referenceNames) {
+          this.frontChart.removeSeries(name);
+        }
       }
-      referenceName = "Reference Point [" + rp1 + ", " + rp2 + "]";
+      referenceNames = new ArrayList<>();
+      int numPoint = referencePoint.size()/numberObjectives;
 
-      XYSeries referencePointSeries = this.frontChart.addSeries(referenceName,
-              new double[]{rp1},
-              new double[]{rp2});
-      referencePointSeries.setShowInLegend(true);
+      int index=0;
+      for (int i = 0; i < numPoint ; i++) {
+        List<Double> aux = new ArrayList<>();
+        for (int j=0;j<numberObjectives;j++) {
+          aux.add(referencePoint.get(index));
+          index++;
+        }
+        this.setReferenceOnePoint(aux);
+      }
+
       orderAllFront();
 
       // referencePointSeries.setMarkerColor(Color.green);
@@ -157,7 +123,30 @@ public class ChartContainer<S extends Solution<?>> {
 
     }
 
-  }*/
+  }
+  private void setReferenceOnePoint(List<Double> referencePoint) {
+    try {
+      double rp1 = referencePoint.get(this.objective1);
+      double rp2 = referencePoint.get(this.objective2);
+     // if (referenceName != null) {
+        //this.changeColorFrontChart(Color.GRAY);
+      //  this.frontChart.removeSeries(referenceName);
+     // }
+      referenceName = "Reference Point [" + rp1 + ", " + rp2 + "]";
+      referenceNames.add(referenceName);
+      XYSeries referencePointSeries = this.frontChart.addSeries(referenceName,
+              new double[]{rp1},
+              new double[]{rp2});
+      referencePointSeries.setShowInLegend(true);
+      referencePointSeries.setMarkerColor(Color.BLACK);
+      orderAllFront();
+
+      // referencePointSeries.setMarkerColor(Color.green);
+    }catch(Exception e){
+e.printStackTrace();
+    }
+
+  }
 
   private void deleteAllFront() {
     if (this.frontChart != null && this.frontChart.getSeriesMap() != null) {
@@ -193,14 +182,14 @@ public class ChartContainer<S extends Solution<?>> {
           }
           for (int i = 0; i < listFront.length; i++) {
             String name = listFront[i];
-            if (name != this.name && !name.contains("Reference")) {
+            if (name != this.name && !name.contains("Reference") && !name.equalsIgnoreCase(algorithm)) {
               XYSeries xy = this.frontChart.getSeriesMap().get(name);
               this.frontChart.removeSeries(name);
 
               this.frontChart.addSeries(name, generateArray(xy.getXData()), generateArray(xy.getYData()));
             }
-          }
-          this.changeColorFrontChart(Color.lightGray);
+          }//ESTE ES PARA CAMBIAR COLOR
+          //this.changeColorFrontChart(Color.lightGray);
         }
       }
     }
@@ -208,7 +197,6 @@ public class ChartContainer<S extends Solution<?>> {
 
     }
   }
-
 
   private double[] generateArray(Collection collection) {
     double[] result = null;
@@ -380,7 +368,7 @@ public class ChartContainer<S extends Solution<?>> {
     return this.name;
   }
 
-  public ChartContainer setName(String name) {
+  public ChartManyObjectivesContainer setName(String name) {
     this.name = name;
     return this;
   }
@@ -389,7 +377,7 @@ public class ChartContainer<S extends Solution<?>> {
     return this.delay;
   }
 
-  public ChartContainer setDelay(int delay) {
+  public ChartManyObjectivesContainer setDelay(int delay) {
     this.delay = delay;
     return this;
   }

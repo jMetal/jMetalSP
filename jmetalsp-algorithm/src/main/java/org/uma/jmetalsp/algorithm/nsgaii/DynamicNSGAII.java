@@ -13,6 +13,7 @@
 
 package org.uma.jmetalsp.algorithm.nsgaii;
 
+import java.util.Comparator;
 import org.uma.jmetal.algorithm.multiobjective.nsgaii.NSGAII;
 import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
@@ -50,14 +51,30 @@ public class DynamicNSGAII<S extends Solution<?>>
   private RestartStrategy<S> restartStrategyForProblemChange ;
 
 	Observable<AlgorithmObservedData<S>> observable ;
+  public DynamicNSGAII(DynamicProblem<S, ?> problem, int maxEvaluations, int populationSize,
+      CrossoverOperator<S> crossoverOperator,
+      MutationOperator<S> mutationOperator,
+      SelectionOperator<List<S>, S> selectionOperator,
+      SolutionListEvaluator<S> evaluator,
+      Observable<AlgorithmObservedData<S>> observable) {
+    super(problem, maxEvaluations, populationSize, crossoverOperator, mutationOperator, selectionOperator,evaluator);
+
+    completedIterations = 0 ;
+    this.observable = observable ;
+    this.restartStrategyForProblemChange = new RestartStrategy<>(
+        new RemoveFirstNSolutions<S>(populationSize),
+        new CreateNRandomSolutions<S>()) ;
+  }
+
 
   public DynamicNSGAII(DynamicProblem<S, ?> problem, int maxEvaluations, int populationSize,
                        CrossoverOperator<S> crossoverOperator,
                        MutationOperator<S> mutationOperator,
                        SelectionOperator<List<S>, S> selectionOperator,
                        SolutionListEvaluator<S> evaluator,
+                       Comparator<S> dominanceComparator,
                        Observable<AlgorithmObservedData<S>> observable) {
-    super(problem, maxEvaluations, populationSize, crossoverOperator, mutationOperator, selectionOperator, evaluator);
+    super(problem, maxEvaluations, populationSize, crossoverOperator, mutationOperator, selectionOperator, dominanceComparator,evaluator);
 
     completedIterations = 0 ;
     this.observable = observable ;

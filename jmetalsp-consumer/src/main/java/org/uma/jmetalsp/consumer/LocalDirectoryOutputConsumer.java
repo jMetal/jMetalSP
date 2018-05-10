@@ -20,16 +20,16 @@ import java.util.List;
 public class LocalDirectoryOutputConsumer<S extends Solution<?>> implements
         DataConsumer<AlgorithmObservedData<S>> {
   private String outputDirectoryName;
-  private DynamicAlgorithm<?, AlgorithmObservedData<S>> dynamicAlgorithm;
+  //private DynamicAlgorithm<?, AlgorithmObservedData<S>> dynamicAlgorithm;
   private int fileCounter = 0;
 
   /**
    * Constructor
    */
-  public LocalDirectoryOutputConsumer(String outputDirectoryName,
-                                      DynamicAlgorithm<?, AlgorithmObservedData<S>> algorithm) {
+  // DynamicAlgorithm<?, AlgorithmObservedData<S>> algorithm
+  public LocalDirectoryOutputConsumer(String outputDirectoryName) {
     this.outputDirectoryName = outputDirectoryName;
-    this.dynamicAlgorithm = algorithm ;
+    //this.dynamicAlgorithm = algorithm ;
     createDataDirectory(this.outputDirectoryName);
   }
 
@@ -50,11 +50,11 @@ public class LocalDirectoryOutputConsumer<S extends Solution<?>> implements
 */
   @Override
   public void run() {
-    if (dynamicAlgorithm == null) {
-      throw new JMetalException("The algorithm is null");
-    }
+   // if (dynamicAlgorithm == null) {
+   //   throw new JMetalException("The algorithm is null");
+   // }
 
-    dynamicAlgorithm.getObservable().register(this);
+    //dynamicAlgorithm.getObservable().register(this);
 
 
     while (true) {

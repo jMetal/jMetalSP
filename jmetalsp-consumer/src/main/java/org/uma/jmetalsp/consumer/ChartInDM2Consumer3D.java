@@ -14,6 +14,7 @@
 package org.uma.jmetalsp.consumer;
 
 import org.knowm.xchart.BitmapEncoder;
+import org.knowm.xchart.XYChart;
 import org.knowm.xchart.style.Styler;
 import org.uma.jmetal.qualityindicator.impl.InvertedGenerationalDistance;
 import org.uma.jmetal.solution.Solution;
@@ -27,35 +28,38 @@ import org.uma.jmetalsp.observer.Observable;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Plots a chart with the produce fronts
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class ChartInDM2Consumer<S extends Solution<?>> implements
+public class ChartInDM2Consumer3D<S extends Solution<?>> implements
         DataConsumer<AlgorithmObservedData<S>> {
 
- // private DynamicAlgorithm<?, AlgorithmObservedData<S>> dynamicAlgorithm;
+  //private DynamicAlgorithm<?, AlgorithmObservedData<S>> dynamicAlgorithm;
   private String nameAlgorithm;
-  private ChartContainer chart;
+  private ChartContainer3D<S> chart;
   private List<S> lastReceivedFront = null;
   private List<Double> referencePoint;
-  private int numObjective;
-  public ChartInDM2Consumer(String nameAlgorithm,
-                            List<Double> referencePoint,int numObj) {
+
+  public ChartInDM2Consumer3D(String nameAlgorithm,
+                              List<Double> referencePoint) {
+    //this.dynamicAlgorithm = algorithm;
     this.nameAlgorithm = nameAlgorithm;
     this.chart = null;
     this.referencePoint = referencePoint;
-    this.numObjective =numObj;
   }
 
   @Override
   public void run() {
    // if (dynamicAlgorithm == null) {
    //   throw new JMetalException("The algorithm is null");
-    //}
+  //  }
 
    // dynamicAlgorithm.getObservable().register(this);
 
@@ -88,48 +92,48 @@ public class ChartInDM2Consumer<S extends Solution<?>> implements
 
     double coverageValue = 0;
     if (chart == null) {
-      this.chart = new ChartContainer(this.nameAlgorithm, 200,this.numObjective);
-      try {
-        this.chart.setFrontChart(0, 1, null);
+      this.chart = new ChartContainer3D<S>(this.nameAlgorithm, 200);
+      chart.addFrontChart(0, 1);
+      chart.addFrontChart(0, 2);
+      chart.addFrontChart(1, 2);
+      //chart.setVarChart(0, 1);
+      chart.setReferencePoint(referencePoint);
+      // ??? this.chart.getFrontChart().getStyler().setLegendPosition(Styler.LegendPosition.InsideNE) ;
 
-        this.chart.setReferencePoint(this.referencePoint);
-        this.chart.getFrontChart().getStyler().setLegendPosition(Styler.LegendPosition.InsideNE);
-
-
-      } catch (FileNotFoundException e) {
-        e.printStackTrace();
-      }
       this.chart.initChart();
     } else {
       if (solutionList.size() != 0) {
-        this.chart.getFrontChart().setTitle("Iteration: " + numberOfIterations);
-        if (lastReceivedFront == null) {
-          lastReceivedFront = solutionList;
-          this.chart.updateFrontCharts(solutionList, numberOfIterations);
-          this.chart.refreshCharts();
-        } else {
-          Front referenceFront = new ArrayFront(lastReceivedFront);
+        for (XYChart xychart : this.chart.getCharts()) {
+          xychart.setTitle("Iteration: " + numberOfIterations);
 
-          InvertedGenerationalDistance<S> igd =
-                  new InvertedGenerationalDistance<S>(referenceFront);
+          if (lastReceivedFront == null) {
+            lastReceivedFront = solutionList;
+            this.chart.updateFrontCharts(solutionList, numberOfIterations);
+            this.chart.refreshCharts();
+          } else {
+            Front referenceFront = new ArrayFront(lastReceivedFront);
 
-          coverageValue = igd.evaluate(solutionList);
-        }
+            InvertedGenerationalDistance<S> igd =
+                    new InvertedGenerationalDistance<S>(referenceFront);
 
-        if (coverageValue > 0.005) {
-          this.chart.updateFrontCharts(solutionList, numberOfIterations);
-          lastReceivedFront = solutionList;
-          try {
-            this.chart.saveChart(numberOfIterations + ".chart", BitmapEncoder.BitmapFormat.PNG);
-          } catch (IOException e) {
-            e.printStackTrace();
+            coverageValue = igd.evaluate(solutionList);
           }
-        }
 
-        if (newReferencePoint != null) {
-          this.chart.setReferencePoint(newReferencePoint);
+          if (coverageValue > 0.005) {
+            this.chart.updateFrontCharts(solutionList, numberOfIterations);
+            lastReceivedFront = solutionList;
+            try {
+              this.chart.saveChart(numberOfIterations + ".chart", BitmapEncoder.BitmapFormat.PNG);
+            } catch (IOException e) {
+              e.printStackTrace();
+            }
+          }
+
+          if (newReferencePoint != null) {
+            this.chart.setReferencePoint(newReferencePoint);
+          }
+          this.chart.refreshCharts();
         }
-        this.chart.refreshCharts();
       } else {
         if (newReferencePoint != null) {
           this.chart.setReferencePoint(newReferencePoint);
@@ -139,3 +143,4 @@ public class ChartInDM2Consumer<S extends Solution<?>> implements
     }
   }
 }
+

@@ -1,37 +1,24 @@
 package org.uma.jmetalsp.examples.dynamictsp;
 
+import org.uma.jmetal.algorithm.multiobjective.rnsgaii.RNSGAII;
+import org.uma.jmetal.algorithm.multiobjective.rnsgaii.RNSGAIIBuilder;
 import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
-import org.uma.jmetal.operator.SelectionOperator;
 import org.uma.jmetal.operator.impl.crossover.PMXCrossover;
-import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
 import org.uma.jmetal.operator.impl.mutation.PermutationSwapMutation;
-import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
-import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
-import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.solution.PermutationSolution;
-import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
-import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
-import org.uma.jmetalsp.DataConsumer;
-import org.uma.jmetalsp.DynamicAlgorithm;
-import org.uma.jmetalsp.DynamicProblem;
-import org.uma.jmetalsp.InteractiveAlgorithm;
-import org.uma.jmetalsp.JMetalSPApplication;
-import org.uma.jmetalsp.StreamingDataSource;
+import org.uma.jmetalsp.*;
 import org.uma.jmetalsp.algorithm.indm2.InDM2;
 import org.uma.jmetalsp.algorithm.indm2.InDM2Builder;
-import org.uma.jmetalsp.algorithm.wasfga.InteractiveWASFGA;
+import org.uma.jmetalsp.algorithm.rnsgaii.DynamicRNSGAII;
+import org.uma.jmetalsp.algorithm.rnsgaii.DynamicRNSGAIIBuilder;
 import org.uma.jmetalsp.consumer.ChartConsumer;
-import org.uma.jmetalsp.consumer.ChartInDM2Consumer;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
-import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingCounterDataSource;
 import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingDataSourceFromKeyboard;
 import org.uma.jmetalsp.impl.DefaultRuntime;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
-import org.uma.jmetalsp.problem.fda.FDA2;
-import org.uma.jmetalsp.problem.tsp.DynamicMultiobjectiveTSP;
 import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPBuilderFromTSPLIBFiles;
 import org.uma.jmetalsp.problem.tsp.TSPMatrixData;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
@@ -52,7 +39,7 @@ import java.util.List;
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class InDM2RunnerForTSP {
+public class RNSGAIIRunnerForTSP {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     // STEP 1. Create the problem
@@ -62,8 +49,8 @@ public class InDM2RunnerForTSP {
 
     // STEP 2. Create and configure the algorithm
     List<Double> referencePoint = new ArrayList<>();
-    referencePoint.add(0.0);
-    referencePoint.add(0.0);
+    referencePoint.add(59000.0);
+    referencePoint.add(63200.0);
 
     CrossoverOperator<PermutationSolution<Integer>> crossover;
     MutationOperator<PermutationSolution<Integer>> mutation;
@@ -73,13 +60,11 @@ public class InDM2RunnerForTSP {
     double mutationProbability = 0.2;
     mutation = new PermutationSwapMutation<Integer>(mutationProbability);
 
-
-    InteractiveAlgorithm<PermutationSolution<Integer>,List<PermutationSolution<Integer>>> iWasfga = new InteractiveWASFGA<>(problem,100,crossover,mutation,
-        new BinaryTournamentSelection<PermutationSolution<Integer>>(new RankingAndCrowdingDistanceComparator<>()), new SequentialSolutionListEvaluator<PermutationSolution<Integer>>(),0.005,referencePoint );
-    InDM2<PermutationSolution<Integer>> algorithm = new InDM2Builder<>(iWasfga, new DefaultObservable<>())
-        .setMaxIterations(25000)
-        .setPopulationSize(100)
-        .build(problem);
+    double epsilon = 0.001D;
+    DynamicRNSGAII<PermutationSolution<Integer>> algorithm = new DynamicRNSGAIIBuilder<>(crossover, mutation, new DefaultObservable<>(),referencePoint,epsilon)
+            .setMaxEvaluations(70000)
+            .setPopulationSize(100)
+            .build(problem);
 
     algorithm.setRestartStrategy(new RestartStrategy<>(
             //new RemoveFirstNSolutions<>(50),

@@ -2,38 +2,29 @@ package org.uma.jmetalsp.examples.dynamictsp;
 
 import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
-import org.uma.jmetal.operator.SelectionOperator;
 import org.uma.jmetal.operator.impl.crossover.PMXCrossover;
-import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
 import org.uma.jmetal.operator.impl.mutation.PermutationSwapMutation;
-import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
-import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
-import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.solution.PermutationSolution;
-import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
-import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
-import org.uma.jmetalsp.DataConsumer;
-import org.uma.jmetalsp.DynamicAlgorithm;
-import org.uma.jmetalsp.DynamicProblem;
-import org.uma.jmetalsp.InteractiveAlgorithm;
-import org.uma.jmetalsp.JMetalSPApplication;
-import org.uma.jmetalsp.StreamingDataSource;
+import org.uma.jmetalsp.*;
 import org.uma.jmetalsp.algorithm.indm2.InDM2;
 import org.uma.jmetalsp.algorithm.indm2.InDM2Builder;
-import org.uma.jmetalsp.algorithm.wasfga.InteractiveWASFGA;
+import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAII;
+import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAIIBuilder;
+import org.uma.jmetalsp.algorithm.rnsgaii.DynamicRNSGAII;
+import org.uma.jmetalsp.algorithm.rnsgaii.DynamicRNSGAIIBuilder;
 import org.uma.jmetalsp.consumer.ChartConsumer;
-import org.uma.jmetalsp.consumer.ChartInDM2Consumer;
+import org.uma.jmetalsp.consumer.ChartMultipleConsumer;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
-import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingCounterDataSource;
+import org.uma.jmetalsp.examples.streamingdatasource.ComplexStreamingDataSourceFromKeyboard;
 import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingDataSourceFromKeyboard;
 import org.uma.jmetalsp.impl.DefaultRuntime;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
-import org.uma.jmetalsp.problem.fda.FDA2;
-import org.uma.jmetalsp.problem.tsp.DynamicMultiobjectiveTSP;
+import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPBuilderFromNYData;
 import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPBuilderFromTSPLIBFiles;
 import org.uma.jmetalsp.problem.tsp.TSPMatrixData;
+import org.uma.jmetalsp.spark.SparkRuntime;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNRandomSolutions;
@@ -52,18 +43,58 @@ import java.util.List;
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class InDM2RunnerForTSP {
+public class RNSGAIIRunnerForNYTSP {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     // STEP 1. Create the problem
     DynamicProblem<PermutationSolution<Integer>, SingleObservedData<TSPMatrixData>> problem;
-    problem = new MultiobjectiveTSPBuilderFromTSPLIBFiles("data/kroA100.tsp", "data/kroB100.tsp")
+    problem = new MultiobjectiveTSPBuilderFromNYData("data/nyData.txt")
             .build();
 
     // STEP 2. Create and configure the algorithm
     List<Double> referencePoint = new ArrayList<>();
+
+    /*referencePoint.add(160000.0);
+    referencePoint.add(9500.0);
+    referencePoint.add(167000.0);
+    referencePoint.add(9400.0);
+    referencePoint.add(168500.0);
+    referencePoint.add(9300.0);
+    referencePoint.add(169000.0);
+    referencePoint.add(9200.0);*/
+
+    /*referencePoint.add(0.0);
+    referencePoint.add(0.0);
+    referencePoint.add(2000.0);
+    referencePoint.add(2000.0);
+    referencePoint.add(10000.0);
+    referencePoint.add(7000.0);
+    referencePoint.add(16000.0);
+    referencePoint.add(9000.0);*/
+
+
     referencePoint.add(0.0);
     referencePoint.add(0.0);
+    /*
+    referencePoint.add(171000.0);
+    referencePoint.add(11000.0);
+    referencePoint.add(172000.0);
+    referencePoint.add(10400.0);
+
+    referencePoint.add(172500.0);
+    referencePoint.add(10000.0);
+
+    referencePoint.add(174000.0);
+    referencePoint.add(9000.0);
+
+    referencePoint.add(175000.0);
+    referencePoint.add(8900.0);
+
+    referencePoint.add(176000.0);
+    referencePoint.add(8700.0);*/
+
+    ////171000.0,11000.0,172000.0,10400.0,172500.0,10000.0,174000.0,9000.0,175000.0,8900.0,176000.0,8700.0
+
 
     CrossoverOperator<PermutationSolution<Integer>> crossover;
     MutationOperator<PermutationSolution<Integer>> mutation;
@@ -73,13 +104,12 @@ public class InDM2RunnerForTSP {
     double mutationProbability = 0.2;
     mutation = new PermutationSwapMutation<Integer>(mutationProbability);
 
-
-    InteractiveAlgorithm<PermutationSolution<Integer>,List<PermutationSolution<Integer>>> iWasfga = new InteractiveWASFGA<>(problem,100,crossover,mutation,
-        new BinaryTournamentSelection<PermutationSolution<Integer>>(new RankingAndCrowdingDistanceComparator<>()), new SequentialSolutionListEvaluator<PermutationSolution<Integer>>(),0.005,referencePoint );
-    InDM2<PermutationSolution<Integer>> algorithm = new InDM2Builder<>(iWasfga, new DefaultObservable<>())
-        .setMaxIterations(25000)
-        .setPopulationSize(100)
-        .build(problem);
+    double epsilon = 0.001D;
+    DynamicRNSGAII<PermutationSolution<Integer>> algorithm = new DynamicRNSGAIIBuilder<>(crossover, mutation, new DefaultObservable<>(),referencePoint,epsilon)
+    //DynamicNSGAII<PermutationSolution<Integer>> algorithm =  algorithm = new DynamicNSGAIIBuilder<>(crossover, mutation, new DefaultObservable<>())
+            .setMaxEvaluations(70000)
+            .setPopulationSize(100)
+            .build(problem);
 
     algorithm.setRestartStrategy(new RestartStrategy<>(
             //new RemoveFirstNSolutions<>(50),
@@ -88,18 +118,18 @@ public class InDM2RunnerForTSP {
             //new RemoveNRandomSolutions(50),
             new CreateNRandomSolutions<>()));
 
-    algorithm.setRestartStrategyForReferencePointChange(new RestartStrategy<>(
-            new RemoveNRandomSolutions<>(100),
-            new CreateNRandomSolutions<PermutationSolution<Integer>>()));
+    //algorithm.setRestartStrategyForReferencePointChange(new RestartStrategy<>(
+     //       new RemoveNRandomSolutions<>(100),
+     //       new CreateNRandomSolutions<PermutationSolution<Integer>>()));
 
     // STEP 3. Create a streaming data source for the problem and register
-    StreamingTSPSource streamingTSPSource = new StreamingTSPSource(new DefaultObservable<>(), 2000);
+    StreamingTSPFileSource streamingTSPSource = new StreamingTSPFileSource(new DefaultObservable<>(), 10000);
 
     streamingTSPSource.getObservable().register(problem);
 
     // STEP 4. Create a streaming data source for the algorithm and register
     StreamingDataSource<SingleObservedData<List<Double>>> keyboardstreamingDataSource =
-            new SimpleStreamingDataSourceFromKeyboard() ;
+            new ComplexStreamingDataSourceFromKeyboard() ;
 
     keyboardstreamingDataSource.getObservable().register(algorithm);
 
@@ -107,7 +137,7 @@ public class InDM2RunnerForTSP {
     DataConsumer<AlgorithmObservedData<PermutationSolution<Integer>>> localDirectoryOutputConsumer =
             new LocalDirectoryOutputConsumer<PermutationSolution<Integer>>("outputdirectory");
     DataConsumer<AlgorithmObservedData<PermutationSolution<Integer>>> chartConsumer =
-            new ChartConsumer<PermutationSolution<Integer>>(algorithm);
+            new ChartMultipleConsumer<PermutationSolution<Integer>>(algorithm,referencePoint,problem.getNumberOfObjectives());
 
     algorithm.getObservable().register(localDirectoryOutputConsumer);
     algorithm.getObservable().register(chartConsumer) ;

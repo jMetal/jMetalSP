@@ -14,6 +14,7 @@ import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.algorithm.mocell.DynamicMOCellBuilder;
 import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAIIBuilder;
 import org.uma.jmetalsp.algorithm.nsgaiii.DynamicNSGAIIIBuilder;
+import org.uma.jmetalsp.algorithm.rnsgaii.DynamicRNSGAIIBuilder;
 import org.uma.jmetalsp.algorithm.smpso.DynamicSMPSOBuilder;
 import org.uma.jmetalsp.algorithm.wasfga.DynamicWASFGABuilder;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
@@ -63,7 +64,7 @@ public class AlgorithmFactory {
         referencePoint.add(0.5);
         referencePoint.add(0.5);
 
-        algorithm = new DynamicWASFGABuilder<>(crossover, mutation, referencePoint, new DefaultObservable<>())
+        algorithm = new DynamicWASFGABuilder<>(crossover, mutation, referencePoint,0.005, new DefaultObservable<>())
                 .setMaxIterations(500)
                 .setPopulationSize(100)
                 .build(problem);
@@ -77,6 +78,18 @@ public class AlgorithmFactory {
                 .setSelectionOperator(selection)
                 .setMaxIterations(50000)
                 .build();
+
+        break;
+      case "RNSGAII":
+        List<Double> interestPoint = new ArrayList<>();
+        interestPoint.add(0.5);
+        interestPoint.add(0.5);
+        double epsilon = 0.001D;
+        algorithm = (DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData<DoubleSolution>>)
+                new DynamicRNSGAIIBuilder<>(crossover, mutation, new DefaultObservable<>(),interestPoint,epsilon)
+                .setMaxEvaluations(50000)
+                .setPopulationSize(100)
+                .build(problem);
 
         break;
       default:
