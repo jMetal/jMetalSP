@@ -92,13 +92,11 @@ public class InDM2RunnerForContinuousProblems {
     StreamingDataSource<SingleObservedData<Integer>> streamingDataSource =
             new SimpleStreamingCounterDataSource(2000) ;
 
-    //streamingDataSource.getObservable().register(problem);
 
     // STEP 4. Create a streaming data source for the algorithm and register
     StreamingDataSource<SingleObservedData<List<Double>>> keyboardstreamingDataSource =
             new ComplexStreamingDataSourceFromKeyboard() ;
 
-    //keyboardstreamingDataSource.getObservable().register(algorithm);
 
     // STEP 5. Create the data consumers and register into the algorithm
     DataConsumer<AlgorithmObservedData<DoubleSolution>> localDirectoryOutputConsumer =
@@ -106,8 +104,6 @@ public class InDM2RunnerForContinuousProblems {
     DataConsumer<AlgorithmObservedData<DoubleSolution>> chartConsumer =
             new ChartInDM2Consumer<DoubleSolution>(algorithm.getName(), referencePoint,problem.getNumberOfObjectives()) ;
 
-    //algorithm.getObservable().register(localDirectoryOutputConsumer);
-    //algorithm.getObservable().register(chartConsumer) ;
 
     // STEP 6. Create the application and run
     JMetalSPApplication<
