@@ -50,12 +50,17 @@ public class JMetalSPApplication<
 ```
 This way, by using generics the Java compiler can check that all the components fit together. 
 
+## InDM2
+InDM2 a new dynamic multi-objective optimization algorithm  that allows the preferences of the decision maker (DM) to be incorporated into the search process. When solving a dynamic multi-objective optimization problem with InDM2,the DM can not only express her/his preferences by means of one or more reference points ,which define the desired region of interest), but these points can be also modified interactively.
 ## Examples
 The following example applications are included in the current development version:
 * [`DynamicContinuousApplication`](https://github.com/jMetal/jMetalSP/blob/master/jmetalsp-examples/src/main/java/org/uma/jmetalsp/examples/continuousproblemapplication/DynamicContinuousApplication.java). Example of using NSGA-II, MOCell, SMPSO or WASF-GA to solve the FDA problems using the default streaming runtime, i.e. without Spark
 * [`DynamicContinuousApplicationWithSpark`](https://github.com/jMetal/jMetalSP/blob/master/jmetalsp-examples/src/main/java/org/uma/jmetalsp/examples/continuousproblemapplication/DynamicContinuousApplicationWithSpark.java). Example of using NSGA-II, MOCell, SMPSO or WASF-GA to solve the FDA problems using Spark.
 * [`DynamicTSPApplication`](https://github.com/jMetal/jMetalSP/blob/master/jmetalsp-examples/src/main/java/org/uma/jmetalsp/examples/dynamictsp/DynamicTSPApplication.java). Example of using NSGA-II or MOCell or SMPSO to solve a bi-objective TSP problem using the default streaming runtime, i.e. without Spark. The streaming data source simulates changes in the cost matrix (no external data source is used). This is a simplied version the algorithm presented in MOD 2016.
 * [`NSGAIIRunner`](https://github.com/jMetal/jMetalSP/blob/master/jmetalsp-spark/src/main/java/org/uma/jmetalsp/spark/evaluator/NSGAIIRunner.java). This example, included in the paper to be presented in EMO 2017, shows how to configure the standard NSGA-II algorithm to solve a modified version of the ZDT1 problem using the Spark evaluator to evaluate the solutions of the population in parallel. 
+* [`InDM2RunnerForContinuousProblems`](https://github.com/jMetal/jMetalSP/blob/master/jmetalsp-examples/src/main/java/org/uma/jmetalsp/examples/continuousproblemapplication/InDM2RunnerForContinuousProblems.java). This example, included in the paper to be presented in SWEVO 2018, shows how to configure the InDM2 with Interactive R-NSGA-II and Interactive WASFGA algorithms to solve FDA problems.
+* [`InDM2RunnerForContinuousProblems3D`](https://github.com/jMetal/jMetalSP/blob/master/jmetalsp-examples/src/main/java/org/uma/jmetalsp/examples/continuousproblemapplication/InDM2RunnerForContinuousProblems3D.java). This example, included in the paper to be presented in SWEVO 2018, shows how to configure the InDM2 with Interactive R-NSGA-II and Interactive WASFGA algorithms to solve FDA problems, showing results in a 3D plot.
+* [`InDM2RunnerForNYTSP`](https://github.com/jMetal/jMetalSP/blob/master/jmetalsp-examples/src/main/java/org/uma/jmetalsp/examples/dynamictsp/InDM2RunnerForNYTSP.java). This example, included in the paper to be presented in SWEVO 2018, shows how to configure the InDM2 with Interactive R-NSGA-II and Interactive WASFGA algorithms to solve TSP problem with data from New York.
 
 ## Requirements
 To run the examples that do not use Spark you need:
