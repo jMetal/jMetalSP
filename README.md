@@ -13,11 +13,11 @@ We are currently working on a redesign of the framework with the following ideas
   * Two different runtime systems can be used: plain Java and Java+Spark.
 * We are refactoring the example published in the MOD 2016 paper becase the original Web service to obtain traffic data has changed. 
 * Algorithms included: 
-  * Dynamic versions of NSGA-II, MOCell, SMPSO
+  * Dynamic versions of NSGA-II, NSGA-III, R-NSGA-II, MOCell, SMPSO
   * Dynamic version of WASF-GA, algorithm including a preference articulation mechanism based on a reference point.
-  * A new algorithm called InDM2, which extends WASF-GA with support to change the reference point interactively.
+  * A new algorithm called InDM2 (Interactive Dynamic Multi-Objective Decision Making).
 * A component to draw the Pareto front approximations in a chart during the algorithm execution.
-* Problems included: bi-objective TSP, FDA problems.
+* Problems included: bi-objective TSP, FDA benchmark.
 
 
 ## Architecture
@@ -51,7 +51,11 @@ public class JMetalSPApplication<
 This way, by using generics the Java compiler can check that all the components fit together. 
 
 ## InDM2
-InDM2 a new dynamic multi-objective optimization algorithm  that allows the preferences of the decision maker (DM) to be incorporated into the search process. When solving a dynamic multi-objective optimization problem with InDM2,the DM can not only express her/his preferences by means of one or more reference points ,which define the desired region of interest), but these points can be also modified interactively.
+[InDM2]((https://doi.org/10.1016/j.swevo.2018.02.004)) a new dynamic multi-objective optimization algorithm that allows the preferences of the decision maker (DM) to be 
+incorporated into the search process. When solving a dynamic multi-objective optimization problem with InDM2, 
+the DM can not only express her/his preferences by means of one or more reference points, which define the desired 
+region of interest, but also those points can be also modified interactively. 
+
 ## Examples
 The following example applications are included in the current development version:
 * [`DynamicContinuousApplication`](https://github.com/jMetal/jMetalSP/blob/master/jmetalsp-examples/src/main/java/org/uma/jmetalsp/examples/continuousproblemapplication/DynamicContinuousApplication.java). Example of using NSGA-II, MOCell, SMPSO or WASF-GA to solve the FDA problems using the default streaming runtime, i.e. without Spark
@@ -68,14 +72,14 @@ In order to run the example DynamicContinuousApplicationWithSpark, it is necessa
 To run the examples that do not use Spark you need:
 * Java JDK 8
 * Apache Maven
-* jMetal 5.3
+* jMetal 5.5.2
 
 To execute the codes with Spark:
-* Spark 2.0.0 or later
+* Spark 2.3.0 or later
 
 ## References
 * José A. Cordero, Antonio J. Nebro, Juan J. Durillo, José García-Nieto, Ismael Navas-Delgado, José F. Aldana-Montes: "Dynamic Multi-Objective Optimization With jMetal and Spark: a Case Study". MOD 2016 ([DOI](http://dx.doi.org/10.1007/978-3-319-51469-7_9)).
 * Cristóbal Barba-González, José García-Nieto, Antonio J. Nebro and José F. Aldana-Montes. Multi-Objective Big Data Optimization with jMetal and Spark. EMO 2017 ([DOI](http://dx.doi.org/10.1007/978-3-319-54157-0_2)).
 * Cristóbal Barba-González, Antonio J. Nebro, José A. Cordero, José García-Nieto, Juan J. Durillo, Ismael Navas-Delgado, José F. Aldana-Montes. "JMetalSP: a Framework for Dynamic Multi-Objective Big Data Optimization". Applied Soft Computing. Available online May 2017. ([DOI](http://doi.org/10.1016/j.asoc.2017.05.004))
-* Antonio J. Nebro, Ana B. Ruíz, Cristóbal Barba-González, José García-Nieto, José F. Aldana, Mariano Luque. InDM2: Interactive Dynamic Multi-Objective Decision Making using Evolutionary Algorithms. Submitted to Swarm and Evolutionary Computation. 2017.
+* Antonio J. Nebro, Ana B. Ruíz, Cristóbal Barba-González, José García-Nieto, José F. Aldana, Mariano Luque. InDM2: Interactive Dynamic Multi-Objective Decision Making using Evolutionary Algorithms. Swarm and Evolutionary Computation. Volume 40, June 2018, Pages 184-195. 2018. ([DOI](https://doi.org/10.1016/j.swevo.2018.02.004))
 
