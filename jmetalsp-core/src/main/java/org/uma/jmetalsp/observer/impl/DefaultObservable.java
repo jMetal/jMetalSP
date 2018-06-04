@@ -4,13 +4,14 @@ import org.uma.jmetalsp.ObservedData;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.Observer;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DefaultObservable<D extends ObservedData<?>> implements Observable<D> {
+public class DefaultObservable<D extends ObservedData<?>> implements Observable<D>,Serializable {
 	private Set<Observer<D>> observers ;
 	private boolean dataHasChanged ;
 

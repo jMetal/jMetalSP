@@ -43,7 +43,7 @@ public class FDA2 extends FDA implements Serializable {
 
     setLowerLimit(lowerLimit);
     setUpperLimit(upperLimit);
-    time=1.0d;
+  //  time=1.0d;
     theProblemHasBeenModified=false;
   }
   @Override
@@ -92,7 +92,7 @@ public class FDA2 extends FDA implements Serializable {
    * @param g Second argument of the function H.
    */
   private  double evalH(double f, double g) {
-    double HT= 0.2 + 4.8*Math.pow(time,2.0);
+    double HT= 0.2 + 4.8*Math.pow(super.getTime(),2.0);
     double h = 1.0 - Math.pow((f / g),HT);
     return h;
   }

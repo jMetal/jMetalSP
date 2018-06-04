@@ -15,7 +15,7 @@ import java.io.Serializable;
 public abstract class FDA
 				extends AbstractDoubleProblem
 				implements DynamicProblem<DoubleSolution, SingleObservedData<Integer>>, Serializable {
-	protected double time;
+	public double time;
 	protected boolean theProblemHasBeenModified;
 	protected Observable<SingleObservedData<Integer>> observable ;
 
@@ -36,10 +36,14 @@ public abstract class FDA
 
     time = (1.0d/(double)nT) * Math.floor(counter.getData()/(double)tauT) ;
 
-		if(time==0.0){
-			time=1.0;
-		}
+		//if(time==0.0){
+		//	time=1.0;
+		//}
 
 		theProblemHasBeenModified = true ;
+	}
+
+	public double getTime() {
+		return time;
 	}
 }

@@ -60,13 +60,13 @@ public class DynamicContinuousApplicationWithSpark {
 
     // STEP 3. Create the streaming data source (only one in this example) and register the problem
     SimpleSparkStreamingCounterDataSource streamingDataSource =
-            new SimpleSparkStreamingCounterDataSource("streamingDataDirectory") ;
+            new SimpleSparkStreamingCounterDataSource("/home/cbarba/streamingDataDirectory") ;
 
     streamingDataSource.getObservable().register(problem);
 
     // STEP 4. Create the data consumers and register into the algorithm
     DataConsumer<AlgorithmObservedData<DoubleSolution>> localDirectoryOutputConsumer =
-            new LocalDirectoryOutputConsumer<DoubleSolution>("outputDirectory") ;
+            new LocalDirectoryOutputConsumer<DoubleSolution>("/home/cbarba/outputDirectory") ;
     DataConsumer<AlgorithmObservedData<DoubleSolution>> chartConsumer =
             new ChartConsumer<DoubleSolution>(algorithm) ;
 

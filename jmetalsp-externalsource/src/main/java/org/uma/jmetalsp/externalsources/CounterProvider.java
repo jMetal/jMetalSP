@@ -23,8 +23,8 @@ public class CounterProvider {
 			FileOutputContext fileOutputContext = new DefaultFileOutputContext(directory+"/time."+counter) ;
 			BufferedWriter bufferedWriter = fileOutputContext.getFileWriter() ;
 
-			bufferedWriter.write(""+counter) ;
-			bufferedWriter.newLine();
+			bufferedWriter.write(""+counter +"\n") ;
+			//bufferedWriter.newLine();
 
 			bufferedWriter.close();
 
@@ -36,13 +36,13 @@ public class CounterProvider {
 	}
 
 	public static void main(String[] args) throws Exception {
-		if (args.length != 2) {
-			throw new Exception("Invalid number of arguments. " +
-							"Usage: java org.uma.jmetalsp.externalsources.CounterProvider directory frequency") ;
-		}
+		//if (args.length != 2) {
+	//		throw new Exception("Invalid number of arguments. " +
+						//	"Usage: java org.uma.jmetalsp.externalsources.CounterProvider directory frequency") ;
+	//	}
 
-		String directory = args[0] ;
-		long frequency = Long.valueOf(args[1]) ;
+		String directory = "/home/cbarba/streamingDataDirectory";//args[0] ;
+		long frequency = 1000;//Long.valueOf(args[1]) ;
 
 		createDataDirectory(directory);
 
