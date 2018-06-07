@@ -57,11 +57,14 @@ public class SimpleSparkStreamingCounterDataSource
 
 
 		time.foreachRDD(numbers -> {
-			Integer value =numbers.reduce((integer, integer2) -> integer2);
-       System.out.println("--------------"+value);
-			observable.setChanged();
-			observable.notifyObservers(new SingleObservedData<Integer>(value));
+			try {
+				Integer value = numbers.reduce((integer, integer2) -> integer2);
+				System.out.println("--------------" + value);
+				observable.setChanged();
+				observable.notifyObservers(new SingleObservedData<Integer>(value));
+			}catch(Exception e){
 
+			}
 
 		});
 		/*
@@ -75,25 +78,7 @@ public class SimpleSparkStreamingCounterDataSource
 
 		});
 		 */
-
-
-/*time.foreachRDD(integerJavaRDD -> {
-
-    integerJavaRDD.map(integer -> {observable.setChanged();
-    System.out.print("LEOOO "+integer);
-		observable.notifyObservers(new SingleObservedData<Integer>(integer));
-    return integer;});
-
-});*/
-
-		/*time.foreachRDD(numbers -> {
-            numbers.foreach(integer -> {
-				System.out.println("LEO->"+integer);
-				observable.setChanged();
-			    observable.notifyObservers(new SingleObservedData<Integer>(integer));
-			});
-
-		}) ;*/
+		
 
 	/*time.foreachRDD(numbers -> {
 			List<Integer> numberList = numbers.collect() ;
