@@ -25,7 +25,7 @@ import java.util.function.Function;
 
 public class SimpleSparkStreamingCounterDataSource
         implements SparkStreamingDataSource<SingleObservedData<Integer>> , Serializable {
-	private static Observable<SingleObservedData<Integer>> observable;
+	private  Observable<SingleObservedData<Integer>> observable;
 
 	private double time=1.0d;
 	private int tauT=5;
@@ -56,8 +56,16 @@ public class SimpleSparkStreamingCounterDataSource
 						.map(line -> Integer.parseInt(line)) ;
 
 
-List<Integer> list=new ArrayList<>();
 		time.foreachRDD(numbers -> {
+			Integer value =numbers.reduce((integer, integer2) -> integer2);
+       System.out.println("--------------"+value);
+			observable.setChanged();
+			observable.notifyObservers(new SingleObservedData<Integer>(value));
+
+
+		});
+		/*
+			time.foreachRDD(numbers -> {
 			numbers.foreach(integer -> {
 				System.out.println("LEO->"+integer);
 			//funcion(integer);
@@ -66,6 +74,7 @@ List<Integer> list=new ArrayList<>();
 			});
 
 		});
+		 */
 
 
 /*time.foreachRDD(integerJavaRDD -> {
@@ -106,9 +115,6 @@ List<Integer> list=new ArrayList<>();
 		this.streamingContext = streamingContext;
 	}
 
-	static void funcion(Integer i){
-		observable.setChanged();
-			observable.notifyObservers(new SingleObservedData<Integer>(i));
-	}
+
 
 }
