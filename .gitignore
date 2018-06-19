@@ -4,3 +4,4 @@ target
 *.lck
 *.png
 *.log
+*.log.*
