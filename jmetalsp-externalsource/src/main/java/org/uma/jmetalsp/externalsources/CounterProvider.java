@@ -42,7 +42,7 @@ public class CounterProvider {
 	//	}
 
 		String directory = "/home/cbarba/streamingDataDirectory";//args[0] ;
-		long frequency = 10000;//Long.valueOf(args[1]) ;
+		long frequency = 5000;//Long.valueOf(args[1]) ;
 
 		createDataDirectory(directory);
 
