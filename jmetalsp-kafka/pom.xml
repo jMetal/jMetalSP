@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-
-    <name>${project.groupId}:${project.artifactId}</name>
-
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>org.uma.jmetalsp</groupId>
         <artifactId>jmetalsp</artifactId>
+        <groupId>org.uma.jmetalsp</groupId>
         <version>2.1-SNAPSHOT</version>
     </parent>
+    <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>jmetalsp-examples</artifactId>
+    <artifactId>jmetalsp-kafka</artifactId>
     <packaging>jar</packaging>
 
     <build>
@@ -54,27 +53,44 @@
         <dependency>
             <groupId>org.uma.jmetalsp</groupId>
             <artifactId>jmetalsp-core</artifactId>
-            <version>2.1-SNAPSHOT</version>
+            <version>1.1-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.uma.jmetalsp</groupId>
-            <artifactId>jmetalsp-algorithm</artifactId>
-            <version>2.1-SNAPSHOT</version>
+            <groupId>org.uma.jmetal</groupId>
+            <artifactId>jmetal-algorithm</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.uma.jmetalsp</groupId>
-            <artifactId>jmetalsp-problem</artifactId>
-            <version>2.1-SNAPSHOT</version>
+            <groupId>org.uma.jmetal</groupId>
+            <artifactId>jmetal-problem</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.uma.jmetalsp</groupId>
-            <artifactId>jmetalsp-spark</artifactId>
-            <version>2.1-SNAPSHOT</version>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-core_2.11</artifactId>
+            <version>2.3.0</version>
         </dependency>
         <dependency>
-            <groupId>org.uma.jmetalsp</groupId>
-            <artifactId>jmetalsp-consumer</artifactId>
-            <version>2.1-SNAPSHOT</version>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-streaming_2.11</artifactId>
+            <version>2.3.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.spark/spark-sql -->
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-sql_2.11</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-sql-kafka-0-10_2.11</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka-streams -->
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-streams</artifactId>
+            <version>1.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.uma.jmetalsp</groupId>
@@ -83,13 +99,22 @@
         </dependency>
         <dependency>
             <groupId>org.uma.jmetalsp</groupId>
-            <artifactId>jmetalsp-streamingdatasource</artifactId>
+            <artifactId>jmetalsp-core</artifactId>
             <version>2.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.uma.jmetalsp</groupId>
-            <artifactId>jmetalsp-kafka</artifactId>
+            <artifactId>jmetalsp-problem</artifactId>
             <version>2.1-SNAPSHOT</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients -->
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+
     </dependencies>
+
+
 </project>
