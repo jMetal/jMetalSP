@@ -37,6 +37,11 @@ public class CounterProvider  extends Thread{
             count++;
         }
     }
+    public static void main (String [] args){
+        CounterProvider counterProvider = new CounterProvider("counter");
+        new Thread(counterProvider).start();;
+
+    }
     class ProducerCallBack implements Callback {
         private long startTime;
         private int key;

@@ -6,6 +6,7 @@ import org.apache.kafka.streams.kstream.KTable;
 import org.uma.jmetalsp.KafkaStreamingDataSource;
 import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.Observable;
+import org.uma.jmetalsp.observer.impl.DefaultObservable;
 import org.uma.jmetalsp.problem.fda.FDA;
 
 import java.io.Serializable;
@@ -19,6 +20,9 @@ public class SimpleKafkaStreamingCounterDataSource implements
 
     public SimpleKafkaStreamingCounterDataSource(Observable<SingleObservedData<Integer>> observable){
         this.observable = observable;
+    }
+    public SimpleKafkaStreamingCounterDataSource(){
+        this(new DefaultObservable<>()) ;
     }
 
     @Override
