@@ -51,19 +51,27 @@ public class SimpleSparkStructuredKafkaStreamingCounter implements SparkStreamin
                         consumerStrategy);
 
 
-        J
 
-        stream.foreachRDD(consumerRecordJavaRDD ->
+        JavaDStream<Integer> time=stream.map(value -> value.value() );
+        /*time.foreachRDD(numbers->
                 {
-
-                    final List<ConsumerRecord<Integer,Integer>> aux=consumerRecordJavaRDD.collect();
-                    for (ConsumerRecord<Integer,Integer> record: aux
-                         ) {
+                    numbers.foreach(value->
+                    {
+                        System.out.println("Pruebas----> " + value);
                         observable.setChanged();
-                        observable.notifyObservers(new SingleObservedData<Integer>(record.value()));
-                    }
+                        observable.notifyObservers(new SingleObservedData<Integer>(value));
+                    });
                 }
-        );
+        );*/
+
+
+        time.foreachRDD(numbers -> {
+                Integer cont = numbers.reduce((key, value) -> value);
+                System.out.println("Pruebas----> " + cont);
+                observable.setChanged();
+                observable.notifyObservers(new SingleObservedData<Integer>(cont));
+        });
+        
        // stream.foreachRDD((consumerRecordJavaRDD, time) -> consumerRecordJavaRDD.foreach(integer -> {
             //observable.setChanged();
             //observable.notifyObservers(new SingleObservedData<Integer>(integer.value()));

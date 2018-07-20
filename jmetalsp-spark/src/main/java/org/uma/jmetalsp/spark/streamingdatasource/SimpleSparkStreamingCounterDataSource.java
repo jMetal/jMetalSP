@@ -47,6 +47,12 @@ public class SimpleSparkStreamingCounterDataSource
 						.textFileStream(directoryName)
 						.map(line -> Integer.parseInt(line)) ;
 
+
+		/*time.foreachRDD(numbers -> {
+			Integer cont =numbers.reduce((key, value) -> value);
+			observable.setChanged();
+			observable.notifyObservers(new SingleObservedData<Integer>(cont));
+				});*/
 		time.foreachRDD(numbers -> {
 			List<Integer> numberList = numbers.collect() ;
 			for (Integer number : numberList) {
