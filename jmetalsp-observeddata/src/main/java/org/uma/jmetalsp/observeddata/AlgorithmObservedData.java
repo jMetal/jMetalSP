@@ -1,5 +1,7 @@
 package org.uma.jmetalsp.observeddata;
 
+import com.cedarsoftware.util.io.JsonReader;
+import com.cedarsoftware.util.io.JsonWriter;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetalsp.ObservedData;
 
@@ -7,29 +9,42 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Data returned by algorithms to be sent to observers, in the form of a map structure
- *
- * @author Antonio J. Nebro <antonio@lcc.uma.es>
- */
-public class AlgorithmObservedData<S extends Solution<?>> implements ObservedData<Map<String, Object>> {
-	private List<S> solutionList;
+public class AlgorithmObservedData implements ObservedData {
 
   Map<String, Object> algorithmData ;
 
-	public AlgorithmObservedData(List<S> solutionList, Map<String, Object> algorithmData) {
-		this.solutionList = new ArrayList<>();
+  public AlgorithmObservedData() {
+    algorithmData = null ;
+  }
 
-    for (S solution:solutionList) {
-     this.solutionList.add((S) solution.copy());
+  public AlgorithmObservedData(Map<String, Object> map) {
+    this.algorithmData = map ;
+  }
+
+  public AlgorithmObservedData(List<Solution<?>> solutionList, Map<String, Object> algorithmData) {
+    List<ObservedSolution> newSolutionList = new ArrayList<>();
+
+    for (Solution<?> solution:solutionList) {
+      newSolutionList.add(new ObservedSolution(solution));
     }
 
-    algorithmData.put("solutionList", this.solutionList) ;
+    algorithmData.put("solutionList", newSolutionList) ;
     this.algorithmData = algorithmData ;
-	}
+  }
 
-  @Override
   public Map<String, Object> getData() {
     return algorithmData;
   }
+
+  @Override
+  public String toJson() {
+    return JsonWriter.objectToJson(this);
+  }
+
+  @Override
+  public AlgorithmObservedData fromJson(String jsonString) {
+
+    return (AlgorithmObservedData)JsonReader.jsonToJava(jsonString);
+  }
 }
+

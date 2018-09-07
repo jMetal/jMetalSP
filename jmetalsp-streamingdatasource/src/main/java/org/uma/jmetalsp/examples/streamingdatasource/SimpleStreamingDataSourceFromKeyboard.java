@@ -1,7 +1,7 @@
 package org.uma.jmetalsp.examples.streamingdatasource;
 
-import org.uma.jmetalsp.StreamingDataSource;
-import org.uma.jmetalsp.observeddata.SingleObservedData;
+import org.uma.jmetalsp.StreamingDataProcessing;
+import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
 
@@ -15,13 +15,13 @@ import java.util.Scanner;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class SimpleStreamingDataSourceFromKeyboard implements
-        StreamingDataSource<SingleObservedData<List<Double>>> {
-  private Observable<SingleObservedData<List<Double>>> observable;
+    StreamingDataProcessing<ObservedValue<List<Double>>> {
+  private Observable<ObservedValue<List<Double>>> observable;
 
   /**
    * @param observable
    */
-  public SimpleStreamingDataSourceFromKeyboard(Observable<SingleObservedData<List<Double>>> observable) {
+  public SimpleStreamingDataSourceFromKeyboard(Observable<ObservedValue<List<Double>>> observable) {
     this.observable = observable;
   }
 
@@ -53,12 +53,12 @@ public class SimpleStreamingDataSourceFromKeyboard implements
 
       observable.setChanged();
       List<Double> values = Arrays.asList(v1, v2) ;
-      observable.notifyObservers(new SingleObservedData<>(values));
+      observable.notifyObservers(new ObservedValue<>(values));
     }
   }
 
   @Override
-  public Observable<SingleObservedData<List<Double>>> getObservable() {
+  public Observable<ObservedValue<List<Double>>> getObservable() {
     return observable;
   }
 }

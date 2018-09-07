@@ -38,7 +38,7 @@ import java.util.List;
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DynamicContinuousApplicationWithKafka {
+public class DynamicContinuousApplicationWithKafkaObs {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     // STEP 1. Create the problem
