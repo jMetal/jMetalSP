@@ -1,6 +1,6 @@
 package org.uma.jmetalsp.examples.streamingdatasource;
 
-import org.uma.jmetalsp.StreamingDataProcessing;
+import org.uma.jmetalsp.StreamingDataSource;
 import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
@@ -15,7 +15,7 @@ import java.util.Scanner;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class ComplexStreamingDataSourceFromKeyboard implements
-    StreamingDataProcessing<ObservedValue<List<Double>>> {
+        StreamingDataSource<ObservedValue<List<Double>>> {
   private Observable<ObservedValue<List<Double>>> observable;
 
   /**
@@ -43,7 +43,7 @@ public class ComplexStreamingDataSourceFromKeyboard implements
       sl.useDelimiter(",");
       try {
         while (sl.hasNext()){
-         values.add(Double.parseDouble(sl.next()));
+          values.add(Double.parseDouble(sl.next()));
         }
       }catch (Exception e){//any problem
         values.add(0.0);

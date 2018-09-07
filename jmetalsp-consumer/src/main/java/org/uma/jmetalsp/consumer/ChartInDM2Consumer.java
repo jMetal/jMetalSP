@@ -35,7 +35,7 @@ import java.util.List;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class ChartInDM2Consumer<S extends Solution<?>> implements
-        DataConsumer<AlgorithmObservedData<S>> {
+        DataConsumer<AlgorithmObservedData> {
 
  // private DynamicAlgorithm<?, AlgorithmObservedData<S>> dynamicAlgorithm;
   private String nameAlgorithm;
@@ -69,7 +69,7 @@ public class ChartInDM2Consumer<S extends Solution<?>> implements
   }
 
   @Override
-  public void update(Observable<AlgorithmObservedData<S>> observable, AlgorithmObservedData<S> data) {
+  public void update(Observable<AlgorithmObservedData> observable, AlgorithmObservedData data) {
     int numberOfIterations = 0;
     List<S> solutionList = null;
     List<Double> newReferencePoint = null;
@@ -138,4 +138,6 @@ public class ChartInDM2Consumer<S extends Solution<?>> implements
       }
     }
   }
+
+
 }

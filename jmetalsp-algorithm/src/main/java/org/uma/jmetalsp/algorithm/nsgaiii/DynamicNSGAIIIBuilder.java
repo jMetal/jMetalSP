@@ -24,9 +24,9 @@ public class DynamicNSGAIIIBuilder <
     private CrossoverOperator<S> crossoverOperator ;
     private MutationOperator<S> mutationOperator ;
     private SelectionOperator<List<S>, S> selectionOperator ;
-    private Observable<AlgorithmObservedData<S>> observable;
+    private Observable<AlgorithmObservedData> observable;
     private SolutionListEvaluator<S> evaluator ;
-    public DynamicNSGAIIIBuilder(Problem<S> problem,Observable<AlgorithmObservedData<S>> observable) {
+    public DynamicNSGAIIIBuilder(Problem<S> problem,Observable<AlgorithmObservedData> observable) {
         super(problem);
         this.problem = (DynamicProblem)problem;
         this.maxIterations = 250;

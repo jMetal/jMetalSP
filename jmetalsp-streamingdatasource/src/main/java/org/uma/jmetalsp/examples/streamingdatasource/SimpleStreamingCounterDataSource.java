@@ -1,9 +1,7 @@
 package org.uma.jmetalsp.examples.streamingdatasource;
 
-import org.uma.jmetalsp.StreamingDataProcessing;
 import org.uma.jmetalsp.StreamingDataSource;
 import org.uma.jmetalsp.observeddata.ObservedIntegerValue;
-import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
 import org.uma.jmetalsp.observer.impl.KafkaObservable;
@@ -13,7 +11,7 @@ import org.uma.jmetalsp.observer.impl.KafkaObservable;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class SimpleStreamingCounterDataSource
-		implements StreamingDataProcessing<ObservedIntegerValue> {
+		implements StreamingDataSource<ObservedIntegerValue> {
 	private Observable<ObservedIntegerValue> observable;
 	private int dataDelay ;
 
@@ -72,4 +70,3 @@ public class SimpleStreamingCounterDataSource
 		simpleStreamingCounterDataSource.run();
 	}
 }
-

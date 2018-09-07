@@ -35,15 +35,15 @@ import java.util.List;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class ChartMultipleConsumer<S extends Solution<?>> implements
-        DataConsumer<AlgorithmObservedData<S>> {
+        DataConsumer<AlgorithmObservedData> {
 
-  private DynamicAlgorithm<?, AlgorithmObservedData<S>> dynamicAlgorithm;
+  private DynamicAlgorithm<?, AlgorithmObservedData> dynamicAlgorithm;
   private ChartManyObjectivesContainer chart ;
   private List<S> lastReceivedFront = null ;
   private List<Double> referencePoint ;
   private int numberOfObjectives;
 
-  public ChartMultipleConsumer(DynamicAlgorithm<?, AlgorithmObservedData<S>> algorithm,
+  public ChartMultipleConsumer(DynamicAlgorithm<?, AlgorithmObservedData> algorithm,
                                List<Double> referencePoint,int numberOfObjectives) {
     this.dynamicAlgorithm = algorithm ;
     this.chart = null ;
@@ -69,7 +69,7 @@ public class ChartMultipleConsumer<S extends Solution<?>> implements
   }
 
   @Override
-  public void update(Observable<AlgorithmObservedData<S>> observable, AlgorithmObservedData<S> data) {
+  public void update(Observable<AlgorithmObservedData> observable, AlgorithmObservedData data) {
     try {
       int numberOfIterations = 0;
       List<S> solutionList = null;

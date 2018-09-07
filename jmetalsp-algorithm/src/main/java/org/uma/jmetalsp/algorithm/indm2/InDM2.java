@@ -13,7 +13,7 @@ import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.InteractiveAlgorithm;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
-import org.uma.jmetalsp.observeddata.SingleObservedData;
+import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.Observer;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
@@ -32,31 +32,30 @@ import java.util.*;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class InDM2<S extends Solution<?>>
-    implements Algorithm<List<S>>,
-         DynamicAlgorithm<List<S>, AlgorithmObservedData<S>>,
-        Observer<SingleObservedData<List<Double>>> {
+        implements Algorithm<List<S>>, DynamicAlgorithm<List<S>,
+        AlgorithmObservedData>, Observer<ObservedValue<List<Double>>> {
   private int completedIterations;
   private boolean stopAtTheEndOfTheCurrentIteration = false;
   private Optional<List<Double>> newReferencePoint ;
-  private Map<String,List> algorithmData;
+ // private Map<String,List> algorithmData;
   private RestartStrategy<S> restartStrategyForProblemChange ;
   private RestartStrategy<S> restartStrategyForReferencePointChange ;
 
-  protected Observable<AlgorithmObservedData<S>> observable;
+  protected Observable<AlgorithmObservedData> observable;
   private String weightVectorsFileName="";
   private InteractiveAlgorithm<S,List<S>> interactiveAlgorithm;
   private int evaluations;
   private int maxEvaluations;
   Problem<S> problem;
   public InDM2(Problem<S> problem, int populationSize, int maxEvaluations,InteractiveAlgorithm<S,List<S>> interactiveAlgorithm,
-               Observable<AlgorithmObservedData<S>> observable) {
+               Observable<AlgorithmObservedData> observable) {
     this.interactiveAlgorithm = interactiveAlgorithm;
     this.completedIterations = 0;
     this.observable = observable;
     this.evaluations = 0;
     this.maxEvaluations = maxEvaluations ;
     this.newReferencePoint = Optional.ofNullable(null);
-    this.algorithmData = new HashMap<>();
+    //this.algorithmData = new HashMap<>();
     this.problem = problem;
     this.restartStrategyForProblemChange = new RestartStrategy<>(
             new RemoveFirstNSolutions<S>(populationSize),
@@ -85,7 +84,7 @@ public class InDM2<S extends Solution<?>>
   }
 
   @Override
-  public Observable<AlgorithmObservedData<S>> getObservable() {
+  public Observable<AlgorithmObservedData> getObservable() {
     return this.observable;
   }
 
@@ -104,9 +103,12 @@ public class InDM2<S extends Solution<?>>
     if (evaluations >= maxEvaluations) {
       observable.setChanged();
       Map<String, Object> algorithmData = new HashMap<>() ;
-
       algorithmData.put("numberOfIterations",completedIterations);
-      observable.notifyObservers(new AlgorithmObservedData<S>(interactiveAlgorithm.getResult(), algorithmData));
+      algorithmData.put("algorithmName", getName()) ;
+      algorithmData.put("problemName", problem.getName()) ;
+      algorithmData.put("numberOfObjectives", problem.getNumberOfObjectives()) ;
+
+      observable.notifyObservers(new AlgorithmObservedData((List<Solution<?>>) interactiveAlgorithm.getResult(), algorithmData));
 
       //this.restartStrategyForProblemChange.restart(interactiveAlgorithm.getPopulation(), (DynamicProblem<S, ?>)this.problem);
       restart() ;
@@ -138,13 +140,19 @@ public class InDM2<S extends Solution<?>>
 
     interactiveAlgorithm.updatePointOfInterest(newReferencePoint);
     //this.updatePointOfInterest(referencePoint);
+    Map<String, Object> algorithmData = new HashMap<>() ;
+    algorithmData.put("numberOfIterations",completedIterations);
+    algorithmData.put("algorithmName", getName()) ;
+    algorithmData.put("problemName", problem.getName()) ;
+    algorithmData.put("numberOfObjectives", problem.getNumberOfObjectives()) ;
     algorithmData.put("referencePoint",newReferencePoint);
     List<S> emptyList = new ArrayList<>();
     observable.setChanged();
-    observable.notifyObservers(new AlgorithmObservedData(emptyList, algorithmData));
+    observable.notifyObservers(new AlgorithmObservedData((List<Solution<?>>)emptyList, algorithmData));
+
   }
 
-  @Override
+ /*@Override
   public synchronized void update(
           Observable<SingleObservedData<List<Double>>> observable,
           SingleObservedData<List<Double>> data) {
@@ -156,7 +164,7 @@ public class InDM2<S extends Solution<?>>
 
 
     newReferencePoint = Optional.of(data.getData()) ;
-  }
+  }*/
 
   @Override
   public void setRestartStrategy(RestartStrategy<?> restartStrategyForProblemChange) {
@@ -181,5 +189,15 @@ public class InDM2<S extends Solution<?>>
   @Override
   public List<S> getResult() {
     return interactiveAlgorithm.getResult();
+  }
+
+  @Override
+  public void update(Observable<ObservedValue<List<Double>>> observable, ObservedValue<List<Double>> data) {
+
+    if ((data.getValue().size() % getDynamicProblem().getNumberOfObjectives())!=0) {
+      throw new JMetalException("The reference point size is not correct: " + data.getValue().size()) ;
+    }
+
+    newReferencePoint = Optional.of(data.getValue()) ;
   }
 }

@@ -5,8 +5,9 @@ import org.uma.jmetal.problem.impl.AbstractIntegerPermutationProblem;
 import org.uma.jmetal.solution.PermutationSolution;
 import org.uma.jmetal.util.solutionattribute.impl.NumberOfViolatedConstraints;
 import org.uma.jmetal.util.solutionattribute.impl.OverallConstraintViolation;
+
 import org.uma.jmetalsp.DynamicProblem;
-import org.uma.jmetalsp.observeddata.SingleObservedData;
+import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
 
@@ -18,13 +19,13 @@ import org.uma.jmetalsp.observer.impl.DefaultObservable;
 public class DynamicMultiobjectiveTSP
     extends AbstractIntegerPermutationProblem
     implements ConstrainedProblem<PermutationSolution<Integer>>,
-    DynamicProblem<PermutationSolution<Integer>, SingleObservedData<TSPMatrixData>> {
+        DynamicProblem<PermutationSolution<Integer>, ObservedValue<TSPMatrixData>> {
 
   public static final double NON_CONNECTED = Double.POSITIVE_INFINITY ;
   private int         numberOfCities ;
   private double [][] distanceMatrix ;
   private double [][] costMatrix;
-  private Observable<SingleObservedData<TSPMatrixData>> observable ;
+  private Observable<ObservedValue<TSPMatrixData>> observable ;
 
   private boolean theProblemHasBeenModified;
 
@@ -34,7 +35,7 @@ public class DynamicMultiobjectiveTSP
   public DynamicMultiobjectiveTSP(int numberOfCities,
                                   double[][] distanceMatrix,
                                   double[][] costMatrix,
-                                  Observable<SingleObservedData<TSPMatrixData>> observable) {
+                                  Observable<ObservedValue<TSPMatrixData>> observable) {
     this.numberOfCities = numberOfCities ;
     this.distanceMatrix = distanceMatrix ;
     this.costMatrix = costMatrix ;
@@ -182,11 +183,11 @@ public class DynamicMultiobjectiveTSP
   }
 
   @Override
-  public void update(Observable<SingleObservedData<TSPMatrixData>> observable, SingleObservedData<TSPMatrixData> data) {
-    if (data!=null && data.getData().getMatrixIdentifier() == "COST") {
-      updateCostValue(data.getData().getX(),data.getData().getY(),data.getData().getValue());
-    } else if(data!=null && data.getData().getMatrixIdentifier() == "VALUE"){
-      updateDistanceValue(data.getData().getX(),data.getData().getY(),data.getData().getValue());
+  public void update(Observable<ObservedValue<TSPMatrixData>> observable, ObservedValue<TSPMatrixData> data) {
+    if (data!=null && data.getValue().getMatrixIdentifier() == "COST") {
+      updateCostValue(data.getValue().getX(),data.getValue().getY(),data.getValue().getValue());
+    } else if(data!=null && data.getValue().getMatrixIdentifier() == "VALUE"){
+      updateDistanceValue(data.getValue().getX(),data.getValue().getY(),data.getValue().getValue());
     }
   }
 }

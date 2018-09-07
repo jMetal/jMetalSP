@@ -17,6 +17,7 @@ import org.uma.jmetal.algorithm.multiobjective.smpso.SMPSO;
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.problem.DoubleProblem;
 import org.uma.jmetal.solution.DoubleSolution;
+import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.SolutionListUtils;
 import org.uma.jmetal.util.archive.BoundedArchive;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
@@ -28,6 +29,7 @@ import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveFirstNSolutions;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +38,7 @@ import java.util.Map;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class DynamicSMPSO extends SMPSO
-        implements DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData<DoubleSolution>> {
+        implements DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData> {
 
   private int completedIterations;
   private SolutionListEvaluator<DoubleSolution> evaluator;
@@ -44,7 +46,7 @@ public class DynamicSMPSO extends SMPSO
   private boolean stopAtTheEndOfTheCurrentIteration = false;
   private RestartStrategy<DoubleSolution> restartStrategyForProblemChange ;
 
-  private Observable<AlgorithmObservedData<DoubleSolution>> observable;
+  private Observable<AlgorithmObservedData> observable;
 
   public DynamicSMPSO(DynamicProblem<DoubleSolution, ?> problem, int swarmSize, BoundedArchive<DoubleSolution> leaders,
                       MutationOperator<DoubleSolution> mutationOperator,
@@ -54,7 +56,7 @@ public class DynamicSMPSO extends SMPSO
                       double weightMin, double weightMax,
                       double changeVelocity1, double changeVelocity2,
                       SolutionListEvaluator<DoubleSolution> evaluator,
-                      Observable<AlgorithmObservedData<DoubleSolution>> observable) {
+                      Observable<AlgorithmObservedData> observable) {
     super((DoubleProblem) problem, swarmSize, leaders, mutationOperator, maxIterations, r1Min, r1Max, r2Min, r2Max,
             c1Min, c1Max, c2Min, c2Max, weightMin, weightMax, changeVelocity1, changeVelocity2, evaluator);
     this.problem = problem;
@@ -99,8 +101,17 @@ public class DynamicSMPSO extends SMPSO
       observable.setChanged();
       Map<String, Object> algorithmData = new HashMap<>() ;
 
-      algorithmData.put("numberOfIterations", completedIterations);
-      observable.notifyObservers(new AlgorithmObservedData(getResult(), algorithmData));
+      algorithmData.put("numberOfIterations",completedIterations);
+      algorithmData.put("algorithmName", getName()) ;
+      algorithmData.put("problemName", problem.getName()) ;
+      algorithmData.put("numberOfObjectives", problem.getNumberOfObjectives()) ;
+      List<Solution<?>> aux = new ArrayList<>();
+      List<DoubleSolution> solutions = getResult();
+      for (DoubleSolution solution:solutions) {
+        aux.add(solution);
+      }
+      observable.notifyObservers(new AlgorithmObservedData(aux, algorithmData));
+      //observable.notifyObservers(new AlgorithmObservedData(getResult(), algorithmData));
 
       restart();
       completedIterations++;
@@ -109,7 +120,7 @@ public class DynamicSMPSO extends SMPSO
   }
 
   @Override
-  public Observable<AlgorithmObservedData<DoubleSolution>> getObservable() {
+  public Observable<AlgorithmObservedData> getObservable() {
     return this.observable;
   }
 

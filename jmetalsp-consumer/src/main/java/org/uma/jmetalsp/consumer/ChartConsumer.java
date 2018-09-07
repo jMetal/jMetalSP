@@ -74,7 +74,7 @@ public class ChartConsumer<S extends Solution<?>> implements
     List<PointSolution> solutionList = null ;
     List<Double> referencePoint = null ;
     if (data.getData().containsKey("numberOfIterations")) {
-      numberOfIterations =  (int)data.getData().get("numberOfIterations") ;
+     numberOfIterations =  (int)data.getData().get("numberOfIterations") ;
     }
     if (data.getData().containsKey("solutionList")) {
       solutionList = new ArrayList<>() ;
@@ -92,9 +92,9 @@ public class ChartConsumer<S extends Solution<?>> implements
 
     if (chart == null) {
       this.chart = new ChartContainer(
-              (String)(data.getData().get("algorithmName")),
-              200,
-              (int)(data.getData().get("numberOfObjectives")));
+          (String)(data.getData().get("algorithmName")),
+          200,
+          (int)(data.getData().get("numberOfObjectives")));
       try {
         this.chart.setFrontChart(0, 1, null);
         this.chart.getFrontChart().getStyler().setLegendPosition(Styler.LegendPosition.InsideNE) ;
@@ -141,7 +141,7 @@ public class ChartConsumer<S extends Solution<?>> implements
     ChartConsumer chartConsumer = new ChartConsumer() ;
 
     KafkaBasedConsumer<AlgorithmObservedData> chartKafkaBasedConsumer =
-            new KafkaBasedConsumer<>(topicName, chartConsumer, new AlgorithmObservedData()) ;
+      new KafkaBasedConsumer<>(topicName, chartConsumer, new AlgorithmObservedData()) ;
 
     chartKafkaBasedConsumer.start();
 

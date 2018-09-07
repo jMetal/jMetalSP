@@ -1,6 +1,6 @@
 package org.uma.jmetalsp.examples.streamingdatasource;
 
-import org.uma.jmetalsp.StreamingDataProcessing;
+import org.uma.jmetalsp.StreamingDataSource;
 import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
@@ -15,7 +15,7 @@ import java.util.Scanner;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class SimpleStreamingDataSourceFromKeyboard implements
-    StreamingDataProcessing<ObservedValue<List<Double>>> {
+        StreamingDataSource<ObservedValue<List<Double>>> {
   private Observable<ObservedValue<List<Double>>> observable;
 
   /**
