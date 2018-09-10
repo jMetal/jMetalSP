@@ -17,7 +17,7 @@ import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingDataSourceFromKeyboard;
 import org.uma.jmetalsp.impl.DefaultRuntime;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
-import org.uma.jmetalsp.observeddata.SingleObservedData;
+import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
 import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPBuilderFromTSPLIBFiles;
 import org.uma.jmetalsp.problem.tsp.TSPMatrixData;
@@ -43,7 +43,7 @@ public class RNSGAIIRunnerForTSP {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     // STEP 1. Create the problem
-    DynamicProblem<PermutationSolution<Integer>, SingleObservedData<TSPMatrixData>> problem;
+    DynamicProblem<PermutationSolution<Integer>, ObservedValue<TSPMatrixData>> problem;
     problem = new MultiobjectiveTSPBuilderFromTSPLIBFiles("data/kroA100.tsp", "data/kroB100.tsp")
             .build();
 
@@ -83,16 +83,16 @@ public class RNSGAIIRunnerForTSP {
     streamingTSPSource.getObservable().register(problem);
 
     // STEP 4. Create a streaming data source for the algorithm and register
-    StreamingDataSource<SingleObservedData<List<Double>>> keyboardstreamingDataSource =
+    StreamingDataSource<ObservedValue<List<Double>>> keyboardstreamingDataSource =
             new SimpleStreamingDataSourceFromKeyboard() ;
 
     keyboardstreamingDataSource.getObservable().register(algorithm);
 
     // STEP 5. Create the data consumers and register into the algorithm
-    DataConsumer<AlgorithmObservedData<PermutationSolution<Integer>>> localDirectoryOutputConsumer =
+    DataConsumer<AlgorithmObservedData> localDirectoryOutputConsumer =
             new LocalDirectoryOutputConsumer<PermutationSolution<Integer>>("outputdirectory");
-    DataConsumer<AlgorithmObservedData<PermutationSolution<Integer>>> chartConsumer =
-            new ChartConsumer<PermutationSolution<Integer>>(algorithm);
+    DataConsumer<AlgorithmObservedData> chartConsumer =
+            new ChartConsumer<PermutationSolution<Integer>>();
 
     algorithm.getObservable().register(localDirectoryOutputConsumer);
     algorithm.getObservable().register(chartConsumer) ;
@@ -100,8 +100,8 @@ public class RNSGAIIRunnerForTSP {
     // STEP 6. Create the application and run
     JMetalSPApplication<
             PermutationSolution<Integer>,
-            DynamicProblem<PermutationSolution<Integer>, SingleObservedData<Integer>>,
-            DynamicAlgorithm<List<PermutationSolution<Integer>>, AlgorithmObservedData<PermutationSolution<Integer>>>> application;
+            DynamicProblem<PermutationSolution<Integer>, ObservedValue<Integer>>,
+            DynamicAlgorithm<List<PermutationSolution<Integer>>, AlgorithmObservedData>> application;
 
     application = new JMetalSPApplication<>();
 

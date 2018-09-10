@@ -2,8 +2,7 @@ package org.uma.jmetalsp.problem.fda;
 
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.JMetalException;
-import org.uma.jmetalsp.observeddata.ObservedIntegerValue;
-import org.uma.jmetalsp.observeddata.SingleObservedData;
+import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
 
@@ -19,7 +18,7 @@ public class FDA4 extends FDA implements Serializable {
   private boolean theProblemHasBeenModified;
   private final int M = 3;
 
-  public FDA4(Observable<ObservedIntegerValue> observable){
+  public FDA4(Observable<ObservedValue<Integer>> observable){
     this(12,3, observable);
   }
 
@@ -27,7 +26,7 @@ public class FDA4 extends FDA implements Serializable {
     this(new DefaultObservable<>()) ;
   }
 
-  public FDA4(Integer numberOfVariables, Integer numberOfObjectives, Observable<ObservedIntegerValue> observer) throws JMetalException {
+  public FDA4(Integer numberOfVariables, Integer numberOfObjectives, Observable<ObservedValue<Integer>> observer) throws JMetalException {
     super(observer) ;
     setNumberOfVariables(numberOfVariables);
     setNumberOfObjectives(numberOfObjectives);

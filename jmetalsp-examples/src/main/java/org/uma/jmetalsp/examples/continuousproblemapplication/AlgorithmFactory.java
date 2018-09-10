@@ -18,7 +18,7 @@ import org.uma.jmetalsp.algorithm.rnsgaii.DynamicRNSGAIIBuilder;
 import org.uma.jmetalsp.algorithm.smpso.DynamicSMPSOBuilder;
 import org.uma.jmetalsp.algorithm.wasfga.DynamicWASFGABuilder;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
-import org.uma.jmetalsp.observeddata.SingleObservedData;
+import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
 
 import java.util.ArrayList;
@@ -29,9 +29,9 @@ import java.util.List;
  */
 public class AlgorithmFactory {
 
-  public static DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData<DoubleSolution>>
-  getAlgorithm(String algorithmName, DynamicProblem<DoubleSolution, SingleObservedData<Integer>> problem) {
-    DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData<DoubleSolution>> algorithm;
+  public static DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData>
+  getAlgorithm(String algorithmName, DynamicProblem<DoubleSolution, ObservedValue<Integer>> problem) {
+    DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData> algorithm;
 
     CrossoverOperator<DoubleSolution> crossover = new SBXCrossover(0.9, 20.0);
     MutationOperator<DoubleSolution> mutation =
@@ -72,7 +72,7 @@ public class AlgorithmFactory {
 
 
       case "NSGAIII":
-        algorithm = (DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData<DoubleSolution>>) new DynamicNSGAIIIBuilder<>(problem,new DefaultObservable<>())
+        algorithm = (DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData>) new DynamicNSGAIIIBuilder<>(problem,new DefaultObservable<>())
                 .setCrossoverOperator(crossover)
                 .setMutationOperator(mutation)
                 .setSelectionOperator(selection)
@@ -85,7 +85,7 @@ public class AlgorithmFactory {
         interestPoint.add(0.5);
         interestPoint.add(0.5);
         double epsilon = 0.001D;
-        algorithm = (DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData<DoubleSolution>>)
+        algorithm = (DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData>)
                 new DynamicRNSGAIIBuilder<>(crossover, mutation, new DefaultObservable<>(),interestPoint,epsilon)
                 .setMaxEvaluations(50000)
                 .setPopulationSize(100)

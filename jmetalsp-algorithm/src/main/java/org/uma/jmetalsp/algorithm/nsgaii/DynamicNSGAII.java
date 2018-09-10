@@ -26,7 +26,7 @@ import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
-import org.uma.jmetalsp.observeddata.ObservedIntegerValue;
+import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.KafkaBasedConsumer;
 import org.uma.jmetalsp.observer.impl.KafkaObservable;
@@ -163,7 +163,7 @@ public class DynamicNSGAII<S extends Solution<?>>
   public static void main(String[] args) {
     String topicName = "prueba-solutionlist-topic-from-main";
 
-    DynamicProblem<DoubleSolution, ObservedIntegerValue> problem =  new FDA2();
+    DynamicProblem<DoubleSolution, ObservedValue<Integer>> problem =  new FDA2();
 
     // STEP 2. Create the algorithm
     CrossoverOperator<DoubleSolution> crossover = new SBXCrossover(0.9, 20.0);
@@ -184,8 +184,8 @@ public class DynamicNSGAII<S extends Solution<?>>
             new RemoveNRandomSolutions(15),
             new CreateNRandomSolutions<DoubleSolution>()));
 
-    KafkaBasedConsumer<ObservedIntegerValue> problemKafkaBasedConsumer =
-            new KafkaBasedConsumer<>("prueba-int-topic-from-main", problem, new ObservedIntegerValue()) ;
+    KafkaBasedConsumer<ObservedValue<Integer>> problemKafkaBasedConsumer =
+            new KafkaBasedConsumer<>("prueba-int-topic-from-main", problem, new ObservedValue<>()) ;
     problemKafkaBasedConsumer.start();
 
     algorithm.run() ;

@@ -29,7 +29,6 @@ import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingDataSourceFr
 import org.uma.jmetalsp.impl.DefaultRuntime;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.ObservedValue;
-import org.uma.jmetalsp.observeddata.SingleObservedData;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
 import org.uma.jmetalsp.problem.fda.FDA2;
 import org.uma.jmetalsp.problem.tsp.DynamicMultiobjectiveTSP;
@@ -117,7 +116,7 @@ public class InDM2RunnerForTSP {
     JMetalSPApplication<
             PermutationSolution<Integer>,
             DynamicProblem<PermutationSolution<Integer>, ObservedValue<Integer>>,
-            DynamicAlgorithm<List<PermutationSolution<Integer>>, AlgorithmObservedData<PermutationSolution<Integer>>>> application;
+            DynamicAlgorithm<List<PermutationSolution<Integer>>, AlgorithmObservedData>> application;
 
     application = new JMetalSPApplication<>();
 

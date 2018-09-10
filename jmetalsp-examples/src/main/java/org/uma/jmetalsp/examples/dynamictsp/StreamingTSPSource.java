@@ -2,7 +2,7 @@ package org.uma.jmetalsp.examples.dynamictsp;
 
 import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 import org.uma.jmetalsp.StreamingDataSource;
-import org.uma.jmetalsp.observeddata.SingleObservedData;
+import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.problem.tsp.DynamicMultiobjectiveTSP;
 import org.uma.jmetalsp.problem.tsp.TSPMatrixData;
@@ -13,11 +13,11 @@ import org.uma.jmetalsp.problem.tsp.TSPMatrixData;
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class StreamingTSPSource implements StreamingDataSource<SingleObservedData<TSPMatrixData>> {
-  private Observable<SingleObservedData<TSPMatrixData>> observable;
+public class StreamingTSPSource implements StreamingDataSource<ObservedValue<TSPMatrixData>> {
+  private Observable<ObservedValue<TSPMatrixData>> observable;
   private int dataDelay ;
 
-	public StreamingTSPSource(Observable<SingleObservedData<TSPMatrixData>> observable, int dataDelay) {
+	public StreamingTSPSource(Observable<ObservedValue<TSPMatrixData>> observable, int dataDelay) {
 		this.observable = observable ;
 		this.dataDelay = dataDelay ;
 	}
@@ -35,12 +35,12 @@ public class StreamingTSPSource implements StreamingDataSource<SingleObservedDat
       int y = JMetalRandom.getInstance().nextInt(0, 100) ;
       double value = JMetalRandom.getInstance().nextDouble(1.0, 4000) ;
 			observable.setChanged();
-			observable.notifyObservers(new SingleObservedData<TSPMatrixData>(new TSPMatrixData("COST", x, y, value)));
+			observable.notifyObservers(new ObservedValue<TSPMatrixData>(new TSPMatrixData("COST", x, y, value)));
     }
 	}
 
   @Override
-  public Observable<SingleObservedData<TSPMatrixData>> getObservable() {
+  public Observable<ObservedValue<TSPMatrixData>> getObservable() {
     return this.observable;
   }
 }

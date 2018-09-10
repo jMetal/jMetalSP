@@ -2,6 +2,7 @@ package org.uma.jmetalsp.examples.streamingdatasource;
 
 import org.uma.jmetalsp.StreamingDataSource;
 import org.uma.jmetalsp.observeddata.ObservedIntegerValue;
+import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
 import org.uma.jmetalsp.observer.impl.KafkaObservable;
@@ -11,8 +12,8 @@ import org.uma.jmetalsp.observer.impl.KafkaObservable;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class SimpleStreamingCounterDataSource
-		implements StreamingDataSource<ObservedIntegerValue> {
-	private Observable<ObservedIntegerValue> observable;
+		implements StreamingDataSource<ObservedValue<Integer>> {
+	private Observable<ObservedValue<Integer>> observable;
 	private int dataDelay ;
 
 	/**
@@ -20,7 +21,7 @@ public class SimpleStreamingCounterDataSource
 	 * @param observable
 	 * @param dataDelay Delay in milliseconds
 	 */
-	public SimpleStreamingCounterDataSource(Observable<ObservedIntegerValue> observable, int dataDelay) {
+	public SimpleStreamingCounterDataSource(Observable<ObservedValue<Integer>> observable, int dataDelay) {
 		this.observable = observable ;
 		this.dataDelay = dataDelay ;
 	}
@@ -29,7 +30,7 @@ public class SimpleStreamingCounterDataSource
 		this(new DefaultObservable<>(), dataDelay);
 	}
 
-	public SimpleStreamingCounterDataSource(int dataDelay, Observable<ObservedIntegerValue> observable) {
+	public SimpleStreamingCounterDataSource(int dataDelay, Observable<ObservedValue<Integer>> observable) {
 		this(observable, dataDelay) ;
 	}
 
@@ -44,13 +45,13 @@ public class SimpleStreamingCounterDataSource
 			}
 
 			observable.setChanged(); ;
-			observable.notifyObservers(new ObservedIntegerValue(counter));
+			observable.notifyObservers(new ObservedValue<>(counter));
 			counter ++ ;
 		}
 	}
 
 	@Override
-	public Observable<ObservedIntegerValue> getObservable() {
+	public Observable<ObservedValue<Integer>> getObservable() {
 		return this.observable;
 	}
 
@@ -65,7 +66,7 @@ public class SimpleStreamingCounterDataSource
 
 		SimpleStreamingCounterDataSource simpleStreamingCounterDataSource =
 				new SimpleStreamingCounterDataSource(
-						new KafkaObservable<>(topicName, new ObservedIntegerValue()), 2000) ;
+						new KafkaObservable<>(topicName, new ObservedValue<>()), 2000) ;
 
 		simpleStreamingCounterDataSource.run();
 	}

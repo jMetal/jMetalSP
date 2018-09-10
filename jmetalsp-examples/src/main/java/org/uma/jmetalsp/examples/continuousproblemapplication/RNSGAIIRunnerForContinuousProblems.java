@@ -15,7 +15,7 @@ import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingCounterDataS
 import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingDataSourceFromKeyboard;
 import org.uma.jmetalsp.impl.DefaultRuntime;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
-import org.uma.jmetalsp.observeddata.SingleObservedData;
+import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
 import org.uma.jmetalsp.problem.fda.FDA1;
 import org.uma.jmetalsp.problem.fda.FDA2;
@@ -40,7 +40,7 @@ public class RNSGAIIRunnerForContinuousProblems {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     // STEP 1. Create the problem
-    DynamicProblem<DoubleSolution, SingleObservedData<Integer>> problem =
+    DynamicProblem<DoubleSolution, ObservedValue<Integer>> problem =
             new FDA2();
 
     // STEP 2. Create and configure the algorithm
@@ -83,21 +83,21 @@ public class RNSGAIIRunnerForContinuousProblems {
             new CreateNRandomSolutions<DoubleSolution>()));
 
     // STEP 3. Create a streaming data source for the problem and register
-    StreamingDataSource<SingleObservedData<Integer>> streamingDataSource =
+    StreamingDataSource<ObservedValue<Integer>> streamingDataSource =
             new SimpleStreamingCounterDataSource(2000) ;
 
     streamingDataSource.getObservable().register(problem);
 
     // STEP 4. Create a streaming data source for the algorithm and register
-    StreamingDataSource<SingleObservedData<List<Double>>> keyboardstreamingDataSource =
+    StreamingDataSource<ObservedValue<List<Double>>> keyboardstreamingDataSource =
             new ComplexStreamingDataSourceFromKeyboard() ;
 
     keyboardstreamingDataSource.getObservable().register(algorithm);
 
     // STEP 5. Create the data consumers and register into the algorithm
-    DataConsumer<AlgorithmObservedData<DoubleSolution>> localDirectoryOutputConsumer =
+    DataConsumer<AlgorithmObservedData> localDirectoryOutputConsumer =
             new LocalDirectoryOutputConsumer<DoubleSolution>("outputdirectory") ;
-    DataConsumer<AlgorithmObservedData<DoubleSolution>> chartConsumer =
+    DataConsumer<AlgorithmObservedData> chartConsumer =
             new ChartInDM2Consumer<DoubleSolution>(algorithm.getName(), referencePoint,problem.getNumberOfObjectives()) ;
 
     algorithm.getObservable().register(localDirectoryOutputConsumer);
@@ -106,8 +106,8 @@ public class RNSGAIIRunnerForContinuousProblems {
     // STEP 6. Create the application and run
     JMetalSPApplication<
             DoubleSolution,
-            DynamicProblem<DoubleSolution, SingleObservedData<Integer>>,
-            DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData<DoubleSolution>>> application;
+            DynamicProblem<DoubleSolution, ObservedValue<Integer>>,
+            DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData>> application;
 
     application = new JMetalSPApplication<>();
 

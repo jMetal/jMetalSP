@@ -1,19 +1,27 @@
 package org.uma.jmetalsp.examples.continuousproblemapplication;
 
+import org.uma.jmetal.operator.CrossoverOperator;
+import org.uma.jmetal.operator.MutationOperator;
+import org.uma.jmetal.operator.SelectionOperator;
+import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
+import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
+import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetalsp.*;
+import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAIIBuilder;
 import org.uma.jmetalsp.consumer.ChartConsumer;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingCounterDataSource;
 import org.uma.jmetalsp.impl.DefaultRuntime;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
+import org.uma.jmetalsp.observeddata.ObservedIntegerValue;
 import org.uma.jmetalsp.observeddata.ObservedValue;
+import org.uma.jmetalsp.observer.impl.KafkaBasedConsumer;
+import org.uma.jmetalsp.observer.impl.KafkaObservable;
 import org.uma.jmetalsp.problem.fda.FDA2;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
-import org.uma.jmetalsp.util.restartstrategy.impl.RemoveFirstNSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNRandomSolutions;
-import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNSolutionsAccordingToTheHypervolumeContribution;
 
 import java.io.IOException;
 import java.util.List;
@@ -34,17 +42,23 @@ import java.util.List;
 
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DynamicContinuousApplication {
+public class DynamicContinuousApplicationWithKafka {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     // STEP 1. Create the problem
-	  DynamicProblem<DoubleSolution, ObservedValue<Integer>> problem =
-            new FDA2();
+	  DynamicProblem<DoubleSolution, ObservedValue<Integer>> problem =  new FDA2();
 
 	  // STEP 2. Create the algorithm
-    DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData> algorithm =
-            AlgorithmFactory.getAlgorithm("WASFGA", problem) ;
+    CrossoverOperator<DoubleSolution> crossover = new SBXCrossover(0.9, 20.0);
+    MutationOperator<DoubleSolution> mutation =
+      new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);
+    SelectionOperator<List<DoubleSolution>, DoubleSolution> selection=new BinaryTournamentSelection<DoubleSolution>();;
 
+    DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData> algorithm =
+      new DynamicNSGAIIBuilder<>(crossover, mutation, new KafkaObservable<>("topic-solutionlist-1", new AlgorithmObservedData()))
+        .setMaxEvaluations(50000)
+        .setPopulationSize(100)
+        .build(problem);
 
     algorithm.setRestartStrategy(new RestartStrategy<>(
             //new RemoveFirstNSolutions<>(50),
@@ -55,7 +69,8 @@ public class DynamicContinuousApplication {
 
     // STEP 3. Create the streaming data source (only one in this example) and register the problem
     StreamingDataSource<ObservedValue<Integer>> streamingDataSource =
-            new SimpleStreamingCounterDataSource(2000) ;
+      new SimpleStreamingCounterDataSource(
+        new KafkaObservable<>("topic-int-1", new ObservedValue<>()), 2000) ;
 
     streamingDataSource.getObservable().register(problem);
 
@@ -65,9 +80,6 @@ public class DynamicContinuousApplication {
     DataConsumer<AlgorithmObservedData> chartConsumer =
             new ChartConsumer<DoubleSolution>() ;
 
-    algorithm.getObservable().register(localDirectoryOutputConsumer);
-    algorithm.getObservable().register(chartConsumer) ;
-
     // STEP 5. Create the application and run
     JMetalSPApplication<
             DoubleSolution,
@@ -75,6 +87,18 @@ public class DynamicContinuousApplication {
             DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData>> application;
 
     application = new JMetalSPApplication<>();
+
+    // STEP 6. Create the kafka consumers (associated to the data consumers) and start them
+    KafkaBasedConsumer<ObservedValue<Integer>> problemKafkaBasedConsumer =
+      new KafkaBasedConsumer<>("topic-int-1", problem, new ObservedValue<>()) ;
+    KafkaBasedConsumer<AlgorithmObservedData> chartKafkaBasedConsumer =
+      new KafkaBasedConsumer<>("topic-solutionlist-1", chartConsumer, new AlgorithmObservedData()) ;
+    KafkaBasedConsumer<AlgorithmObservedData> localDirectoryConsumer =
+      new KafkaBasedConsumer<>("topic-solutionlist-1", localDirectoryOutputConsumer, new AlgorithmObservedData()) ;
+
+    problemKafkaBasedConsumer.start();
+    chartKafkaBasedConsumer.start();
+    localDirectoryConsumer.start();
 
     application.setStreamingRuntime(new DefaultRuntime())
             .setProblem(problem)

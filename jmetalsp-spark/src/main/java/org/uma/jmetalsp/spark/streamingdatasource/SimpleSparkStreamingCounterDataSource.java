@@ -3,7 +3,7 @@ package org.uma.jmetalsp.spark.streamingdatasource;
 import org.apache.spark.streaming.api.java.JavaDStream;
 import org.apache.spark.streaming.api.java.JavaStreamingContext;
 import org.uma.jmetal.util.JMetalLogger;
-import org.uma.jmetalsp.observeddata.SingleObservedData;
+import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
 import org.uma.jmetalsp.spark.SparkStreamingDataSource;
@@ -16,8 +16,8 @@ import java.util.List;
  */
 
 public class SimpleSparkStreamingCounterDataSource
-        implements SparkStreamingDataSource<SingleObservedData<Integer>> {
-	private Observable<SingleObservedData<Integer>> observable;
+        implements SparkStreamingDataSource<ObservedValue<Integer>> {
+	private Observable<ObservedValue<Integer>> observable;
 
 	private double time=1.0d;
 	private int tauT=5;
@@ -28,7 +28,7 @@ public class SimpleSparkStreamingCounterDataSource
 
 
 	public SimpleSparkStreamingCounterDataSource(
-					Observable<SingleObservedData<Integer>> observable,
+					Observable<ObservedValue<Integer>> observable,
 					String directoryName) {
 		this.observable = observable ;
 		this.directoryName = directoryName ;
@@ -58,13 +58,13 @@ public class SimpleSparkStreamingCounterDataSource
 			for (Integer number : numberList) {
 			  System.out.println(number) ;
         observable.setChanged();
-				observable.notifyObservers(new SingleObservedData<Integer>(number));
+				observable.notifyObservers(new ObservedValue<Integer>(number));
 			}
 		}) ;
 	}
 
   @Override
-  public Observable<SingleObservedData<Integer>> getObservable() {
+  public Observable<ObservedValue<Integer>> getObservable() {
     return observable;
   }
 

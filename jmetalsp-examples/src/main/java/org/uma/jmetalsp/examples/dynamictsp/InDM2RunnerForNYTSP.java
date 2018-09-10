@@ -19,7 +19,7 @@ import org.uma.jmetalsp.examples.streamingdatasource.ComplexStreamingDataSourceF
 import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingDataSourceFromKeyboard;
 import org.uma.jmetalsp.impl.DefaultRuntime;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
-import org.uma.jmetalsp.observeddata.SingleObservedData;
+import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
 import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPBuilderFromNYData;
 import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPBuilderFromTSPLIBFiles;
@@ -46,7 +46,7 @@ public class InDM2RunnerForNYTSP {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     // STEP 1. Create the problem
-    DynamicProblem<PermutationSolution<Integer>, SingleObservedData<TSPMatrixData>> problem;
+    DynamicProblem<PermutationSolution<Integer>, ObservedValue<TSPMatrixData>> problem;
     //problem = new MultiobjectiveTSPBuilderFromTSPLIBFiles("data/kroA100.tsp", "data/kroB100.tsp")
     //        .build();
     problem = new MultiobjectiveTSPBuilderFromNYData("data/nyData.txt")
@@ -85,20 +85,20 @@ public class InDM2RunnerForNYTSP {
             new CreateNRandomSolutions<PermutationSolution<Integer>>()));
 
     // STEP 3. Create a streaming data source for the problem and register
-    StreamingTSPFileSource streamingTSPSource = new StreamingTSPFileSource(new DefaultObservable<>(), 2000);
+    StreamingTSPFileSource streamingTSPSource = new StreamingTSPFileSource(new DefaultObservable<ObservedValue<TSPMatrixData>>(), 2000);
 
     streamingTSPSource.getObservable().register(problem);
 
     // STEP 4. Create a streaming data source for the algorithm and register
-    StreamingDataSource<SingleObservedData<List<Double>>> keyboardstreamingDataSource =
+    StreamingDataSource<ObservedValue<List<Double>>> keyboardstreamingDataSource =
             new ComplexStreamingDataSourceFromKeyboard() ;
 
     keyboardstreamingDataSource.getObservable().register(algorithm);
 
     // STEP 5. Create the data consumers and register into the algorithm
-    DataConsumer<AlgorithmObservedData<PermutationSolution<Integer>>> localDirectoryOutputConsumer =
+    DataConsumer<AlgorithmObservedData> localDirectoryOutputConsumer =
             new LocalDirectoryOutputConsumer<PermutationSolution<Integer>>("outputdirectory");
-    DataConsumer<AlgorithmObservedData<PermutationSolution<Integer>>> chartConsumer =
+    DataConsumer<AlgorithmObservedData> chartConsumer =
             new ChartMultipleConsumer<PermutationSolution<Integer>>(algorithm,referencePoint,problem.getNumberOfObjectives());//ChartMultipleConsumer
 
     algorithm.getObservable().register(localDirectoryOutputConsumer);
@@ -107,8 +107,8 @@ public class InDM2RunnerForNYTSP {
     // STEP 6. Create the application and run
     JMetalSPApplication<
             PermutationSolution<Integer>,
-            DynamicProblem<PermutationSolution<Integer>, SingleObservedData<Integer>>,
-            DynamicAlgorithm<List<PermutationSolution<Integer>>, AlgorithmObservedData<PermutationSolution<Integer>>>> application;
+            DynamicProblem<PermutationSolution<Integer>, ObservedValue<Integer>>,
+            DynamicAlgorithm<List<PermutationSolution<Integer>>, AlgorithmObservedData>> application;
 
     application = new JMetalSPApplication<>();
 

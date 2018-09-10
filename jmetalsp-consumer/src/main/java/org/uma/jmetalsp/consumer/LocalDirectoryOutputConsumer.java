@@ -6,6 +6,7 @@ import org.uma.jmetal.util.fileoutput.impl.DefaultFileOutputContext;
 import org.uma.jmetalsp.DataConsumer;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.ObservedSolution;
+import org.uma.jmetalsp.observeddata.util.DummySolution;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.KafkaBasedConsumer;
 
@@ -13,11 +14,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * This consumer receives lists of solutions and store them in a directory
- *
- * @author Antonio J. Nebro <antonio@lcc.uma.es>
- */
 public class LocalDirectoryOutputConsumer<S extends Solution<?>> implements
         DataConsumer<AlgorithmObservedData> {
   private String outputDirectoryName;
@@ -65,10 +61,10 @@ public class LocalDirectoryOutputConsumer<S extends Solution<?>> implements
   public void update(Observable<AlgorithmObservedData> observable, AlgorithmObservedData data) {
     List<ObservedSolution<?,?>> solutionList = (List<ObservedSolution<?,?>>)data.getData().get("solutionList") ;
 
-    List<Solution<?>> dummySolutionList = new ArrayList<>() ;
+    List<DummySolution<?>> dummySolutionList = new ArrayList<>() ;
 
     for (ObservedSolution solution : solutionList) {
-      dummySolutionList.add((Solution)solution);
+      dummySolutionList.add(new DummySolution(solution)) ;
     }
 
     new SolutionListOutput(dummySolutionList)
@@ -86,7 +82,7 @@ public class LocalDirectoryOutputConsumer<S extends Solution<?>> implements
     LocalDirectoryOutputConsumer localDirectoryOutputConsumer = new LocalDirectoryOutputConsumer("outputdirectory") ;
 
     KafkaBasedConsumer<AlgorithmObservedData> localDirectoryKafkaBasedConsumer =
-      new KafkaBasedConsumer<>(topicName, localDirectoryOutputConsumer, new AlgorithmObservedData()) ;
+            new KafkaBasedConsumer<>(topicName, localDirectoryOutputConsumer, new AlgorithmObservedData()) ;
 
     localDirectoryKafkaBasedConsumer.start();
 
