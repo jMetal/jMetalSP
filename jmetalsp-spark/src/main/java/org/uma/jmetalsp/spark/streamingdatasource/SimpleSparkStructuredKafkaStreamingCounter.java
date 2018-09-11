@@ -65,12 +65,13 @@ public class SimpleSparkStructuredKafkaStreamingCounter implements SparkStreamin
         );*/
 
 
-        time.foreachRDD(numbers -> {
+            time.foreachRDD(numbers -> {
                 Integer cont = numbers.reduce((key, value) -> value);
-                System.out.println("Pruebas----> " + cont);
+                //System.out.println("Pruebas----> " + cont);
                 observable.setChanged();
                 observable.notifyObservers(new ObservedValue<Integer>(cont));
-        });
+            });
+
         
        // stream.foreachRDD((consumerRecordJavaRDD, time) -> consumerRecordJavaRDD.foreach(integer -> {
             //observable.setChanged();

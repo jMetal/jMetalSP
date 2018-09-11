@@ -34,12 +34,7 @@ public abstract class FDA
 
 	@Override
 	public void update(Observable<ObservedValue<Integer>> observable, ObservedValue<Integer> counter) {
-    time = (1.0d/(double)nT) * Math.floor(counter.getValue()/(double)tauT) ;
-
-		if(time==0.0){
-			time=1.0;
-		}
-
+        time = (1.0d/(double)nT) * Math.floor(counter.getValue()/(double)tauT) ;
 		theProblemHasBeenModified = true ;
 	}
 
