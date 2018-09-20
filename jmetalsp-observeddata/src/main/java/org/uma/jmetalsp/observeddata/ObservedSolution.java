@@ -15,11 +15,13 @@ public class ObservedSolution<T, S extends Solution<T>> implements ObservedData 
 
   private List<T> variables ;
   private List<Double> objectives ;
-
+  private S solution;
   public ObservedSolution() {
+    solution = null;
   }
 
   public ObservedSolution(S solution) {
+    this.solution = solution;
     variables = new ArrayList<>() ;
     for (int i = 0; i < solution.getNumberOfVariables(); i++) {
       variables.add((T)solution.getVariableValue(i)) ;
@@ -56,6 +58,10 @@ public class ObservedSolution<T, S extends Solution<T>> implements ObservedData 
     }
 
     return result ;
+  }
+
+  public S getSolution() {
+    return solution;
   }
 
   @Override

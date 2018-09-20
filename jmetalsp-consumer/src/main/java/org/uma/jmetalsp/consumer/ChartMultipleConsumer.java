@@ -23,10 +23,12 @@ import org.uma.jmetal.util.front.imp.ArrayFront;
 import org.uma.jmetalsp.DataConsumer;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
+import org.uma.jmetalsp.observeddata.ObservedSolution;
 import org.uma.jmetalsp.observer.Observable;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -78,7 +80,12 @@ public class ChartMultipleConsumer<S extends Solution<?>> implements
         numberOfIterations = (int) data.getData().get("numberOfIterations");
       }
       if (data.getData().containsKey("solutionList")) {
-        solutionList = (List<S>) data.getData().get("solutionList");
+        List<ObservedSolution> aux = (List<ObservedSolution>)data.getData().get("solutionList");
+        solutionList = new ArrayList<>();
+        for (ObservedSolution sol:aux){
+          solutionList.add((S)sol.getSolution());
+        }
+        //solutionList = (List<S>) data.getData().get("solutionList");
       }
 
       if (data.getData().containsKey("referencePoint")) {
