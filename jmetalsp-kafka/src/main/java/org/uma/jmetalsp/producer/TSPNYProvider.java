@@ -5,13 +5,20 @@ import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.uma.jmetalsp.producer.serialization.DataDeserializer;
 
+
+import java.io.*;
+import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Properties;
 import java.util.concurrent.Future;
 
 public class TSPNYProvider extends Thread {
     private String topic;
-    private KafkaProducer<Integer, byte[]> producer;
+    private KafkaProducer<Integer, String> producer;
 
     public TSPNYProvider(String topic) {
         this.topic = topic;
@@ -20,21 +27,49 @@ public class TSPNYProvider extends Thread {
         props.put(ConsumerConfig.CLIENT_ID_CONFIG, "DemoProducer");
         props.put("key.serializer", "org.apache.kafka.common.serialization.IntegerSerializer");
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        producer = new KafkaProducer<Integer, byte[]>(props);
+        producer = new KafkaProducer<Integer, String>(props);
+    }
+    public  JSONArray readJsonFromUrl(String url) {
+        JSONArray json=null;
+        try {
+            InputStream is = new URL(url).openStream();
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+            String jsonText = readAll(rd);
+             json= new JSONArray(jsonText);
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+        return json;
+    }
+    private static String readAll(Reader rd)  {
+        String result="";
+        try {
+            StringBuilder sb = new StringBuilder();
+            int cp;
+            while ((cp = rd.read()) != -1) {
+                sb.append((char) cp);
+            }
+            result=sb.toString();
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return result;
     }
 
     public void run() {
         int count = 0;
         long startTime = System.currentTimeMillis();
-        CounterSerializer counterSerializer = new CounterSerializer();
+
         while (true) {
-            count = generateRandomInteger(-10,10);
-            Counter counter = new Counter(count);
-            byte [] aux= counterSerializer.serializeMessage(counter);
+            count = generateRandomInteger(0,1000);
+            JSONArray json = null;
+            json = readJsonFromUrl("https://data.cityofnewyork.us/resource/i4gi-tjb9.json");
+            String messageStr =json.toString();
+
             Future<RecordMetadata> send =
 
-                    producer.send(new ProducerRecord<Integer, byte[]>
-                            (topic, count, aux));
+                    producer.send(new ProducerRecord<Integer, String>
+                            (topic, count, messageStr));
 
             try {
                 Thread.sleep(5000);
@@ -51,9 +86,13 @@ public class TSPNYProvider extends Thread {
 
     public static void main(String[] args) {
         //topic where it will be written the numbers
-        TSPNYProvider tspnyProvider = new TSPNYProvider("tsp");
-        new Thread(counterProvider).start();
-        ;
+        System.setProperty("http.proxyHost","proxy.uma.es");
+        System.setProperty("http.proxyPort", "3128");
+        System.setProperty("https.proxyHost","proxy.uma.es");
+        System.setProperty("https.proxyPort", "3128");
+        TSPNYProvider tspNYProvider = new TSPNYProvider("tsp");
+        new Thread(tspNYProvider).start();
+
 
     }
 }
