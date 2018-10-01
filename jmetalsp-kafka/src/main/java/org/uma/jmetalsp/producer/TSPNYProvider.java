@@ -72,7 +72,7 @@ public class TSPNYProvider extends Thread {
                             (topic, count, messageStr));
 
             try {
-                Thread.sleep(5000);
+                Thread.sleep(10000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

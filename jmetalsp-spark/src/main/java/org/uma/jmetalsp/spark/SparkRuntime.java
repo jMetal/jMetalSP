@@ -34,6 +34,7 @@ public class SparkRuntime implements StreamingRuntime {
             setMaster("local[2]") ;
     this.duration = duration ;
     streamingContext = new JavaStreamingContext(sparkConf, Durations.seconds(this.duration)) ;
+    streamingContext.sparkContext().setLogLevel("ALL");
   }
 /*
 

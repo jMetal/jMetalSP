@@ -1,6 +1,4 @@
 package org.uma.jmetalsp.spark.streamingdatasource;
-
-import jdk.nashorn.internal.parser.JSONParser;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.spark.streaming.api.java.JavaDStream;
 import org.apache.spark.streaming.api.java.JavaInputDStream;
@@ -63,12 +61,53 @@ public class SimpleSparkStructuredKafkaStreamingTSP implements SparkStreamingDat
 
 
         final Map<Integer, Integer> nodeDistances = this.createCachedDistances();
+        /**
+         *
+         * JavaDStream<List<ParsedNode>> nodes=stream.map(value ->{
+         *             List<ParsedNode> result= new ArrayList<>();
+         *             final JSONArray parser = new JSONArray(value.value());
+         *             for (int i = 0; i < parser.length(); i++) {
+         *                 try{
+         *                     final JSONObject object =  parser.getJSONObject(i);
+         *                     ParsedNode pNode = new ParsedNode(
+         *                       object.getInt("id"),
+         *                       object.getDouble("speed"),
+         *                       object.getInt("travel_time"),
+         *                             (object.getDouble("status")==0.0d),
+         *                       object.getString("encoded_poly_line"),
+         *                       object.getString("link_name"),
+         *                             GoogleDecode.decode(object.getString("encoded_poly_line"))
+         *                     );
+         *                     if(nodeDistances.containsKey(pNode.getId())){
+         *                         pNode.setDistance(nodeDistances.get(pNode.getId()));
+         *                     }
+         *                     result.add(pNode);
+         *                 }catch (Exception ex){
+         *                     ex.printStackTrace();
+         *                 }
+         *             }
+         *            // generateGraph(result);
+         *            // int removed;
+         *           //  do {
+         *             //    removed = removeIsolatedNodes(result);
+         *           //  } while (removed != 0);
+         *             //generatePositionGraph(result);
+         *
+         *             return  result;
+         *
+         *         });
+         *
+         */
+
+
+
         JavaDStream<List<ParsedNode>> nodes=stream.map(value ->{
+            System.out.println("VALOR--------------------> "+value.value());
             List<ParsedNode> result= new ArrayList<>();
-            JSONArray parser = new JSONArray(value.value());
+            final JSONArray parser = new JSONArray(value.value());
             for (int i = 0; i < parser.length(); i++) {
                 try{
-                    JSONObject object =  parser.getJSONObject(i);
+                    final JSONObject object =  parser.getJSONObject(i);
                     ParsedNode pNode = new ParsedNode(
                       object.getInt("id"),
                       object.getDouble("speed"),
@@ -86,12 +125,49 @@ public class SimpleSparkStructuredKafkaStreamingTSP implements SparkStreamingDat
                     ex.printStackTrace();
                 }
             }
-            generateGraph(result);
-            int removed;
-            do {
-                removed = removeIsolatedNodes(result);
-            } while (removed != 0);
-            generatePositionGraph(result);
+           ///generateGraph(result);
+            for (ParsedNode pnode : result) {
+                for (ParsedNode p : result) {
+                    if (!pnode.getId().equals(p.getId())) {
+
+                        double dist1 = pnode.getCoords().get(pnode.getCoords().size()-1).distance(p.getCoords().get(0));
+                        double dist2 = pnode.getCoords().get(0).distance(p.getCoords().get(p.getCoords().size()-1));
+
+                        if (dist1 < JOIN_DISTANCE || dist2 < JOIN_DISTANCE) {
+                            pnode.addNode(p);
+                            p.addNode(pnode);
+                        }
+                    }
+                }
+            }
+            //////////////////////
+            int removed=0;
+           do {
+               //removed = removeIsolatedNodes(result);
+               Iterator<ParsedNode> itr = result.iterator();
+               int count = 0;
+               while (itr.hasNext()) {
+                   ParsedNode node = itr.next();
+                   if (node.getNodes().size() < 2) {
+                       //removeEdgesFor(node,result);
+                       for (ParsedNode pnode : result) {
+                           pnode.getNodes().remove(node);
+                       }
+                       removed++;
+                       itr.remove();
+                   }
+               }
+
+
+           } while (removed != 0);
+          //  generatePositionGraph(result);
+            int i = 0;
+            for (ParsedNode node : result) {
+                node.setPosition(i);
+                i++;
+            }
+            ///////////////////////
+
             return  result;
 
         });
@@ -119,12 +195,34 @@ public class SimpleSparkStructuredKafkaStreamingTSP implements SparkStreamingDat
                 for (ParsedNode node: pNodes) {
                     if(hashNodes.get(node.getId())!=null){
                         ParsedNode nodeAux = hashNodes.get(node.getId());
-                        if (nodeAux.isStatus()!=node.isStatus() && nodeAux.isStatus()){
-                            nodeAux.setDistance(Integer.MAX_VALUE);
-                            nodeAux.setTravelTime(Integer.MAX_VALUE);
+                        if (nodeAux.isStatus()!=node.isStatus()){
+                            if(node.isStatus()) {
+                                nodeAux.setDistance(Integer.MAX_VALUE);
+                                nodeAux.setTravelTime(Integer.MAX_VALUE);
+                                node.setDistance(Integer.MAX_VALUE);
+                                node.setTravelTime(Integer.MAX_VALUE);
+                            }else  if(nodeDistances.containsKey(node.getId())){
+                                node.setDistance(nodeDistances.get(node.getId()));
+                            }
+                            node.setDistanceUpdated(true);
+                            node.setCostUpdated(true);
+                            nodeAux.setStatus(node.isStatus());
                         }
-                    }else{
-                        
+                          if(node.getTravelTime()!=nodeAux.getTravelTime()){
+                              nodeAux.setTravelTime(node.getTravelTime());
+                              node.setCostUpdated(true);
+                          }
+                    }else {
+                        hashNodes.put(node.getId(),node);
+                        addManualEdges();
+                    }
+                    if(node.isCostUpdated() || node.isDistanceUpdated()){
+                        System.out.println("Updated "+ node.getId()+ " : "+ node.getDistance() +" , "+ node.getTravelTime());
+                    }
+                    TSPMatrixData matrix = generateMatrix(node);
+                    if(matrix!=null) {
+                        observable.setChanged();
+                        observable.notifyObservers(new ObservedValue<>(matrix));
                     }
                 }
             });
@@ -135,6 +233,40 @@ public class SimpleSparkStructuredKafkaStreamingTSP implements SparkStreamingDat
       //      System.out.println("Pruebas----> "+integer.value());
     //    }));
 
+    }
+    private void addManualEdges() {
+        int[][] addnodes = new int[][]{ {450, 338},
+                {385, 417},
+                {298, 126},
+                {129, 168}};
+
+        for (int[] node : addnodes) {
+            if(hashNodes.get(node[0])!=null && hashNodes.get(node[1])!=null) {
+                hashNodes.get(node[0]).addNode(hashNodes.get(node[1]));
+                hashNodes.get(node[1]).addNode(hashNodes.get(node[0]));
+            }
+        }
+    }
+
+    private TSPMatrixData generateMatrix(ParsedNode node){
+        TSPMatrixData result = null;
+        if(node.isCostUpdated()||node.isDistanceUpdated()) {
+            for (ParsedNode edge : node.getNodes()) {
+                String type ="COST";
+                int value=Integer.MAX_VALUE;
+               if(node.isDistanceUpdated()){
+                   type="VALUE";
+                   value = node.getDistance();
+               }else{
+                   type="COST";
+                   value =node.getTravelTime();
+               }
+               int x= node.getPosition();
+               int y= edge.getPosition();
+               result = new TSPMatrixData(type,x,y,value);
+            }
+        }
+        return result;
     }
     private void generateGraph(List<ParsedNode> pNodes) {
         for (ParsedNode pnode : pNodes) {

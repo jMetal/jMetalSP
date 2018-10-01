@@ -1,5 +1,6 @@
 package org.uma.jmetalsp.problem.tsp.data;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -8,7 +9,7 @@ import java.util.Set;
  *
  * @author Jose Andres
  */
-public class ParsedNode {
+public class ParsedNode  implements Serializable {
     
     private Integer id;
     private int position;

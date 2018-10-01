@@ -5,13 +5,14 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 
 
-public class GoogleDecode {
+public class GoogleDecode implements Serializable {
 	public static final String DISTANCE_QUERY = "https://maps.googleapis.com/maps/api/distancematrix/json?";
     public static final String GOOGLE_KEY = "AIzaSyAmRX7TkZwlsyqY4EI8G57OVL_B0I6uRps";
     

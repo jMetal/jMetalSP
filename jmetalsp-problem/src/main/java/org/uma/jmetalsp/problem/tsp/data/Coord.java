@@ -1,6 +1,8 @@
 package org.uma.jmetalsp.problem.tsp.data;
 
-public class Coord {
+import java.io.Serializable;
+
+public class Coord implements Serializable {
     
     private Double x;
     private Double y;
