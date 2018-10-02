@@ -102,7 +102,7 @@ public class SimpleSparkStructuredKafkaStreamingTSP implements SparkStreamingDat
 
 
         JavaDStream<List<ParsedNode>> nodes=stream.map(value ->{
-            System.out.println("VALOR--------------------> "+value.value());
+
             List<ParsedNode> result= new ArrayList<>();
             final JSONArray parser = new JSONArray(value.value());
             for (int i = 0; i < parser.length(); i++) {
@@ -117,6 +117,7 @@ public class SimpleSparkStructuredKafkaStreamingTSP implements SparkStreamingDat
                       object.getString("link_name"),
                             GoogleDecode.decode(object.getString("encoded_poly_line"))
                     );
+
                     if(nodeDistances.containsKey(pNode.getId())){
                         pNode.setDistance(nodeDistances.get(pNode.getId()));
                     }
@@ -191,7 +192,8 @@ public class SimpleSparkStructuredKafkaStreamingTSP implements SparkStreamingDat
             });*/
 
             nodes.foreachRDD(aux->{
-                List<ParsedNode> pNodes = aux.reduce((key,value)-> value);
+                List<ParsedNode> pNodes =aux.reduce((key,value)-> value);
+
                 for (ParsedNode node: pNodes) {
                     if(hashNodes.get(node.getId())!=null){
                         ParsedNode nodeAux = hashNodes.get(node.getId());

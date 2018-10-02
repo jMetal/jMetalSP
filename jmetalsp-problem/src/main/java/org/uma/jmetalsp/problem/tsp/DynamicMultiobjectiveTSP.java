@@ -143,7 +143,7 @@ public class DynamicMultiobjectiveTSP
   }
 
   public synchronized void updateDistanceValue(int row, int col, double newValue) {
-    if(costMatrix.length<row &&  costMatrix[row].length<col) {
+    if(distanceMatrix.length<row &&  distanceMatrix[row].length<col) {
       distanceMatrix[row][col] = newValue;
       theProblemHasBeenModified = true;
     }

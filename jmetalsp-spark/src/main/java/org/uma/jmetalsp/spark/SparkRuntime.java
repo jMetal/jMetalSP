@@ -30,7 +30,7 @@ public class SparkRuntime implements StreamingRuntime {
   private int duration ;
 
   public SparkRuntime(int duration) {
-    sparkConf = new SparkConf().setAppName("SparkApp").setSparkHome("/opt/spark-2.3.1-bin-hadoop2.7").
+    sparkConf = new SparkConf().setAppName("SparkApp").setSparkHome("/opt/spark-2.3.2-bin-hadoop2.7").
             setMaster("local[2]") ;
     this.duration = duration ;
     streamingContext = new JavaStreamingContext(sparkConf, Durations.seconds(this.duration)) ;
