@@ -73,4 +73,9 @@ public class ObservedSolution<T, S extends Solution<T>> implements ObservedData 
   public ObservedSolution<T, S> fromJson(String jsonString) {
     return (ObservedSolution<T, S>) JsonReader.jsonToJava(jsonString);
   }
+
+  @Override
+  public String getPathAVROFile() {
+    return null;
+  }
 }

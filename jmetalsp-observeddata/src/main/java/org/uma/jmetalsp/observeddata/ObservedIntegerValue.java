@@ -34,6 +34,11 @@ public class ObservedIntegerValue implements ObservedData {
   }
 
   @Override
+  public String getPathAVROFile() {
+    return null;
+  }
+
+  @Override
   public String toString() {
     return value.toString() ;
   }

@@ -60,4 +60,9 @@ public class ObservedDoubleSolution implements ObservedData {
   public ObservedDoubleSolution fromJson(String jsonString) {
     return (ObservedDoubleSolution)JsonReader.jsonToJava(jsonString);
   }
+
+  @Override
+  public String getPathAVROFile() {
+    return null;
+  }
 }

@@ -11,12 +11,17 @@ import org.uma.jmetalsp.ObservedData;
  */
 public class ObservedValue<T> implements ObservedData {
   private T value;
-
+  private String pathAVROFile;
   public ObservedValue() {
   }
 
   public ObservedValue(T value) {
     this.value = value;
+  }
+  public ObservedValue(T value, String pathAVROFile)
+  {
+    this.value = value;
+    this.pathAVROFile = pathAVROFile;
   }
 
   public T getValue() {
@@ -31,6 +36,11 @@ public class ObservedValue<T> implements ObservedData {
   @Override
   public ObservedValue<T> fromJson(String jsonString) {
     return (ObservedValue<T>) JsonReader.jsonToJava(jsonString);
+  }
+
+  @Override
+  public String getPathAVROFile() {
+    return pathAVROFile;
   }
 }
 

@@ -37,4 +37,9 @@ public class ObservedDoubleSolutionList implements ObservedData {
   public ObservedDoubleSolutionList fromJson(String jsonString) {
     return (ObservedDoubleSolutionList)JsonReader.jsonToJava(jsonString);
   }
+
+    @Override
+    public String getPathAVROFile() {
+        return null;
+    }
 }

@@ -46,5 +46,10 @@ public class AlgorithmObservedData implements ObservedData {
 
     return (AlgorithmObservedData)JsonReader.jsonToJava(jsonString);
   }
+
+  @Override
+  public String getPathAVROFile() {
+    return null;
+  }
 }
 
