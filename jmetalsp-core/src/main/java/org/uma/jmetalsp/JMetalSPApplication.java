@@ -80,7 +80,7 @@ public class JMetalSPApplication<
     return this;
   }
 
-  public void run() throws IOException, InterruptedException {
+  public void run() throws InterruptedException {
     fieldChecking();
 
     Thread algorithmThread = new Thread(algorithm);
