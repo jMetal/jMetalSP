@@ -43,30 +43,25 @@ public class DynamicContinuousApplication {
 
 	  // STEP 2. Create the algorithm
     DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData<DoubleSolution>> algorithm =
-            AlgorithmFactory.getAlgorithm("WASFGA", problem) ;
+            AlgorithmFactory.getAlgorithm("NSGAII", problem) ;
 
 
     algorithm.setRestartStrategy(new RestartStrategy<>(
             //new RemoveFirstNSolutions<>(50),
             //new RemoveNSolutionsAccordingToTheHypervolumeContribution<>(50),
             //new RemoveNSolutionsAccordingToTheCrowdingDistance<>(50),
-            new RemoveNRandomSolutions(15),
-            new CreateNRandomSolutions<DoubleSolution>()));
+            new RemoveNRandomSolutions<>(15),
+            new CreateNRandomSolutions<>()));
 
     // STEP 3. Create the streaming data source (only one in this example) and register the problem
     StreamingDataSource<SingleObservedData<Integer>> streamingDataSource =
             new SimpleStreamingCounterDataSource(2000) ;
 
-    streamingDataSource.getObservable().register(problem);
-
     // STEP 4. Create the data consumers and register into the algorithm
     DataConsumer<AlgorithmObservedData<DoubleSolution>> localDirectoryOutputConsumer =
-            new LocalDirectoryOutputConsumer<DoubleSolution>("outputdirectory") ;
+            new LocalDirectoryOutputConsumer<>("outputdirectory") ;
     DataConsumer<AlgorithmObservedData<DoubleSolution>> chartConsumer =
-            new ChartConsumer<DoubleSolution>(algorithm) ;
-
-    algorithm.getObservable().register(localDirectoryOutputConsumer);
-    algorithm.getObservable().register(chartConsumer) ;
+            new ChartConsumer<>(algorithm) ;
 
     // STEP 5. Create the application and run
     JMetalSPApplication<

@@ -75,8 +75,8 @@ public class RNSGAIIRunnerForContinuousProblems {
             //new RemoveFirstNSolutions<>(50),
             //new RemoveNSolutionsAccordingToTheHypervolumeContribution<>(50),
             //new RemoveNSolutionsAccordingToTheCrowdingDistance<>(50),
-            new RemoveNRandomSolutions(10),
-            new CreateNRandomSolutions<DoubleSolution>()));
+            new RemoveNRandomSolutions<>(10),
+            new CreateNRandomSolutions<>()));
 
     algorithm.setRestartStrategyForReferencePointChange(new RestartStrategy<>(
             new RemoveNRandomSolutions<>(10),
