@@ -6,8 +6,6 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.uma.jmetalsp.producer.serialization.DataDeserializer;
 
 
 import java.io.*;

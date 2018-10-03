@@ -76,5 +76,10 @@
             <artifactId>json-io</artifactId>
             <version>4.10.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.avro</groupId>
+            <artifactId>avro</artifactId>
+            <version>1.8.2</version>
+        </dependency>
     </dependencies>
 </project>
