@@ -78,4 +78,9 @@ public class ObservedSolution<T, S extends Solution<T>> implements ObservedData 
   public String getPathAVROFile() {
     return null;
   }
+
+  @Override
+  public Object getData() {
+    return getObjectives();
+  }
 }

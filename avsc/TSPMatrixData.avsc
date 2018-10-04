@@ -1,0 +1,10 @@
+{"namespace":"org.uma.jmetalsp.problem.tsp",
+    "type": "record",
+    "name": "TSPMatrixData",
+    "fields":[
+        {"name": "matrixIdentifier", "type":"string"},
+        {"name": "x", "type":"int"},
+        {"name": "y", "type":"int"},
+        {"name": "value", "type":"double"}
+    ]
+}

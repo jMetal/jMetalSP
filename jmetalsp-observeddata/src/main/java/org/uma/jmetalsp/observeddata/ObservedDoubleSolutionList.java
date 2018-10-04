@@ -42,4 +42,9 @@ public class ObservedDoubleSolutionList implements ObservedData {
     public String getPathAVROFile() {
         return null;
     }
+
+    @Override
+    public Object getData() {
+        return this.solutionList;
+    }
 }

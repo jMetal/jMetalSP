@@ -184,8 +184,11 @@ public class DynamicNSGAII<S extends Solution<?>>
             new RemoveNRandomSolutions(15),
             new CreateNRandomSolutions<DoubleSolution>()));
 
+    //KafkaBasedConsumer<ObservedValue<Integer>> problemKafkaBasedConsumer =
+    //        new KafkaBasedConsumer<>("prueba-int-topic-from-main", problem, new ObservedValue<>()) ;
+
     KafkaBasedConsumer<ObservedValue<Integer>> problemKafkaBasedConsumer =
-            new KafkaBasedConsumer<>("prueba-int-topic-from-main", problem, new ObservedValue<>()) ;
+            new KafkaBasedConsumer<>("prueba-tsp-topic-from-main", problem, new ObservedValue<>(),"avsc/TSPMatrixData.avcs") ;
     problemKafkaBasedConsumer.start();
 
     algorithm.run() ;

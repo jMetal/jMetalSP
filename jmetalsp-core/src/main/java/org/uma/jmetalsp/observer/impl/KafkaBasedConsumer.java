@@ -34,12 +34,12 @@ public class KafkaBasedConsumer<O extends ObservedData> extends Thread {
     properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
       "org.apache.kafka.common.serialization.StringDeserializer");
   }
-  public KafkaBasedConsumer(String topicName, Observer<O> observer,String pathAvro) {
+  public KafkaBasedConsumer(String topicName, Observer<O> observer,O observedDataObject,String pathAvro) {
     this.topicName = topicName;
     this.pathAVRO = pathAvro;
     this.deserializer = new DataDeserializer();
     this.observer = observer;
-
+    this.observedDataObject =observedDataObject;;
     properties = new Properties();
 
     properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");

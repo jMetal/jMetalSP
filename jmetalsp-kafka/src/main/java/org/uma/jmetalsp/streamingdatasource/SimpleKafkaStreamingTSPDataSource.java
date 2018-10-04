@@ -145,7 +145,7 @@ public class SimpleKafkaStreamingTSPDataSource implements
         if(node.isCostUpdated()||node.isDistanceUpdated()) {
             for (ParsedNode edge : node.getNodes()) {
                 String type ="COST";
-                int value=Integer.MAX_VALUE;
+                double value=Double.MAX_VALUE;
                 if(node.isDistanceUpdated()){
                     type="VALUE";
                     value = node.getDistance();
@@ -155,7 +155,11 @@ public class SimpleKafkaStreamingTSPDataSource implements
                 }
                 int x= node.getPosition();
                 int y= edge.getPosition();
-                result = new TSPMatrixData(type,x,y,value);
+                result = new TSPMatrixData();
+                result.put(0,type);
+                result.put(1,x);
+                result.put(2,y);
+                result.put(3,value);
             }
         }
         return result;

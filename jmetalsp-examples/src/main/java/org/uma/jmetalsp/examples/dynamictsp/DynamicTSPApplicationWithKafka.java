@@ -106,9 +106,9 @@ public class DynamicTSPApplicationWithKafka {
     //                new KafkaObservable<ObservedValue<TSPMatrixData>>("matrix-topic","src/main/resources/counter.avsc"),kafkaParams, topic);
     SimpleKafkaStreamingTSPDataSource streamingTSPSource =
             new SimpleKafkaStreamingTSPDataSource(
-                    new KafkaObservable<ObservedValue<TSPMatrixData>>("matrix-topic","src/main/resources/counter.avsc"));
+                    new KafkaObservable<ObservedValue<TSPMatrixData>>("matrix-topic","avsc/TSPMatrixData.avsc"));
     streamingTSPSource.setTopic(topic);
-    streamingTSPSource.getObservable().register(problem);
+    //streamingTSPSource.getObservable().register(problem);
     //StreamingDataSource<ObservedValue<String>> streamingDataSource =
      //       new SimpleSparkStructuredKafkaStreamingTSP(
       //              new KafkaObservable<>(kafkaParams, topic) ;

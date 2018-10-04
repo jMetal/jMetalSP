@@ -65,4 +65,9 @@ public class ObservedDoubleSolution implements ObservedData {
   public String getPathAVROFile() {
     return null;
   }
+
+  @Override
+  public Object getData() {
+    return this.objectives;
+  }
 }

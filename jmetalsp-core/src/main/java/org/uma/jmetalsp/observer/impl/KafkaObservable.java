@@ -71,7 +71,7 @@ public class KafkaObservable<O extends ObservedData> implements Observable<O> {
       if(pathAVRO==null) {
         producer.send(new ProducerRecord<String, String>(topicName, "0", data.toJson()));
       }else{
-        byte [] aux= serializer.serializeMessage(data,pathAVRO);
+        byte [] aux= serializer.serializeMessage(data.getData(),pathAVRO);
         int count = JMetalRandom.getInstance().nextInt(0,10000);
         Future<RecordMetadata> send =
                 producerAVRO.send(new ProducerRecord<Integer, byte[]>

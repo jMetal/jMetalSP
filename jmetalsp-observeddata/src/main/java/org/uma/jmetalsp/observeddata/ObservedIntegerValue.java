@@ -39,6 +39,11 @@ public class ObservedIntegerValue implements ObservedData {
   }
 
   @Override
+  public Object getData() {
+    return getValue();
+  }
+
+  @Override
   public String toString() {
     return value.toString() ;
   }

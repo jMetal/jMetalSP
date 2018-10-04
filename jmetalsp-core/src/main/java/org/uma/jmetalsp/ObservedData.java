@@ -14,4 +14,5 @@ public interface ObservedData extends Serializable {
   String toJson() ;
   ObservedData fromJson(String jsonString) ;
   String getPathAVROFile();
+  Object getData();
 }

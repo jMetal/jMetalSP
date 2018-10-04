@@ -42,5 +42,10 @@ public class ObservedValue<T> implements ObservedData {
   public String getPathAVROFile() {
     return pathAVROFile;
   }
+
+  @Override
+  public Object getData() {
+    return this.value;
+  }
 }
 
