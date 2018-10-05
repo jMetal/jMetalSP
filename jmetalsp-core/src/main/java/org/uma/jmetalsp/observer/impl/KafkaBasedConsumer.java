@@ -53,23 +53,25 @@ public class KafkaBasedConsumer<O extends ObservedData> extends Thread {
     if(pathAVRO==null) {
       KafkaConsumer<String, String> consumer = new KafkaConsumer<>(properties);
       consumer.subscribe(Arrays.asList(topicName));
-      int counter = 0;
       while (true) {
         ConsumerRecords<String, String> records = consumer.poll(Long.MAX_VALUE);
         for (ConsumerRecord<String, String> record : records) {
-          O data = (O) observedDataObject.fromJson(record.value());
-          observer.update(null, data);
+          if(record!=null && record.value()!=null) {
+            O data = (O) observedDataObject.fromJson(record.value());
+            observer.update(null, data);
+          }
         }
       }
     }else{
       KafkaConsumer<String, byte[]> consumer = new KafkaConsumer<>(properties);
       consumer.subscribe(Arrays.asList(topicName));
-      int counter = 0;
       while (true) {
         ConsumerRecords<String, byte[]> records = consumer.poll(Long.MAX_VALUE);
         for (ConsumerRecord<String, byte[]> record : records) {
-          O data = (O) deserializer.deserialize(record.value(),pathAVRO);
-          observer.update(null, data);
+          if(record!=null && record.value()!=null) {
+            O data = (O) deserializer.deserialize(record.value(), pathAVRO);
+            observer.update(null, data);
+          }
         }
       }
 

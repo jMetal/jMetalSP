@@ -191,40 +191,44 @@ public class SimpleSparkStructuredKafkaStreamingTSP implements SparkStreamingDat
                 observable.notifyObservers(new ObservedValue<Integer>(cont));
             });*/
 
-            nodes.foreachRDD(aux->{
-                List<ParsedNode> pNodes =aux.reduce((key,value)-> value);
+            nodes.foreachRDD(aux-> {
+                if (aux != null && aux.rdd().count()>0) {
+                    List<ParsedNode> pNodes = aux.reduce((key, value) -> value);
 
-                for (ParsedNode node: pNodes) {
-                    if(hashNodes.get(node.getId())!=null){
-                        ParsedNode nodeAux = hashNodes.get(node.getId());
-                        if (nodeAux.isStatus()!=node.isStatus()){
-                            if(node.isStatus()) {
-                                nodeAux.setDistance(Integer.MAX_VALUE);
-                                nodeAux.setTravelTime(Integer.MAX_VALUE);
-                                node.setDistance(Integer.MAX_VALUE);
-                                node.setTravelTime(Integer.MAX_VALUE);
-                            }else  if(nodeDistances.containsKey(node.getId())){
-                                node.setDistance(nodeDistances.get(node.getId()));
+                    for (ParsedNode node : pNodes) {
+                        if (hashNodes.get(node.getId()) != null) {
+                            ParsedNode nodeAux = hashNodes.get(node.getId());
+                            if (nodeAux.isStatus() != node.isStatus()) {
+                                if (node.isStatus()) {
+                                    nodeAux.setDistance(Integer.MAX_VALUE);
+                                    nodeAux.setTravelTime(Integer.MAX_VALUE);
+                                    node.setDistance(Integer.MAX_VALUE);
+                                    node.setTravelTime(Integer.MAX_VALUE);
+                                } else if (nodeDistances.containsKey(node.getId())) {
+                                    node.setDistance(nodeDistances.get(node.getId()));
+                                }
+                                node.setDistanceUpdated(true);
+                                node.setCostUpdated(true);
+                                nodeAux.setStatus(node.isStatus());
                             }
-                            node.setDistanceUpdated(true);
-                            node.setCostUpdated(true);
-                            nodeAux.setStatus(node.isStatus());
+                            if (node.getTravelTime() != nodeAux.getTravelTime()) {
+                                nodeAux.setTravelTime(node.getTravelTime());
+                                node.setCostUpdated(true);
+                            }
+                        } else {
+                            hashNodes.put(node.getId(), node);
+                            addManualEdges();
                         }
-                          if(node.getTravelTime()!=nodeAux.getTravelTime()){
-                              nodeAux.setTravelTime(node.getTravelTime());
-                              node.setCostUpdated(true);
-                          }
-                    }else {
-                        hashNodes.put(node.getId(),node);
-                        addManualEdges();
-                    }
-                    if(node.isCostUpdated() || node.isDistanceUpdated()){
-                        System.out.println("Updated "+ node.getId()+ " : "+ node.getDistance() +" , "+ node.getTravelTime());
-                    }
-                    TSPMatrixData matrix = generateMatrix(node);
-                    if(matrix!=null) {
-                        observable.setChanged();
-                        observable.notifyObservers(new ObservedValue<>(matrix));
+                        if (node.isCostUpdated() || node.isDistanceUpdated()) {
+                            System.out.println("Updated " + node.getId() + " : " + node.getDistance() + " , " + node.getTravelTime());
+                        }
+
+                        TSPMatrixData matrix = generateMatrix(node);
+                        if (matrix != null) {
+                            observable.setChanged();
+                            observable.notifyObservers(new ObservedValue<>(matrix));
+
+                        }
                     }
                 }
             });

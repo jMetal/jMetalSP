@@ -6,9 +6,6 @@ import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
 import org.uma.jmetalsp.observer.impl.KafkaObservable;
 import org.uma.jmetalsp.problem.tsp.TSPMatrixData;
-
-import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -44,7 +41,7 @@ public class SimpleStreamingTSPDataSourceFromKeyboard
 
 
 		while (true) {
-			System.out.println("Introduce the new TSPMatrix (between commas):");
+			System.out.println("Introduce the new TSPMatrix [Type, X, Y, Value] (between commas):");
 			String s = scanner.nextLine() ;
 			Scanner sl= new Scanner(s);
 			sl.useDelimiter(",");

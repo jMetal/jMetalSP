@@ -188,7 +188,7 @@ public class DynamicNSGAII<S extends Solution<?>>
     //        new KafkaBasedConsumer<>("prueba-int-topic-from-main", problem, new ObservedValue<>()) ;
 
     KafkaBasedConsumer<ObservedValue<Integer>> problemKafkaBasedConsumer =
-            new KafkaBasedConsumer<>("prueba-tsp-topic-from-main", problem, new ObservedValue<>(),"avsc/TSPMatrixData.avcs") ;
+            new KafkaBasedConsumer<>("prueba-tsp-topic-from-main", problem, new ObservedValue<>(),"avsc/TSPMatrixData.avsc") ;
     problemKafkaBasedConsumer.start();
 
     algorithm.run() ;

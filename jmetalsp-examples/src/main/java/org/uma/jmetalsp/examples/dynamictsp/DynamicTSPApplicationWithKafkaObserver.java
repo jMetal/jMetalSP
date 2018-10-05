@@ -27,6 +27,7 @@ import org.uma.jmetalsp.observer.impl.KafkaBasedConsumer;
 import org.uma.jmetalsp.observer.impl.KafkaObservable;
 import org.uma.jmetalsp.problem.fda.FDA2;
 import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPBuilderFromNYData;
+import org.uma.jmetalsp.problem.tsp.MultiobjectiveTSPBuilderFromTSPLIBFiles;
 import org.uma.jmetalsp.problem.tsp.TSPMatrixData;
 import org.uma.jmetalsp.spark.SparkRuntime;
 import org.uma.jmetalsp.spark.streamingdatasource.SimpleSparkStructuredKafkaStreamingTSP;
@@ -56,13 +57,13 @@ import java.util.Map;
 
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DynamicTSPApplicationWithKafka {
+public class DynamicTSPApplicationWithKafkaObserver {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     // STEP 1. Create the problem
     DynamicProblem<PermutationSolution<Integer>, ObservedValue<TSPMatrixData>> problem;
     // problem = new MultiobjectiveTSPBuilderFromTSPLIBFiles("data/kroA100.tsp", "data/kroB100.tsp")
-    //       .build();
+     //      .build();
     problem = new MultiobjectiveTSPBuilderFromNYData("data/nyData.txt").build() ;
 
     // STEP 2. Create the algorithm
