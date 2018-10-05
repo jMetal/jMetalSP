@@ -24,7 +24,7 @@ public class CounterProvider {
 			BufferedWriter bufferedWriter = fileOutputContext.getFileWriter() ;
 
 			bufferedWriter.write("" + counter) ;
-			bufferedWriter.newLine();
+			//bufferedWriter.newLine();
 
 			bufferedWriter.close();
 

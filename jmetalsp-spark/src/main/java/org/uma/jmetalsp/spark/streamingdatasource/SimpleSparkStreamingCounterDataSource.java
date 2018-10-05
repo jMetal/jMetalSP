@@ -12,52 +12,44 @@ import java.util.List;
 
 /**
  * This class emits the value of a counter periodically after a given delay (in milliseconds)
+ *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 
 public class SimpleSparkStreamingCounterDataSource
         implements SparkStreamingDataSource<SingleObservedData<Integer>> {
-	private Observable<SingleObservedData<Integer>> observable;
+  private Observable<SingleObservedData<Integer>> observable;
 
-	private JavaStreamingContext streamingContext ;
-	private String directoryName ;
+  private JavaStreamingContext streamingContext;
+  private String directoryName;
 
 
-	public SimpleSparkStreamingCounterDataSource(
-					Observable<SingleObservedData<Integer>> observable,
-					String directoryName) {
-		this.observable = observable ;
-		this.directoryName = directoryName ;
-	}
-
-  public SimpleSparkStreamingCounterDataSource(String directoryName) {
-    this(new DefaultObservable<>(), directoryName) ;
+  public SimpleSparkStreamingCounterDataSource(
+          Observable<SingleObservedData<Integer>> observable,
+          String directoryName) {
+    this.observable = observable;
+    this.directoryName = directoryName;
   }
 
-	@Override
-	public void run() {
-		JMetalLogger.logger.info("Run method in the streaming data source invoked") ;
-    JMetalLogger.logger.info("Directory: " + directoryName) ;
+  public SimpleSparkStreamingCounterDataSource(String directoryName) {
+    this(new DefaultObservable<>(), directoryName);
+  }
 
-		JavaDStream<Integer> time = streamingContext
-						.textFileStream(directoryName)
-						.map(line -> Integer.parseInt(line)) ;
+  @Override
+  public void run() {
+    JMetalLogger.logger.info("Run method in the streaming data source invoked");
+    JMetalLogger.logger.info("Directory: " + directoryName);
 
+    JavaDStream<Integer> time = streamingContext
+            .textFileStream(directoryName)
+            .map(Integer::parseInt);
 
-		/*time.foreachRDD(numbers -> {
-			Integer cont =numbers.reduce((key, value) -> value);
-			observable.setChanged();
-			observable.notifyObservers(new SingleObservedData<Integer>(cont));
-				});*/
-		time.foreachRDD(numbers -> {
-			List<Integer> numberList = numbers.collect() ;
-			for (Integer number : numberList) {
-			  System.out.println(number) ;
-        observable.setChanged();
-				observable.notifyObservers(new SingleObservedData<Integer>(number));
-			}
-		}) ;
-	}
+    time.foreachRDD(numbers -> {
+      Integer cont = numbers.reduce((key, value) -> value);
+      observable.setChanged();
+      observable.notifyObservers(new SingleObservedData<Integer>(cont));
+    });
+  }
 
   @Override
   public Observable<SingleObservedData<Integer>> getObservable() {
@@ -65,8 +57,8 @@ public class SimpleSparkStreamingCounterDataSource
   }
 
   @Override
-	public void setStreamingContext(JavaStreamingContext streamingContext) {
-		this.streamingContext = streamingContext;
-	}
+  public void setStreamingContext(JavaStreamingContext streamingContext) {
+    this.streamingContext = streamingContext;
+  }
 
 }
