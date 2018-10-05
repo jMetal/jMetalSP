@@ -110,7 +110,7 @@ public class InDM2RunnerForTSP {
     // STEP 6. Create the application and run
     JMetalSPApplication<
             PermutationSolution<Integer>,
-            DynamicProblem<PermutationSolution<Integer>, SingleObservedData<Integer>>,
+            DynamicProblem<PermutationSolution<Integer>, SingleObservedData<TSPMatrixData>>,
             DynamicAlgorithm<List<PermutationSolution<Integer>>, AlgorithmObservedData<PermutationSolution<Integer>>>> application;
 
     application = new JMetalSPApplication<>();
