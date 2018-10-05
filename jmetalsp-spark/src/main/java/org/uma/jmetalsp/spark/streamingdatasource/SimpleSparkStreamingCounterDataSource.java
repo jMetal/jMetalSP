@@ -19,10 +19,6 @@ public class SimpleSparkStreamingCounterDataSource
         implements SparkStreamingDataSource<SingleObservedData<Integer>> {
 	private Observable<SingleObservedData<Integer>> observable;
 
-	private double time=1.0d;
-	private int tauT=5;
-	private int nT=10;
-
 	private JavaStreamingContext streamingContext ;
 	private String directoryName ;
 
