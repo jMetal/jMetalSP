@@ -23,7 +23,7 @@ public class CounterProvider {
 			FileOutputContext fileOutputContext = new DefaultFileOutputContext(directory+"/time."+counter) ;
 			BufferedWriter bufferedWriter = fileOutputContext.getFileWriter() ;
 
-			bufferedWriter.write(""+counter) ;
+			bufferedWriter.write("" + counter) ;
 			bufferedWriter.newLine();
 
 			bufferedWriter.close();
