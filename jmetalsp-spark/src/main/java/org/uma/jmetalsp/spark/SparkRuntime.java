@@ -13,6 +13,8 @@
 
 package org.uma.jmetalsp.spark;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.apache.spark.SparkConf;
 import org.apache.spark.streaming.Durations;
 import org.apache.spark.streaming.api.java.JavaStreamingContext;
@@ -29,29 +31,14 @@ public class SparkRuntime implements StreamingRuntime {
   private JavaStreamingContext streamingContext ;
   private int duration ;
 
-  public SparkRuntime(int duration) {
-    sparkConf = new SparkConf().setAppName("SparkApp").setSparkHome("/opt/spark-2.3.1-bin-hadoop2.7").
-            setMaster("local[2]") ;
+  public SparkRuntime(int duration, SparkConf sparkConf) {
+    this.sparkConf = sparkConf ;
     this.duration = duration ;
+    Logger.getLogger("org").setLevel(Level.OFF) ;
+
     streamingContext = new JavaStreamingContext(sparkConf, Durations.seconds(this.duration)) ;
   }
-/*
 
-	@Override
-	public void startStreamingDataSources(List<SparkStreamingDataSource<D, O>> streamingDataSourceList) {
-    for (SparkStreamingDataSource<D, ?> streamingDataSource : streamingDataSourceList) {
-      streamingDataSource.setStreamingContext(streamingContext);
-      streamingDataSource.run();
-    }
-
-    streamingContext.start();
-    try {
-      streamingContext.awaitTermination();
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
-  }
-*/
   @Override
   public void startStreamingDataSources(List<StreamingDataSource<?>> streamingDataSourceList) {
     for (StreamingDataSource<?> streamingDataSource : streamingDataSourceList) {
