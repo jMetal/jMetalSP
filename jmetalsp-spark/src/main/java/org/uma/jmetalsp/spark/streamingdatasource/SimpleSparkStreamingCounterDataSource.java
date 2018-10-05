@@ -45,9 +45,13 @@ public class SimpleSparkStreamingCounterDataSource
             .map(Integer::parseInt);
 
     time.foreachRDD(numbers -> {
-      Integer cont = numbers.reduce((key, value) -> value);
-      observable.setChanged();
-      observable.notifyObservers(new SingleObservedData<Integer>(cont));
+      if (numbers.rdd().count() > 0) {
+        int value = numbers.reduce((value1, value2)-> value1) ;
+        //int value = numbers.collect().get(0) // Does not work after Spark 1.6
+        System.out.println("Value: "  + value) ;
+        observable.setChanged();
+        observable.notifyObservers(new SingleObservedData<Integer>(value));
+      }
     });
   }
 
