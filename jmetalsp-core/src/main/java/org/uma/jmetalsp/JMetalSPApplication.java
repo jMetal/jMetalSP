@@ -18,7 +18,7 @@ import org.uma.jmetalsp.observer.Observer;
  */
 public class JMetalSPApplication<
         S extends Solution<?>,
-        P extends DynamicProblem<S, ?>,
+        P extends DynamicProblem<S, ? extends ObservedData<?>>,
         A extends DynamicAlgorithm<?, ? extends ObservedData<?>>> {
 
   private List<StreamingDataSource<?>> streamingDataSourceList;
@@ -40,19 +40,19 @@ public class JMetalSPApplication<
     this.algorithm = algorithm;
   }
 
-  public JMetalSPApplication setProblem(P problem) {
+  public JMetalSPApplication<S,P,A> setProblem(P problem) {
     this.problem = problem;
 
     return this;
   }
 
-  public JMetalSPApplication setAlgorithm(A algorithm) {
+  public JMetalSPApplication<S,P,A> setAlgorithm(A algorithm) {
     this.algorithm = algorithm;
 
     return this;
   }
 
-  public JMetalSPApplication addStreamingDataSource(StreamingDataSource<?> streamingDataSource,Observer observer) {
+  public JMetalSPApplication<S,P,A> addStreamingDataSource(StreamingDataSource<?> streamingDataSource,Observer observer) {
     if (streamingDataSourceList == null) {
       streamingDataSourceList = new ArrayList<>();
     }
@@ -63,7 +63,7 @@ public class JMetalSPApplication<
     return this;
   }
 
-  public JMetalSPApplication addAlgorithmDataConsumer(DataConsumer<?> consumer) {
+  public JMetalSPApplication<S,P,A> addAlgorithmDataConsumer(DataConsumer<?> consumer) {
     if (algorithmDataConsumerList == null) {
       algorithmDataConsumerList = new ArrayList<>();
     }
@@ -74,7 +74,7 @@ public class JMetalSPApplication<
     return this;
   }
 
-  public JMetalSPApplication setStreamingRuntime(StreamingRuntime runtime) {
+  public JMetalSPApplication<S,P,A> setStreamingRuntime(StreamingRuntime runtime) {
     this.streamingRuntime = runtime;
 
     return this;

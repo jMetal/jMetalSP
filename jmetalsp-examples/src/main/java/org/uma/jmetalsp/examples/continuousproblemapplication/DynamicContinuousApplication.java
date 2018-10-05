@@ -71,7 +71,8 @@ public class DynamicContinuousApplication {
 
     application = new JMetalSPApplication<>();
 
-    application.setStreamingRuntime(new DefaultRuntime())
+    application
+            .setStreamingRuntime(new DefaultRuntime())
             .setProblem(problem)
             .setAlgorithm(algorithm)
             .addStreamingDataSource(streamingDataSource,problem)
