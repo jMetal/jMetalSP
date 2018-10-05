@@ -32,7 +32,6 @@ public class CounterProvider {
 
 			counter ++ ;
 		}
-
 	}
 
 	public static void main(String[] args) throws Exception {
