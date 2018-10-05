@@ -88,20 +88,15 @@ public class RNSGAIIRunnerForContinuousProblems {
 
     streamingDataSource.getObservable().register(problem);
 
-    // STEP 4. Create a streaming data source for the algorithm and register
+    // STEP 4. Create a streaming data source for the algorithm
     StreamingDataSource<SingleObservedData<List<Double>>> keyboardstreamingDataSource =
             new ComplexStreamingDataSourceFromKeyboard() ;
 
-    keyboardstreamingDataSource.getObservable().register(algorithm);
-
-    // STEP 5. Create the data consumers and register into the algorithm
+    // STEP 5. Create the data consumers
     DataConsumer<AlgorithmObservedData<DoubleSolution>> localDirectoryOutputConsumer =
             new LocalDirectoryOutputConsumer<DoubleSolution>("outputdirectory") ;
     DataConsumer<AlgorithmObservedData<DoubleSolution>> chartConsumer =
             new ChartInDM2Consumer<DoubleSolution>(algorithm.getName(), referencePoint,problem.getNumberOfObjectives()) ;
-
-    algorithm.getObservable().register(localDirectoryOutputConsumer);
-    algorithm.getObservable().register(chartConsumer) ;
 
     // STEP 6. Create the application and run
     JMetalSPApplication<

@@ -77,25 +77,18 @@ public class RNSGAIIRunnerForTSP {
             new RemoveNRandomSolutions<>(100),
             new CreateNRandomSolutions<PermutationSolution<Integer>>()));
 
-    // STEP 3. Create a streaming data source for the problem and register
+    // STEP 3. Create a streaming data source for the problem
     StreamingTSPSource streamingTSPSource = new StreamingTSPSource(new DefaultObservable<>(), 2000);
 
-    streamingTSPSource.getObservable().register(problem);
-
-    // STEP 4. Create a streaming data source for the algorithm and register
+    // STEP 4. Create a streaming data source for the algorithm
     StreamingDataSource<SingleObservedData<List<Double>>> keyboardstreamingDataSource =
             new SimpleStreamingDataSourceFromKeyboard() ;
 
-    keyboardstreamingDataSource.getObservable().register(algorithm);
-
-    // STEP 5. Create the data consumers and register into the algorithm
+    // STEP 5. Create the data consumers and register
     DataConsumer<AlgorithmObservedData<PermutationSolution<Integer>>> localDirectoryOutputConsumer =
             new LocalDirectoryOutputConsumer<PermutationSolution<Integer>>("outputdirectory");
     DataConsumer<AlgorithmObservedData<PermutationSolution<Integer>>> chartConsumer =
             new ChartConsumer<PermutationSolution<Integer>>(algorithm);
-
-    algorithm.getObservable().register(localDirectoryOutputConsumer);
-    algorithm.getObservable().register(chartConsumer) ;
 
     // STEP 6. Create the application and run
     JMetalSPApplication<
