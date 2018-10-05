@@ -40,12 +40,11 @@ public class DynamicContinuousApplication {
   public static void main(String[] args) throws IOException, InterruptedException {
     // STEP 1. Create the problem
 	  DynamicProblem<DoubleSolution, SingleObservedData<Integer>> problem =
-            new FDA3();
+            new FDA2();
 
 	  // STEP 2. Create the algorithm
     DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData<DoubleSolution>> algorithm =
-            AlgorithmFactory.getAlgorithm("SMPSO", problem) ;
-
+            AlgorithmFactory.getAlgorithm("NSGAII", problem) ;
 
     algorithm.setRestartStrategy(new RestartStrategy<>(
             //new RemoveFirstNSolutions<>(50),
