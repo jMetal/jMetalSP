@@ -117,25 +117,18 @@ public class WASFGARunnerForNYTSP {
      //       new RemoveNRandomSolutions<>(100),
      //       new CreateNRandomSolutions<PermutationSolution<Integer>>()));
 
-    // STEP 3. Create a streaming data source for the problem and register
+    // STEP 3. Create a streaming data source for the problem
     StreamingTSPFileSource streamingTSPSource = new StreamingTSPFileSource(new DefaultObservable<>(), 10000);
 
-    streamingTSPSource.getObservable().register(problem);
-
-    // STEP 4. Create a streaming data source for the algorithm and register
+    // STEP 4. Create a streaming data source for the algorithm
     StreamingDataSource<SingleObservedData<List<Double>>> keyboardstreamingDataSource =
             new ComplexStreamingDataSourceFromKeyboard() ;
 
-    //keyboardstreamingDataSource.getObservable().register(algorithm);
-
-    // STEP 5. Create the data consumers and register into the algorithm
+    // STEP 5. Create the data consumers
     DataConsumer<AlgorithmObservedData<PermutationSolution<Integer>>> localDirectoryOutputConsumer =
             new LocalDirectoryOutputConsumer<PermutationSolution<Integer>>("outputdirectory");
     DataConsumer<AlgorithmObservedData<PermutationSolution<Integer>>> chartConsumer =
             new ChartMultipleConsumer<PermutationSolution<Integer>>(algorithm,referencePoint,problem.getNumberOfObjectives());
-
-    algorithm.getObservable().register(localDirectoryOutputConsumer);
-    algorithm.getObservable().register(chartConsumer) ;
 
     // STEP 6. Create the application and run
     JMetalSPApplication<

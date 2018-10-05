@@ -1,10 +1,8 @@
 package org.uma.jmetalsp;
 
 import org.uma.jmetal.algorithm.Algorithm;
-import org.uma.jmetal.solution.Solution;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
-
 
 /**
  * Created by ajnebro on 18/4/16.

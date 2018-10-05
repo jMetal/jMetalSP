@@ -62,16 +62,11 @@ public class DynamicContinuousApplicationWithSpark {
     SimpleSparkStreamingCounterDataSource streamingDataSource =
             new SimpleSparkStreamingCounterDataSource("streamingDataDirectory") ;
 
-    streamingDataSource.getObservable().register(problem);
-
     // STEP 4. Create the data consumers and register into the algorithm
     DataConsumer<AlgorithmObservedData<DoubleSolution>> localDirectoryOutputConsumer =
             new LocalDirectoryOutputConsumer<DoubleSolution>("outputDirectory") ;
     DataConsumer<AlgorithmObservedData<DoubleSolution>> chartConsumer =
             new ChartConsumer<DoubleSolution>(algorithm) ;
-
-    algorithm.getObservable().register(localDirectoryOutputConsumer);
-    algorithm.getObservable().register(chartConsumer) ;
 
     // STEP 5. Create the application and run
     JMetalSPApplication<
