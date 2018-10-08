@@ -96,7 +96,16 @@ public class ChartConsumer<S extends Solution<?>> implements
           200,
           (int)(data.getData().get("numberOfObjectives")));
       try {
-        this.chart.setFrontChart(0, 1, null);
+        double ini1=0;
+        double ini2=0;
+        if (data.getData().containsKey("solutionList")) {
+          List<ObservedSolution> receivedList = (List<ObservedSolution>) data.getData().get("solutionList");
+          if(receivedList!=null && !receivedList.isEmpty()){
+            ini1= (double)receivedList.get(0).getObjectives().get(0);
+            ini2= (double)receivedList.get(0).getObjectives().get(1);
+          }
+        }
+        this.chart.setFrontChart(0, 1, null,ini1,ini2);
         this.chart.getFrontChart().getStyler().setLegendPosition(Styler.LegendPosition.InsideNE) ;
       } catch (FileNotFoundException e) {
         e.printStackTrace();
