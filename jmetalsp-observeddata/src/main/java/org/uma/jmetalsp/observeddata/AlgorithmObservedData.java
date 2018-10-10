@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class AlgorithmObservedData implements ObservedData {
+public class AlgorithmObservedData implements ObservedData<Map<String, Object> > {
 
   Map<String, Object> algorithmData ;
 
@@ -31,7 +31,7 @@ public class AlgorithmObservedData implements ObservedData {
     algorithmData.put("solutionList", newSolutionList) ;
     this.algorithmData = algorithmData ;
   }
-
+  @Override
   public Map<String, Object> getData() {
     return algorithmData;
   }
@@ -47,9 +47,6 @@ public class AlgorithmObservedData implements ObservedData {
     return (AlgorithmObservedData)JsonReader.jsonToJava(jsonString);
   }
 
-  @Override
-  public String getPathAVROFile() {
-    return null;
-  }
+
 }
 

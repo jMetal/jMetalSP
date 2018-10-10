@@ -16,7 +16,7 @@ import java.util.concurrent.Future;
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class KafkaObservable<O extends ObservedData> implements Observable<O> {
+public class KafkaObservable<O extends ObservedData<?>> implements Observable<O> {
   private Set<Observer<O>> observers;
   private boolean dataHasChanged;
   private String topicName;

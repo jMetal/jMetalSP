@@ -21,6 +21,7 @@ import org.uma.jmetal.util.front.Front;
 import org.uma.jmetal.util.front.imp.ArrayFront;
 import org.uma.jmetal.util.point.util.PointSolution;
 import org.uma.jmetalsp.DataConsumer;
+import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.ObservedSolution;
 import org.uma.jmetalsp.observer.Observable;
@@ -40,16 +41,22 @@ public class ChartConsumer<S extends Solution<?>> implements
         DataConsumer<AlgorithmObservedData> {
 
   //private DynamicAlgorithm<?, AlgorithmObservedData> dynamicAlgorithm;
+  private String algorithmName;
   private ChartContainer chart ;
   List<PointSolution> lastReceivedFront = null ;
 
   //public ChartConsumer(DynamicAlgorithm<?, AlgorithmObservedData> algorithm) {
   //  this.dynamicAlgorithm = algorithm ;
-  //  this.chart = null ;
+  // this.chart = null ;
   //}
 
   public ChartConsumer() {
+    algorithmName = "";
     this.chart = null ;
+  }
+  public ChartConsumer(String algorithmName) {
+    this.chart = null ;
+    this.algorithmName = algorithmName;
   }
 
   @Override
@@ -114,7 +121,7 @@ public class ChartConsumer<S extends Solution<?>> implements
     } else {
       if (solutionList.size() != 0) {
         double coverageValue = 0;
-        this.chart.getFrontChart().setTitle("Iteration: " + numberOfIterations);
+        this.chart.getFrontChart().setTitle(algorithmName+" Iteration: " + numberOfIterations);
         if (lastReceivedFront == null) {
           lastReceivedFront = solutionList ;
           this.chart.updateFrontCharts(solutionList, numberOfIterations);

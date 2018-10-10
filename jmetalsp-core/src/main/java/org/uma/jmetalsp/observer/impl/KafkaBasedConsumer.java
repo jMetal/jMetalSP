@@ -12,7 +12,7 @@ import org.uma.jmetalsp.util.serialization.DataDeserializer;
 import java.util.Arrays;
 import java.util.Properties;
 
-public class KafkaBasedConsumer<O extends ObservedData> extends Thread {
+public class KafkaBasedConsumer<O extends ObservedData<?>> extends Thread {
   private Properties properties;
   private String topicName;
   private O observedDataObject;

@@ -82,7 +82,7 @@ public class DynamicContinuousApplicationWithSparkKafka {
     DataConsumer<AlgorithmObservedData> localDirectoryOutputConsumer =
             new LocalDirectoryOutputConsumer<DoubleSolution>("/home/cbarba/outputDirectory") ;
     DataConsumer<AlgorithmObservedData> chartConsumer =
-            new ChartConsumer<DoubleSolution>() ;
+            new ChartConsumer<DoubleSolution>(algorithm.getName()) ;
 
     algorithm.getObservable().register(localDirectoryOutputConsumer);
     algorithm.getObservable().register(chartConsumer) ;

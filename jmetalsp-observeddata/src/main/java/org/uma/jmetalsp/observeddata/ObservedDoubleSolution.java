@@ -8,7 +8,7 @@ import org.uma.jmetalsp.ObservedData;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ObservedDoubleSolution implements ObservedData {
+public class ObservedDoubleSolution implements ObservedData<List<Double>> {
 
   private List<Double> variables ;
   private List<Double> objectives ;
@@ -61,13 +61,9 @@ public class ObservedDoubleSolution implements ObservedData {
     return (ObservedDoubleSolution)JsonReader.jsonToJava(jsonString);
   }
 
-  @Override
-  public String getPathAVROFile() {
-    return null;
-  }
 
   @Override
-  public Object getData() {
+  public List<Double> getData() {
     return this.objectives;
   }
 }

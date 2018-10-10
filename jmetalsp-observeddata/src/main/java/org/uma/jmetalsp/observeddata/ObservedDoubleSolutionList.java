@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class ObservedDoubleSolutionList implements ObservedData {
+public class ObservedDoubleSolutionList implements ObservedData<List<ObservedDoubleSolution>> {
 	private List<ObservedDoubleSolution> solutionList;
 
 	public ObservedDoubleSolutionList() {
@@ -38,13 +38,10 @@ public class ObservedDoubleSolutionList implements ObservedData {
     return (ObservedDoubleSolutionList)JsonReader.jsonToJava(jsonString);
   }
 
-    @Override
-    public String getPathAVROFile() {
-        return null;
-    }
+
 
     @Override
-    public Object getData() {
+    public List<ObservedDoubleSolution> getData() {
         return this.solutionList;
     }
 }

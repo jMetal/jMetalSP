@@ -119,7 +119,7 @@ public class DynamicTSPApplicationWithKafkaObserver {
     DataConsumer<AlgorithmObservedData> localDirectoryOutputConsumer =
             new LocalDirectoryOutputConsumer<DoubleSolution>("outputdirectory") ;
     DataConsumer<AlgorithmObservedData> chartConsumer =
-            new ChartConsumer<DoubleSolution>() ;
+            new ChartConsumer<DoubleSolution>(algorithm.getName()) ;
 
     // STEP 5. Create the application and run
     JMetalSPApplication<

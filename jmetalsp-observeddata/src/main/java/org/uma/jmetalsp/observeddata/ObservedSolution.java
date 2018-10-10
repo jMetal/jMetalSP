@@ -11,7 +11,7 @@ import org.uma.jmetalsp.ObservedData;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ObservedSolution<T, S extends Solution<T>> implements ObservedData {
+public class ObservedSolution<T, S extends Solution<T>> implements ObservedData<S> {
 
   private List<T> variables ;
   private List<Double> objectives ;
@@ -74,13 +74,9 @@ public class ObservedSolution<T, S extends Solution<T>> implements ObservedData 
     return (ObservedSolution<T, S>) JsonReader.jsonToJava(jsonString);
   }
 
-  @Override
-  public String getPathAVROFile() {
-    return null;
-  }
 
   @Override
-  public Object getData() {
-    return getObjectives();
+  public S getData() {
+    return solution;
   }
 }

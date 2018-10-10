@@ -19,7 +19,7 @@ import org.uma.jmetalsp.observer.Observer;
 public class JMetalSPApplication<
         S extends Solution<?>,
         P extends DynamicProblem<S, ?>,
-        A extends DynamicAlgorithm<?, ? extends ObservedData>> {
+        A extends DynamicAlgorithm<?, ? extends ObservedData<?>>> {
 
   private List<StreamingDataSource<?>> streamingDataSourceList;
   private List<DataConsumer<?>> algorithmDataConsumerList;
@@ -46,24 +46,24 @@ public class JMetalSPApplication<
     return this;
   }
 
-  public JMetalSPApplication setAlgorithm(A algorithm) {
+  public JMetalSPApplication<S,P,A> setAlgorithm(A algorithm) {
     this.algorithm = algorithm;
 
     return this;
   }
 
-  public JMetalSPApplication addStreamingDataSource(StreamingDataSource<?> streamingDataSource,Observer observer) {
+  public JMetalSPApplication<S,P,A> addStreamingDataSource(StreamingDataSource<?> streamingDataSource,Observer observer) {
     if (streamingDataSourceList == null) {
       streamingDataSourceList = new ArrayList<>();
     }
-      streamingDataSource.getObservable().register(observer);
+    streamingDataSource.getObservable().register(observer);
 
     streamingDataSourceList.add(streamingDataSource);
 
     return this;
   }
 
-  public JMetalSPApplication addAlgorithmDataConsumer(DataConsumer<?> consumer) {
+  public JMetalSPApplication<S,P,A> addAlgorithmDataConsumer(DataConsumer<?> consumer) {
     if (algorithmDataConsumerList == null) {
       algorithmDataConsumerList = new ArrayList<>();
     }

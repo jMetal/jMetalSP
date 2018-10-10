@@ -7,7 +7,7 @@ import java.util.Collection;
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public interface Observable<O extends ObservedData> {
+public interface Observable<O extends ObservedData<?>> {
 	void register(Observer<O> observer) ;
 	void unregister(Observer<O> observer) ;
 

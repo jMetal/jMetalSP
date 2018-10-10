@@ -107,7 +107,7 @@ public class InDM2RunnerForTSP {
     DataConsumer<AlgorithmObservedData> localDirectoryOutputConsumer =
             new LocalDirectoryOutputConsumer<PermutationSolution<Integer>>("outputdirectory");
     DataConsumer<AlgorithmObservedData> chartConsumer =
-            new ChartConsumer<PermutationSolution<Integer>>();
+            new ChartConsumer<PermutationSolution<Integer>>(algorithm.getName());
 
     algorithm.getObservable().register(localDirectoryOutputConsumer);
     algorithm.getObservable().register(chartConsumer) ;

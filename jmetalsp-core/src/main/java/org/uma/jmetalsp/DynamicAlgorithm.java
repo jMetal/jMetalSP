@@ -7,7 +7,7 @@ import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 /**
  * Created by ajnebro on 18/4/16.
  */
-public interface DynamicAlgorithm<Result, O extends ObservedData> extends Algorithm<Result>{
+public interface DynamicAlgorithm<Result, O extends ObservedData<?>> extends Algorithm<Result>{
   DynamicProblem<?, ?> getDynamicProblem() ;
 
   void restart();

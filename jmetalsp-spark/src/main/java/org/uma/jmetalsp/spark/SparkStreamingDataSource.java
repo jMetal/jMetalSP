@@ -9,7 +9,7 @@ import org.uma.jmetalsp.StreamingDataSource;
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public interface SparkStreamingDataSource<D extends ObservedData> extends StreamingDataSource<D> {
+public interface SparkStreamingDataSource<D extends ObservedData<?>> extends StreamingDataSource<D> {
   void setStreamingContext(JavaStreamingContext streamingContext) ;
 }
 

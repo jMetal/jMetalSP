@@ -11,7 +11,7 @@ import java.util.Set;
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DefaultObservable<O extends ObservedData> implements Observable<O> {
+public class DefaultObservable<O extends ObservedData<?>> implements Observable<O> {
 	private Set<Observer<O>> observers ;
 	private boolean dataHasChanged ;
 

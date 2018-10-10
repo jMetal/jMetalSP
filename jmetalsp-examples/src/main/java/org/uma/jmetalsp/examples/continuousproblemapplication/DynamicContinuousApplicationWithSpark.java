@@ -66,7 +66,7 @@ public class DynamicContinuousApplicationWithSpark {
     DataConsumer<AlgorithmObservedData> localDirectoryOutputConsumer =
             new LocalDirectoryOutputConsumer<DoubleSolution>("outputDirectory") ;
     DataConsumer<AlgorithmObservedData> chartConsumer =
-            new ChartConsumer<DoubleSolution>() ;
+            new ChartConsumer<DoubleSolution>(algorithm.getName()) ;
 
     // STEP 5. Create the application and run
     JMetalSPApplication<

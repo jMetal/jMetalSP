@@ -10,9 +10,8 @@ import java.io.Serializable;
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public interface ObservedData extends Serializable {
+public interface ObservedData<T> extends Serializable {
   String toJson() ;
   ObservedData fromJson(String jsonString) ;
-  String getPathAVROFile();
-  Object getData();
+  T getData();
 }

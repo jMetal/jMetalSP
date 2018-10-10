@@ -72,13 +72,12 @@ public class DynamicContinuousApplicationWithKafka {
       new SimpleStreamingCounterDataSource(
         new KafkaObservable<>("topic-int-1", new ObservedValue<>()), 2000) ;
 
-    streamingDataSource.getObservable().register(problem);
 
     // STEP 4. Create the data consumers and register into the algorithm
     DataConsumer<AlgorithmObservedData> localDirectoryOutputConsumer =
             new LocalDirectoryOutputConsumer<DoubleSolution>("outputdirectory") ;
     DataConsumer<AlgorithmObservedData> chartConsumer =
-            new ChartConsumer<DoubleSolution>() ;
+            new ChartConsumer<DoubleSolution>(algorithm.getName()) ;
 
     // STEP 5. Create the application and run
     JMetalSPApplication<

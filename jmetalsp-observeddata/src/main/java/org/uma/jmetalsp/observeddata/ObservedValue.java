@@ -9,7 +9,7 @@ import org.uma.jmetalsp.ObservedData;
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class ObservedValue<T> implements ObservedData {
+public class ObservedValue<T> implements ObservedData<T> {
   private T value;
   private String pathAVROFile;
   public ObservedValue() {
@@ -38,13 +38,10 @@ public class ObservedValue<T> implements ObservedData {
     return (ObservedValue<T>) JsonReader.jsonToJava(jsonString);
   }
 
-  @Override
-  public String getPathAVROFile() {
-    return pathAVROFile;
-  }
+
 
   @Override
-  public Object getData() {
+  public T getData() {
     return this.value;
   }
 }
