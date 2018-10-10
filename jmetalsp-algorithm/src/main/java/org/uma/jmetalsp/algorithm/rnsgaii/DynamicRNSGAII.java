@@ -23,7 +23,7 @@ import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
-import org.uma.jmetalsp.observeddata.SingleObservedData;
+import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.Observer;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
@@ -43,15 +43,15 @@ import java.util.*;
  */
 public class DynamicRNSGAII<S extends Solution<?>>
     extends RNSGAII<S>
-        implements DynamicAlgorithm<List<S>, AlgorithmObservedData<S>>,
-        Observer<SingleObservedData<List<Double>>> {
+        implements DynamicAlgorithm<List<S>, AlgorithmObservedData>,
+        Observer<ObservedValue<List<Double>>> {
 
   private int completedIterations ;
   private boolean stopAtTheEndOfTheCurrentIteration = false ;
   private RestartStrategy<S> restartStrategyForProblemChange ;
   private RestartStrategy<S> restartStrategyForReferencePointChange ;
-  Observable<AlgorithmObservedData<S>> observable ;
-  private Map<String,List> algorithmData;
+  Observable<AlgorithmObservedData> observable ;
+  //private Map<String,List> algorithmData;
   private Optional<List<S>> newReferencePoint ;
 
   public DynamicRNSGAII(DynamicProblem<S, ?> problem, int maxEvaluations, int populationSize,
@@ -59,7 +59,7 @@ public class DynamicRNSGAII<S extends Solution<?>>
                         MutationOperator<S> mutationOperator,
                         SelectionOperator<List<S>, S> selectionOperator,
                         SolutionListEvaluator<S> evaluator,
-                        Observable<AlgorithmObservedData<S>> observable,List<Double> referencePoint, double epsilon) {
+                        Observable<AlgorithmObservedData> observable,List<Double> referencePoint, double epsilon) {
     super(problem, maxEvaluations, populationSize, crossoverOperator, mutationOperator, selectionOperator, evaluator,referencePoint,epsilon);
     this.newReferencePoint = Optional.ofNullable(null);
     this.completedIterations = 0 ;
@@ -70,7 +70,7 @@ public class DynamicRNSGAII<S extends Solution<?>>
     this.restartStrategyForReferencePointChange = new RestartStrategy<>(
             new RemoveFirstNSolutions<S>(populationSize),
             new CreateNRandomSolutions<S>()) ;
-    this.algorithmData = new HashMap<>();
+    //this.algorithmData = new HashMap<>();
 
   }
 
@@ -86,8 +86,12 @@ public class DynamicRNSGAII<S extends Solution<?>>
       Map<String, Object> algorithmData = new HashMap<>() ;
 
       algorithmData.put("numberOfIterations",completedIterations);
-      //getPopulation
-      observable.notifyObservers(new AlgorithmObservedData<S>(getResult(), algorithmData));
+      algorithmData.put("algorithmName", getName()) ;
+      algorithmData.put("problemName", problem.getName()) ;
+      algorithmData.put("numberOfObjectives", problem.getNumberOfObjectives()) ;
+
+      observable.notifyObservers(new AlgorithmObservedData((List<Solution<?>>) getResult(), algorithmData));
+
 
       restart();
       evaluator.evaluate(getPopulation(), getDynamicProblem()) ;
@@ -137,7 +141,7 @@ public class DynamicRNSGAII<S extends Solution<?>>
   }
 
   @Override
-  public Observable<AlgorithmObservedData<S>> getObservable() {
+  public Observable<AlgorithmObservedData> getObservable() {
     return this.observable ;
   }
 
@@ -162,10 +166,15 @@ public class DynamicRNSGAII<S extends Solution<?>>
     }
 
     super.updatePointOfInterest(referencePoint);
-    algorithmData.put("referencePoint",referencePoint);
+    Map<String, Object> algorithmData = new HashMap<>() ;
+    algorithmData.put("numberOfIterations",completedIterations);
+    algorithmData.put("algorithmName", getName()) ;
+    algorithmData.put("problemName", problem.getName()) ;
+    algorithmData.put("numberOfObjectives", problem.getNumberOfObjectives()) ;
+    algorithmData.put("referencePoint",newReferencePoint);
     List<S> emptyList = new ArrayList<>();
     observable.setChanged();
-    observable.notifyObservers(new AlgorithmObservedData(emptyList, algorithmData));
+    observable.notifyObservers(new AlgorithmObservedData((List<Solution<?>>)emptyList, algorithmData));
   }
   public void setRestartStrategyForReferencePointChange(RestartStrategy<S> restartStrategyForReferencePointChange) {
     this.restartStrategyForReferencePointChange = restartStrategyForReferencePointChange ;
@@ -173,19 +182,19 @@ public class DynamicRNSGAII<S extends Solution<?>>
 
   @Override
   public synchronized void update(
-          Observable<SingleObservedData<List<Double>>> observable,
-          SingleObservedData<List<Double>> data) {
+          Observable<ObservedValue<List<Double>>> observable,
+          ObservedValue<List<Double>> data) {
     //if (data.getData().size() != getDynamicProblem().getNumberOfObjectives()) {
     ///  throw new JMetalException("The reference point size is not correct: " + data.getData().size()) ;
     //}
     List<S> newReferences = new ArrayList<>();
 
-    int numberOfPoints = data.getData().size()/getDynamicProblem().getNumberOfObjectives();
+    int numberOfPoints = data.getValue().size()/getDynamicProblem().getNumberOfObjectives();
      int index = 0;
     for (int i = 0; i < numberOfPoints ; i++) {
       S solution = getDynamicProblem().createSolution();
       for (int j = 0; j < getDynamicProblem().getNumberOfObjectives(); j++) {
-        solution.setObjective(j, data.getData().get(index));
+        solution.setObjective(j, data.getValue().get(index));
         index++;
       }
       newReferences.add(solution);

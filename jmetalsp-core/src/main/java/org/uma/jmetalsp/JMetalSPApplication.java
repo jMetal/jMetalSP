@@ -19,7 +19,7 @@ import org.uma.jmetalsp.observer.Observer;
 public class JMetalSPApplication<
         S extends Solution<?>,
         P extends DynamicProblem<S, ?>,
-        A extends DynamicAlgorithm<?, ? extends ObservedData<?>>> {
+        A extends DynamicAlgorithm<?, ? extends ObservedData>> {
 
   private List<StreamingDataSource<?>> streamingDataSourceList;
   private List<DataConsumer<?>> algorithmDataConsumerList;

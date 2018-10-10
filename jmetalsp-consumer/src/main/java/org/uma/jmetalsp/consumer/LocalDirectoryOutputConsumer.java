@@ -1,35 +1,29 @@
 package org.uma.jmetalsp.consumer;
 
 import org.uma.jmetal.solution.Solution;
-import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetal.util.fileoutput.SolutionListOutput;
 import org.uma.jmetal.util.fileoutput.impl.DefaultFileOutputContext;
 import org.uma.jmetalsp.DataConsumer;
-import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
+import org.uma.jmetalsp.observeddata.ObservedSolution;
+import org.uma.jmetalsp.observeddata.util.DummySolution;
 import org.uma.jmetalsp.observer.Observable;
+import org.uma.jmetalsp.observer.impl.KafkaBasedConsumer;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
-/**
- * This consumer receives lists of solutions and store them in a directory
- *
- * @author Antonio J. Nebro <antonio@lcc.uma.es>
- */
 public class LocalDirectoryOutputConsumer<S extends Solution<?>> implements
-        DataConsumer<AlgorithmObservedData<S>> {
+        DataConsumer<AlgorithmObservedData> {
   private String outputDirectoryName;
-  //private DynamicAlgorithm<?, AlgorithmObservedData<S>> dynamicAlgorithm;
   private int fileCounter = 0;
 
   /**
    * Constructor
    */
-  // DynamicAlgorithm<?, AlgorithmObservedData<S>> algorithm
   public LocalDirectoryOutputConsumer(String outputDirectoryName) {
     this.outputDirectoryName = outputDirectoryName;
-    //this.dynamicAlgorithm = algorithm ;
     createDataDirectory(this.outputDirectoryName);
   }
 
@@ -37,26 +31,8 @@ public class LocalDirectoryOutputConsumer<S extends Solution<?>> implements
     this.outputDirectoryName = null;
   }
 
-/*
-  @Override
-  public void setAlgorithm(DynamicAlgorithm<?, AlgorithmObservedData> algorithm) {
-    this.dynamicAlgorithm = algorithm;
-  }
-
-
-   public Observer getObserver() {
-    return this;
-  }
-*/
   @Override
   public void run() {
-   // if (dynamicAlgorithm == null) {
-   //   throw new JMetalException("The algorithm is null");
-   // }
-
-    //dynamicAlgorithm.getObservable().register(this);
-
-
     while (true) {
       try {
         Thread.sleep(1000000);
@@ -70,7 +46,6 @@ public class LocalDirectoryOutputConsumer<S extends Solution<?>> implements
     File outputDirectory = new File(outputDirectoryName);
 
     if (outputDirectory.isDirectory()) {
-      System.out.println("The output directory exists. Deleting and creating ...");
       for (File file : outputDirectory.listFiles()) {
         file.delete();
       }
@@ -83,13 +58,34 @@ public class LocalDirectoryOutputConsumer<S extends Solution<?>> implements
   }
 
   @Override
-  public void update(Observable<AlgorithmObservedData<S>> observable, AlgorithmObservedData<S> data) {
-    List<S> solutionList = (List<S>)data.getData().get("solutionList") ;
-    new SolutionListOutput(solutionList)
+  public void update(Observable<AlgorithmObservedData> observable, AlgorithmObservedData data) {
+    List<ObservedSolution<?,?>> solutionList = (List<ObservedSolution<?,?>>)data.getData().get("solutionList") ;
+
+    List<DummySolution<?>> dummySolutionList = new ArrayList<>() ;
+
+    for (ObservedSolution solution : solutionList) {
+      dummySolutionList.add(new DummySolution(solution)) ;
+    }
+
+    new SolutionListOutput(dummySolutionList)
             .setSeparator("\t")
             .setFunFileOutputContext(new DefaultFileOutputContext(outputDirectoryName + "/FUN" + fileCounter + ".tsv"))
             .setVarFileOutputContext(new DefaultFileOutputContext(outputDirectoryName + "/VAR" + fileCounter + ".tsv"))
             .print();
     fileCounter++;
+  }
+
+  ////////////////////////////////////////////////
+  public static void main(String[] args) {
+    String topicName = "prueba-solutionlist-topic-from-main";
+
+    LocalDirectoryOutputConsumer localDirectoryOutputConsumer = new LocalDirectoryOutputConsumer("outputdirectory") ;
+
+    KafkaBasedConsumer<AlgorithmObservedData> localDirectoryKafkaBasedConsumer =
+            new KafkaBasedConsumer<>(topicName, localDirectoryOutputConsumer, new AlgorithmObservedData()) ;
+
+    localDirectoryKafkaBasedConsumer.start();
+
+    localDirectoryOutputConsumer.run();
   }
 }

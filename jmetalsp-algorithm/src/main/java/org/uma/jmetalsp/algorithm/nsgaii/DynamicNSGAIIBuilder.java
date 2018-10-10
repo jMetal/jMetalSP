@@ -1,6 +1,5 @@
 package org.uma.jmetalsp.algorithm.nsgaii;
 
-import java.util.Comparator;
 import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.SelectionOperator;
@@ -15,14 +14,15 @@ import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observer.Observable;
 
+import java.util.Comparator;
 import java.util.List;
 
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class DynamicNSGAIIBuilder<
-				S extends Solution<?>,
-				P extends DynamicProblem<S, ?>>  {
+		S extends Solution<?>,
+		P extends DynamicProblem<S, ?>>  {
 
 	private int maxEvaluations;
 	private int populationSize;
@@ -30,11 +30,11 @@ public class DynamicNSGAIIBuilder<
 	private MutationOperator<S> mutationOperator;
 	private SelectionOperator<List<S>, S> selectionOperator;
 	private SolutionListEvaluator<S> evaluator;
-  private Observable<AlgorithmObservedData<S>> observable ;
-  private Comparator<S> dominanceComparator;
+	private Observable<AlgorithmObservedData> observable ;
+	private Comparator<S> dominanceComparator;
 	public DynamicNSGAIIBuilder(CrossoverOperator<S> crossoverOperator,
-	                            MutationOperator<S> mutationOperator,
-															Observable<AlgorithmObservedData<S>> observable) {
+								MutationOperator<S> mutationOperator,
+								Observable<AlgorithmObservedData> observable) {
 		this.crossoverOperator = crossoverOperator ;
 		this.mutationOperator = mutationOperator;
 		this.maxEvaluations = 25000 ;
@@ -98,7 +98,7 @@ public class DynamicNSGAIIBuilder<
 	}
 
 	public DynamicNSGAIIBuilder<S,P>  setObservable(
-			Observable<AlgorithmObservedData<S>> observable) {
+			Observable<AlgorithmObservedData> observable) {
 		this.observable = observable;
 		return this;
 	}
@@ -110,6 +110,6 @@ public class DynamicNSGAIIBuilder<
 
 	public DynamicNSGAII<S> build(P problem) {
 		return new DynamicNSGAII(problem, maxEvaluations, populationSize, crossoverOperator, mutationOperator,
-						selectionOperator, evaluator, dominanceComparator,observable);
+				selectionOperator, evaluator, dominanceComparator,observable);
 	}
 }

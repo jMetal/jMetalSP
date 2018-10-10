@@ -11,7 +11,7 @@ import org.uma.jmetalsp.JMetalSPApplication;
 import org.uma.jmetalsp.consumer.ChartConsumer;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
-import org.uma.jmetalsp.observeddata.SingleObservedData;
+import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.problem.fda.FDA2;
 import org.uma.jmetalsp.spark.SparkRuntime;
 import org.uma.jmetalsp.spark.streamingdatasource.SimpleSparkStreamingCounterDataSource;
@@ -50,11 +50,11 @@ public class DynamicContinuousApplicationWithSparkKafka {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     // STEP 1. Create the problem
-    DynamicProblem<DoubleSolution, SingleObservedData<Integer>> problem =
+    DynamicProblem<DoubleSolution, ObservedValue<Integer>> problem =
             new FDA2();
 
     // STEP 2. Create the algorithm
-    DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData<DoubleSolution>> algorithm =
+    DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData> algorithm =
             AlgorithmFactory.getAlgorithm("NSGAII", problem) ;
 
     algorithm.setRestartStrategy(new RestartStrategy<>(
@@ -79,10 +79,10 @@ public class DynamicContinuousApplicationWithSparkKafka {
     streamingDataSource.getObservable().register(problem);
 
     // STEP 4. Create the data consumers and register into the algorithm
-    DataConsumer<AlgorithmObservedData<DoubleSolution>> localDirectoryOutputConsumer =
+    DataConsumer<AlgorithmObservedData> localDirectoryOutputConsumer =
             new LocalDirectoryOutputConsumer<DoubleSolution>("/home/cbarba/outputDirectory") ;
-    DataConsumer<AlgorithmObservedData<DoubleSolution>> chartConsumer =
-            new ChartConsumer<DoubleSolution>(algorithm) ;
+    DataConsumer<AlgorithmObservedData> chartConsumer =
+            new ChartConsumer<DoubleSolution>() ;
 
     algorithm.getObservable().register(localDirectoryOutputConsumer);
     algorithm.getObservable().register(chartConsumer) ;
@@ -90,8 +90,8 @@ public class DynamicContinuousApplicationWithSparkKafka {
     // STEP 5. Create the application and run
     JMetalSPApplication<
             DoubleSolution,
-            DynamicProblem<DoubleSolution, SingleObservedData<Integer>>,
-            DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData<DoubleSolution>>> application;
+            DynamicProblem<DoubleSolution, ObservedValue<Integer>>,
+            DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData>> application;
 
     application = new JMetalSPApplication<>();
 

@@ -7,9 +7,8 @@ import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingCounterDataSource;
 import org.uma.jmetalsp.impl.DefaultRuntime;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
-import org.uma.jmetalsp.observeddata.SingleObservedData;
+import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.problem.fda.FDA2;
-import org.uma.jmetalsp.problem.fda.FDA3;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveFirstNSolutions;
@@ -39,36 +38,36 @@ public class DynamicContinuousApplication {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     // STEP 1. Create the problem
-	  DynamicProblem<DoubleSolution, SingleObservedData<Integer>> problem =
-            new FDA3();
+	  DynamicProblem<DoubleSolution, ObservedValue<Integer>> problem =
+            new FDA2();
 
 	  // STEP 2. Create the algorithm
-    DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData<DoubleSolution>> algorithm =
-            AlgorithmFactory.getAlgorithm("SMPSO", problem) ;
+    DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData> algorithm =
+            AlgorithmFactory.getAlgorithm("WASFGA", problem) ;
 
 
     algorithm.setRestartStrategy(new RestartStrategy<>(
             //new RemoveFirstNSolutions<>(50),
             //new RemoveNSolutionsAccordingToTheHypervolumeContribution<>(50),
             //new RemoveNSolutionsAccordingToTheCrowdingDistance<>(50),
-            new RemoveNRandomSolutions<>(15),
-            new CreateNRandomSolutions<>()));
+            new RemoveNRandomSolutions(15),
+            new CreateNRandomSolutions<DoubleSolution>()));
 
-    // STEP 3. Create the streaming data source (only one in this example)
-    StreamingDataSource<SingleObservedData<Integer>> streamingDataSource =
+    // STEP 3. Create the streaming data source (only one in this example) and register the problem
+    StreamingDataSource<ObservedValue<Integer>> streamingDataSource =
             new SimpleStreamingCounterDataSource(2000) ;
 
-    // STEP 4. Create the data consumers
-    DataConsumer<AlgorithmObservedData<DoubleSolution>> localDirectoryOutputConsumer =
-            new LocalDirectoryOutputConsumer<>("outputdirectory") ;
-    DataConsumer<AlgorithmObservedData<DoubleSolution>> chartConsumer =
-            new ChartConsumer<>(algorithm) ;
+    // STEP 4. Create the data consumers and register into the algorithm
+    DataConsumer<AlgorithmObservedData> localDirectoryOutputConsumer =
+            new LocalDirectoryOutputConsumer<DoubleSolution>("outputdirectory") ;
+    DataConsumer<AlgorithmObservedData> chartConsumer =
+            new ChartConsumer<DoubleSolution>() ;
 
     // STEP 5. Create the application and run
     JMetalSPApplication<
             DoubleSolution,
-            DynamicProblem<DoubleSolution, SingleObservedData<Integer>>,
-            DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData<DoubleSolution>>> application;
+            DynamicProblem<DoubleSolution, ObservedValue<Integer>>,
+            DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData>> application;
 
     application = new JMetalSPApplication<>();
 

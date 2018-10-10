@@ -27,14 +27,14 @@ import java.util.Vector;
  * @author Cristobal Barba <cbarba@lcc.uma.es>
  */
 
-public class DynamicNSGAIII  <S extends Solution<?>> extends NSGAIII<S> implements
-        DynamicAlgorithm<List<S>, AlgorithmObservedData<S>> {
+public class DynamicNSGAIII  <S extends Solution<?>> extends NSGAIII<S>
+        implements DynamicAlgorithm<List<S>, AlgorithmObservedData> {
     private int completedIterations ;
     private boolean stopAtTheEndOfTheCurrentIteration = false ;
     private RestartStrategy<S> restartStrategyForProblemChange ;
 
-    Observable<AlgorithmObservedData<S>> observable ;
-    public DynamicNSGAIII(DynamicNSGAIIIBuilder builder,Observable<AlgorithmObservedData<S>> observable) {
+    Observable<AlgorithmObservedData> observable ;
+    public DynamicNSGAIII(DynamicNSGAIIIBuilder builder,Observable<AlgorithmObservedData> observable) {
         super(builder);
         this.observable=observable;
 
@@ -52,7 +52,12 @@ public class DynamicNSGAIII  <S extends Solution<?>> extends NSGAIII<S> implemen
             Map<String, Object> algorithmData = new HashMap<>() ;
 
             algorithmData.put("numberOfIterations",completedIterations);
-            observable.notifyObservers(new AlgorithmObservedData<S>(getPopulation(), algorithmData));
+            algorithmData.put("algorithmName", getName()) ;
+            algorithmData.put("problemName", problem.getName()) ;
+            algorithmData.put("numberOfObjectives", problem.getNumberOfObjectives()) ;
+
+            observable.notifyObservers(new AlgorithmObservedData((List<Solution<?>>) getPopulation(), algorithmData));
+
 
             restart();
             evaluator.evaluate(getPopulation(), (Problem<S>) getDynamicProblem()) ;
@@ -83,7 +88,7 @@ public class DynamicNSGAIII  <S extends Solution<?>> extends NSGAIII<S> implemen
     }
 
     @Override
-    public Observable<AlgorithmObservedData<S>> getObservable() {
+    public Observable<AlgorithmObservedData> getObservable() {
         return this.observable ;
     }
 

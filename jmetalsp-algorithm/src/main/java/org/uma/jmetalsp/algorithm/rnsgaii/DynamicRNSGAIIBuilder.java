@@ -29,13 +29,13 @@ public class DynamicRNSGAIIBuilder<
 	private MutationOperator<S> mutationOperator;
 	private SelectionOperator<List<S>, S> selectionOperator;
 	private SolutionListEvaluator<S> evaluator;
-    private Observable<AlgorithmObservedData<S>> observable ;
+    private Observable<AlgorithmObservedData> observable ;
   	private List<Double> referencePoint;
   	private double epsilon;
 
 	public DynamicRNSGAIIBuilder(CrossoverOperator<S> crossoverOperator,
                                  MutationOperator<S> mutationOperator,
-                                 Observable<AlgorithmObservedData<S>> observable,List<Double> referencePoint,
+                                 Observable<AlgorithmObservedData> observable,List<Double> referencePoint,
 								 double epsilon) {
 		this.crossoverOperator = crossoverOperator ;
 		this.mutationOperator = mutationOperator;
