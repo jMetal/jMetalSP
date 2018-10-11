@@ -4,8 +4,6 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
-import org.json.JSONArray;
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -14,6 +12,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Properties;
 import java.util.concurrent.Future;
+import org.json.JSONArray;
 
 public class TSPNYProvider extends Thread {
 
@@ -65,7 +64,7 @@ public class TSPNYProvider extends Thread {
     while (true) {
       count = generateRandomInteger(0, 1000);
       JSONArray json = null;
-      json = readJsonFromUrl("https://data.cityofnewyork.us/resource/i4gi-tjb9.json");
+      json = readJsonFromUrl("http://data.cityofnewyork.us/resource/i4gi-tjb9.json");
       String messageStr = json.toString();
 
       Future<RecordMetadata> send =
