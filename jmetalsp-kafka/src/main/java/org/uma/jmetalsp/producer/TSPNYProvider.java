@@ -88,10 +88,10 @@ public class TSPNYProvider extends Thread {
 
   public static void main(String[] args) {
     //topic where it will be written the numbers
-    //System.setProperty("http.proxyHost","proxy.uma.es");
-    //System.setProperty("http.proxyPort", "3128");
-    //System.setProperty("https.proxyHost","proxy.uma.es");
-    //System.setProperty("https.proxyPort", "3128");
+    System.setProperty("http.proxyHost","proxy.uma.es");
+    System.setProperty("http.proxyPort", "3128");
+    System.setProperty("https.proxyHost","proxy.uma.es");
+    System.setProperty("https.proxyPort", "3128");
     TSPNYProvider tspNYProvider = new TSPNYProvider("tsp");
     new Thread(tspNYProvider).start();
 
