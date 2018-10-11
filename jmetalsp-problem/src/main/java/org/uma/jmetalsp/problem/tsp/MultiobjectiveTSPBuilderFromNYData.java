@@ -1,7 +1,7 @@
 package org.uma.jmetalsp.problem.tsp;
 
 import org.uma.jmetal.util.JMetalException;
-import org.uma.jmetalsp.observeddata.SingleObservedData;
+import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
 
@@ -18,13 +18,13 @@ public class MultiobjectiveTSPBuilderFromNYData {
   private int         numberOfCities ;
   private double [][] distanceMatrix ;
   private double [][] costMatrix;
-  private Observable<SingleObservedData<TSPMatrixData>> observable ;
+  private Observable<ObservedValue<TSPMatrixData>> observable ;
 
   public MultiobjectiveTSPBuilderFromNYData (String initialDataFile){
     this(initialDataFile, new DefaultObservable<>()) ;
   }
 
-  public MultiobjectiveTSPBuilderFromNYData (String initialDataFile, Observable<SingleObservedData<TSPMatrixData>> observable){
+  public MultiobjectiveTSPBuilderFromNYData (String initialDataFile, Observable<ObservedValue<TSPMatrixData>> observable){
     this.initialDataFile = initialDataFile ;
     this.observable = observable ;
   }

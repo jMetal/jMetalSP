@@ -46,11 +46,11 @@ import java.util.Map;
  */
 public class DynamicMOCell<S extends Solution<?>>
     extends MOCell<S>
-    implements DynamicAlgorithm<List<S>,AlgorithmObservedData<S>> {
+    implements DynamicAlgorithm<List<S>,AlgorithmObservedData> {
 
   private int completedIterations ;
   private boolean stopAtTheEndOfTheCurrentIteration = false ;
-  Observable<AlgorithmObservedData<S>> observable ;
+  Observable<AlgorithmObservedData> observable ;
   private RestartStrategy<S> restartStrategyForProblemChange ;
 
 
@@ -63,7 +63,7 @@ public class DynamicMOCell<S extends Solution<?>>
                        MutationOperator<S> mutationOperator,
                        SelectionOperator<List<S>, S> selectionOperator,
                        SolutionListEvaluator<S> evaluator,
-                       Observable<AlgorithmObservedData<S>> observable) {
+                       Observable<AlgorithmObservedData> observable) {
     super(problem, maxEvaluations, populationSize, archive, neighborhood, crossoverOperator, mutationOperator,
             selectionOperator, evaluator);
 
@@ -83,8 +83,15 @@ public class DynamicMOCell<S extends Solution<?>>
     if (evaluations >= maxEvaluations) {
       observable.setChanged() ;
       Map<String, Object> algorithmData = new HashMap<>() ;
+
       algorithmData.put("numberOfIterations",completedIterations);
-      observable.notifyObservers(new AlgorithmObservedData<S>(getResult(), algorithmData));
+      algorithmData.put("algorithmName", getName()) ;
+      algorithmData.put("problemName", problem.getName()) ;
+      algorithmData.put("numberOfObjectives", problem.getNumberOfObjectives()) ;
+
+      observable.notifyObservers(new AlgorithmObservedData((List<Solution<?>>) getResult(), algorithmData));
+
+      //observable.notifyObservers(new AlgorithmObservedData<S>(getResult(), algorithmData));
       restart();
       completedIterations++;
     }
@@ -120,7 +127,7 @@ public class DynamicMOCell<S extends Solution<?>>
   }
 
   @Override
-  public Observable<AlgorithmObservedData<S>> getObservable() {
+  public Observable<AlgorithmObservedData> getObservable() {
     return this.observable ;
   }
 

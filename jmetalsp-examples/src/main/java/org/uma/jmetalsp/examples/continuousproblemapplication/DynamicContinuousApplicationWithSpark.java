@@ -1,6 +1,5 @@
 package org.uma.jmetalsp.examples.continuousproblemapplication;
 
-import org.apache.spark.SparkConf;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetalsp.DataConsumer;
 import org.uma.jmetalsp.DynamicAlgorithm;
@@ -9,13 +8,12 @@ import org.uma.jmetalsp.JMetalSPApplication;
 import org.uma.jmetalsp.consumer.ChartConsumer;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
-import org.uma.jmetalsp.observeddata.SingleObservedData;
+import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.problem.fda.FDA2;
 import org.uma.jmetalsp.spark.SparkRuntime;
 import org.uma.jmetalsp.spark.streamingdatasource.SimpleSparkStreamingCounterDataSource;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
-import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNRandomSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNSolutionsAccordingToTheHypervolumeContribution;
 
 import java.io.IOException;
@@ -46,18 +44,18 @@ public class DynamicContinuousApplicationWithSpark {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     // STEP 1. Create the problem
-    DynamicProblem<DoubleSolution, SingleObservedData<Integer>> problem =
+    DynamicProblem<DoubleSolution, ObservedValue<Integer>> problem =
             new FDA2();
 
     // STEP 2. Create the algorithm
-    DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData<DoubleSolution>> algorithm =
-            AlgorithmFactory.getAlgorithm("SMPSO", problem) ;
+    DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData> algorithm =
+            AlgorithmFactory.getAlgorithm("NSGAII", problem) ;
 
     algorithm.setRestartStrategy(new RestartStrategy<>(
             //new RemoveFirstNSolutions<>(50),
-            //new RemoveNSolutionsAccordingToTheHypervolumeContribution<>(50),
+            new RemoveNSolutionsAccordingToTheHypervolumeContribution<>(50),
             //new RemoveNSolutionsAccordingToTheCrowdingDistance<>(50),
-            new RemoveNRandomSolutions(50),
+            //new RemoveNRandomSolutions(50),
             new CreateNRandomSolutions<DoubleSolution>()));
 
     // STEP 3. Create the streaming data source (only one in this example) and register the problem
@@ -65,25 +63,20 @@ public class DynamicContinuousApplicationWithSpark {
             new SimpleSparkStreamingCounterDataSource("streamingDataDirectory") ;
 
     // STEP 4. Create the data consumers and register into the algorithm
-    DataConsumer<AlgorithmObservedData<DoubleSolution>> localDirectoryOutputConsumer =
+    DataConsumer<AlgorithmObservedData> localDirectoryOutputConsumer =
             new LocalDirectoryOutputConsumer<DoubleSolution>("outputDirectory") ;
-    DataConsumer<AlgorithmObservedData<DoubleSolution>> chartConsumer =
-            new ChartConsumer<DoubleSolution>(algorithm) ;
+    DataConsumer<AlgorithmObservedData> chartConsumer =
+            new ChartConsumer<DoubleSolution>(algorithm.getName()) ;
 
     // STEP 5. Create the application and run
     JMetalSPApplication<
             DoubleSolution,
-            DynamicProblem<DoubleSolution, SingleObservedData<Integer>>,
-            DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData<DoubleSolution>>> application;
+            DynamicProblem<DoubleSolution, ObservedValue<Integer>>,
+            DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData>> application;
 
     application = new JMetalSPApplication<>();
 
-    SparkConf sparkConf = new SparkConf()
-            .setAppName("SparkApp")
-            .setSparkHome("F:\\spark-2.3.1-bin-hadoop2.7")
-            .setMaster("local[4]") ;
-
-    application.setStreamingRuntime(new SparkRuntime(1, sparkConf))
+    application.setStreamingRuntime(new SparkRuntime(2))
             .setProblem(problem)
             .setAlgorithm(algorithm)
             .addStreamingDataSource(streamingDataSource,problem)

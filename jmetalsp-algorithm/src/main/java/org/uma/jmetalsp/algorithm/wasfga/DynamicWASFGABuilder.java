@@ -28,7 +28,7 @@ public class DynamicWASFGABuilder<
   private double crossoverProbability;
   private double crossoverDistributionIndex;
   private double mutationProbability;
-  private Observable<AlgorithmObservedData<S>> observable;
+  private Observable<AlgorithmObservedData> observable;
   private double mutationDistributionIndex;
   private int maxIterations;
   private int populationSize;
@@ -38,7 +38,7 @@ public class DynamicWASFGABuilder<
                               MutationOperator<S> mutationOperator,
                               List<Double> referencePoint,
                               double epsilon,
-                              Observable<AlgorithmObservedData<S>> observable) {
+                              Observable<AlgorithmObservedData> observable) {
     this.crossover = crossoverOperator;
     this.mutation = mutationOperator;
     this.selection = new BinaryTournamentSelection<S>(new RankingAndCrowdingDistanceComparator<S>());

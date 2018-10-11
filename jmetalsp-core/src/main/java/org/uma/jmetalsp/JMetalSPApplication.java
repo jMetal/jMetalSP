@@ -56,7 +56,7 @@ public class JMetalSPApplication<
     if (streamingDataSourceList == null) {
       streamingDataSourceList = new ArrayList<>();
     }
-      streamingDataSource.getObservable().register(observer);
+    streamingDataSource.getObservable().register(observer);
 
     streamingDataSourceList.add(streamingDataSource);
 

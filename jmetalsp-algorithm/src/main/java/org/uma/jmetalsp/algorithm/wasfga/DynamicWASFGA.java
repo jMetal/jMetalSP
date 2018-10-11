@@ -2,23 +2,23 @@ package org.uma.jmetalsp.algorithm.wasfga;
 
 import java.util.ArrayList;
 import java.util.Optional;
+
+import org.uma.jmetal.algorithm.Algorithm;
 import org.uma.jmetal.algorithm.multiobjective.wasfga.WASFGA;
 import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.SelectionOperator;
 import org.uma.jmetal.problem.Problem;
-import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.solution.Solution;
-import org.uma.jmetal.util.SolutionListUtils;
+import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
-import org.uma.jmetalsp.observeddata.SingleObservedData;
+import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.Observer;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,15 +30,15 @@ import org.uma.jmetalsp.util.restartstrategy.impl.RemoveFirstNSolutions;
  */
 public class DynamicWASFGA<S extends Solution<?>>
         extends WASFGA<S>
-    implements DynamicAlgorithm<List<S>, AlgorithmObservedData<S>>,
-    Observer<SingleObservedData<List<Double>>> {
+        implements Algorithm<List<S>>, DynamicAlgorithm<List<S>,
+        AlgorithmObservedData>, Observer<ObservedValue<List<Double>>> {
   private int completedIterations;
   private boolean stopAtTheEndOfTheCurrentIteration = false;
   private RestartStrategy<S> restartStrategyForProblemChange ;
   private String weightVectorsFileName;
-  Observable<AlgorithmObservedData<S>> observable ;
+  Observable<AlgorithmObservedData> observable ;
   private Optional<List<S>> newReferencePoint ;
-  private Map<String, List> algorithmData;
+  //private Map<String, List> algorithmData;
   private double epsilon;
   private RestartStrategy<S> restartStrategyForReferencePointChange ;
   public DynamicWASFGA(Problem<S> problem,
@@ -50,7 +50,7 @@ public class DynamicWASFGA<S extends Solution<?>>
                        SolutionListEvaluator<S> evaluator,
                        List<Double> referencePoint,
                         double epsilon,
-                       Observable<AlgorithmObservedData<S>> observable) {
+                       Observable<AlgorithmObservedData> observable) {
     super(problem, populationSize, maxIterations, crossoverOperator, mutationOperator, selectionOperator, evaluator,epsilon, referencePoint);
     this.completedIterations = 0;
     this.observable = observable;
@@ -75,7 +75,7 @@ public class DynamicWASFGA<S extends Solution<?>>
       SolutionListEvaluator<S> evaluator,
       List<Double> referencePoint,
       double epsilon,
-      Observable<AlgorithmObservedData<S>> observable,String weightVectorsFileName) {
+      Observable<AlgorithmObservedData> observable,String weightVectorsFileName) {
     super(problem, populationSize, maxIterations, crossoverOperator, mutationOperator, selectionOperator, evaluator,epsilon, referencePoint,weightVectorsFileName);
     this.completedIterations = 0;
     this.observable = observable;
@@ -122,7 +122,7 @@ public class DynamicWASFGA<S extends Solution<?>>
   }
 
   @Override
-  public Observable<AlgorithmObservedData<S>> getObservable() {
+  public Observable<AlgorithmObservedData> getObservable() {
     return this.observable;
   }
 
@@ -141,9 +141,13 @@ public class DynamicWASFGA<S extends Solution<?>>
     if (evaluations >= maxEvaluations) {
       observable.setChanged();
       Map<String, Object> algorithmData = new HashMap<>() ;
-
       algorithmData.put("numberOfIterations",completedIterations);
-      observable.notifyObservers(new AlgorithmObservedData<S>(getPopulation(), algorithmData));
+      algorithmData.put("algorithmName", getName()) ;
+      algorithmData.put("problemName", problem.getName()) ;
+      algorithmData.put("numberOfObjectives", problem.getNumberOfObjectives()) ;
+
+      observable.notifyObservers(new AlgorithmObservedData((List<Solution<?>>) getPopulation(), algorithmData));
+     // observable.notifyObservers(new AlgorithmObservedData<S>(getPopulation(), algorithmData));
 
       restart();
       completedIterations++;
@@ -188,10 +192,15 @@ public class DynamicWASFGA<S extends Solution<?>>
     }
 
     super.updatePointOfInterest(referencePoint);
-    algorithmData.put("referencePoint",referencePoint);
+    Map<String, Object> algorithmData = new HashMap<>() ;
+    algorithmData.put("numberOfIterations",completedIterations);
+    algorithmData.put("algorithmName", getName()) ;
+    algorithmData.put("problemName", problem.getName()) ;
+    algorithmData.put("numberOfObjectives", problem.getNumberOfObjectives()) ;
+    algorithmData.put("referencePoint",newReferencePoint);
     List<S> emptyList = new ArrayList<>();
     observable.setChanged();
-    observable.notifyObservers(new AlgorithmObservedData(emptyList, algorithmData));
+    observable.notifyObservers(new AlgorithmObservedData((List<Solution<?>>)emptyList, algorithmData));
   }
 
   @Override
@@ -199,11 +208,11 @@ public class DynamicWASFGA<S extends Solution<?>>
     this.restartStrategyForProblemChange = (RestartStrategy<S>) restartStrategy;
   }
 
-  @Override
-  public void update(Observable<SingleObservedData<List<Double>>> observable,
-      SingleObservedData<List<Double>> data) {
+  //@Override
+ // public void update(Observable<ObservedDoubleSolutionList>> observable,
+ //     SingleObservedData<List<Double>> data) {
 
-  }
+  //}
 
   public RestartStrategy<S> getRestartStrategyForProblemChange() {
     return restartStrategyForProblemChange;
@@ -220,5 +229,16 @@ public class DynamicWASFGA<S extends Solution<?>>
 
   public void setWeightVectorsFileName(String weightVectorsFileName) {
     this.weightVectorsFileName = weightVectorsFileName;
+  }
+
+
+
+  @Override
+  public void update(Observable<ObservedValue<List<Double>>> observable, ObservedValue<List<Double>> data) {
+    if ((data.getValue().size() % getDynamicProblem().getNumberOfObjectives())!=0) {
+      throw new JMetalException("The reference point size is not correct: " + data.getValue().size()) ;
+    }
+
+    newReferencePoint = Optional.of((List)data.getValue()) ;
   }
 }

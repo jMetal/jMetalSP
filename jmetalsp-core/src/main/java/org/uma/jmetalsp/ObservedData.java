@@ -11,5 +11,7 @@ import java.io.Serializable;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public interface ObservedData<T> extends Serializable {
-  T getData() ;
+  String toJson() ;
+  ObservedData fromJson(String jsonString) ;
+  T getData();
 }

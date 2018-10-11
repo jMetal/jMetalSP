@@ -36,11 +36,11 @@ public class DynamicMOCellBuilder<
 	protected Neighborhood<S> neighborhood ;
 	protected BoundedArchive<S> archive ;
 
-	private Observable<AlgorithmObservedData<S>> observable ;
+	private Observable<AlgorithmObservedData> observable ;
 
 	public DynamicMOCellBuilder(CrossoverOperator<S> crossoverOperator,
 	                            MutationOperator<S> mutationOperator,
-															Observable<AlgorithmObservedData<S>> observable) {
+															Observable<AlgorithmObservedData> observable) {
 		this.crossoverOperator = crossoverOperator ;
 		this.mutationOperator = mutationOperator;
 		this.maxEvaluations = 25000 ;

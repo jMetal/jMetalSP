@@ -24,14 +24,14 @@ public class InDM2Builder<
         P extends DynamicProblem<S, ?>> {
 
 
-  private Observable<AlgorithmObservedData<S>> observable ;
+  private Observable<AlgorithmObservedData> observable ;
   private InteractiveAlgorithm<S,List<S>> interactiveAlgorithm;
 
   private int maxIterations;
   private int populationSize;
 
   public InDM2Builder(InteractiveAlgorithm<S,List<S>> interactiveAlgorithm,
-                      Observable<AlgorithmObservedData<S>> observable) {
+                      Observable<AlgorithmObservedData> observable) {
 
     this.interactiveAlgorithm = interactiveAlgorithm;
     this.maxIterations = 25000;
@@ -42,7 +42,7 @@ public class InDM2Builder<
 
 
   public InDM2Builder<S, P> setObservable(
-      Observable<AlgorithmObservedData<S>> observable) {
+      Observable<AlgorithmObservedData> observable) {
     this.observable = observable;
     return this;
   }

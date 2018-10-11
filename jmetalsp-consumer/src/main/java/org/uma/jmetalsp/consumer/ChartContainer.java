@@ -78,10 +78,33 @@ public class ChartContainer<S extends Solution<?>> {
         this.displayReferenceFront(referenceFrontFileName);
       }
 
-      double[] xData = new double[]{1};
-      double[] yData = new double[]{1};
-      XYSeries frontChartSeries = this.frontChart.addSeries(this.name, xData, yData);
-      frontChartSeries.setMarkerColor(Color.blue);
+     // double[] xData = new double[]{1};
+    //  double[] yData = new double[]{1};
+    //  XYSeries frontChartSeries = this.frontChart.addSeries(this.name, xData, yData);
+    //  frontChartSeries.setMarkerColor(Color.blue);
+
+      this.charts.put("Front", this.frontChart);
+    }catch (Exception e){
+
+    }
+  }
+
+  public void setFrontChart(int objective1, int objective2, String referenceFrontFileName,double ini1, double ini2) throws FileNotFoundException {
+    try {
+      this.objective1 = objective1;
+      this.objective2 = objective2;
+      this.frontChart = new XYChartBuilder().xAxisTitle("Objective " + this.objective1)
+              .yAxisTitle("Objective " + this.objective2).build();
+      this.frontChart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Scatter).setMarkerSize(5);
+      //changeColorFrontChart();
+      if (referenceFrontFileName != null) {
+        this.displayReferenceFront(referenceFrontFileName);
+      }
+
+     // double[] xData = new double[]{ini1};
+    //  double[] yData = new double[]{ini2};
+     // XYSeries frontChartSeries = this.frontChart.addSeries(this.name, xData, yData);
+    //  frontChartSeries.setMarkerColor(Color.blue);
 
       this.charts.put("Front", this.frontChart);
     }catch (Exception e){

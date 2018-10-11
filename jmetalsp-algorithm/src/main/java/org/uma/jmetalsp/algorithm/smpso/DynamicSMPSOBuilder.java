@@ -34,14 +34,14 @@ public class DynamicSMPSOBuilder<
 	private int maxIterations;
 
 	protected MutationOperator<DoubleSolution> mutationOperator;
-  private Observable<AlgorithmObservedData<DoubleSolution>> observable ;
+  private Observable<AlgorithmObservedData> observable ;
 	private BoundedArchive<DoubleSolution> leaders;
 
 	private SolutionListEvaluator<DoubleSolution> evaluator;
 
 	public DynamicSMPSOBuilder(MutationOperator<DoubleSolution> mutationOperator,
 														 BoundedArchive<DoubleSolution> leaders,
-														 Observable<AlgorithmObservedData<DoubleSolution>> observable) {
+														 Observable<AlgorithmObservedData> observable) {
 		this.leaders = leaders;
 
 		swarmSize = 100;

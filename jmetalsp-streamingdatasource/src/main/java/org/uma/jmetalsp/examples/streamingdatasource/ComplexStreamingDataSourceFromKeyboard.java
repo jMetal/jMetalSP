@@ -1,12 +1,11 @@
 package org.uma.jmetalsp.examples.streamingdatasource;
 
 import org.uma.jmetalsp.StreamingDataSource;
-import org.uma.jmetalsp.observeddata.SingleObservedData;
+import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -16,13 +15,13 @@ import java.util.Scanner;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class ComplexStreamingDataSourceFromKeyboard implements
-        StreamingDataSource<SingleObservedData<List<Double>>> {
-  private Observable<SingleObservedData<List<Double>>> observable;
+        StreamingDataSource<ObservedValue<List<Double>>> {
+  private Observable<ObservedValue<List<Double>>> observable;
 
   /**
    * @param observable
    */
-  public ComplexStreamingDataSourceFromKeyboard(Observable<SingleObservedData<List<Double>>> observable) {
+  public ComplexStreamingDataSourceFromKeyboard(Observable<ObservedValue<List<Double>>> observable) {
     this.observable = observable;
   }
 
@@ -44,7 +43,7 @@ public class ComplexStreamingDataSourceFromKeyboard implements
       sl.useDelimiter(",");
       try {
         while (sl.hasNext()){
-         values.add(Double.parseDouble(sl.next()));
+          values.add(Double.parseDouble(sl.next()));
         }
       }catch (Exception e){//any problem
         values.add(0.0);
@@ -60,12 +59,12 @@ public class ComplexStreamingDataSourceFromKeyboard implements
 
       observable.setChanged();
 
-      observable.notifyObservers(new SingleObservedData<>(values));
+      observable.notifyObservers(new ObservedValue<>(values));
     }
   }
 
   @Override
-  public Observable<SingleObservedData<List<Double>>> getObservable() {
+  public Observable<ObservedValue<List<Double>>> getObservable() {
     return observable;
   }
 }
