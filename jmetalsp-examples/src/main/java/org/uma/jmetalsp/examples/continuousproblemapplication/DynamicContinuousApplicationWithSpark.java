@@ -31,7 +31,7 @@ import java.util.List;
       mvn package
  * 2. Run the program with the name of the output directory where the fronts will be stored:
       spark-submit --class="org.uma.jmetalsp.examples.continuousproblemapplication.DynamicContinuousApplicationWithSpark" \
-      jmetalsp-examples/target/jmetalsp-examples-1.1-SNAPSHOT-jar-with-dependencies.jar outputDirectory
+      jmetalsp-examples/target/jmetalsp-examples-2.1-SNAPSHOT-jar-with-dependencies.jar outputDirectory
  * 3. At the same time, run the program to simulate the streaming data source that generates time:
       java -cp jmetalsp-externalsource/target/jmetalsp-externalsource-1-SNAPSHOT-jar-with-dependencies.jar \
       org.uma.jmetalsp.externalsources.CounterProvider outputDirectory 2000

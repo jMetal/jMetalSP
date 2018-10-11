@@ -54,16 +54,8 @@ public class InDM2RunnerForContinuousProblems {
     MutationOperator<DoubleSolution> mutation =
             new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);
 
-
     InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> iWASFGA = new InteractiveWASFGA<>(problem,100,crossover,mutation,
         new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>()), new SequentialSolutionListEvaluator<>(),0.01,referencePoint );
-
-
-    double epsilon = 0.001D;
-
-  // InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> iRNSGAII = new InteractiveRNSGAII<>(problem,100,crossover,mutation,
-  //      new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>()), new SequentialSolutionListEvaluator<>(),referencePoint,epsilon );
-
 
     InDM2<DoubleSolution> algorithm = new InDM2Builder<>(iWASFGA, new DefaultObservable<>())
             .setMaxIterations(50000)
@@ -81,7 +73,7 @@ public class InDM2RunnerForContinuousProblems {
             new RemoveNRandomSolutions<>(50),
             new CreateNRandomSolutions<DoubleSolution>()));
 
-    // STEP 3. Create a streaming data source for the problem and register
+    // STEP 3. Create a streaming data source for the problem
     StreamingDataSource<ObservedValue<Integer>> streamingDataSource =
             new SimpleStreamingCounterDataSource(2000) ;
 
@@ -89,11 +81,13 @@ public class InDM2RunnerForContinuousProblems {
     StreamingDataSource<ObservedValue<List<Double>>> keyboardstreamingDataSource =
             new ComplexStreamingDataSourceFromKeyboard() ;
 
-    // STEP 5. Create the data consumers and register into the algorithm
+    // STEP 5. Create the data consumers
     DataConsumer<AlgorithmObservedData> localDirectoryOutputConsumer =
-            new LocalDirectoryOutputConsumer<DoubleSolution>("outputdirectory") ;//algorithm
+            new LocalDirectoryOutputConsumer<DoubleSolution>("outputdirectory") ;
     DataConsumer<AlgorithmObservedData> chartConsumer =
-            new ChartInDM2Consumer<DoubleSolution>(algorithm.getName(), referencePoint,problem.getNumberOfObjectives()) ;
+            new ChartInDM2Consumer<DoubleSolution>(
+                algorithm.getName(),
+                referencePoint,problem.getNumberOfObjectives()) ;
 
     // STEP 6. Create the application and run
     JMetalSPApplication<

@@ -27,7 +27,7 @@ import java.util.List;
  * 1. Compile the project:
      mvn package
  * 2. Run the program:
-    java -cp jmetalsp-examples/target/jmetalsp-examples-1.1-SNAPSHOTar-with-dependencies.jar \
+    java -cp jmetalsp-examples/target/jmetalsp-examples-2.1-SNAPSHOTar-with-dependencies.jar \
     org.uma.jmetalsp.examples.continuousproblemapplication.DynamicContinuousApplication
 
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
@@ -43,15 +43,14 @@ public class DynamicContinuousApplication {
     DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData> algorithm =
             AlgorithmFactory.getAlgorithm("NSGAII", problem) ;
 
-
     algorithm.setRestartStrategy(new RestartStrategy<>(
             //new RemoveFirstNSolutions<>(50),
             //new RemoveNSolutionsAccordingToTheHypervolumeContribution<>(50),
             //new RemoveNSolutionsAccordingToTheCrowdingDistance<>(50),
-            new RemoveNRandomSolutions(15),
+            new RemoveNRandomSolutions<>(15),
             new CreateNRandomSolutions<DoubleSolution>()));
 
-    // STEP 3. Create the streaming data source (only one in this example) and register the problem
+    // STEP 3. Create the streaming data source (only one in this example)
     StreamingDataSource<ObservedValue<Integer>> streamingDataSource =
             new SimpleStreamingCounterDataSource(2000) ;
 
