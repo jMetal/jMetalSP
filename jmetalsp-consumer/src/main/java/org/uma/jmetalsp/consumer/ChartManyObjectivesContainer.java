@@ -81,10 +81,10 @@ public class ChartManyObjectivesContainer<S extends Solution<?>> {
         this.displayReferenceFront(referenceFrontFileName);
       }
 
-      double[] xData = new double[]{15000.0};
-      double[] yData = new double[]{5000.0};
-      XYSeries frontChartSeries = this.frontChart.addSeries(this.name, xData, yData);
-      frontChartSeries.setMarkerColor(Color.WHITE);
+    //  double[] xData = new double[]{15000.0};
+    //  double[] yData = new double[]{5000.0};
+     // XYSeries frontChartSeries = this.frontChart.addSeries(this.name, xData, yData);
+    //  frontChartSeries.setMarkerColor(Color.WHITE);
 
       this.charts.put("Front", this.frontChart);
     }catch (Exception e){

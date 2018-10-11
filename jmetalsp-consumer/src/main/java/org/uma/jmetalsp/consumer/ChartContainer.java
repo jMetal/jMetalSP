@@ -78,10 +78,10 @@ public class ChartContainer<S extends Solution<?>> {
         this.displayReferenceFront(referenceFrontFileName);
       }
 
-      double[] xData = new double[]{1};
-      double[] yData = new double[]{1};
-      XYSeries frontChartSeries = this.frontChart.addSeries(this.name, xData, yData);
-      frontChartSeries.setMarkerColor(Color.blue);
+     // double[] xData = new double[]{1};
+    //  double[] yData = new double[]{1};
+    //  XYSeries frontChartSeries = this.frontChart.addSeries(this.name, xData, yData);
+    //  frontChartSeries.setMarkerColor(Color.blue);
 
       this.charts.put("Front", this.frontChart);
     }catch (Exception e){
@@ -101,10 +101,10 @@ public class ChartContainer<S extends Solution<?>> {
         this.displayReferenceFront(referenceFrontFileName);
       }
 
-      double[] xData = new double[]{ini1};
-      double[] yData = new double[]{ini2};
-      XYSeries frontChartSeries = this.frontChart.addSeries(this.name, xData, yData);
-      frontChartSeries.setMarkerColor(Color.blue);
+     // double[] xData = new double[]{ini1};
+    //  double[] yData = new double[]{ini2};
+     // XYSeries frontChartSeries = this.frontChart.addSeries(this.name, xData, yData);
+    //  frontChartSeries.setMarkerColor(Color.blue);
 
       this.charts.put("Front", this.frontChart);
     }catch (Exception e){

@@ -40,7 +40,7 @@ public class JMetalSPApplication<
     this.algorithm = algorithm;
   }
 
-  public JMetalSPApplication setProblem(P problem) {
+  public JMetalSPApplication<S,P,A> setProblem(P problem) {
     this.problem = problem;
 
     return this;
@@ -74,7 +74,7 @@ public class JMetalSPApplication<
     return this;
   }
 
-  public JMetalSPApplication setStreamingRuntime(StreamingRuntime runtime) {
+  public JMetalSPApplication<S,P,A> setStreamingRuntime(StreamingRuntime runtime) {
     this.streamingRuntime = runtime;
 
     return this;

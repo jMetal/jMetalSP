@@ -124,7 +124,7 @@ public class DynamicTSPApplicationWithKafkaObserver {
     // STEP 5. Create the application and run
     JMetalSPApplication<
             PermutationSolution<Integer>,
-            DynamicProblem<PermutationSolution<Integer>, ObservedValue<Integer>>,
+            DynamicProblem<PermutationSolution<Integer>, ObservedValue<TSPMatrixData>>,
             DynamicAlgorithm<List<PermutationSolution<Integer>>, AlgorithmObservedData>> application;
 
     application = new JMetalSPApplication<>();

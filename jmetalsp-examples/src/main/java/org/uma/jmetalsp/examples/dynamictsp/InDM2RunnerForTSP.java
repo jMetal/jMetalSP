@@ -101,7 +101,6 @@ public class InDM2RunnerForTSP {
     StreamingDataSource<ObservedValue<List<Double>>> keyboardstreamingDataSource =
             new SimpleStreamingDataSourceFromKeyboard() ;
 
-    keyboardstreamingDataSource.getObservable().register(algorithm);
 
     // STEP 5. Create the data consumers and register into the algorithm
     DataConsumer<AlgorithmObservedData> localDirectoryOutputConsumer =
@@ -109,13 +108,11 @@ public class InDM2RunnerForTSP {
     DataConsumer<AlgorithmObservedData> chartConsumer =
             new ChartConsumer<PermutationSolution<Integer>>(algorithm.getName());
 
-    algorithm.getObservable().register(localDirectoryOutputConsumer);
-    algorithm.getObservable().register(chartConsumer) ;
 
     // STEP 6. Create the application and run
     JMetalSPApplication<
             PermutationSolution<Integer>,
-            DynamicProblem<PermutationSolution<Integer>, ObservedValue<Integer>>,
+            DynamicProblem<PermutationSolution<Integer>, ObservedValue<TSPMatrixData>>,
             DynamicAlgorithm<List<PermutationSolution<Integer>>, AlgorithmObservedData>> application;
 
     application = new JMetalSPApplication<>();

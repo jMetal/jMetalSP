@@ -40,15 +40,23 @@ import java.util.List;
 public class ChartMultipleConsumer<S extends Solution<?>> implements
         DataConsumer<AlgorithmObservedData> {
 
-  private DynamicAlgorithm<?, AlgorithmObservedData> dynamicAlgorithm;
+  //private DynamicAlgorithm<?, AlgorithmObservedData> dynamicAlgorithm;
+  private String algorithmName;
   private ChartManyObjectivesContainer chart ;
   private List<PointSolution> lastReceivedFront = null ;
   private List<Double> referencePoint ;
   private int numberOfObjectives;
 
-  public ChartMultipleConsumer(DynamicAlgorithm<?, AlgorithmObservedData> algorithm,
+  /*public ChartMultipleConsumer(DynamicAlgorithm<?, AlgorithmObservedData> algorithm,
                                List<Double> referencePoint,int numberOfObjectives) {
     this.dynamicAlgorithm = algorithm ;
+    this.chart = null ;
+    this.referencePoint = referencePoint ;
+    this.numberOfObjectives =numberOfObjectives;
+  }*/
+  public ChartMultipleConsumer(String algorithmName,
+                               List<Double> referencePoint,int numberOfObjectives) {
+    this.algorithmName = algorithmName ;
     this.chart = null ;
     this.referencePoint = referencePoint ;
     this.numberOfObjectives =numberOfObjectives;
@@ -56,11 +64,11 @@ public class ChartMultipleConsumer<S extends Solution<?>> implements
 
   @Override
   public void run() {
-    if (dynamicAlgorithm == null) {
-      throw new JMetalException("The algorithm is null");
-    }
+   // if (dynamicAlgorithm == null) {
+   //   throw new JMetalException("The algorithm is null");
+   // }
 
-    dynamicAlgorithm.getObservable().register(this);
+   // dynamicAlgorithm.getObservable().register(this);
 
     while (true) {
       try {
@@ -97,7 +105,7 @@ public class ChartMultipleConsumer<S extends Solution<?>> implements
 
       double coverageValue = 0;
       if (chart == null) {
-        this.chart = new ChartManyObjectivesContainer(dynamicAlgorithm.getName(), 200, numberOfObjectives);
+        this.chart = new ChartManyObjectivesContainer(algorithmName, 200, numberOfObjectives);
         try {
           this.chart.setFrontChart(0, 1, null);
 
