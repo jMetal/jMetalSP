@@ -6,6 +6,7 @@ import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
 import org.uma.jmetalsp.observer.impl.KafkaObservable;
 import org.uma.jmetalsp.problem.tsp.TSPMatrixData;
+
 import java.util.Scanner;
 
 /**

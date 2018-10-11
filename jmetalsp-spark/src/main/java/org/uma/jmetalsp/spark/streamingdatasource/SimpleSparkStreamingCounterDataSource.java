@@ -8,8 +8,6 @@ import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
 import org.uma.jmetalsp.spark.SparkStreamingDataSource;
 
-import java.util.List;
-
 /**
  * This class emits the value of a counter periodically after a given delay (in milliseconds)
  *

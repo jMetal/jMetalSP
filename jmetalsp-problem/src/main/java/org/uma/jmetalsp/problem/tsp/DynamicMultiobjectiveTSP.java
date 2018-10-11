@@ -5,7 +5,6 @@ import org.uma.jmetal.problem.impl.AbstractIntegerPermutationProblem;
 import org.uma.jmetal.solution.PermutationSolution;
 import org.uma.jmetal.util.solutionattribute.impl.NumberOfViolatedConstraints;
 import org.uma.jmetal.util.solutionattribute.impl.OverallConstraintViolation;
-
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.Observable;

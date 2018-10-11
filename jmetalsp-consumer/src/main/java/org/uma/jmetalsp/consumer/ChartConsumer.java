@@ -21,7 +21,6 @@ import org.uma.jmetal.util.front.Front;
 import org.uma.jmetal.util.front.imp.ArrayFront;
 import org.uma.jmetal.util.point.util.PointSolution;
 import org.uma.jmetalsp.DataConsumer;
-import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.ObservedSolution;
 import org.uma.jmetalsp.observer.Observable;

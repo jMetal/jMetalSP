@@ -1,6 +1,5 @@
 package org.uma.jmetalsp.algorithm.rnsgaii;
 
-import java.util.List;
 import org.uma.jmetal.algorithm.multiobjective.rnsgaii.RNSGAII;
 import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
@@ -11,6 +10,8 @@ import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.InteractiveAlgorithm;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
+
+import java.util.List;
 
 public class InteractiveRNSGAII<S extends Solution<?>> extends RNSGAII<S> implements InteractiveAlgorithm<S,List<S>> {
 

@@ -1,8 +1,5 @@
 package org.uma.jmetalsp.algorithm.wasfga;
 
-import java.util.ArrayList;
-import java.util.Optional;
-
 import org.uma.jmetal.algorithm.Algorithm;
 import org.uma.jmetal.algorithm.multiobjective.wasfga.WASFGA;
 import org.uma.jmetal.operator.CrossoverOperator;
@@ -19,11 +16,10 @@ import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.Observer;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveFirstNSolutions;
+
+import java.util.*;
 
 /**
  * @author Cristobal Barba <cbarba@lcc.uma.es>

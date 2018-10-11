@@ -15,23 +15,16 @@ package org.uma.jmetalsp.consumer;
 
 import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.XYChart;
-import org.knowm.xchart.style.Styler;
 import org.uma.jmetal.qualityindicator.impl.InvertedGenerationalDistance;
 import org.uma.jmetal.solution.Solution;
-import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetal.util.front.Front;
 import org.uma.jmetal.util.front.imp.ArrayFront;
 import org.uma.jmetalsp.DataConsumer;
-import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observer.Observable;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Plots a chart with the produce fronts

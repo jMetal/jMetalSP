@@ -2,14 +2,11 @@ package org.uma.jmetalsp.util.restartstrategy.impl;
 
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.JMetalException;
-import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.util.restartstrategy.CreateNewSolutionsStrategy;
 
 import java.util.List;
 import java.util.stream.IntStream;
-
-import static org.uma.jmetal.util.SolutionListUtils.fillPopulationWithNewSolutions;
 
 /**
  * Created by antonio on 6/06/17.

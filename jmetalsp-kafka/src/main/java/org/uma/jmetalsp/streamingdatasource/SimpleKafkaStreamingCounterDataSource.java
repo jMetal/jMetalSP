@@ -2,12 +2,10 @@ package org.uma.jmetalsp.streamingdatasource;
 
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.KTable;
 import org.uma.jmetalsp.KafkaStreamingDataSource;
 import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
-import org.uma.jmetalsp.problem.fda.FDA;
 
 import java.io.Serializable;
 

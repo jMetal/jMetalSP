@@ -3,7 +3,6 @@ package org.uma.jmetalsp.problem.fda;
 import org.uma.jmetal.problem.impl.AbstractDoubleProblem;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetalsp.DynamicProblem;
-import org.uma.jmetalsp.observeddata.ObservedIntegerValue;
 import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;

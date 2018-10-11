@@ -6,7 +6,6 @@ import org.apache.avro.io.DatumWriter;
 import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.specific.SpecificDatumWriter;
 
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 

@@ -15,7 +15,6 @@ import org.uma.jmetalsp.problem.tsp.data.GoogleDecode;
 import org.uma.jmetalsp.problem.tsp.data.ParsedNode;
 import org.uma.jmetalsp.spark.SparkStreamingDataSource;
 
-
 import java.util.*;
 
 public class SimpleSparkStructuredKafkaStreamingTSP implements SparkStreamingDataSource<ObservedValue<TSPMatrixData>> {

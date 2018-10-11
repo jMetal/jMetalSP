@@ -1,8 +1,6 @@
 package org.uma.jmetalsp.spark.streamingdatasource;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.spark.api.java.JavaRDD;
-import org.apache.spark.streaming.Duration;
 import org.apache.spark.streaming.api.java.JavaDStream;
 import org.apache.spark.streaming.api.java.JavaInputDStream;
 import org.apache.spark.streaming.api.java.JavaStreamingContext;

@@ -1,7 +1,8 @@
 package org.uma.jmetalsp;
 
-import java.util.List;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
+
+import java.util.List;
 
 public interface InteractiveAlgorithm<S,R>  extends org.uma.jmetal.algorithm.InteractiveAlgorithm<S,R> {
 

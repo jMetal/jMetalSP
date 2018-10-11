@@ -1,7 +1,5 @@
 package org.uma.jmetalsp.algorithm.wasfga;
 
-import java.util.List;
-import org.uma.jmetal.algorithm.multiobjective.rnsgaii.RNSGAII;
 import org.uma.jmetal.algorithm.multiobjective.wasfga.WASFGA;
 import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
@@ -12,6 +10,8 @@ import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.InteractiveAlgorithm;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
+
+import java.util.List;
 
 public class InteractiveWASFGA <S extends Solution<?>> extends WASFGA<S> implements
     InteractiveAlgorithm<S,List<S>> {

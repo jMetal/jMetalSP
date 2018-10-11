@@ -1,11 +1,8 @@
 package org.uma.jmetalsp.algorithm.nsgaiii;
 
 import org.uma.jmetal.algorithm.multiobjective.nsgaiii.NSGAIII;
-import org.uma.jmetal.algorithm.multiobjective.nsgaiii.NSGAIIIBuilder;
-import org.uma.jmetal.algorithm.multiobjective.nsgaiii.util.ReferencePoint;
 import org.uma.jmetal.problem.Problem;
 import org.uma.jmetal.solution.Solution;
-import org.uma.jmetal.util.JMetalLogger;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
@@ -15,7 +12,6 @@ import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 /**
  * Class implementing a dynamic version of NSGA-III. Most of the code of the original NSGA-III is

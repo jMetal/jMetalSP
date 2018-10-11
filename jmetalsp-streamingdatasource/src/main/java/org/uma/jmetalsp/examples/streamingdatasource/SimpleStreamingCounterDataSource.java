@@ -1,7 +1,6 @@
 package org.uma.jmetalsp.examples.streamingdatasource;
 
 import org.uma.jmetalsp.StreamingDataSource;
-import org.uma.jmetalsp.observeddata.ObservedIntegerValue;
 import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;

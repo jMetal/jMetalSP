@@ -1,19 +1,11 @@
 package org.uma.jmetalsp.algorithm.indm2;
 
-import org.uma.jmetal.operator.CrossoverOperator;
-import org.uma.jmetal.operator.MutationOperator;
-import org.uma.jmetal.operator.SelectionOperator;
-import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
 import org.uma.jmetal.solution.Solution;
-import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
-import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
-import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.InteractiveAlgorithm;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observer.Observable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

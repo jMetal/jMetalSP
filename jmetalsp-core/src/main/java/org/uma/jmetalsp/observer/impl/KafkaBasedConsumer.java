@@ -4,7 +4,6 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-
 import org.uma.jmetalsp.ObservedData;
 import org.uma.jmetalsp.observer.Observer;
 import org.uma.jmetalsp.util.serialization.DataDeserializer;
