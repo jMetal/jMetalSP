@@ -43,7 +43,14 @@ import java.util.List;
  */
 public class DynamicContinuousApplicationWithSpark {
 
-  public static void main(String[] args) throws IOException, InterruptedException {
+  public static void main(String[] args) throws Exception {
+    if (args.length != 1) {
+      throw new Exception("Invalid number of arguments. " +
+              "Spark home directory needed") ;
+    }
+
+    String sparkHomeDirectory = args[0] ;
+
     // STEP 1. Create the problem
     DynamicProblem<DoubleSolution, ObservedValue<Integer>> problem =
             new FDA2();
@@ -77,10 +84,9 @@ public class DynamicContinuousApplicationWithSpark {
 
     application = new JMetalSPApplication<>();
 
-
     SparkConf sparkConf = new SparkConf()
             .setAppName("SparkApp")
-            .setSparkHome("F:\\spark-2.3.1-bin-hadoop2.7")
+            .setSparkHome(sparkHomeDirectory)
             .setMaster("local[4]") ;
 
     application.setStreamingRuntime(new SparkRuntime(2, sparkConf))
