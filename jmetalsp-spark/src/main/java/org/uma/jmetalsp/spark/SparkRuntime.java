@@ -29,30 +29,13 @@ public class SparkRuntime implements StreamingRuntime {
   private JavaStreamingContext streamingContext ;
   private int duration ;
 
-  public SparkRuntime(int duration) {
-    sparkConf = new SparkConf().setAppName("SparkApp").setSparkHome("/opt/spark-2.3.2-bin-hadoop2.7").
-            setMaster("local[2]") ;
+  public SparkRuntime(int duration, SparkConf sparkConf) {
+    this.sparkConf = sparkConf ;
     this.duration = duration ;
-    streamingContext = new JavaStreamingContext(sparkConf, Durations.seconds(this.duration)) ;
+    streamingContext = new JavaStreamingContext(this.sparkConf, Durations.seconds(this.duration)) ;
     //streamingContext.sparkContext().setLogLevel("ALL");
   }
-/*
 
-	@Override
-	public void startStreamingDataSources(List<SparkStreamingDataSource<D, O>> streamingDataSourceList) {
-    for (SparkStreamingDataSource<D, ?> streamingDataSource : streamingDataSourceList) {
-      streamingDataSource.setStreamingContext(streamingContext);
-      streamingDataSource.run();
-    }
-
-    streamingContext.start();
-    try {
-      streamingContext.awaitTermination();
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
-  }
-*/
   @Override
   public void startStreamingDataSources(List<StreamingDataSource<?>> streamingDataSourceList) {
     for (StreamingDataSource<?> streamingDataSource : streamingDataSourceList) {

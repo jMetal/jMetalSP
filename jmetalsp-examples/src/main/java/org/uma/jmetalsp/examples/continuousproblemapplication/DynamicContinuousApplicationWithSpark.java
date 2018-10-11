@@ -1,5 +1,6 @@
 package org.uma.jmetalsp.examples.continuousproblemapplication;
 
+import org.apache.spark.SparkConf;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetalsp.DataConsumer;
 import org.uma.jmetalsp.DynamicAlgorithm;
@@ -76,7 +77,13 @@ public class DynamicContinuousApplicationWithSpark {
 
     application = new JMetalSPApplication<>();
 
-    application.setStreamingRuntime(new SparkRuntime(2))
+
+    SparkConf sparkConf = new SparkConf()
+            .setAppName("SparkApp")
+            .setSparkHome("F:\\spark-2.3.1-bin-hadoop2.7")
+            .setMaster("local[4]") ;
+
+    application.setStreamingRuntime(new SparkRuntime(2, sparkConf))
             .setProblem(problem)
             .setAlgorithm(algorithm)
             .addStreamingDataSource(streamingDataSource,problem)
