@@ -78,6 +78,7 @@
         <module>jmetalsp-streamingdatasource</module>
         <module>jmetalsp-spark</module>
         <module>jmetalsp-kafka</module>
+        <module>jmetalsp-flink</module>
     </modules>
 
     <profiles>
