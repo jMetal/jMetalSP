@@ -1,44 +1,41 @@
 package org.uma.jmetalsp.flink.streamingdatasource;
 
-import org.apache.flink.api.common.io.FileInputFormat;
 import org.apache.flink.api.common.io.FilePathFilter;
-import org.apache.flink.api.common.restartstrategy.RestartStrategies;
-import org.apache.flink.api.java.DataSet;
-import org.apache.flink.api.java.ExecutionEnvironment;
 import org.apache.flink.api.java.io.TextInputFormat;
 import org.apache.flink.core.fs.Path;
-import org.apache.flink.runtime.executiongraph.restart.RestartStrategy;
-import org.apache.flink.streaming.api.TimeCharacteristic;
-import org.apache.flink.streaming.api.datastream.*;
+import org.apache.flink.streaming.api.datastream.DataStreamSource;
+import org.apache.flink.streaming.api.datastream.DataStreamUtils;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.streaming.api.functions.ProcessFunction;
 import org.apache.flink.streaming.api.functions.source.FileProcessingMode;
-import org.apache.flink.util.Collector;
 import org.uma.jmetal.util.JMetalLogger;
 import org.uma.jmetalsp.flink.FlinkStreamingDataSource;
 import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-public class SimpleFlinkStreamingCounterDataSource implements FlinkStreamingDataSource<ObservedValue<Integer>> {
+public class SimpleFlinkKafkaStreamingCounterDataSource implements FlinkStreamingDataSource<ObservedValue<Integer>> {
     private Observable<ObservedValue<Integer>> observable;
-    private String directoryName;
+    private Map<String,Object> kafkaParams;
+    private List<String> topic;
     private StreamExecutionEnvironment environment;
     private long time;
 
-    public SimpleFlinkStreamingCounterDataSource(
+    public SimpleFlinkKafkaStreamingCounterDataSource(
             Observable<ObservedValue<Integer>> observable,
-            String directoryName) {
-        this.observable = observable ;
-        this.directoryName = directoryName ;
-        this.time =1000;
+            Map<String,Object> kafkaParams,String topic) {
+        this.observable = observable;
+        this.kafkaParams = kafkaParams;
+        this.topic = new ArrayList<>();
+        this.topic.add(topic);
     }
 
-    public SimpleFlinkStreamingCounterDataSource(String directoryName) {
-        this(new DefaultObservable<>(), directoryName) ;
+    public SimpleFlinkKafkaStreamingCounterDataSource(Map<String,Object> kafkaParams,String topic) {
+        this(new DefaultObservable<>(),kafkaParams,topic);
     }
     @Override
     public void setExecutionEnvironment(StreamExecutionEnvironment environment) {
@@ -47,15 +44,14 @@ public class SimpleFlinkStreamingCounterDataSource implements FlinkStreamingData
 
     @Override
     public void setTime(long time) {
-        this.time=time;
+        this.time = time;
     }
-
 
     @Override
     public void run() {
 
         JMetalLogger.logger.info("Run Fink method in the streaming data source invoked") ;
-        JMetalLogger.logger.info("Directory: " + directoryName) ;
+      //  JMetalLogger.logger.info("Directory: " + directoryName) ;
 
        // environment.getConfig().setRestartStrategy(RestartStrategies.fixedDelayRestart(1,0));
         //environment.enableCheckpointing(10);

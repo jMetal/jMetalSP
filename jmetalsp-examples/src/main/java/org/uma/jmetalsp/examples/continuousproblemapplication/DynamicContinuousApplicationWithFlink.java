@@ -75,7 +75,7 @@ public class DynamicContinuousApplicationWithFlink {
 
     application = new JMetalSPApplication<>();
 
-    application.setStreamingRuntime(new FlinkRuntime())
+    application.setStreamingRuntime(new FlinkRuntime(1000))
             .setProblem(problem)
             .setAlgorithm(algorithm)
             .addStreamingDataSource(streamingDataSource,problem)
