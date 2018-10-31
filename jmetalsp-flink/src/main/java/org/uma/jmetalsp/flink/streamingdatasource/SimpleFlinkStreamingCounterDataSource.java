@@ -1,11 +1,19 @@
 package org.uma.jmetalsp.flink.streamingdatasource;
 
+import org.apache.flink.api.common.io.FileInputFormat;
+import org.apache.flink.api.common.io.FilePathFilter;
+import org.apache.flink.api.common.restartstrategy.RestartStrategies;
 import org.apache.flink.api.java.DataSet;
 import org.apache.flink.api.java.ExecutionEnvironment;
-import org.apache.flink.streaming.api.datastream.DataStreamSource;
-import org.apache.flink.streaming.api.datastream.DataStreamUtils;
-import org.apache.flink.streaming.api.datastream.IterativeStream;
+import org.apache.flink.api.java.io.TextInputFormat;
+import org.apache.flink.core.fs.Path;
+import org.apache.flink.runtime.executiongraph.restart.RestartStrategy;
+import org.apache.flink.streaming.api.TimeCharacteristic;
+import org.apache.flink.streaming.api.datastream.*;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.api.functions.ProcessFunction;
+import org.apache.flink.streaming.api.functions.source.FileProcessingMode;
+import org.apache.flink.util.Collector;
 import org.uma.jmetal.util.JMetalLogger;
 import org.uma.jmetalsp.flink.FlinkStreamingDataSource;
 import org.uma.jmetalsp.observeddata.ObservedValue;
@@ -40,7 +48,16 @@ public class SimpleFlinkStreamingCounterDataSource implements FlinkStreamingData
 
         JMetalLogger.logger.info("Run Fink method in the streaming data source invoked") ;
         JMetalLogger.logger.info("Directory: " + directoryName) ;
-        DataStreamSource<String> data =environment.readTextFile(directoryName);
+
+       // environment.getConfig().setRestartStrategy(RestartStrategies.fixedDelayRestart(1,0));
+        //environment.enableCheckpointing(10);
+        Path filePath = new Path(directoryName);
+        TextInputFormat inputFormat = new TextInputFormat(filePath);
+        inputFormat.setFilesFilter(FilePathFilter.createDefaultFilter());
+        DataStreamSource<String> data =environment.readFile(inputFormat,directoryName,
+                FileProcessingMode.PROCESS_CONTINUOUSLY,100);
+
+
         try {
             Iterator<String> it=DataStreamUtils.collect(data);
             while (it.hasNext()){
@@ -48,9 +65,12 @@ public class SimpleFlinkStreamingCounterDataSource implements FlinkStreamingData
                 observable.setChanged();
                 observable.notifyObservers(new ObservedValue<Integer>(number));
             }
-        } catch (IOException e) {
+
+        } catch (Exception e){
             e.printStackTrace();
         }
+
+
     }
 
     @Override
