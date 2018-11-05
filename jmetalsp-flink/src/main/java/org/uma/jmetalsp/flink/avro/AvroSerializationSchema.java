@@ -1,13 +1,16 @@
 package org.uma.jmetalsp.flink.avro;
 
+import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.io.BinaryEncoder;
+import org.apache.avro.io.DatumWriter;
 import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.reflect.ReflectDatumWriter;
 import org.apache.avro.specific.SpecificDatumWriter;
 import org.apache.flink.api.common.serialization.SerializationSchema;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 
 public class AvroSerializationSchema<T> implements SerializationSchema<T> {
@@ -16,23 +19,23 @@ public class AvroSerializationSchema<T> implements SerializationSchema<T> {
 
     private final Class<T> avroType;
 
-    private transient GenericDatumWriter<T> writer;
+    private transient DatumWriter<T> dataFileWriter;
     private transient BinaryEncoder encoder;
+    private transient String path;
 
-    public AvroSerializationSchema(Class<T> avroType) {
+    public AvroSerializationSchema(Class<T> avroType, String path) {
         this.avroType = avroType;
+        this.path = path;
     }
 
     @Override
     public byte[] serialize(T obj) {
-
-        ensureInitialized();
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        encoder = EncoderFactory.get().binaryEncoder(out, null);
         byte[] serializedBytes = null;
         try {
-            writer.write(obj, encoder);
+            ensureInitialized();
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            encoder = EncoderFactory.get().binaryEncoder(out, null);
+            dataFileWriter.write(obj, encoder);
             encoder.flush();
             serializedBytes = out.toByteArray();
             out.close();
@@ -43,15 +46,11 @@ public class AvroSerializationSchema<T> implements SerializationSchema<T> {
         return serializedBytes;
     }
 
-    private void ensureInitialized() {
+    private void ensureInitialized() throws IOException {
+        File file = new File(path);
+        Schema schema = new Schema.Parser().parse(file);
+        DatumWriter<T> dataFileWriter = new SpecificDatumWriter<T>(schema);
 
-        if (writer == null) {
-            if (org.apache.avro.specific.SpecificRecordBase.class.isAssignableFrom(avroType)) {
-                writer = new SpecificDatumWriter<T>(avroType);
-            } else {
-                writer = new ReflectDatumWriter<T>(avroType);
-            }
-        }
     }
 
 }
