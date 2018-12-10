@@ -49,7 +49,7 @@ public class AvroSerializationSchema<T> implements SerializationSchema<T> {
     private void ensureInitialized() throws IOException {
         File file = new File(path);
         Schema schema = new Schema.Parser().parse(file);
-        DatumWriter<T> dataFileWriter = new SpecificDatumWriter<T>(schema);
+        dataFileWriter = new SpecificDatumWriter<T>(schema);
 
     }
 
