@@ -22,6 +22,7 @@ import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.SolutionListUtils;
 import org.uma.jmetal.util.archive.BoundedArchive;
 import org.uma.jmetal.util.archivewithreferencepoint.ArchiveWithReferencePoint;
+import org.uma.jmetal.util.archivewithreferencepoint.impl.CrowdingDistanceArchiveWithReferencePoint;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.DynamicProblem;
@@ -47,6 +48,7 @@ public class DynamicSMPSORP extends SMPSORP
   private DynamicProblem<DoubleSolution, ?> problem;
   private boolean stopAtTheEndOfTheCurrentIteration = false;
   private RestartStrategy<DoubleSolution> restartStrategyForProblemChange ;
+  private RestartStrategy<DoubleSolution> restartStrategyForReferencePointChange ;
 
   private Observable<AlgorithmObservedData> observable;
 
@@ -58,6 +60,9 @@ public class DynamicSMPSORP extends SMPSORP
     this.evaluator = evaluator;
     this.observable = observable;
     this.restartStrategyForProblemChange = new RestartStrategy<>(
+            new RemoveFirstNSolutions<>(swarmSize),
+            new CreateNRandomSolutions<>()) ;
+    this.restartStrategyForReferencePointChange = new RestartStrategy<>(
             new RemoveFirstNSolutions<>(swarmSize),
             new CreateNRandomSolutions<>()) ;
   }
@@ -123,15 +128,64 @@ public class DynamicSMPSORP extends SMPSORP
     this.restartStrategyForProblemChange.restart(getSwarm(), getDynamicProblem());
     //SolutionListUtils.restart(getSwarm(), (DoubleProblem) getDynamicProblem(), 100);
     SolutionListUtils.removeSolutionsFromList(getResult(), getResult().size());
-    evaluator.evaluate(getSwarm(), (DoubleProblem) getDynamicProblem());
+    evaluator.evaluate(getSwarm(), getDynamicProblem());
     initializeVelocity(getSwarm());
     initializeParticlesMemory(getSwarm());
+    cleanLeaders();
     initializeLeader(getSwarm());
     initProgress();
+  }
+  private void cleanLeaders(){
+    super.leaders = new ArrayList<>();
+
+    for (int i = 0; i < referencePoints.size(); i++) {
+      super.leaders.add(
+              new CrowdingDistanceArchiveWithReferencePoint<DoubleSolution>(
+                      swarmSize/referencePoints.size(), referencePoints.get(i))) ;
+    }
   }
 
   @Override
   public void setRestartStrategy(RestartStrategy<?> restartStrategy) {
     this.restartStrategyForProblemChange = (RestartStrategy<DoubleSolution>) restartStrategy;
+  }
+  public void updateNewReferencePoint(List<DoubleSolution> newReferencePoints) {
+    List<Double> referencePoint = new ArrayList<>();
+    //Arrays.asList(
+    //newReferencePoint.getObjective(0),
+    //newReferencePoint.getObjective(1)) ;
+    for (DoubleSolution point:newReferencePoints) {
+      for (int i = 0; i < point.getNumberOfObjectives(); i++) {
+        referencePoint.add(point.getObjective(i));
+      }
+    }
+    List<List<Double>> referencePoints = new ArrayList<>();
+    int numberOfPoints= newReferencePoints.size()/getDynamicProblem().getNumberOfObjectives();
+    int i=0;
+    while (i<newReferencePoints.size()){
+      int j= numberOfPoints-1;
+      List<Double> aux = new ArrayList<>();
+      while(j>=0){
+        aux.add(referencePoint.get(i));
+        i++;
+        j--;
+      }
+      referencePoints.add(aux);
+    }
+    changeReferencePoints(referencePoints);
+
+
+    Map<String, Object> algorithmData = new HashMap<>() ;
+    algorithmData.put("numberOfIterations",completedIterations);
+    algorithmData.put("algorithmName", getName()) ;
+    algorithmData.put("problemName", problem.getName()) ;
+    algorithmData.put("numberOfObjectives", problem.getNumberOfObjectives()) ;
+    algorithmData.put("referencePoint",referencePoints);
+    List<Solution<?>> emptyList = new ArrayList<>();
+    observable.setChanged();
+    observable.notifyObservers(new AlgorithmObservedData(emptyList, algorithmData));
+  }
+  public void setRestartStrategyForReferencePointChange(RestartStrategy<DoubleSolution> restartStrategyForReferencePointChange) {
+    this.restartStrategyForReferencePointChange = restartStrategyForReferencePointChange ;
   }
 }

@@ -6,6 +6,7 @@ import org.uma.jmetal.problem.DoubleProblem;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.SolutionListUtils;
 import org.uma.jmetal.util.archivewithreferencepoint.ArchiveWithReferencePoint;
+import org.uma.jmetal.util.archivewithreferencepoint.impl.CrowdingDistanceArchiveWithReferencePoint;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.InteractiveAlgorithm;
@@ -49,6 +50,8 @@ public class InteractiveSMPSORP extends SMPSORP implements InteractiveAlgorithm<
         return dynamicProblem;
     }
 
+
+
     @Override
     public void restart(RestartStrategy restartStrategy) {
         restartStrategy.restart(getSwarm(), getDynamicProblem());
@@ -57,10 +60,29 @@ public class InteractiveSMPSORP extends SMPSORP implements InteractiveAlgorithm<
         evaluator.evaluate(getSwarm(), (DoubleProblem) getDynamicProblem());
         initializeVelocity(getSwarm());
         initializeParticlesMemory(getSwarm());
-        initializeLeader(getSwarm());
+        cleanLeaders();
         initProgress();
     }
 
+    private void cleanLeaders() {
+        super.leaders = new ArrayList<>();
+
+        for (int i = 0; i < referencePoints.size(); i++) {
+            super.leaders.add(
+                    new CrowdingDistanceArchiveWithReferencePoint<DoubleSolution>(
+                            swarmSize / referencePoints.size(), referencePoints.get(i)));
+        }
+        initializeLeader(getSwarm());
+        referencePointSolutions = new ArrayList<>();
+        for (int i = 0; i < referencePoints.size(); i++) {
+            DoubleSolution refPoint = getDynamicProblem().createSolution();
+            for (int j = 0; j < referencePoints.get(0).size(); j++) {
+                refPoint.setObjective(j, referencePoints.get(i).get(j));
+            }
+
+            referencePointSolutions.add(refPoint);
+        }
+    }
     @Override
     public List<DoubleSolution> getPopulation() {
         return super.getSwarm();
@@ -71,7 +93,8 @@ public class InteractiveSMPSORP extends SMPSORP implements InteractiveAlgorithm<
         updateVelocity(super.getSwarm());
         updatePosition(super.getSwarm());
         perturbation(super.getSwarm());
-        super.setSwarm(evaluateSwarm(super.getSwarm()));
+        evaluate(super.getSwarm());
+        super.setSwarm(super.getSwarm());
         updateLeaders(super.getSwarm()) ;
         updateParticlesMemory(super.getSwarm()) ;
         updateProgress();
@@ -81,22 +104,25 @@ public class InteractiveSMPSORP extends SMPSORP implements InteractiveAlgorithm<
     @Override
     public List<DoubleSolution> initializePopulation() {
         setSwarm(createInitialSwarm());
+        setSwarm(evaluateSwarm(getSwarm()));
+        initializeVelocity(getSwarm());
+        initializeParticlesMemory(getSwarm()) ;
+        initializeLeader(getSwarm()) ;
         return super.getSwarm();
     }
 
     @Override
     public void evaluate(List<DoubleSolution> population) {
         setSwarm(evaluator.evaluate(getSwarm(), getDynamicProblem()));
-
     }
 
     @Override
     public void updatePointOfInterest(List<Double> newReferencePoints) {
-        List<List<Double>> referencePoints = new ArrayList<>();
+        referencePoints = new ArrayList<>();
         int numberOfPoints= newReferencePoints.size()/getDynamicProblem().getNumberOfObjectives();
         int i=0;
         while (i<newReferencePoints.size()){
-            int j= numberOfPoints-1;
+            int j= numberOfPoints;
             List<Double> aux = new ArrayList<>();
             while(j>=0){
                 aux.add(newReferencePoints.get(i));
@@ -105,6 +131,7 @@ public class InteractiveSMPSORP extends SMPSORP implements InteractiveAlgorithm<
             }
             referencePoints.add(aux);
         }
+        cleanLeaders();
         changeReferencePoints(referencePoints);
     }
 }

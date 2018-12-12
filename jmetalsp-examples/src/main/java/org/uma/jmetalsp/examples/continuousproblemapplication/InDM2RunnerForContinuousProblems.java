@@ -9,12 +9,15 @@ import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
 import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.solution.PermutationSolution;
+import org.uma.jmetal.util.archivewithreferencepoint.ArchiveWithReferencePoint;
+import org.uma.jmetal.util.archivewithreferencepoint.impl.CrowdingDistanceArchiveWithReferencePoint;
 import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetalsp.*;
 import org.uma.jmetalsp.algorithm.indm2.InDM2;
 import org.uma.jmetalsp.algorithm.indm2.InDM2Builder;
 import org.uma.jmetalsp.algorithm.rnsgaii.InteractiveRNSGAII;
+import org.uma.jmetalsp.algorithm.smpso.InteractiveSMPSORP;
 import org.uma.jmetalsp.algorithm.wasfga.InteractiveWASFGA;
 import org.uma.jmetalsp.consumer.ChartInDM2Consumer;
 import org.uma.jmetalsp.consumer.ChartInDM2Consumer3D;
@@ -34,6 +37,7 @@ import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNSolutionsAccordingToThe
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -53,17 +57,53 @@ public class InDM2RunnerForContinuousProblems {
             new FDA2();
 
     // STEP 2. Create and configure the algorithm
-    List<Double> referencePoint = new ArrayList<>();
+  /*  List<Double> referencePoint = new ArrayList<>();
     referencePoint.add(0.0);
     referencePoint.add(0.0);
 
     CrossoverOperator<DoubleSolution> crossover = new SBXCrossover(0.9, 20.0);
     MutationOperator<DoubleSolution> mutation =
-            new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);
+            new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);*/
+
+    List<Double> referencePoint=Arrays.asList(0.0, 0.0);
+    List<List<Double>> referencePoints;
+    referencePoints = new ArrayList<>();
+
+    referencePoints.add(referencePoint);
+
+    double mutationProbability = 1.0 / problem.getNumberOfVariables();
+    double mutationDistributionIndex = 20.0;
+    MutationOperator<DoubleSolution> mutation = new PolynomialMutation(mutationProbability, mutationDistributionIndex);
+
+    int maxIterations = 2500000;
+    int swarmSize = 100;
+
+    List<ArchiveWithReferencePoint<DoubleSolution>> archivesWithReferencePoints = new ArrayList<>();
+
+    for (int i = 0; i < referencePoints.size(); i++) {
+      archivesWithReferencePoints.add(
+              new CrowdingDistanceArchiveWithReferencePoint<DoubleSolution>(
+                      swarmSize/referencePoints.size(), referencePoints.get(i))) ;
+    }
 
 
-    InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> iWASFGA = new InteractiveWASFGA<>(problem,100,crossover,mutation,
-        new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>()), new SequentialSolutionListEvaluator<>(),0.01,referencePoint );
+   // CrossoverOperator<DoubleSolution> crossover = new SBXCrossover(0.9, 20.0);
+   // InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> iWASFGA = new InteractiveWASFGA<>(problem,100,crossover,mutation,
+   //    new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>()), new SequentialSolutionListEvaluator<>(),0.01,referencePoint );
+
+    InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> iSMPSORP = new InteractiveSMPSORP(problem,
+            swarmSize,
+            archivesWithReferencePoints,
+            referencePoints,
+            mutation,
+            maxIterations,
+            0.0, 1.0,
+            0.0, 1.0,
+            2.5, 1.5,
+            2.5, 1.5,
+            0.1, 0.1,
+            -1.0, -1.0,
+            new SequentialSolutionListEvaluator<>());
 
 
     double epsilon = 0.001D;
@@ -72,7 +112,7 @@ public class InDM2RunnerForContinuousProblems {
   //      new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>()), new SequentialSolutionListEvaluator<>(),referencePoint,epsilon );
 
 
-    InDM2<DoubleSolution> algorithm = new InDM2Builder<>(iWASFGA, new DefaultObservable<>())
+    InDM2<DoubleSolution> algorithm = new InDM2Builder<>(iSMPSORP, new DefaultObservable<>())
             .setMaxIterations(50000)
             .setPopulationSize(100)
             .build(problem);
