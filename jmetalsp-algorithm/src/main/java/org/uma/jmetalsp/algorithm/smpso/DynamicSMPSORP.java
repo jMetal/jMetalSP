@@ -27,21 +27,21 @@ import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
+import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.Observable;
+import org.uma.jmetalsp.observer.Observer;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveFirstNSolutions;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class DynamicSMPSORP extends SMPSORP
-        implements DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData> {
+        implements DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData>,
+        Observer<ObservedValue<List<Double>>>{
 
   private int completedIterations;
   private SolutionListEvaluator<DoubleSolution> evaluator;
@@ -49,7 +49,7 @@ public class DynamicSMPSORP extends SMPSORP
   private boolean stopAtTheEndOfTheCurrentIteration = false;
   private RestartStrategy<DoubleSolution> restartStrategyForProblemChange ;
   private RestartStrategy<DoubleSolution> restartStrategyForReferencePointChange ;
-
+  private Optional<List<DoubleSolution>> newReferencePoint ;
   private Observable<AlgorithmObservedData> observable;
 
   public DynamicSMPSORP(DynamicProblem<DoubleSolution, ?> problem, int swarmSize, List<ArchiveWithReferencePoint<DoubleSolution>> leaders, List<List<Double>> referencePoints, MutationOperator<DoubleSolution> mutationOperator, int maxIterations, double r1Min, double r1Max, double r2Min, double r2Max, double c1Min, double c1Max, double c2Min, double c2Max, double weightMin, double weightMax, double changeVelocity1, double changeVelocity2, SolutionListEvaluator<DoubleSolution> evaluator,
@@ -59,7 +59,8 @@ public class DynamicSMPSORP extends SMPSORP
     completedIterations = 0;
     this.evaluator = evaluator;
     this.observable = observable;
-    this.restartStrategyForProblemChange = new RestartStrategy<>(
+      this.newReferencePoint = Optional.ofNullable(null);
+      this.restartStrategyForProblemChange = new RestartStrategy<>(
             new RemoveFirstNSolutions<>(swarmSize),
             new CreateNRandomSolutions<>()) ;
     this.restartStrategyForReferencePointChange = new RestartStrategy<>(
@@ -85,9 +86,20 @@ public class DynamicSMPSORP extends SMPSORP
 
   @Override
   protected void updateProgress() {
-    if (getDynamicProblem().hasTheProblemBeenModified()) {
-      restart();
+    if (newReferencePoint.isPresent()) {
+      this.updateNewReferencePoint(newReferencePoint.get());
+      this.restartStrategyForReferencePointChange.restart(getSwarm(), getDynamicProblem());
+      restart() ;
+      evaluator.evaluate(getSwarm(), getDynamicProblem()) ;
+      newReferencePoint = Optional.ofNullable(null);
       getDynamicProblem().reset();
+//      evaluations = 0 ;
+    } else if (getDynamicProblem().hasTheProblemBeenModified()) {
+      this.restartStrategyForProblemChange.restart(getSwarm(), getDynamicProblem());
+      restart() ;
+      evaluator.evaluate(getSwarm(), getDynamicProblem()) ;
+      getDynamicProblem().reset();
+//      evaluations = 0 ;
     }
     int cont = getIterations();
     this.setIterations(cont + 1);
@@ -132,7 +144,6 @@ public class DynamicSMPSORP extends SMPSORP
     initializeVelocity(getSwarm());
     initializeParticlesMemory(getSwarm());
     cleanLeaders();
-    initializeLeader(getSwarm());
     initProgress();
   }
   private void cleanLeaders(){
@@ -141,7 +152,17 @@ public class DynamicSMPSORP extends SMPSORP
     for (int i = 0; i < referencePoints.size(); i++) {
       super.leaders.add(
               new CrowdingDistanceArchiveWithReferencePoint<DoubleSolution>(
-                      swarmSize/referencePoints.size(), referencePoints.get(i))) ;
+                      swarmSize / referencePoints.size(), referencePoints.get(i)));
+    }
+    initializeLeader(getSwarm());
+    referencePointSolutions = new ArrayList<>();
+    for (int i = 0; i < referencePoints.size(); i++) {
+      DoubleSolution refPoint = getDynamicProblem().createSolution();
+      for (int j = 0; j < referencePoints.get(0).size(); j++) {
+        refPoint.setObjective(j, referencePoints.get(i).get(j));
+      }
+
+      referencePointSolutions.add(refPoint);
     }
   }
 
@@ -159,28 +180,34 @@ public class DynamicSMPSORP extends SMPSORP
         referencePoint.add(point.getObjective(i));
       }
     }
-    List<List<Double>> referencePoints = new ArrayList<>();
-    int numberOfPoints= newReferencePoints.size()/getDynamicProblem().getNumberOfObjectives();
-    int i=0;
-    while (i<newReferencePoints.size()){
-      int j= numberOfPoints-1;
-      List<Double> aux = new ArrayList<>();
-      while(j>=0){
-        aux.add(referencePoint.get(i));
-        i++;
-        j--;
-      }
-      referencePoints.add(aux);
-    }
-    changeReferencePoints(referencePoints);
+    referencePoints = new ArrayList<>();
+    int numberOfPoints= referencePoint.size()/getDynamicProblem().getNumberOfObjectives();
+    if(numberOfPoints==1){
+      referencePoints.add(referencePoint);
+    }else {
+      int i=0;
+      while (i < referencePoint.size()) {
+        int j = 0;
+        List<Double> aux = new ArrayList<>();
 
+        while (j < getDynamicProblem().getNumberOfObjectives()) {
+          aux.add(referencePoint.get(i));
+          j++;
+          i++;
+        }
+        referencePoints.add(aux);
+
+      }
+    }
+    cleanLeaders();
+    changeReferencePoints(referencePoints);
 
     Map<String, Object> algorithmData = new HashMap<>() ;
     algorithmData.put("numberOfIterations",completedIterations);
     algorithmData.put("algorithmName", getName()) ;
     algorithmData.put("problemName", problem.getName()) ;
     algorithmData.put("numberOfObjectives", problem.getNumberOfObjectives()) ;
-    algorithmData.put("referencePoint",referencePoints);
+    algorithmData.put("referencePoint",referencePoint);
     List<Solution<?>> emptyList = new ArrayList<>();
     observable.setChanged();
     observable.notifyObservers(new AlgorithmObservedData(emptyList, algorithmData));
@@ -188,4 +215,23 @@ public class DynamicSMPSORP extends SMPSORP
   public void setRestartStrategyForReferencePointChange(RestartStrategy<DoubleSolution> restartStrategyForReferencePointChange) {
     this.restartStrategyForReferencePointChange = restartStrategyForReferencePointChange ;
   }
+
+    @Override
+    public void update(Observable<ObservedValue<List<Double>>> observable, ObservedValue<List<Double>> data) {
+        List<DoubleSolution> newReferences = new ArrayList<>();
+
+        int numberOfPoints = data.getValue().size()/getDynamicProblem().getNumberOfObjectives();
+        int index = 0;
+        for (int i = 0; i < numberOfPoints ; i++) {
+            DoubleSolution solution = getDynamicProblem().createSolution();
+            for (int j = 0; j < getDynamicProblem().getNumberOfObjectives(); j++) {
+                solution.setObjective(j, data.getValue().get(index));
+                index++;
+            }
+            newReferences.add(solution);
+
+        }
+        newReferencePoint = Optional.of(newReferences) ;
+
+    }
 }
