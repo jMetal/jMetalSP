@@ -120,16 +120,22 @@ public class InteractiveSMPSORP extends SMPSORP implements InteractiveAlgorithm<
     public void updatePointOfInterest(List<Double> newReferencePoints) {
         referencePoints = new ArrayList<>();
         int numberOfPoints= newReferencePoints.size()/getDynamicProblem().getNumberOfObjectives();
-        int i=0;
-        while (i<newReferencePoints.size()){
-            int j= numberOfPoints;
-            List<Double> aux = new ArrayList<>();
-            while(j>=0){
-                aux.add(newReferencePoints.get(i));
-                i++;
-                j--;
+        if(numberOfPoints==1){
+          referencePoints.add(newReferencePoints);
+        }else {
+            int i=0;
+            while (i < newReferencePoints.size()) {
+                int j = 0;
+                List<Double> aux = new ArrayList<>();
+
+                while (j < getDynamicProblem().getNumberOfObjectives()) {
+                    aux.add(newReferencePoints.get(i));
+                    j++;
+                    i++;
+                }
+                referencePoints.add(aux);
+
             }
-            referencePoints.add(aux);
         }
         cleanLeaders();
         changeReferencePoints(referencePoints);
