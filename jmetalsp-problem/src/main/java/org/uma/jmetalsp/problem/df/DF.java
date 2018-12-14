@@ -19,7 +19,7 @@ public abstract class DF
 	protected boolean theProblemHasBeenModified;
 	protected Observable<ObservedValue<Integer>> observable ;
 	private int T0=50;
-  private int tauT=10;
+  private int tauT=10;//10,30
   private int nT=10;
 
 	public DF(Observable<ObservedValue<Integer>> observable) {
@@ -40,9 +40,9 @@ public abstract class DF
 	}
 
 	public double helperSum(DoubleSolution solution, int start, int end, double y){
-		double result=0;
+		double result=0.0d;
 		for (int i=start;i<end;i++){
-			result+=Math.pow(solution.getVariableValue(i)-y,2);
+			result+=(double)Math.pow(solution.getVariableValue(i)-y,2.0d);
 		}
 		return result;
 	}
