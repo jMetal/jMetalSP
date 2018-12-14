@@ -108,7 +108,8 @@ public class InDM2<S extends Solution<?>>
       algorithmData.put("problemName", problem.getName()) ;
       algorithmData.put("numberOfObjectives", problem.getNumberOfObjectives()) ;
 
-      observable.notifyObservers(new AlgorithmObservedData((List<Solution<?>>) interactiveAlgorithm.getResult(), algorithmData));
+
+        observable.notifyObservers(new AlgorithmObservedData((List<Solution<?>>) interactiveAlgorithm.getResult(), algorithmData));
 
       //this.restartStrategyForProblemChange.restart(interactiveAlgorithm.getPopulation(), (DynamicProblem<S, ?>)this.problem);
       restart() ;

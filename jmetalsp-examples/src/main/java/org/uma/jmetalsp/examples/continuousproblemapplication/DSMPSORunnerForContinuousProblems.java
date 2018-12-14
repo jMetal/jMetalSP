@@ -1,30 +1,21 @@
 package org.uma.jmetalsp.examples.continuousproblemapplication;
 
-import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
-import org.uma.jmetal.operator.impl.crossover.PMXCrossover;
-import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
-import org.uma.jmetal.operator.impl.mutation.PermutationSwapMutation;
 import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
-import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
 import org.uma.jmetal.solution.DoubleSolution;
-import org.uma.jmetal.solution.PermutationSolution;
 import org.uma.jmetal.util.archivewithreferencepoint.ArchiveWithReferencePoint;
 import org.uma.jmetal.util.archivewithreferencepoint.impl.CrowdingDistanceArchiveWithReferencePoint;
-import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetalsp.*;
 import org.uma.jmetalsp.algorithm.indm2.InDM2;
 import org.uma.jmetalsp.algorithm.indm2.InDM2Builder;
-import org.uma.jmetalsp.algorithm.rnsgaii.InteractiveRNSGAII;
+import org.uma.jmetalsp.algorithm.smpso.DynamicSMPSORP;
+import org.uma.jmetalsp.algorithm.smpso.DynamicSMPSORPBuilder;
 import org.uma.jmetalsp.algorithm.smpso.InteractiveSMPSORP;
-import org.uma.jmetalsp.algorithm.wasfga.InteractiveWASFGA;
 import org.uma.jmetalsp.consumer.ChartInDM2Consumer;
-import org.uma.jmetalsp.consumer.ChartInDM2Consumer3D;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.examples.streamingdatasource.ComplexStreamingDataSourceFromKeyboard;
 import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingCounterDataSource;
-import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingDataSourceFromKeyboard;
 import org.uma.jmetalsp.impl.DefaultRuntime;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.ObservedValue;
@@ -33,7 +24,6 @@ import org.uma.jmetalsp.problem.fda.FDA2;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNRandomSolutions;
-import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNSolutionsAccordingToTheHypervolumeContribution;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -49,7 +39,7 @@ import java.util.List;
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class InDM2RunnerForContinuousProblems {
+public class DSMPSORunnerForContinuousProblems {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     // STEP 1. Create the problem
@@ -75,7 +65,7 @@ public class InDM2RunnerForContinuousProblems {
     double mutationDistributionIndex = 20.0;
     MutationOperator<DoubleSolution> mutation = new PolynomialMutation(mutationProbability, mutationDistributionIndex);
 
-    int maxIterations = 2500000;
+    int maxIterations = 250000;
     int swarmSize = 100;
 
     List<ArchiveWithReferencePoint<DoubleSolution>> archivesWithReferencePoints = new ArrayList<>();
@@ -91,59 +81,36 @@ public class InDM2RunnerForContinuousProblems {
    // InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> iWASFGA = new InteractiveWASFGA<>(problem,100,crossover,mutation,
    //    new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>()), new SequentialSolutionListEvaluator<>(),0.01,referencePoint );
 
-    InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> iSMPSORP = new InteractiveSMPSORP(problem,
-            swarmSize,
-            archivesWithReferencePoints,
-            referencePoints,
-            mutation,
-            maxIterations,
-            0.0, 1.0,
-            0.0, 1.0,
-            2.5, 1.5,
-            2.5, 1.5,
-            0.1, 0.1,
-            -1.0, -1.0,
-            new SequentialSolutionListEvaluator<>());
+    DynamicSMPSORP algorithm = new DynamicSMPSORPBuilder<>(
+            mutation,archivesWithReferencePoints,referencePoints,new DefaultObservable<>()).build(problem);
 
-
-    double epsilon = 0.001D;
-
-  // InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> iRNSGAII = new InteractiveRNSGAII<>(problem,100,crossover,mutation,
-  //      new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>()), new SequentialSolutionListEvaluator<>(),referencePoint,epsilon );
-
-
-    InDM2<DoubleSolution> algorithm = new InDM2Builder<>(iSMPSORP, new DefaultObservable<>())
-            .setMaxIterations(50000)
-            .setPopulationSize(100)
-            .build(problem);
 
     algorithm.setRestartStrategy(new RestartStrategy<>(
             //new RemoveFirstNSolutions<>(50),
             //new RemoveNSolutionsAccordingToTheHypervolumeContribution<>(50),
             //new RemoveNSolutionsAccordingToTheCrowdingDistance<>(50),
-            new RemoveNRandomSolutions(50),
-            new CreateNRandomSolutions<DoubleSolution>()));
+            new RemoveNRandomSolutions<>(10),
+            new CreateNRandomSolutions<>()));
 
     algorithm.setRestartStrategyForReferencePointChange(new RestartStrategy<>(
-            new RemoveNRandomSolutions<>(50),
+            new RemoveNRandomSolutions<>(10),
             new CreateNRandomSolutions<DoubleSolution>()));
 
     // STEP 3. Create a streaming data source for the problem and register
     StreamingDataSource<ObservedValue<Integer>> streamingDataSource =
             new SimpleStreamingCounterDataSource(2000) ;
 
+    streamingDataSource.getObservable().register(problem);
 
-    // STEP 4. Create a streaming data source for the algorithm and register
+    // STEP 4. Create a streaming data source for the algorithm
     StreamingDataSource<ObservedValue<List<Double>>> keyboardstreamingDataSource =
             new ComplexStreamingDataSourceFromKeyboard() ;
 
-
-    // STEP 5. Create the data consumers and register into the algorithm
+    // STEP 5. Create the data consumers
     DataConsumer<AlgorithmObservedData> localDirectoryOutputConsumer =
-            new LocalDirectoryOutputConsumer<DoubleSolution>("outputdirectory") ;//algorithm
+            new LocalDirectoryOutputConsumer<DoubleSolution>("outputdirectory") ;
     DataConsumer<AlgorithmObservedData> chartConsumer =
             new ChartInDM2Consumer<DoubleSolution>(algorithm.getName(), referencePoint,problem.getNumberOfObjectives()) ;
-
 
     // STEP 6. Create the application and run
     JMetalSPApplication<
@@ -151,9 +118,11 @@ public class InDM2RunnerForContinuousProblems {
             DynamicProblem<DoubleSolution, ObservedValue<Integer>>,
             DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData>> application;
 
-    application = new JMetalSPApplication<>(problem,algorithm);
+    application = new JMetalSPApplication<>();
 
     application.setStreamingRuntime(new DefaultRuntime())
+            .setProblem(problem)
+            .setAlgorithm(algorithm)
             .addStreamingDataSource(streamingDataSource,problem)
             .addStreamingDataSource(keyboardstreamingDataSource,algorithm)
             .addAlgorithmDataConsumer(localDirectoryOutputConsumer)

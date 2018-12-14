@@ -29,6 +29,11 @@ public class DummySolution<T> implements Solution<T> {
   }
 
   @Override
+  public double[] getObjectives() {
+    return new double[0];
+  }
+
+  @Override
   public T getVariableValue(int i) {
     return variables.get(i);
   }
