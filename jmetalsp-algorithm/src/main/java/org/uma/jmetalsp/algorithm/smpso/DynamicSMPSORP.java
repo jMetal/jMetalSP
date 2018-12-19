@@ -101,14 +101,14 @@ public class DynamicSMPSORP extends SMPSORP
       getDynamicProblem().reset();
 //      evaluations = 0 ;
     }
-    int cont = getIterations();
-    this.setIterations(cont + 1);
+    int cont = iterations;
+    iterations = cont + 1;
     updateLeadersDensityEstimator();
   }
 
   @Override
   protected boolean isStoppingConditionReached() {
-    if (getIterations() >= getMaxIterations()) {
+    if (iterations >= maxIterations) {
       observable.setChanged();
       Map<String, Object> algorithmData = new HashMap<>() ;
 

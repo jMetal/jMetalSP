@@ -4,6 +4,7 @@ import org.uma.jmetal.solution.Solution;
 import org.uma.jmetalsp.observeddata.ObservedSolution;
 
 import java.util.List;
+import java.util.Map;
 
 public class DummySolution<T> implements Solution<T> {
 
@@ -39,6 +40,11 @@ public class DummySolution<T> implements Solution<T> {
   }
 
   @Override
+  public List<T> getVariables() {
+    return null;
+  }
+
+  @Override
   public void setVariableValue(int i, T t) {
 
   }
@@ -70,6 +76,11 @@ public class DummySolution<T> implements Solution<T> {
 
   @Override
   public Object getAttribute(Object o) {
+    return null;
+  }
+
+  @Override
+  public Map<Object, Object> getAttributes() {
     return null;
   }
 }

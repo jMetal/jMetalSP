@@ -36,7 +36,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jmetal.version>5.5.4-SNAPSHOT</jmetal.version>
+        <jmetal.version>5.7-SNAPSHOT</jmetal.version>
     </properties>
 
     <scm>
