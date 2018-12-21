@@ -55,14 +55,14 @@ public class DF10 extends DF implements Serializable {
     public void evaluate(DoubleSolution solution) {
         double[] f = new double[getNumberOfObjectives()];
         double G = Math.sin(0.5d*Math.PI*time);
-        double a = 2.25d+2.0d*Math.cos(2.0d*Math.PI*time);
-        double b = 100.d*Math.pow(G,2);
-        double tmp=G*Math.sin(4.0d*Math.PI*Math.pow(solution.getVariableValue(0),b))/(1+Math.abs(G));
-        double g = 1+helperSum(solution,1,solution.getNumberOfVariables(),tmp);
+        double H = 2.25d+2.0d*Math.cos(0.5d*Math.PI*time);
 
-        f[0] = (g*(solution.getVariableValue(0)+0.1d*Math.sin(3.0d*Math.PI*solution.getVariableValue(0))))+4*time;
-        f[1] = (g*Math.pow(1.0d-solution.getVariableValue(0)+0.1d*Math.sin(3.0d*Math.PI*solution.getVariableValue(0)),a))+4*time;
-        f[2] = 1;
+        double tmp=Math.sin(2.0d*Math.PI*(solution.getVariableValue(0)+solution.getVariableValue(1)))/(1+Math.abs(G));
+        double g = 1+helperSum(solution,2,solution.getNumberOfVariables(),tmp);
+
+        f[0] = g*Math.pow(Math.sin(0.5*Math.PI*solution.getVariableValue(0)),H);
+        f[1] = g*Math.pow(Math.sin(0.5*Math.PI*solution.getVariableValue(1))*Math.cos(0.5*Math.PI*solution.getVariableValue(0)),H);
+        f[2] = g*Math.pow(Math.cos(0.5*Math.PI*solution.getVariableValue(1))*Math.cos(0.5* Math.PI*solution.getVariableValue(0)),H);
         solution.setObjective(0, f[0]);
         solution.setObjective(1, f[1]);
         solution.setObjective(2, f[2]);

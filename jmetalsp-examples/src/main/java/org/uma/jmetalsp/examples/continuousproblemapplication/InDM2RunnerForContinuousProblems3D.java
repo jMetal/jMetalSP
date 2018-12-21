@@ -6,11 +6,14 @@ import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
 import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
 import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
 import org.uma.jmetal.solution.DoubleSolution;
+import org.uma.jmetal.util.archivewithreferencepoint.ArchiveWithReferencePoint;
+import org.uma.jmetal.util.archivewithreferencepoint.impl.CrowdingDistanceArchiveWithReferencePoint;
 import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetalsp.*;
 import org.uma.jmetalsp.algorithm.indm2.InDM2;
 import org.uma.jmetalsp.algorithm.indm2.InDM2Builder;
+import org.uma.jmetalsp.algorithm.smpso.InteractiveSMPSORP;
 import org.uma.jmetalsp.algorithm.wasfga.InteractiveWASFGA;
 import org.uma.jmetalsp.consumer.ChartInDM2Consumer;
 import org.uma.jmetalsp.consumer.ChartInDM2Consumer3D;
@@ -22,6 +25,7 @@ import org.uma.jmetalsp.impl.DefaultRuntime;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
+import org.uma.jmetalsp.problem.df.DF10;
 import org.uma.jmetalsp.problem.fda.FDA2;
 import org.uma.jmetalsp.problem.fda.FDA5;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
@@ -30,6 +34,7 @@ import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNRandomSolutions;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -46,10 +51,10 @@ public class InDM2RunnerForContinuousProblems3D {
   public static void main(String[] args) throws IOException, InterruptedException {
     // STEP 1. Create the problem
     DynamicProblem<DoubleSolution, ObservedValue<Integer>> problem =
-            new FDA5();
+            new DF10();
 
     // STEP 2. Create and configure the algorithm
-    List<Double> referencePoint = new ArrayList<>();
+    /*List<Double> referencePoint = new ArrayList<>();
     referencePoint.add(0.0);
     referencePoint.add(0.0);
     referencePoint.add(0.0);
@@ -57,13 +62,47 @@ public class InDM2RunnerForContinuousProblems3D {
     CrossoverOperator<DoubleSolution> crossover = new SBXCrossover(0.9, 20.0);
     MutationOperator<DoubleSolution> mutation =
             new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);
-    String weightVectorsFileName ="MOEAD_Weights/W3D_100.dat";
+    String weightVectorsFileName ="MOEAD_Weights/W3D_100.dat";*/
 
-    InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> iWasfga = new InteractiveWASFGA<>(problem,100,crossover,mutation,
-        new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>()), new SequentialSolutionListEvaluator<>(),0.005,referencePoint,weightVectorsFileName );
+    List<Double> referencePoint= Arrays.asList(0.0, 0.0, 0.0);
+    List<List<Double>> referencePoints;
+    referencePoints = new ArrayList<>();
+
+    referencePoints.add(referencePoint);
+
+    double mutationProbability = 1.0 / problem.getNumberOfVariables();
+    double mutationDistributionIndex = 20.0;
+    MutationOperator<DoubleSolution> mutation = new PolynomialMutation(mutationProbability, mutationDistributionIndex);
+
+    int maxIterations = 250000;
+    int swarmSize = 100;
+
+    List<ArchiveWithReferencePoint<DoubleSolution>> archivesWithReferencePoints = new ArrayList<>();
+
+    for (int i = 0; i < referencePoints.size(); i++) {
+      archivesWithReferencePoints.add(
+              new CrowdingDistanceArchiveWithReferencePoint<DoubleSolution>(
+                      swarmSize/referencePoints.size(), referencePoints.get(i))) ;
+    }
+    InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> iSMPSORP = new InteractiveSMPSORP(problem,
+            swarmSize,
+            archivesWithReferencePoints,
+            referencePoints,
+            mutation,
+            maxIterations,
+            0.0, 1.0,
+            0.0, 1.0,
+            2.5, 1.5,
+            2.5, 1.5,
+            0.1, 0.1,
+            -1.0, -1.0,
+            new SequentialSolutionListEvaluator<>());
+
+    //InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> iWasfga = new InteractiveWASFGA<>(problem,100,crossover,mutation,
+     //   new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>()), new SequentialSolutionListEvaluator<>(),0.005,referencePoint,weightVectorsFileName );
 
 
-    InDM2<DoubleSolution> algorithm = new InDM2Builder<>(iWasfga, new DefaultObservable<>())
+    InDM2<DoubleSolution> algorithm = new InDM2Builder<>(iSMPSORP, new DefaultObservable<>())
             .setMaxIterations(25000)
             .setPopulationSize(100)
             .build(problem);
