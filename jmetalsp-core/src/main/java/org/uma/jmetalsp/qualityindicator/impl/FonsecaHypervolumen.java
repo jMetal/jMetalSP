@@ -17,7 +17,7 @@ import org.uma.jmetalsp.qualityindicator.impl.util.NodeHV;
  *       algorithm for the hypervolume indicator. In IEEE Congress on Evolutionary
  *       Computation, pages 1157-1163, Vancouver, Canada, July 2006.
  */
-public class DSHypervolumen <S extends Solution<?>> extends GenericIndicator<S>{
+public class FonsecaHypervolumen<S extends Solution<?>> extends GenericIndicator<S>{
 
 
   private LinkedList<NodeHV> list;
@@ -25,7 +25,7 @@ public class DSHypervolumen <S extends Solution<?>> extends GenericIndicator<S>{
 
  //lo que llama weakly-dominance es nuestro GDominanceComparator
 
-  public DSHypervolumen(List<Double> referencePoints){
+  public FonsecaHypervolumen(List<Double> referencePoints){
     this.list = new LinkedList<>();
     this.referencePoints = referencePoints;
     //this.comparator = new GDominanceComparator<>(this.referencePoints);
@@ -45,7 +45,7 @@ public class DSHypervolumen <S extends Solution<?>> extends GenericIndicator<S>{
   }
   private void preProcess(List<S> solutionList){
     for (Solution s:solutionList) {
-      NodeHV<S> node = new NodeHV<>(s);
+      NodeHV<S> node = new NodeHV(s);
       this.list.add(node);
     }
 

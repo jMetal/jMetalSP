@@ -1,10 +1,9 @@
 package org.uma.jmetalsp.qualityindicator.impl.util;
 
-import com.sun.source.tree.BinaryTree;
-import com.sun.tools.javac.tree.JCTree.JCBinary;
+
+
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import org.uma.jmetal.solution.Solution;
