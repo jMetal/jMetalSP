@@ -90,7 +90,7 @@ public class InDM2<S extends Solution<?>>
 
   @Override
   public String getName() {
-    return "InDM2";
+    return "InDM2-"+interactiveAlgorithm.getName();
   }
 
   @Override

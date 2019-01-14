@@ -55,7 +55,7 @@ public class InDM2RunnerForContinuousProblems {
   public static void main(String[] args) throws IOException, InterruptedException {
     // STEP 1. Create the problem
     DynamicProblem<DoubleSolution, ObservedValue<Integer>> problem =
-            new DF5();
+            new DF4();
            // new FDA2();
 
     // STEP 2. Create and configure the algorithm
@@ -67,7 +67,7 @@ public class InDM2RunnerForContinuousProblems {
     MutationOperator<DoubleSolution> mutation =
             new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);*/
 
-    List<Double> referencePoint=Arrays.asList(0.0, 0.0);
+    List<Double> referencePoint=Arrays.asList(1.0, 1.0);
     List<List<Double>> referencePoints;
     referencePoints = new ArrayList<>();
 
@@ -77,7 +77,7 @@ public class InDM2RunnerForContinuousProblems {
     double mutationDistributionIndex = 20.0;
     MutationOperator<DoubleSolution> mutation = new PolynomialMutation(mutationProbability, mutationDistributionIndex);
 
-    int maxIterations = 250000;
+    int maxIterations = 550000;
     int swarmSize = 100;
 
     List<ArchiveWithReferencePoint<DoubleSolution>> archivesWithReferencePoints = new ArrayList<>();
@@ -89,9 +89,9 @@ public class InDM2RunnerForContinuousProblems {
     }
 
 
-   // CrossoverOperator<DoubleSolution> crossover = new SBXCrossover(0.9, 20.0);
-   // InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> iWASFGA = new InteractiveWASFGA<>(problem,100,crossover,mutation,
-   //    new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>()), new SequentialSolutionListEvaluator<>(),0.01,referencePoint );
+    CrossoverOperator<DoubleSolution> crossover = new SBXCrossover(0.9, 20.0);
+//   InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> iWASFGA = new InteractiveWASFGA<>(problem,100,crossover,mutation,
+ //      new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>()), new SequentialSolutionListEvaluator<>(),0.01,referencePoint );
 
     InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> iSMPSORP = new InteractiveSMPSORP(problem,
             swarmSize,
@@ -110,15 +110,15 @@ public class InDM2RunnerForContinuousProblems {
 
     double epsilon = 0.001D;
 
-  // InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> iRNSGAII = new InteractiveRNSGAII<>(problem,100,crossover,mutation,
-  //      new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>()), new SequentialSolutionListEvaluator<>(),referencePoint,epsilon );
+  //InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> iRNSGAII = new InteractiveRNSGAII<>(problem,100,100,100,crossover,mutation,
+    //    new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>()), new SequentialSolutionListEvaluator<>(),referencePoint,epsilon );
 
 
     InDM2<DoubleSolution> algorithm = new InDM2Builder<>(iSMPSORP, new DefaultObservable<>())
-            .setMaxIterations(50000)
+            .setMaxIterations(100000)
             .setPopulationSize(100)
             .build(problem);
-
+    int delay =5000;
     algorithm.setRestartStrategy(new RestartStrategy<>(
             //new RemoveFirstNSolutions<>(50),
             //new RemoveNSolutionsAccordingToTheHypervolumeContribution<>(50),
@@ -132,7 +132,7 @@ public class InDM2RunnerForContinuousProblems {
 
     // STEP 3. Create a streaming data source for the problem and register
     StreamingDataSource<ObservedValue<Integer>> streamingDataSource =
-            new SimpleStreamingCounterDataSource(2000) ;
+            new SimpleStreamingCounterDataSource(delay) ;
 
 
     // STEP 4. Create a streaming data source for the algorithm and register
@@ -142,9 +142,9 @@ public class InDM2RunnerForContinuousProblems {
 
     // STEP 5. Create the data consumers and register into the algorithm
     DataConsumer<AlgorithmObservedData> localDirectoryOutputConsumer =
-            new LocalDirectoryOutputConsumer<DoubleSolution>("outputdirectory") ;//algorithm
+            new LocalDirectoryOutputConsumer<DoubleSolution>("outputdirectory-"+problem.getName()+"-"+algorithm.getName()+"-"+referenceName(referencePoint)) ;//algorithm
     DataConsumer<AlgorithmObservedData> chartConsumer =
-            new ChartInDM2Consumer<DoubleSolution>(algorithm.getName(), referencePoint,problem.getNumberOfObjectives()) ;
+            new ChartInDM2Consumer<DoubleSolution>(algorithm.getName(), referencePoint,problem.getNumberOfObjectives(),problem.getName()) ;
 
 
     // STEP 6. Create the application and run
@@ -161,5 +161,14 @@ public class InDM2RunnerForContinuousProblems {
             .addAlgorithmDataConsumer(localDirectoryOutputConsumer)
             .addAlgorithmDataConsumer(chartConsumer)
             .run();
+  }
+  private static String referenceName(List<Double> referencePoint){
+    String result="(";
+    for (Double ref:referencePoint) {
+      result += ref+",";
+    }
+    result= result.substring(0,result.length()-1);
+    result +=")";
+    return result;
   }
 }

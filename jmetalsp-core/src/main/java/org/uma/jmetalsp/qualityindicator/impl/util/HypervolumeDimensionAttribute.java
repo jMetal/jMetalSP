@@ -6,5 +6,5 @@ import org.uma.jmetal.util.solutionattribute.impl.GenericSolutionAttribute;
 public class HypervolumeDimensionAttribute <S extends Solution<?>>
     extends GenericSolutionAttribute<S, Double> {
 
-  private int 
+  private int dimension;
 }

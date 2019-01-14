@@ -46,12 +46,24 @@ public class ChartInDM2Consumer<S extends Solution<?>> implements
   private List<PointSolution> lastReceivedFront = null;
   private List<Double> referencePoint;
   private int numObjective;
+  private String nameProblem;
   public ChartInDM2Consumer(String nameAlgorithm,
-                            List<Double> referencePoint,int numObj) {
+                            List<Double> referencePoint,int numObj,String nameProblem) {
     this.nameAlgorithm = nameAlgorithm;
     this.chart = null;
     this.referencePoint = referencePoint;
     this.numObjective =numObj;
+    this.nameProblem = nameProblem;
+  }
+
+  private String referenceName(){
+      String result="(";
+      for (Double ref:referencePoint) {
+          result += ref+",";
+      }
+      result= result.substring(0,result.length()-1);
+      result +=")";
+      return result;
   }
 
   @Override
@@ -129,7 +141,7 @@ public class ChartInDM2Consumer<S extends Solution<?>> implements
           this.chart.updateFrontCharts(solutionList, numberOfIterations);
           lastReceivedFront = solutionList;
           try {
-            this.chart.saveChart(numberOfIterations + ".chart", BitmapEncoder.BitmapFormat.PNG);
+            this.chart.saveChart(nameAlgorithm+"."+nameProblem+"."+numberOfIterations +referenceName()+".chart", BitmapEncoder.BitmapFormat.PNG);
           } catch (IOException e) {
             e.printStackTrace();
           }

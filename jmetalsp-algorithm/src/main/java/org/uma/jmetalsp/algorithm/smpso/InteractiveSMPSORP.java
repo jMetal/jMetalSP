@@ -140,4 +140,9 @@ public class InteractiveSMPSORP extends SMPSORP implements InteractiveAlgorithm<
         cleanLeaders();
         changeReferencePoints(referencePoints);
     }
+
+    @Override
+    public String getName() {
+        return "SMPSO-RP";
+    }
 }
