@@ -22,6 +22,7 @@ import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
 import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.solution.Solution;
+import org.uma.jmetal.util.comparator.DominanceComparator;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.DynamicProblem;
@@ -57,16 +58,20 @@ public class DynamicNSGAII<S extends Solution<?>>
   private int completedIterations ;
   private boolean stopAtTheEndOfTheCurrentIteration = false ;
   private RestartStrategy<S> restartStrategyForProblemChange ;
-
+  private Comparator<S> dominanceComparator ;
   Observable<AlgorithmObservedData> observable ;
 
-  public DynamicNSGAII(DynamicProblem<S, ?> problem, int maxEvaluations, int populationSize,
+  public DynamicNSGAII(DynamicProblem<S, ?> problem, int maxEvaluations, int populationSize, int matingPoolSize,
+                       int offspringPopulationSize, Comparator<S> dominanceComparator,
                        CrossoverOperator<S> crossoverOperator,
                        MutationOperator<S> mutationOperator,
                        SelectionOperator<List<S>, S> selectionOperator,
                        SolutionListEvaluator<S> evaluator,
                        Observable<AlgorithmObservedData> observable) {
-    super(problem, maxEvaluations, populationSize, crossoverOperator, mutationOperator, selectionOperator,evaluator);
+
+    super(problem, maxEvaluations, populationSize, matingPoolSize, offspringPopulationSize,
+            crossoverOperator,
+            mutationOperator, selectionOperator, dominanceComparator, evaluator);
 
     completedIterations = 0 ;
     this.observable = observable ;
@@ -83,7 +88,7 @@ public class DynamicNSGAII<S extends Solution<?>>
                        SolutionListEvaluator<S> evaluator,
                        Comparator<S> dominanceComparator,
                        Observable<AlgorithmObservedData> observable) {
-    super(problem, maxEvaluations, populationSize, crossoverOperator, mutationOperator, selectionOperator, dominanceComparator,evaluator);
+    super(problem, maxEvaluations, populationSize,populationSize,populationSize, crossoverOperator, mutationOperator, selectionOperator, dominanceComparator,evaluator);
 
     completedIterations = 0 ;
     this.observable = observable ;
