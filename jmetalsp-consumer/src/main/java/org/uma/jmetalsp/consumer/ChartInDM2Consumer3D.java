@@ -13,6 +13,7 @@
 
 package org.uma.jmetalsp.consumer;
 
+import java.util.ArrayList;
 import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.style.Styler;
@@ -21,9 +22,11 @@ import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetal.util.front.Front;
 import org.uma.jmetal.util.front.imp.ArrayFront;
+import org.uma.jmetal.util.point.PointSolution;
 import org.uma.jmetalsp.DataConsumer;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
+import org.uma.jmetalsp.observeddata.ObservedSolution;
 import org.uma.jmetalsp.observer.Observable;
 
 import java.io.FileNotFoundException;
@@ -43,8 +46,8 @@ public class ChartInDM2Consumer3D<S extends Solution<?>> implements
 
   //private DynamicAlgorithm<?, AlgorithmObservedData<S>> dynamicAlgorithm;
   private String nameAlgorithm;
-  private ChartContainer3D<S> chart;
-  private List<S> lastReceivedFront = null;
+  private ChartContainer3D chart;
+  private List<PointSolution> lastReceivedFront = null;
   private List<Double> referencePoint;
 
   public ChartInDM2Consumer3D(String nameAlgorithm,
@@ -75,13 +78,18 @@ public class ChartInDM2Consumer3D<S extends Solution<?>> implements
   @Override
   public void update(Observable<AlgorithmObservedData> observable, AlgorithmObservedData data) {
     int numberOfIterations = 0;
-    List<S> solutionList = null;
+    List<PointSolution> solutionList = null;
     List<Double> newReferencePoint = null;
     if (data.getData().containsKey("numberOfIterations")) {
       numberOfIterations = (int) data.getData().get("numberOfIterations");
     }
     if (data.getData().containsKey("solutionList")) {
-      solutionList = (List<S>) data.getData().get("solutionList");
+      //solutionList = (List<S>) data.getData().get("solutionList");
+      solutionList = new ArrayList<>() ;
+      List<ObservedSolution> receivedList =  (List<ObservedSolution>)data.getData().get("solutionList") ;
+      for (int i = 0 ; i< receivedList.size(); i++) {
+        solutionList.add(new PointSolution(receivedList.get(i).getPointSolution()));
+      }
     }
 
     if (data.getData().containsKey("referencePoint")) {
@@ -92,7 +100,7 @@ public class ChartInDM2Consumer3D<S extends Solution<?>> implements
 
     double coverageValue = 0;
     if (chart == null) {
-      this.chart = new ChartContainer3D<S>(this.nameAlgorithm, 200);
+      this.chart = new ChartContainer3D(this.nameAlgorithm, 200);
       chart.addFrontChart(0, 1);
       chart.addFrontChart(0, 2);
       chart.addFrontChart(1, 2);
@@ -103,7 +111,8 @@ public class ChartInDM2Consumer3D<S extends Solution<?>> implements
       this.chart.initChart();
     } else {
       if (solutionList.size() != 0) {
-        for (XYChart xychart : this.chart.getCharts()) {
+        List<XYChart> charts = this.chart.getCharts();
+        for (XYChart xychart : charts) {
           xychart.setTitle("Iteration: " + numberOfIterations);
 
           if (lastReceivedFront == null) {
@@ -113,7 +122,7 @@ public class ChartInDM2Consumer3D<S extends Solution<?>> implements
           } else {
             Front referenceFront = new ArrayFront(lastReceivedFront);
 
-            InvertedGenerationalDistance<S> igd =
+            InvertedGenerationalDistance igd =
                     new InvertedGenerationalDistance<S>(referenceFront);
 
             coverageValue = igd.evaluate(solutionList);

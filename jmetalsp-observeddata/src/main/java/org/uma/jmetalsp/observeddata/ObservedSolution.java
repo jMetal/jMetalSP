@@ -4,8 +4,9 @@ import com.cedarsoftware.util.io.JsonReader;
 import com.cedarsoftware.util.io.JsonWriter;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.point.Point;
+import org.uma.jmetal.util.point.PointSolution;
 import org.uma.jmetal.util.point.impl.ArrayPoint;
-import org.uma.jmetal.util.point.util.PointSolution;
+//import org.uma.jmetal.util.point.util.PointSolution;
 import org.uma.jmetalsp.ObservedData;
 
 import java.util.ArrayList;

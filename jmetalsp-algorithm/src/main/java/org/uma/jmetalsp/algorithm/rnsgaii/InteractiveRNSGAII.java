@@ -20,13 +20,13 @@ public class InteractiveRNSGAII<S extends Solution<?>> extends RNSGAII<S> implem
    * Constructor
    */
 
-  public InteractiveRNSGAII(Problem problem,  int populationSize,
+  public InteractiveRNSGAII(Problem problem,  int populationSize,int matingPoolSize, int offspringPopulationSize,
       CrossoverOperator crossoverOperator,
       MutationOperator mutationOperator,
       SelectionOperator selectionOperator,
       SolutionListEvaluator evaluator, List interestPoint,
       double epsilon) {
-    super(problem, 25000, populationSize, crossoverOperator, mutationOperator,
+    super(problem, 25000, populationSize,matingPoolSize,offspringPopulationSize, crossoverOperator, mutationOperator,
         selectionOperator, evaluator, interestPoint, epsilon);
   }
 

@@ -84,10 +84,9 @@ public class NSGAIIRunner {
 
     Logger.getLogger("org").setLevel(Level.OFF);
 
-    algorithm = new NSGAIIBuilder<DoubleSolution>(problem, crossover, mutation)
+    algorithm = new NSGAIIBuilder<DoubleSolution>(problem, crossover, mutation, 100)
             .setSelectionOperator(selection)
             .setMaxEvaluations(25000)
-            .setPopulationSize(100)
             .setSolutionListEvaluator(new SparkSolutionListEvaluator<DoubleSolution>(sparkContext))
             .build();
 
