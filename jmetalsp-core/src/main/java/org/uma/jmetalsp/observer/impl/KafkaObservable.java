@@ -5,7 +5,7 @@ import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 import org.uma.jmetalsp.ObservedData;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.Observer;
-import org.uma.jmetalsp.util.serialization.DataSerializer;
+import org.uma.jmetalsp.serialization.DataSerializer;
 
 import java.util.Collection;
 import java.util.HashSet;

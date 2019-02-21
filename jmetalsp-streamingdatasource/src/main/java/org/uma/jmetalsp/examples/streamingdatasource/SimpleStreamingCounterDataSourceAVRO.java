@@ -5,14 +5,15 @@ import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
 import org.uma.jmetalsp.observer.impl.KafkaObservable;
+import org.uma.jmetalsp.serialization.counter.Counter;
 
 /**
  * This class emits the value of a counter periodically after a given delay (in milliseconds)
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class SimpleStreamingCounterDataSourceAVRO
-		implements StreamingDataSource<ObservedValue<Integer>> {
-	private Observable<ObservedValue<Integer>> observable;
+		implements StreamingDataSource<ObservedValue<Counter>> {
+	private Observable<ObservedValue<Counter>> observable;
 	private int dataDelay ;
 
 	/**
@@ -20,7 +21,7 @@ public class SimpleStreamingCounterDataSourceAVRO
 	 * @param observable
 	 * @param dataDelay Delay in milliseconds
 	 */
-	public SimpleStreamingCounterDataSourceAVRO(Observable<ObservedValue<Integer>> observable, int dataDelay) {
+	public SimpleStreamingCounterDataSourceAVRO(Observable<ObservedValue<Counter>> observable, int dataDelay) {
 		this.observable = observable ;
 		this.dataDelay = dataDelay ;
 	}
@@ -29,28 +30,28 @@ public class SimpleStreamingCounterDataSourceAVRO
 		this(new DefaultObservable<>(), dataDelay);
 	}
 
-	public SimpleStreamingCounterDataSourceAVRO(int dataDelay, Observable<ObservedValue<Integer>> observable) {
+	public SimpleStreamingCounterDataSourceAVRO(int dataDelay, Observable<ObservedValue<Counter>> observable) {
 		this(observable, dataDelay) ;
 	}
 
 	@Override
 	public void run() {
-		int counter = 0 ;
+		int count = 0 ;
 		while (true) {
 			try {
 				Thread.sleep(dataDelay);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-
+			Counter counter = new Counter(count);
 			observable.setChanged(); ;
 			observable.notifyObservers(new ObservedValue<>(counter));
-			counter ++ ;
+			count ++ ;
 		}
 	}
 
 	@Override
-	public Observable<ObservedValue<Integer>> getObservable() {
+	public Observable<ObservedValue<Counter>> getObservable() {
 		return this.observable;
 	}
 
@@ -65,7 +66,7 @@ public class SimpleStreamingCounterDataSourceAVRO
 
 		SimpleStreamingCounterDataSourceAVRO simpleStreamingCounterDataSource =
 				new SimpleStreamingCounterDataSourceAVRO(
-						new KafkaObservable<>(topicName, new ObservedValue<>()), 2000) ;
+						new KafkaObservable<>(topicName, "avsc/Counter.avsc"), 2000) ;
 
 		simpleStreamingCounterDataSource.run();
 	}

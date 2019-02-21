@@ -1,10 +1,7 @@
-{"namespace":"org.uma.jmetalsp.problem.tsp",
+{"namespace":"org.uma.jmetalsp.problem.counter",
     "type": "record",
-    "name": "TSPMatrixData",
+    "name": "Counter",
     "fields":[
-        {"name": "matrixIdentifier", "type":"string"},
-        {"name": "x", "type":"int"},
-        {"name": "y", "type":"int"},
-        {"name": "value", "type":"double"}
+        {"name": "value", "type":"int"}
     ]
 }

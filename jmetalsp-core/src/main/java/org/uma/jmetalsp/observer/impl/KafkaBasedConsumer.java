@@ -7,7 +7,8 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 
 import org.uma.jmetalsp.ObservedData;
 import org.uma.jmetalsp.observer.Observer;
-import org.uma.jmetalsp.util.serialization.DataDeserializer;
+import org.uma.jmetalsp.serialization.DataDeserializer;
+import org.uma.jmetalsp.serialization.DataSerializer;
 
 import java.util.Arrays;
 import java.util.Properties;
