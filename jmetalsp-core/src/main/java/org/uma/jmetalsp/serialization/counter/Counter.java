@@ -4,8 +4,13 @@ import org.apache.avro.Schema;
 import org.apache.avro.specific.SpecificRecord;
 import org.apache.avro.specific.SpecificRecordBase;
 
-public class Counter extends SpecificRecordBase implements SpecificRecord {
+import java.io.Serializable;
+
+public class Counter extends SpecificRecordBase implements SpecificRecord, Serializable {
     private int value;
+    public Counter(){
+        this.value=0;
+    }
     public Counter(int value){
         this.value = value;
     }
@@ -24,4 +29,5 @@ public class Counter extends SpecificRecordBase implements SpecificRecord {
         value =(Integer)o;
 
     }
+
 }

@@ -57,10 +57,12 @@ public class SimpleSparkStructuredKafkaStreamingCounterAVRO implements SparkStre
 
         JavaDStream<Integer> time=stream.map(value -> {
             DataDeserializer<Counter> dataDeserializer = new DataDeserializer<>();
-            Object o =dataDeserializer.deserialize(value.value(),"avsc/Counter.avsc");
-            GenericData.Record rc=(GenericData.Record)o;
+            //Object o =dataDeserializer.deserialize(value.value(),"avsc/Counter.avsc");
+            //GenericData.Record rc=(GenericData.Record)o;
+            Counter counter = dataDeserializer.deserialize(value.value(),"avsc/Counter.avsc");
             //Counter counter =  (Counter) dataDeserializer.deserialize(value.value(),"avsc/Counter.avsc");
-             return (Integer) rc.get(0);
+             //return (Integer) rc.get(0);
+            return (Integer) counter.get(0);
         });
         /*time.foreachRDD(numbers->
                 {

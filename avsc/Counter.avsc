@@ -1,4 +1,4 @@
-{"namespace":"org.uma.jmetalsp.problem.counter",
+{"namespace":"org.uma.jmetalsp.serialization.counter",
     "type": "record",
     "name": "Counter",
     "fields":[

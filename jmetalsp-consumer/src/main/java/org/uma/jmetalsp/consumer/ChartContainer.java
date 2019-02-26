@@ -277,6 +277,7 @@ public class ChartContainer<S extends Solution<?>> {
         // this.deleteAllFront();//delete the other fronts
       }
 
+
       this.frontChart.addSeries("Front." + counter,
               this.getSolutionsForObjective(solutionList, this.objective1),
               this.getSolutionsForObjective(solutionList, this.objective2),

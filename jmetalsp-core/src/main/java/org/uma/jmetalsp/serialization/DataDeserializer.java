@@ -23,7 +23,7 @@ public class DataDeserializer<S> {
             decoder = DecoderFactory.get().binaryDecoder(event,null);
             result= reader.read(null,decoder);
         }catch (EOFException ex){
-
+            ex.printStackTrace();
         }
         catch (Exception ex){
             ex.printStackTrace();
