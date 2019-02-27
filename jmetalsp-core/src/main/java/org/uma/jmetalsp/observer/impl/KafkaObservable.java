@@ -61,7 +61,7 @@ public class KafkaObservable<O extends ObservedData<?>> implements Observable<O>
 
     Properties properties = new Properties();
     properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-    properties.put(ProducerConfig.CLIENT_ID_CONFIG, "DemoProducer");
+    properties.put(ProducerConfig.CLIENT_ID_CONFIG, "AlgorithmDataProducer");
     properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.IntegerSerializer");
     properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.ByteArraySerializer");
 
