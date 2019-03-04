@@ -92,6 +92,12 @@
             <artifactId>json</artifactId>
             <version>20131018</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.flink/flink-avro -->
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-avro</artifactId>
+            <version>1.7.2</version>
+        </dependency>
     </dependencies>
 
 </project>
