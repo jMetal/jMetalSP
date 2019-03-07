@@ -10,27 +10,25 @@ import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.comparator.DominanceComparator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
-import org.uma.jmetalsp.DataConsumer;
-import org.uma.jmetalsp.DynamicAlgorithm;
-import org.uma.jmetalsp.DynamicProblem;
-import org.uma.jmetalsp.JMetalSPApplication;
+import org.uma.jmetalsp.*;
 import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAIIAVRO;
 import org.uma.jmetalsp.consumer.ChartConsumer;
 import org.uma.jmetalsp.consumer.ChartConsumerAVRO;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
+import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingCounterDataSource;
+import org.uma.jmetalsp.impl.DefaultRuntime;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.Observable;
-import org.uma.jmetalsp.observer.impl.DefaultObservable;
 import org.uma.jmetalsp.observer.impl.KafkaBasedConsumer;
 import org.uma.jmetalsp.observer.impl.KafkaObservable;
 import org.uma.jmetalsp.problem.fda.FDA2;
 import org.uma.jmetalsp.serialization.algorithmdata.AlgorithmData;
-import org.uma.jmetalsp.spark.SparkRuntime;
 import org.uma.jmetalsp.spark.SparkStreamingDataSource;
 import org.uma.jmetalsp.spark.streamingdatasource.SimpleSparkStructuredKafkaStreamingCounterAVRO;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
+import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNRandomSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNSolutionsAccordingToTheHypervolumeContribution;
 
 import java.io.IOException;
@@ -43,23 +41,18 @@ import java.util.Map;
  * Features:
  * - Algorithm: to choose among NSGA-II, SMPSO, MOCell, and WASF-GA
  * - Problem: Any of the FDA familiy
- * - Spark streaming runtime
+ * - Default streaming runtime (Spark is not used)
  *
  * Steps to compile and run the example:
  * 1. Compile the project:
-      mvn package
- * 2. Run the program with the name of the output directory where the fronts will be stored:
-      spark-submit --class="org.uma.jmetalsp.examples.continuousproblemapplication.DynamicContinuousApplicationWithSpark" \
-      jmetalsp-examples/target/jmetalsp-examples-1.1-SNAPSHOT-jar-with-dependencies.jar outputDirectory
- * 3. At the same time, run the program to simulate the streaming data source that generates time:
-      java -cp jmetalsp-externalsource/target/jmetalsp-externalsource-1-SNAPSHOT-jar-with-dependencies.jar \
-      org.uma.jmetalsp.externalsources.CounterProvider outputDirectory 2000
- * where "outputDirectory" must the same used in Step 3, and the second argument is the frequency of
- * data generation (2000 milliseconds in this example)
- *
+     mvn package
+ * 2. Run the program:
+    java -cp jmetalsp-examples/target/jmetalsp-examples-1.1-SNAPSHOTar-with-dependencies.jar \
+    org.uma.jmetalsp.examples.continuousproblemapplication.DynamicContinuousApplication
+
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class DynamicContinuousApplicationWithSparkKafkaObserverAVRO {
+public class DynamicContinuousApplicationAVRO {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     // STEP 1. Create the problem
@@ -75,8 +68,8 @@ public class DynamicContinuousApplicationWithSparkKafkaObserverAVRO {
     SelectionOperator<List<DoubleSolution>, DoubleSolution> selection=new BinaryTournamentSelection<DoubleSolution>();
     Observable<AlgorithmData> observable = new KafkaObservable<>("front","avsc/AlgorithmData.avsc");
     DynamicAlgorithm<List<DoubleSolution>, AlgorithmData> algorithm =
-           new  DynamicNSGAIIAVRO<DoubleSolution>(problem,25000, 100, crossover, mutation,
-    selection, new SequentialSolutionListEvaluator<>(), new DominanceComparator<>(),observable);
+            new DynamicNSGAIIAVRO<DoubleSolution>(problem,250000, 100, crossover, mutation,
+                    selection, new SequentialSolutionListEvaluator<>(), new DominanceComparator<>(),observable);
 
     algorithm.setRestartStrategy(new RestartStrategy<>(
             //new RemoveFirstNSolutions<>(50),
@@ -86,18 +79,19 @@ public class DynamicContinuousApplicationWithSparkKafkaObserverAVRO {
             new CreateNRandomSolutions<DoubleSolution>()));
 
     // STEP 3. Create the streaming data source (only one in this example) and register the problem
-    String topic="counter";
-    Map<String,Object>  kafkaParams = new HashMap<>();
+    /*String topic="counter";
+    Map<String,Object> kafkaParams = new HashMap<>();
     kafkaParams.put("bootstrap.servers", "localhost:9092");
     kafkaParams.put(ConsumerConfig.GROUP_ID_CONFIG, "DemoConsumer");
     kafkaParams.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
     kafkaParams.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "1000");
     kafkaParams.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "30000");
     kafkaParams.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.IntegerDeserializer");
-    kafkaParams.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.ByteArrayDeserializer");
+    kafkaParams.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.ByteArrayDeserializer");*/
 
-    SparkStreamingDataSource streamingDataSource =
-            new SimpleSparkStructuredKafkaStreamingCounterAVRO(kafkaParams,topic) ;
+    // STEP 3. Create the streaming data source (only one in this example) and register the problem
+    StreamingDataSource<ObservedValue<Integer>> streamingDataSource =
+            new SimpleStreamingCounterDataSource(2000) ;
 
     // STEP 4. Create the data consumers and register into the algorithm
 
@@ -109,19 +103,21 @@ public class DynamicContinuousApplicationWithSparkKafkaObserverAVRO {
     chartKafkaBasedConsumer.start();
 
     // STEP 5. Create the application and run
+
     JMetalSPApplication<
             DoubleSolution,
             DynamicProblem<DoubleSolution, ObservedValue<Integer>>,
             DynamicAlgorithm<List<DoubleSolution>, AlgorithmData>> application;
 
+
     application = new JMetalSPApplication<>();
 
-    application.setStreamingRuntime(new SparkRuntime(2))
+    application.setStreamingRuntime(new DefaultRuntime())
             .setProblem(problem)
             .setAlgorithm(algorithm)
             .addStreamingDataSource(streamingDataSource,problem)
+            //.addAlgorithmDataConsumer(localDirectoryOutputConsumer)
             .addAlgorithmDataConsumer(chartConsumer)
             .run();
-
   }
 }

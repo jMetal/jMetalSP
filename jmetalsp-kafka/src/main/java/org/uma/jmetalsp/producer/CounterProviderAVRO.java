@@ -17,7 +17,7 @@ public class CounterProviderAVRO extends Thread{
     public CounterProviderAVRO(String topic){
         this.topic = topic;
         Properties props = new Properties();
-        props.put("bootstrap.servers", "192.168.227.26:9092");
+        props.put("bootstrap.servers", "localhost:9092");
         props.put("client.id", "CounterProducer");
         props.put("key.serializer", "org.apache.kafka.common.serialization.IntegerSerializer");
         props.put("value.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");

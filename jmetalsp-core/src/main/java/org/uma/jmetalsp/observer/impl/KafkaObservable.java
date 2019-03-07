@@ -60,8 +60,10 @@ public class KafkaObservable<O extends ObservedData<?>> implements Observable<O>
     this.pathAVRO =pathAVRO;
 
     Properties properties = new Properties();
-    properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-    properties.put(ProducerConfig.CLIENT_ID_CONFIG, "AlgorithmDataProducer");
+    properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");//"192.168.48.222:29092"
+    //properties.put("metadata.broker.list", "192.168.48.222:29092");
+    properties.put(ProducerConfig.CLIENT_ID_CONFIG, "Algorithm-DataProducer");
+
     properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.IntegerSerializer");
     properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.ByteArraySerializer");
 
@@ -83,7 +85,7 @@ public class KafkaObservable<O extends ObservedData<?>> implements Observable<O>
   @Override
   public void notifyObservers(O data) {
     if (dataHasChanged) {
-      System.out.println("Sending data") ;
+
       if(pathAVRO==null) {
         producer.send(new ProducerRecord<String, String>(topicName, "0", data.toJson()));
       }else{
@@ -97,6 +99,7 @@ public class KafkaObservable<O extends ObservedData<?>> implements Observable<O>
         Future<RecordMetadata> send =
                 producerAVRO.send(new ProducerRecord<Integer, byte[]>
                         (topicName, count, aux));
+        System.out.println("Sending data "+count) ;
       }
     }
     clearChanged();
