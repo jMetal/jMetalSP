@@ -115,28 +115,28 @@ public class ChartInDM2Consumer3D<S extends Solution<?>> implements
         for (XYChart xychart : charts) {
           xychart.setTitle("Iteration: " + numberOfIterations);
 
-          if (lastReceivedFront == null) {
-            lastReceivedFront = solutionList;
+          //if (lastReceivedFront == null) {
+           // lastReceivedFront = solutionList;
             this.chart.updateFrontCharts(solutionList, numberOfIterations);
-            this.chart.refreshCharts();
-          } else {
-            Front referenceFront = new ArrayFront(lastReceivedFront);
+           // this.chart.refreshCharts();
+          //} else {
+            //Front referenceFront = new ArrayFront(lastReceivedFront);
 
-            InvertedGenerationalDistance igd =
-                    new InvertedGenerationalDistance<S>(referenceFront);
+            //InvertedGenerationalDistance igd =
+             //       new InvertedGenerationalDistance<S>(referenceFront);
 
-            coverageValue = igd.evaluate(solutionList);
-          }
+            //coverageValue = igd.evaluate(solutionList);
+          //}
 
-          if (coverageValue > 0.005) {
-            this.chart.updateFrontCharts(solutionList, numberOfIterations);
-            lastReceivedFront = solutionList;
+          //if (coverageValue > 0.005) {
+            //this.chart.updateFrontCharts(solutionList, numberOfIterations);
+            //lastReceivedFront = solutionList;
             try {
               this.chart.saveChart(numberOfIterations + ".chart", BitmapEncoder.BitmapFormat.PNG);
             } catch (IOException e) {
               e.printStackTrace();
             }
-          }
+          //}
 
           if (newReferencePoint != null) {
             this.chart.setReferencePoint(newReferencePoint);

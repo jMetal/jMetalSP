@@ -20,9 +20,13 @@ import org.uma.jmetal.operator.SelectionOperator;
 import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
 import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
 import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
+import org.uma.jmetal.qualityindicator.impl.InvertedGenerationalDistance;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
+import org.uma.jmetal.util.front.Front;
+import org.uma.jmetal.util.front.imp.ArrayFront;
+import org.uma.jmetal.util.point.PointSolution;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.observeddata.ObservedValue;
@@ -57,7 +61,8 @@ public class DynamicNSGAIIAVRO<S extends Solution<?>>
   private boolean stopAtTheEndOfTheCurrentIteration = false ;
   private RestartStrategy<S> restartStrategyForProblemChange ;
   private Comparator<S> dominanceComparator ;
-  Observable<AlgorithmData> observable ;
+  private Observable<AlgorithmData> observable ;
+  private List<S> lastReceivedFront;
 
   public DynamicNSGAIIAVRO(DynamicProblem<S, ?> problem, int maxEvaluations, int populationSize, int matingPoolSize,
                            int offspringPopulationSize, Comparator<S> dominanceComparator,
@@ -102,7 +107,7 @@ public class DynamicNSGAIIAVRO<S extends Solution<?>>
 
   @Override protected boolean isStoppingConditionReached() {
     if (evaluations >= maxEvaluations) {
-      observable.setChanged() ;
+
 
       /*Map<String, Object> algorithmData = new HashMap<>() ;
 
@@ -113,15 +118,36 @@ public class DynamicNSGAIIAVRO<S extends Solution<?>>
 
       observable.notifyObservers(new AlgorithmObservedData((List<Solution<?>>) getPopulation(), algorithmData));
       */
-      AlgorithmData data = new AlgorithmData();
-      data.setAlgorithmName(this.getName());
-      data.setNumberOfIterations(completedIterations);
-      data.setProblemName(problem.getName());
-      data.setNumberOfObjectives(problem.getNumberOfObjectives());
-      data.setObjectives(getObjectives());
-      data.setVariables(getVariables());
-      data.setReferencePoints(new ArrayList<>());
-      observable.notifyObservers(data);
+      double coverageValue=2.0;
+      if (lastReceivedFront != null){
+        Front referenceFront = new ArrayFront(lastReceivedFront);
+
+        InvertedGenerationalDistance<PointSolution> igd =
+                new InvertedGenerationalDistance<PointSolution>(referenceFront);
+        List<S> list = getPopulation();
+        List<PointSolution> pointSolutionList = new ArrayList<>();
+        for (S s:list){
+          PointSolution pointSolution = new PointSolution(s);
+          pointSolutionList.add(pointSolution);
+        }
+        coverageValue = igd.evaluate(pointSolutionList);
+      }
+
+
+
+      if (coverageValue>1.6) {
+        observable.setChanged() ;
+        AlgorithmData data = new AlgorithmData();
+        data.setAlgorithmName(this.getName());
+        data.setNumberOfIterations(completedIterations);
+        data.setProblemName(problem.getName());
+        data.setNumberOfObjectives(problem.getNumberOfObjectives());
+        data.setObjectives(getObjectives());
+        data.setVariables(getVariables());
+        data.setReferencePoints(new ArrayList<>());
+        observable.notifyObservers(data);
+      }
+      lastReceivedFront= getPopulation();
       restart();
       evaluator.evaluate(getPopulation(), getDynamicProblem()) ;
 

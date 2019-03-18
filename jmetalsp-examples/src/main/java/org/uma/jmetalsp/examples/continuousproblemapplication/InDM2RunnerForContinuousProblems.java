@@ -55,8 +55,8 @@ public class InDM2RunnerForContinuousProblems {
   public static void main(String[] args) throws IOException, InterruptedException {
     // STEP 1. Create the problem
     DynamicProblem<DoubleSolution, ObservedValue<Integer>> problem =
-            new DF4();
-           // new FDA2();
+            //new DF1();
+           new FDA2();
 
     // STEP 2. Create and configure the algorithm
   /*  List<Double> referencePoint = new ArrayList<>();
@@ -67,7 +67,7 @@ public class InDM2RunnerForContinuousProblems {
     MutationOperator<DoubleSolution> mutation =
             new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);*/
 
-    List<Double> referencePoint=Arrays.asList(1.0, 1.0);
+    List<Double> referencePoint=Arrays.asList(0.0, 0.0);
     List<List<Double>> referencePoints;
     referencePoints = new ArrayList<>();
 

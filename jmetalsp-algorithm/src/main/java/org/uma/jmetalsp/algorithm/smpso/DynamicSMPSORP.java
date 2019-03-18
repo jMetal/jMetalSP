@@ -17,6 +17,7 @@ package org.uma.jmetalsp.algorithm.smpso;
 import org.uma.jmetal.algorithm.multiobjective.smpso.SMPSORP;
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.problem.DoubleProblem;
+import org.uma.jmetal.qualityindicator.impl.InvertedGenerationalDistance;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.SolutionListUtils;
@@ -24,6 +25,9 @@ import org.uma.jmetal.util.archive.BoundedArchive;
 import org.uma.jmetal.util.archivewithreferencepoint.ArchiveWithReferencePoint;
 import org.uma.jmetal.util.archivewithreferencepoint.impl.CrowdingDistanceArchiveWithReferencePoint;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
+import org.uma.jmetal.util.front.Front;
+import org.uma.jmetal.util.front.imp.ArrayFront;
+import org.uma.jmetal.util.point.PointSolution;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
@@ -51,6 +55,7 @@ public class DynamicSMPSORP extends SMPSORP
   private RestartStrategy<DoubleSolution> restartStrategyForReferencePointChange ;
   private Optional<List<DoubleSolution>> newReferencePoint ;
   private Observable<AlgorithmObservedData> observable;
+  private List<DoubleSolution> lastReceivedFront;
 
   public DynamicSMPSORP(DynamicProblem<DoubleSolution, ?> problem, int swarmSize, List<ArchiveWithReferencePoint<DoubleSolution>> leaders, List<List<Double>> referencePoints, MutationOperator<DoubleSolution> mutationOperator, int maxIterations, double r1Min, double r1Max, double r2Min, double r2Max, double c1Min, double c1Max, double c2Min, double c2Max, double weightMin, double weightMax, double changeVelocity1, double changeVelocity2, SolutionListEvaluator<DoubleSolution> evaluator,
                         Observable<AlgorithmObservedData> observable) {
@@ -109,20 +114,40 @@ public class DynamicSMPSORP extends SMPSORP
   @Override
   protected boolean isStoppingConditionReached() {
     if (iterations >= maxIterations) {
-      observable.setChanged();
-      Map<String, Object> algorithmData = new HashMap<>() ;
+      double coverageValue=1.0;
+      if (lastReceivedFront != null){
+        Front referenceFront = new ArrayFront(lastReceivedFront);
 
-      algorithmData.put("numberOfIterations",completedIterations);
-      algorithmData.put("algorithmName", getName()) ;
-      algorithmData.put("problemName", problem.getName()) ;
-      algorithmData.put("numberOfObjectives", problem.getNumberOfObjectives()) ;
-      List<Solution<?>> aux = new ArrayList<>();
-      List<DoubleSolution> solutions = getResult();
-      for (DoubleSolution solution:solutions) {
-        aux.add(solution);
+        InvertedGenerationalDistance<PointSolution> igd =
+                new InvertedGenerationalDistance<PointSolution>(referenceFront);
+        List<DoubleSolution> list = getResult();
+        List<PointSolution> pointSolutionList = new ArrayList<>();
+        for (DoubleSolution s:list){
+          PointSolution pointSolution = new PointSolution(s);
+          pointSolutionList.add(pointSolution);
+        }
+        coverageValue = igd.evaluate(pointSolutionList);
       }
-      observable.notifyObservers(new AlgorithmObservedData(aux, algorithmData));
-      //observable.notifyObservers(new AlgorithmObservedData(getResult(), algorithmData));
+
+
+
+      if (coverageValue>0.005) {
+        observable.setChanged();
+        Map<String, Object> algorithmData = new HashMap<>();
+
+        algorithmData.put("numberOfIterations", completedIterations);
+        algorithmData.put("algorithmName", getName());
+        algorithmData.put("problemName", problem.getName());
+        algorithmData.put("numberOfObjectives", problem.getNumberOfObjectives());
+        List<Solution<?>> aux = new ArrayList<>();
+        List<DoubleSolution> solutions = getResult();
+        for (DoubleSolution solution : solutions) {
+          aux.add(solution);
+        }
+        observable.notifyObservers(new AlgorithmObservedData(aux, algorithmData));
+        //observable.notifyObservers(new AlgorithmObservedData(getResult(), algorithmData));
+      }
+      lastReceivedFront=getResult();
 
       restart();
       completedIterations++;

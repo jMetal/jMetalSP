@@ -122,30 +122,31 @@ public class ChartInDM2Consumer<S extends Solution<?>> implements
       this.chart.initChart();
     } else {
       if (solutionList.size() != 0) {
-        this.chart.getFrontChart().setTitle("Iteration: " + numberOfIterations);
-        if (lastReceivedFront == null) {
+          // double coverageValue = 0;
+          this.chart.getFrontChart().setTitle(nameAlgorithm+" Iteration: " + numberOfIterations);
+          //if (lastReceivedFront == null) {
           lastReceivedFront = solutionList;
-
           this.chart.updateFrontCharts(solutionList, numberOfIterations);
-          this.chart.refreshCharts();
-        } else {
-          Front referenceFront = new ArrayFront(lastReceivedFront);
+          //this.chart.refreshCharts();
+          //} else {
+          //Front referenceFront = new ArrayFront(lastReceivedFront);
 
-          InvertedGenerationalDistance<PointSolution> igd =
-                  new InvertedGenerationalDistance<PointSolution>(referenceFront);
+          //InvertedGenerationalDistance<PointSolution> igd =
+          //       new InvertedGenerationalDistance<PointSolution>(referenceFront);
 
-          coverageValue = igd.evaluate(solutionList);
-        }
+          //coverageValue=igd.evaluate(solutionList);
+          // }
 
-        if (coverageValue > 0.005) {
-          this.chart.updateFrontCharts(solutionList, numberOfIterations);
-          lastReceivedFront = solutionList;
+          //if (coverageValue>0.005) {
+          //this.chart.updateFrontCharts(solutionList, numberOfIterations);
+          //lastReceivedFront=solutionList;
           try {
-            this.chart.saveChart(nameAlgorithm+"."+nameProblem+"."+numberOfIterations +referenceName()+".chart", BitmapEncoder.BitmapFormat.PNG);
+              this.chart.saveChart(numberOfIterations +".chart", BitmapEncoder.BitmapFormat.PNG);
           } catch (IOException e) {
-            e.printStackTrace();
+              e.printStackTrace();
           }
-        }
+          //}
+
 
         if (newReferencePoint != null) {
           this.chart.setReferencePoint(newReferencePoint);

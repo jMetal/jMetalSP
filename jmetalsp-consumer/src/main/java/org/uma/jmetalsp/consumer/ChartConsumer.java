@@ -120,30 +120,30 @@ public class ChartConsumer<S extends Solution<?>> implements
       this.chart.initChart();
     } else {
       if (solutionList.size() != 0) {
-        double coverageValue = 0;
+        // double coverageValue = 0;
         this.chart.getFrontChart().setTitle(algorithmName+" Iteration: " + numberOfIterations);
-        if (lastReceivedFront == null) {
-          lastReceivedFront = solutionList ;
-          this.chart.updateFrontCharts(solutionList, numberOfIterations);
-          this.chart.refreshCharts();
-        } else {
-          Front referenceFront = new ArrayFront(lastReceivedFront);
+        //if (lastReceivedFront == null) {
+        lastReceivedFront = solutionList;
+        this.chart.updateFrontCharts(solutionList, numberOfIterations);
+        //this.chart.refreshCharts();
+        //} else {
+        //Front referenceFront = new ArrayFront(lastReceivedFront);
 
-          InvertedGenerationalDistance<PointSolution> igd =
-                  new InvertedGenerationalDistance<PointSolution>(referenceFront);
+        //InvertedGenerationalDistance<PointSolution> igd =
+        //       new InvertedGenerationalDistance<PointSolution>(referenceFront);
 
-          coverageValue=igd.evaluate(solutionList);
+        //coverageValue=igd.evaluate(solutionList);
+        // }
+
+        //if (coverageValue>0.005) {
+        //this.chart.updateFrontCharts(solutionList, numberOfIterations);
+        //lastReceivedFront=solutionList;
+        try {
+          this.chart.saveChart(numberOfIterations +".chart", BitmapEncoder.BitmapFormat.PNG);
+        } catch (IOException e) {
+          e.printStackTrace();
         }
-
-        if (coverageValue>0.005) {
-          this.chart.updateFrontCharts(solutionList, numberOfIterations);
-          lastReceivedFront=solutionList;
-          try {
-            this.chart.saveChart(numberOfIterations +".chart", BitmapEncoder.BitmapFormat.PNG);
-          } catch (IOException e) {
-            e.printStackTrace();
-          }
-        }
+        //}
         this.chart.refreshCharts();
       }
     }

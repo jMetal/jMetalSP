@@ -16,11 +16,15 @@ package org.uma.jmetalsp.algorithm.smpso;
 import org.uma.jmetal.algorithm.multiobjective.smpso.SMPSO;
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.problem.DoubleProblem;
+import org.uma.jmetal.qualityindicator.impl.InvertedGenerationalDistance;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.SolutionListUtils;
 import org.uma.jmetal.util.archive.BoundedArchive;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
+import org.uma.jmetal.util.front.Front;
+import org.uma.jmetal.util.front.imp.ArrayFront;
+import org.uma.jmetal.util.point.PointSolution;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
@@ -48,6 +52,7 @@ public class DynamicSMPSO extends SMPSO
 
   private Observable<AlgorithmObservedData> observable;
 
+  private List<DoubleSolution> lastReceivedFront;
   public DynamicSMPSO(DynamicProblem<DoubleSolution, ?> problem, int swarmSize, BoundedArchive<DoubleSolution> leaders,
                       MutationOperator<DoubleSolution> mutationOperator,
                       int maxIterations,
@@ -98,21 +103,41 @@ public class DynamicSMPSO extends SMPSO
   @Override
   protected boolean isStoppingConditionReached() {
     if (getIterations() >= getMaxIterations()) {
-      observable.setChanged();
-      Map<String, Object> algorithmData = new HashMap<>() ;
 
-      algorithmData.put("numberOfIterations",completedIterations);
-      algorithmData.put("algorithmName", getName()) ;
-      algorithmData.put("problemName", problem.getName()) ;
-      algorithmData.put("numberOfObjectives", problem.getNumberOfObjectives()) ;
-      List<Solution<?>> aux = new ArrayList<>();
-      List<DoubleSolution> solutions = getResult();
-      for (DoubleSolution solution:solutions) {
-        aux.add(solution);
+      double coverageValue=1.0;
+      if (lastReceivedFront != null){
+        Front referenceFront = new ArrayFront(lastReceivedFront);
+
+        InvertedGenerationalDistance<PointSolution> igd =
+                new InvertedGenerationalDistance<PointSolution>(referenceFront);
+        List<DoubleSolution> list = getResult();
+        List<PointSolution> pointSolutionList = new ArrayList<>();
+        for (DoubleSolution s:list){
+          PointSolution pointSolution = new PointSolution(s);
+          pointSolutionList.add(pointSolution);
+        }
+        coverageValue = igd.evaluate(pointSolutionList);
       }
-      observable.notifyObservers(new AlgorithmObservedData(aux, algorithmData));
-      //observable.notifyObservers(new AlgorithmObservedData(getResult(), algorithmData));
 
+
+
+      if (coverageValue>0.005) {
+        observable.setChanged();
+        Map<String, Object> algorithmData = new HashMap<>();
+
+        algorithmData.put("numberOfIterations", completedIterations);
+        algorithmData.put("algorithmName", getName());
+        algorithmData.put("problemName", problem.getName());
+        algorithmData.put("numberOfObjectives", problem.getNumberOfObjectives());
+        List<Solution<?>> aux = new ArrayList<>();
+        List<DoubleSolution> solutions = getResult();
+        for (DoubleSolution solution : solutions) {
+          aux.add(solution);
+        }
+        observable.notifyObservers(new AlgorithmObservedData(aux, algorithmData));
+        //observable.notifyObservers(new AlgorithmObservedData(getResult(), algorithmData));
+      }
+      lastReceivedFront=getResult();
       restart();
       completedIterations++;
     }

@@ -30,7 +30,7 @@ public class KafkaObservable<O extends ObservedData<?>> implements Observable<O>
     this.topicName = topicName;
 
     Properties properties = new Properties();
-    properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+    properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "192.168.227.26:9092");
     properties.put(ProducerConfig.CLIENT_ID_CONFIG, "DemoProducer");
     properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.IntegerSerializer");
     properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.ByteArraySerializer");
@@ -44,7 +44,7 @@ public class KafkaObservable<O extends ObservedData<?>> implements Observable<O>
     this.topicName = topicName;
 
     Properties properties = new Properties();
-    properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+    properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "192.168.227.26:9092");
     properties.put(ProducerConfig.CLIENT_ID_CONFIG, "DemoProducer");
     properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.IntegerSerializer");
     properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.ByteArraySerializer");
@@ -60,7 +60,7 @@ public class KafkaObservable<O extends ObservedData<?>> implements Observable<O>
     this.pathAVRO =pathAVRO;
 
     Properties properties = new Properties();
-    properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");//"192.168.48.222:29092"
+    properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "192.168.227.26:9092");//"192.168.48.222:29092"
     //properties.put("metadata.broker.list", "192.168.48.222:29092");
     properties.put(ProducerConfig.CLIENT_ID_CONFIG, "Algorithm-DataProducer");
 
