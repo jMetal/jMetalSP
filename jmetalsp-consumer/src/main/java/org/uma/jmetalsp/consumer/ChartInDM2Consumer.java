@@ -19,7 +19,7 @@ import org.uma.jmetal.qualityindicator.impl.InvertedGenerationalDistance;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.front.Front;
 import org.uma.jmetal.util.front.imp.ArrayFront;
-import org.uma.jmetal.util.point.util.PointSolution;
+import org.uma.jmetal.util.point.PointSolution;
 import org.uma.jmetalsp.DataConsumer;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.ObservedSolution;
@@ -44,12 +44,24 @@ public class ChartInDM2Consumer<S extends Solution<?>> implements
   private List<PointSolution> lastReceivedFront = null;
   private List<Double> referencePoint;
   private int numObjective;
+  private String nameProblem;
   public ChartInDM2Consumer(String nameAlgorithm,
-                            List<Double> referencePoint,int numObj) {
+                            List<Double> referencePoint,int numObj,String nameProblem) {
     this.nameAlgorithm = nameAlgorithm;
     this.chart = null;
     this.referencePoint = referencePoint;
     this.numObjective =numObj;
+    this.nameProblem = nameProblem;
+  }
+
+  private String referenceName(){
+      String result="(";
+      for (Double ref:referencePoint) {
+          result += ref+",";
+      }
+      result= result.substring(0,result.length()-1);
+      result +=")";
+      return result;
   }
 
   @Override
@@ -108,30 +120,31 @@ public class ChartInDM2Consumer<S extends Solution<?>> implements
       this.chart.initChart();
     } else {
       if (solutionList.size() != 0) {
-        this.chart.getFrontChart().setTitle("Iteration: " + numberOfIterations);
-        if (lastReceivedFront == null) {
+          // double coverageValue = 0;
+          this.chart.getFrontChart().setTitle(nameAlgorithm+" Iteration: " + numberOfIterations);
+          //if (lastReceivedFront == null) {
           lastReceivedFront = solutionList;
-
           this.chart.updateFrontCharts(solutionList, numberOfIterations);
-          this.chart.refreshCharts();
-        } else {
-          Front referenceFront = new ArrayFront(lastReceivedFront);
+          //this.chart.refreshCharts();
+          //} else {
+          //Front referenceFront = new ArrayFront(lastReceivedFront);
 
-          InvertedGenerationalDistance<PointSolution> igd =
-                  new InvertedGenerationalDistance<PointSolution>(referenceFront);
+          //InvertedGenerationalDistance<PointSolution> igd =
+          //       new InvertedGenerationalDistance<PointSolution>(referenceFront);
 
-          coverageValue = igd.evaluate(solutionList);
-        }
+          //coverageValue=igd.evaluate(solutionList);
+          // }
 
-        if (coverageValue > 0.005) {
-          this.chart.updateFrontCharts(solutionList, numberOfIterations);
-          lastReceivedFront = solutionList;
+          //if (coverageValue>0.005) {
+          //this.chart.updateFrontCharts(solutionList, numberOfIterations);
+          //lastReceivedFront=solutionList;
           try {
-            this.chart.saveChart(numberOfIterations + ".chart", BitmapEncoder.BitmapFormat.PNG);
+              this.chart.saveChart(numberOfIterations +".chart", BitmapEncoder.BitmapFormat.PNG);
           } catch (IOException e) {
-            e.printStackTrace();
+              e.printStackTrace();
           }
-        }
+          //}
+
 
         if (newReferencePoint != null) {
           this.chart.setReferencePoint(newReferencePoint);

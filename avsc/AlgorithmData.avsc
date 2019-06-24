@@ -1,0 +1,51 @@
+{"namespace":"org.uma.jmetalsp.serialization.algorithmdata",
+    "type": "record",
+    "name": "AlgorithmData",
+    "fields":[
+      {
+        "name":"objectives",
+        "type":{
+           "type":"array",
+           "items":
+           {
+               "type":"array",
+                "items":"double"
+           }
+        }
+      },
+      {
+       "name":"variables",
+       "type":{
+           "type":"array",
+            "items":
+               {
+                "type":"array",
+                 "items":"double"
+                }
+          }
+      },
+       {
+         "name":"referencePoints",
+         "type":{
+           "type":"array",
+            "items":"double"
+            }
+      },
+      {
+        "name": "numberOfIterations",
+         "type":"int"
+      },
+      {
+         "name": "algorithmName",
+         "type":"string"
+      },
+      {
+          "name": "problemName",
+           "type":"string"
+      },
+      {
+              "name": "numberOfObjectives",
+               "type":"int"
+            }
+    ]
+}

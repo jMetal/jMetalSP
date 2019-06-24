@@ -1,4 +1,4 @@
-package org.uma.jmetalsp.util.serialization;
+package org.uma.jmetalsp.serialization;
 
 import org.apache.avro.Schema;
 import org.apache.avro.io.BinaryEncoder;

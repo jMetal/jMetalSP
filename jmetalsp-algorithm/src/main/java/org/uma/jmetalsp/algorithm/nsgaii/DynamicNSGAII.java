@@ -20,9 +20,14 @@ import org.uma.jmetal.operator.SelectionOperator;
 import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
 import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
 import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
+import org.uma.jmetal.qualityindicator.impl.InvertedGenerationalDistance;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.solution.Solution;
+import org.uma.jmetal.util.comparator.DominanceComparator;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
+import org.uma.jmetal.util.front.Front;
+import org.uma.jmetal.util.front.imp.ArrayFront;
+import org.uma.jmetal.util.point.PointSolution;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
@@ -36,10 +41,7 @@ import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveFirstNSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNRandomSolutions;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Class implementing a dynamic version of NSGA-II. Most of the code of the original NSGA-II is
@@ -57,16 +59,21 @@ public class DynamicNSGAII<S extends Solution<?>>
   private int completedIterations ;
   private boolean stopAtTheEndOfTheCurrentIteration = false ;
   private RestartStrategy<S> restartStrategyForProblemChange ;
+  private Comparator<S> dominanceComparator ;
+  private Observable<AlgorithmObservedData> observable ;
+  private List<S> lastReceivedFront;
 
-  Observable<AlgorithmObservedData> observable ;
-
-  public DynamicNSGAII(DynamicProblem<S, ?> problem, int maxEvaluations, int populationSize,
+  public DynamicNSGAII(DynamicProblem<S, ?> problem, int maxEvaluations, int populationSize, int matingPoolSize,
+                       int offspringPopulationSize, Comparator<S> dominanceComparator,
                        CrossoverOperator<S> crossoverOperator,
                        MutationOperator<S> mutationOperator,
                        SelectionOperator<List<S>, S> selectionOperator,
                        SolutionListEvaluator<S> evaluator,
                        Observable<AlgorithmObservedData> observable) {
-    super(problem, maxEvaluations, populationSize, crossoverOperator, mutationOperator, selectionOperator,evaluator);
+
+    super(problem, maxEvaluations, populationSize, matingPoolSize, offspringPopulationSize,
+            crossoverOperator,
+            mutationOperator, selectionOperator, dominanceComparator, evaluator);
 
     completedIterations = 0 ;
     this.observable = observable ;
@@ -83,7 +90,7 @@ public class DynamicNSGAII<S extends Solution<?>>
                        SolutionListEvaluator<S> evaluator,
                        Comparator<S> dominanceComparator,
                        Observable<AlgorithmObservedData> observable) {
-    super(problem, maxEvaluations, populationSize, crossoverOperator, mutationOperator, selectionOperator, dominanceComparator,evaluator);
+    super(problem, maxEvaluations, populationSize,populationSize,populationSize, crossoverOperator, mutationOperator, selectionOperator, dominanceComparator,evaluator);
 
     completedIterations = 0 ;
     this.observable = observable ;
@@ -99,17 +106,37 @@ public class DynamicNSGAII<S extends Solution<?>>
 
   @Override protected boolean isStoppingConditionReached() {
     if (evaluations >= maxEvaluations) {
-      observable.setChanged() ;
 
-      Map<String, Object> algorithmData = new HashMap<>() ;
+      double coverageValue=1.0;
+      if (lastReceivedFront != null){
+        Front referenceFront = new ArrayFront(lastReceivedFront);
 
-      algorithmData.put("numberOfIterations",completedIterations);
-      algorithmData.put("algorithmName", getName()) ;
-      algorithmData.put("problemName", problem.getName()) ;
-      algorithmData.put("numberOfObjectives", problem.getNumberOfObjectives()) ;
+        InvertedGenerationalDistance<PointSolution> igd =
+                new InvertedGenerationalDistance<PointSolution>(referenceFront);
+        List<S> list = getPopulation();
+        List<PointSolution> pointSolutionList = new ArrayList<>();
+        for (S s:list){
+          PointSolution pointSolution = new PointSolution(s);
+          pointSolutionList.add(pointSolution);
+        }
+        coverageValue = igd.evaluate(pointSolutionList);
+      }
 
-      observable.notifyObservers(new AlgorithmObservedData((List<Solution<?>>) getPopulation(), algorithmData));
 
+
+      if (coverageValue>1.5) {
+
+        observable.setChanged();
+        Map<String, Object> algorithmData = new HashMap<>();
+
+        algorithmData.put("numberOfIterations", completedIterations);
+        algorithmData.put("algorithmName", getName());
+        algorithmData.put("problemName", problem.getName());
+        algorithmData.put("numberOfObjectives", problem.getNumberOfObjectives());
+
+        observable.notifyObservers(new AlgorithmObservedData((List<Solution<?>>) getPopulation(), algorithmData));
+      }
+      lastReceivedFront = getPopulation();
       restart();
       evaluator.evaluate(getPopulation(), getDynamicProblem()) ;
 

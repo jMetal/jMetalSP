@@ -47,6 +47,7 @@ public class ChartContainer<S extends Solution<?>> {
   private String referenceName;
   private List<String> referencesPointsNames;
   private int numberOfObjectives;
+  private List<Integer> indices;
   public ChartContainer(String name,int numObj) {
     this(name, 0,numObj);
   }
@@ -60,6 +61,7 @@ public class ChartContainer<S extends Solution<?>> {
     this.referenceName = null;
     this.referencesPointsNames = new ArrayList<>();
     this.numberOfObjectives = numberOfObjectives;
+    this.indices = new ArrayList<>();
   }
 
   public void setFrontChart(int objective1, int objective2) throws FileNotFoundException {
@@ -276,11 +278,16 @@ public class ChartContainer<S extends Solution<?>> {
       if (this.frontChart.getSeriesMap() != null) {
         // this.deleteAllFront();//delete the other fronts
       }
+      if (!indices.contains(counter)) {
 
-      this.frontChart.addSeries("Front." + counter,
-              this.getSolutionsForObjective(solutionList, this.objective1),
-              this.getSolutionsForObjective(solutionList, this.objective2),
-              null);
+
+        this.frontChart.addSeries("Front." + counter,
+                this.getSolutionsForObjective(solutionList, this.objective1),
+                this.getSolutionsForObjective(solutionList, this.objective2),
+                null);
+        indices.add(counter);
+      }
+
     }
   }
 

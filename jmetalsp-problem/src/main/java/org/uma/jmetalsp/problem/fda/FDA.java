@@ -24,6 +24,7 @@ public abstract class FDA
 
 	public FDA (Observable<ObservedValue<Integer>> observable) {
 		this.observable = observable ;
+		this.time = 1.0;
 		observable.register(this);
 	}
 

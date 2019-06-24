@@ -31,6 +31,8 @@ public class DynamicRNSGAIIBuilder<
     private Observable<AlgorithmObservedData> observable ;
   	private List<Double> referencePoint;
   	private double epsilon;
+	private int matingPoolSize;
+	private int offspringPopulationSize;
 
 	public DynamicRNSGAIIBuilder(CrossoverOperator<S> crossoverOperator,
                                  MutationOperator<S> mutationOperator,
@@ -39,6 +41,8 @@ public class DynamicRNSGAIIBuilder<
 		this.crossoverOperator = crossoverOperator ;
 		this.mutationOperator = mutationOperator;
 		this.maxEvaluations = 25000 ;
+		this.matingPoolSize =100;
+		this.offspringPopulationSize =100;
 		this.populationSize = 100 ;
 		this.selectionOperator = new BinaryTournamentSelection<S>(new RankingAndCrowdingDistanceComparator<S>()) ;
 		this.evaluator = new SequentialSolutionListEvaluator<S>();
@@ -118,7 +122,7 @@ public class DynamicRNSGAIIBuilder<
 
 
 	public DynamicRNSGAII<S> build(P problem) {
-		return new DynamicRNSGAII(problem, maxEvaluations, populationSize, crossoverOperator, mutationOperator,
+		return new DynamicRNSGAII(problem, maxEvaluations, populationSize,matingPoolSize,offspringPopulationSize, crossoverOperator, mutationOperator,
 						selectionOperator, evaluator, observable,referencePoint,epsilon);
 	}
 }

@@ -54,12 +54,13 @@ public class DynamicRNSGAII<S extends Solution<?>>
   private Optional<List<S>> newReferencePoint ;
 
   public DynamicRNSGAII(DynamicProblem<S, ?> problem, int maxEvaluations, int populationSize,
+                        int matingPoolSize, int offspringPopulationSize,
                         CrossoverOperator<S> crossoverOperator,
                         MutationOperator<S> mutationOperator,
                         SelectionOperator<List<S>, S> selectionOperator,
                         SolutionListEvaluator<S> evaluator,
                         Observable<AlgorithmObservedData> observable,List<Double> referencePoint, double epsilon) {
-    super(problem, maxEvaluations, populationSize, crossoverOperator, mutationOperator, selectionOperator, evaluator,referencePoint,epsilon);
+    super(problem, maxEvaluations, populationSize, matingPoolSize,offspringPopulationSize, crossoverOperator, mutationOperator, selectionOperator, evaluator,referencePoint,epsilon);
     this.newReferencePoint = Optional.ofNullable(null);
     this.completedIterations = 0 ;
     this.observable = observable ;
@@ -79,7 +80,7 @@ public class DynamicRNSGAII<S extends Solution<?>>
   }
 
   @Override protected boolean isStoppingConditionReached() {
-    if (evaluations >= maxEvaluations) {
+    if (evaluations.get() >= maxEvaluations) {
       observable.setChanged() ;
 
       Map<String, Object> algorithmData = new HashMap<>() ;
@@ -116,15 +117,18 @@ public class DynamicRNSGAII<S extends Solution<?>>
       restart() ;
       evaluator.evaluate(getPopulation(), getDynamicProblem()) ;
       newReferencePoint = Optional.ofNullable(null);
-      evaluations = 0 ;
+      evaluations.reset();
+      //evaluations = 0 ;
     } else if (getDynamicProblem().hasTheProblemBeenModified()) {
       this.restartStrategyForProblemChange.restart(getPopulation(), (DynamicProblem<S, ?>) getProblem());
       restart() ;
       evaluator.evaluate(getPopulation(), getDynamicProblem()) ;
       getDynamicProblem().reset();
-      evaluations = 0 ;
+      //evaluations = 0 ;
+      evaluations.reset();
     } else {
-      evaluations += getMaxPopulationSize() ;
+      //evaluations += getMaxPopulationSize() ;
+      evaluations.increment(maxPopulationSize);
     }
 
   }

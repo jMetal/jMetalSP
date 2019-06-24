@@ -2,8 +2,13 @@ package org.uma.jmetalsp.algorithm.indm2;
 
 import org.uma.jmetal.algorithm.Algorithm;
 import org.uma.jmetal.problem.Problem;
+import org.uma.jmetal.qualityindicator.impl.InvertedGenerationalDistance;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.JMetalException;
+import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
+import org.uma.jmetal.util.front.Front;
+import org.uma.jmetal.util.front.imp.ArrayFront;
+import org.uma.jmetal.util.point.PointSolution;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.InteractiveAlgorithm;
@@ -42,6 +47,7 @@ public class InDM2<S extends Solution<?>>
   private int evaluations;
   private int maxEvaluations;
   Problem<S> problem;
+  private List<S> lastReceivedFront;
   public InDM2(Problem<S> problem, int populationSize, int maxEvaluations,InteractiveAlgorithm<S,List<S>> interactiveAlgorithm,
                Observable<AlgorithmObservedData> observable) {
     this.interactiveAlgorithm = interactiveAlgorithm;
@@ -85,7 +91,7 @@ public class InDM2<S extends Solution<?>>
 
   @Override
   public String getName() {
-    return "InDM2";
+    return "InDM2-"+interactiveAlgorithm.getName();
   }
 
   @Override
@@ -96,14 +102,36 @@ public class InDM2<S extends Solution<?>>
 
   protected boolean isStoppingConditionReached() {
     if (evaluations >= maxEvaluations) {
-      observable.setChanged();
-      Map<String, Object> algorithmData = new HashMap<>() ;
-      algorithmData.put("numberOfIterations",completedIterations);
-      algorithmData.put("algorithmName", getName()) ;
-      algorithmData.put("problemName", problem.getName()) ;
-      algorithmData.put("numberOfObjectives", problem.getNumberOfObjectives()) ;
 
-      observable.notifyObservers(new AlgorithmObservedData((List<Solution<?>>) interactiveAlgorithm.getResult(), algorithmData));
+        double coverageValue=1.0;
+        if (lastReceivedFront != null){
+            Front referenceFront = new ArrayFront(lastReceivedFront);
+
+        InvertedGenerationalDistance<PointSolution> igd =
+                new InvertedGenerationalDistance<PointSolution>(referenceFront);
+        List<S> list = interactiveAlgorithm.getResult();
+          List<PointSolution> pointSolutionList = new ArrayList<>();
+        for (S s:list){
+         PointSolution pointSolution = new PointSolution(s);
+          pointSolutionList.add(pointSolution);
+         }
+         coverageValue = igd.evaluate(pointSolutionList);
+        }
+
+
+
+      if (coverageValue>0.005) {
+          observable.setChanged();
+          Map<String, Object> algorithmData = new HashMap<>();
+          algorithmData.put("numberOfIterations", completedIterations);
+          algorithmData.put("algorithmName", getName());
+          algorithmData.put("problemName", problem.getName());
+          algorithmData.put("numberOfObjectives", problem.getNumberOfObjectives());
+
+
+          observable.notifyObservers(new AlgorithmObservedData((List<Solution<?>>) interactiveAlgorithm.getResult(), algorithmData));
+      }
+      lastReceivedFront = interactiveAlgorithm.getResult();
 
       //this.restartStrategyForProblemChange.restart(interactiveAlgorithm.getPopulation(), (DynamicProblem<S, ?>)this.problem);
       restart() ;

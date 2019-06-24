@@ -19,7 +19,7 @@ import org.uma.jmetal.qualityindicator.impl.InvertedGenerationalDistance;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.front.Front;
 import org.uma.jmetal.util.front.imp.ArrayFront;
-import org.uma.jmetal.util.point.util.PointSolution;
+import org.uma.jmetal.util.point.PointSolution;
 import org.uma.jmetalsp.DataConsumer;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.ObservedSolution;
@@ -44,10 +44,7 @@ public class ChartConsumer<S extends Solution<?>> implements
   private ChartContainer chart ;
   List<PointSolution> lastReceivedFront = null ;
 
-  //public ChartConsumer(DynamicAlgorithm<?, AlgorithmObservedData> algorithm) {
-  //  this.dynamicAlgorithm = algorithm ;
-  // this.chart = null ;
-  //}
+
 
   public ChartConsumer() {
     algorithmName = "";
@@ -60,10 +57,6 @@ public class ChartConsumer<S extends Solution<?>> implements
 
   @Override
   public void run() {
-    //if (dynamicAlgorithm != null) {
-    //  dynamicAlgorithm.getObservable().register(this);
-    //}
-
 
     while (true) {
       try {
@@ -119,30 +112,30 @@ public class ChartConsumer<S extends Solution<?>> implements
       this.chart.initChart();
     } else {
       if (solutionList.size() != 0) {
-        double coverageValue = 0;
+        // double coverageValue = 0;
         this.chart.getFrontChart().setTitle(algorithmName+" Iteration: " + numberOfIterations);
-        if (lastReceivedFront == null) {
-          lastReceivedFront = solutionList ;
-          this.chart.updateFrontCharts(solutionList, numberOfIterations);
-          this.chart.refreshCharts();
-        } else {
-          Front referenceFront = new ArrayFront(lastReceivedFront);
+        //if (lastReceivedFront == null) {
+        lastReceivedFront = solutionList;
+        this.chart.updateFrontCharts(solutionList, numberOfIterations);
+        //this.chart.refreshCharts();
+        //} else {
+        //Front referenceFront = new ArrayFront(lastReceivedFront);
 
-          InvertedGenerationalDistance<PointSolution> igd =
-                  new InvertedGenerationalDistance<PointSolution>(referenceFront);
+        //InvertedGenerationalDistance<PointSolution> igd =
+        //       new InvertedGenerationalDistance<PointSolution>(referenceFront);
 
-          coverageValue=igd.evaluate(solutionList);
+        //coverageValue=igd.evaluate(solutionList);
+        // }
+
+        //if (coverageValue>0.005) {
+        //this.chart.updateFrontCharts(solutionList, numberOfIterations);
+        //lastReceivedFront=solutionList;
+        try {
+          this.chart.saveChart(numberOfIterations +".chart", BitmapEncoder.BitmapFormat.PNG);
+        } catch (IOException e) {
+          e.printStackTrace();
         }
-
-        if (coverageValue>0.005) {
-          this.chart.updateFrontCharts(solutionList, numberOfIterations);
-          lastReceivedFront=solutionList;
-          try {
-            this.chart.saveChart(numberOfIterations +".chart", BitmapEncoder.BitmapFormat.PNG);
-          } catch (IOException e) {
-            e.printStackTrace();
-          }
-        }
+        //}
         this.chart.refreshCharts();
       }
     }
