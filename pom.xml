@@ -79,7 +79,6 @@
         <module>jmetalsp-spark</module>
         <module>jmetalsp-kafka</module>
         <module>jmetalsp-flink</module>
-        <module>jmetal-kafka-confluent</module>
     </modules>
 
     <profiles>

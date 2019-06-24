@@ -40,15 +40,11 @@ import java.util.List;
 public class ChartConsumerAVRO<S extends Solution<?>> implements
         DataConsumer<AlgorithmData> {
 
-  //private DynamicAlgorithm<?, AlgorithmObservedData> dynamicAlgorithm;
+
   private String algorithmName;
   private ChartContainer chart ;
   List<PointSolution> lastReceivedFront = null ;
 
-  //public ChartConsumer(DynamicAlgorithm<?, AlgorithmObservedData> algorithm) {
-  //  this.dynamicAlgorithm = algorithm ;
-  // this.chart = null ;
-  //}
 
   public ChartConsumerAVRO() {
     algorithmName = "";
@@ -61,10 +57,6 @@ public class ChartConsumerAVRO<S extends Solution<?>> implements
 
   @Override
   public void run() {
-    //if (dynamicAlgorithm != null) {
-    //  dynamicAlgorithm.getObservable().register(this);
-    //}
-
 
     while (true) {
       try {

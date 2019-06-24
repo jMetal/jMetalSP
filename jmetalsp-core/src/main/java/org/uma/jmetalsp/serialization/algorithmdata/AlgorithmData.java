@@ -12,17 +12,17 @@ import java.util.List;
 import java.util.Map;
 
 public class AlgorithmData extends SpecificRecordBase implements SpecificRecord, ObservedData<Map<String, Object>> {
-    private List<List<Double>> objectives;
-    private List<List<Double>> variables;
-    private int numberOfIterations;
-    private String algorithmName;
-    private String problemName;
-    private int numberOfObjectives;
-    private List <Double>referencePoints;
-    private Map<String, Object> map;
+    protected List<List<Double>> objectives;
+    protected List<List<Double>> variables;
+    protected int numberOfIterations;
+    protected String algorithmName;
+    protected String problemName;
+    protected int numberOfObjectives;
+    protected List <Double>referencePoints;
+    //private Map<String, Object> map;
 
     public AlgorithmData(){
-        map = new HashMap<>();
+        //map = new HashMap<>();
     }
 
     public List<List<Double>> getVariables() {
@@ -81,13 +81,13 @@ public class AlgorithmData extends SpecificRecordBase implements SpecificRecord,
         this.referencePoints = referencePoints;
     }
 
-    public Map<String, Object> getMap() {
-        return map;
-    }
+   // public Map<String, Object> getMap() {
+  //      return map;
+ //   }
 
-    public void setMap(Map<String, Object> map) {
-        this.map = map;
-    }
+ //   public void setMap(Map<String, Object> map) {
+  //      this.map = map;
+  //  }
 
     @Override
     public Schema getSchema() {
@@ -120,25 +120,25 @@ public class AlgorithmData extends SpecificRecordBase implements SpecificRecord,
     public void put(int i, Object o) {
         switch (i){
             case 0:objectives=(List<List<Double>>)o;
-                map.put("objectives",objectives);
+               // map.put("objectives",objectives);
             break;
             case 1: variables =(List<List<Double>>)o;
-                map.put("variables",variables);
+             //   map.put("variables",variables);
             break;
             case 2: referencePoints =(List<Double>)o;
-                map.put("referencePoints",referencePoints);
+              //  map.put("referencePoints",referencePoints);
                 break;
             case 3: numberOfIterations=(Integer)o;
-                map.put("numberOfIterations",numberOfIterations);
+             //   map.put("numberOfIterations",numberOfIterations);
             break;
             case 4: algorithmName =((Utf8)o).toString();
-                map.put("algorithmName",algorithmName);
+              //  map.put("algorithmName",algorithmName);
             break;
             case 5: problemName = ((Utf8)o).toString();
-                map.put("problemName",problemName);
+              //  map.put("problemName",problemName);
             break;
             case 6:numberOfObjectives =(Integer)o;
-                map.put("numberOfObjectives",numberOfObjectives);
+               // map.put("numberOfObjectives",numberOfObjectives);
                 break;
         }
 

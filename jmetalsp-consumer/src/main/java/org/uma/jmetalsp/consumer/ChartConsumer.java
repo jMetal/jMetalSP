@@ -45,10 +45,7 @@ public class ChartConsumer<S extends Solution<?>> implements
   private ChartContainer chart ;
   List<PointSolution> lastReceivedFront = null ;
 
-  //public ChartConsumer(DynamicAlgorithm<?, AlgorithmObservedData> algorithm) {
-  //  this.dynamicAlgorithm = algorithm ;
-  // this.chart = null ;
-  //}
+
 
   public ChartConsumer() {
     algorithmName = "";
@@ -61,10 +58,6 @@ public class ChartConsumer<S extends Solution<?>> implements
 
   @Override
   public void run() {
-    //if (dynamicAlgorithm != null) {
-    //  dynamicAlgorithm.getObservable().register(this);
-    //}
-
 
     while (true) {
       try {
