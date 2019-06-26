@@ -16,6 +16,7 @@ import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.Observer;
+import org.uma.jmetalsp.observer.impl.DefaultObservable;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveFirstNSolutions;
@@ -48,6 +49,7 @@ public class InDM2<S extends Solution<?>>
   private int maxEvaluations;
   Problem<S> problem;
   private List<S> lastReceivedFront;
+  private int counter;
   public InDM2(Problem<S> problem, int populationSize, int maxEvaluations,InteractiveAlgorithm<S,List<S>> interactiveAlgorithm,
                Observable<AlgorithmObservedData> observable) {
     this.interactiveAlgorithm = interactiveAlgorithm;
@@ -55,6 +57,7 @@ public class InDM2<S extends Solution<?>>
     this.observable = observable;
     this.evaluations = 0;
     this.maxEvaluations = maxEvaluations ;
+    this.counter = 0;
     this.newReferencePoint = Optional.ofNullable(null);
     //this.algorithmData = new HashMap<>();
     this.problem = problem;
@@ -117,8 +120,10 @@ public class InDM2<S extends Solution<?>>
          }
          coverageValue = igd.evaluate(pointSolutionList);
         }
-
-
+/*      Observable<ObservedValue<Integer>> observableAux =null;
+      ObservedValue o =new ObservedValue<Integer>(counter);
+      ((Observer) getDynamicProblem()).update(observableAux,o);
+      counter++;*/
 
       if (coverageValue>0.005) {
           observable.setChanged();
