@@ -3,6 +3,7 @@ package org.uma.jmetalsp.problem.fda;
 import org.uma.jmetal.problem.impl.AbstractDoubleProblem;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetalsp.DynamicProblem;
+import org.uma.jmetalsp.DynamicUpdate;
 import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
@@ -14,11 +15,11 @@ import java.io.Serializable;
  */
 public abstract class FDA
 				extends AbstractDoubleProblem
-				implements DynamicProblem<DoubleSolution, ObservedValue<Integer>>, Serializable {
+				implements DynamicProblem<DoubleSolution, ObservedValue<Integer>>, DynamicUpdate, Serializable {
 	protected double time;
 	protected boolean theProblemHasBeenModified;
 	protected Observable<ObservedValue<Integer>> observable ;
-
+	private int count;
   private int tauT=5;
   private int nT=10;
 
@@ -26,6 +27,7 @@ public abstract class FDA
 		this.observable = observable ;
 		this.time = 1.0;
 		observable.register(this);
+		this.count=0;
 	}
 
 	public FDA () {
@@ -37,6 +39,11 @@ public abstract class FDA
         time = (1.0d/(double)nT) * Math.floor(counter.getValue()/(double)tauT) ;
 		theProblemHasBeenModified = true ;
 	}
-
+	@Override
+	public void update() {
+		time = (1.0d/(double)nT) * Math.floor(count/(double)tauT) ;
+		count++;
+		theProblemHasBeenModified = true ;
+	}
 
 }

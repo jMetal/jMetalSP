@@ -3,6 +3,7 @@ package org.uma.jmetalsp.examples.continuousproblemapplication;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.apache.kafka.common.serialization.IntegerDeserializer;
+import org.apache.spark.SparkConf;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetalsp.DataConsumer;
 import org.uma.jmetalsp.DynamicAlgorithm;
@@ -94,7 +95,12 @@ public class DynamicContinuousApplicationWithSparkKafkaAVRO {
 
     application = new JMetalSPApplication<>();
 
-    application.setStreamingRuntime(new SparkRuntime(2))
+    String sparkHomeDirectory =args[0];
+    SparkConf sparkConf = new SparkConf()
+            .setAppName("SparkApp")
+            .setSparkHome(sparkHomeDirectory)
+            .setMaster("local[4]") ;
+    application.setStreamingRuntime(new SparkRuntime(2,sparkConf))
             .setProblem(problem)
             .setAlgorithm(algorithm)
             .addStreamingDataSource(streamingDataSource,problem)

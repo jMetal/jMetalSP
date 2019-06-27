@@ -5,11 +5,13 @@ import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
 import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
 import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
+import org.uma.jmetal.qualityindicator.impl.InvertedGenerationalDistance;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.archivewithreferencepoint.ArchiveWithReferencePoint;
 import org.uma.jmetal.util.archivewithreferencepoint.impl.CrowdingDistanceArchiveWithReferencePoint;
 import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
+import org.uma.jmetal.util.point.PointSolution;
 import org.uma.jmetalsp.*;
 import org.uma.jmetalsp.algorithm.indm2.InDM2;
 import org.uma.jmetalsp.algorithm.indm2.InDM2Builder;
@@ -25,6 +27,7 @@ import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
 import org.uma.jmetalsp.problem.df.*;
+import org.uma.jmetalsp.qualityindicator.CoverageFront;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNRandomSolutions;
@@ -160,9 +163,11 @@ public class InDM2RunnerForContinuousProblemsTestsPRAI {
 
 
 
+    InvertedGenerationalDistance<PointSolution> igd =
+            new InvertedGenerationalDistance<>();
+    CoverageFront<PointSolution> coverageFront = new CoverageFront<>(0.005,igd);
 
-
-    InDM2<DoubleSolution> algorithm = new InDM2Builder<>(interactiveAlgorithm, new DefaultObservable<>())
+    InDM2<DoubleSolution> algorithm = new InDM2Builder<>(interactiveAlgorithm, new DefaultObservable<>(),coverageFront)
             .setMaxIterations(50000)
             .setPopulationSize(100)
             .build(problem);

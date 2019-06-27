@@ -5,12 +5,14 @@ import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
 import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
 import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
+import org.uma.jmetal.qualityindicator.impl.InvertedGenerationalDistance;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.solution.PermutationSolution;
 import org.uma.jmetal.util.archivewithreferencepoint.ArchiveWithReferencePoint;
 import org.uma.jmetal.util.archivewithreferencepoint.impl.CrowdingDistanceArchiveWithReferencePoint;
 import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
+import org.uma.jmetal.util.point.PointSolution;
 import org.uma.jmetalsp.*;
 import org.uma.jmetalsp.algorithm.indm2.InDM2;
 import org.uma.jmetalsp.algorithm.indm2.InDM2Builder;
@@ -27,6 +29,7 @@ import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
 import org.uma.jmetalsp.problem.df.*;
 import org.uma.jmetalsp.problem.fda.FDA2;
+import org.uma.jmetalsp.qualityindicator.CoverageFront;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNRandomSolutions;
@@ -109,9 +112,13 @@ public class InDM2RunnerForContinuousProblems {
     //    new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>()), new SequentialSolutionListEvaluator<>(),referencePoint,epsilon );
 
 
-    InDM2<DoubleSolution> algorithm = new InDM2Builder<>(iSMPSORP, new DefaultObservable<>())
+    InvertedGenerationalDistance<PointSolution> igd =
+            new InvertedGenerationalDistance<>();
+    CoverageFront<PointSolution> coverageFront = new CoverageFront<>(0.005,igd);
+    InDM2<DoubleSolution> algorithm = new InDM2Builder<>(iSMPSORP, new DefaultObservable<>(),coverageFront)
             .setMaxIterations(100000)
             .setPopulationSize(100)
+            .setAutoUpdate(true)
             .build(problem);
     int delay =5000;
     algorithm.setRestartStrategy(new RestartStrategy<>(
@@ -126,8 +133,8 @@ public class InDM2RunnerForContinuousProblems {
             new CreateNRandomSolutions<DoubleSolution>()));
 
     // STEP 3. Create a streaming data source for the problem
-    StreamingDataSource<ObservedValue<Integer>> streamingDataSource =
-            new SimpleStreamingCounterDataSource(delay) ;
+  //  StreamingDataSource<ObservedValue<Integer>> streamingDataSource =
+  //          new SimpleStreamingCounterDataSource(delay) ;
 
     // STEP 4. Create a streaming data source for the algorithm and register
     StreamingDataSource<ObservedValue<List<Double>>> keyboardstreamingDataSource =
@@ -148,7 +155,7 @@ public class InDM2RunnerForContinuousProblems {
     application = new JMetalSPApplication<>(problem,algorithm);
 
     application.setStreamingRuntime(new DefaultRuntime())
-            .addStreamingDataSource(streamingDataSource,problem)
+           // .addStreamingDataSource(streamingDataSource,problem)
             .addStreamingDataSource(keyboardstreamingDataSource,algorithm)
             .addAlgorithmDataConsumer(localDirectoryOutputConsumer)
             .addAlgorithmDataConsumer(chartConsumer)

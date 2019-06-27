@@ -1,6 +1,7 @@
 package org.uma.jmetalsp.examples.continuousproblemapplication;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.spark.SparkConf;
 import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.SelectionOperator;
@@ -116,7 +117,12 @@ public class DynamicContinuousApplicationWithSparkKafkaObserverAVRO {
 
     application = new JMetalSPApplication<>();
 
-    application.setStreamingRuntime(new SparkRuntime(2))
+    String sparkHomeDirectory =args[0];
+    SparkConf sparkConf = new SparkConf()
+            .setAppName("SparkApp")
+            .setSparkHome(sparkHomeDirectory)
+            .setMaster("local[4]") ;
+    application.setStreamingRuntime(new SparkRuntime(2,sparkConf))
             .setProblem(problem)
             .setAlgorithm(algorithm)
             .addStreamingDataSource(streamingDataSource,problem)

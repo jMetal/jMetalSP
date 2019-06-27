@@ -13,9 +13,11 @@ import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetal.util.neighborhood.Neighborhood;
 import org.uma.jmetal.util.neighborhood.impl.C9;
+import org.uma.jmetal.util.point.PointSolution;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observer.Observable;
+import org.uma.jmetalsp.qualityindicator.CoverageFront;
 
 import java.util.List;
 
@@ -37,18 +39,22 @@ public class DynamicMOCellBuilder<
 	protected BoundedArchive<S> archive ;
 
 	private Observable<AlgorithmObservedData> observable ;
+	private boolean autoUpdate;
+	private CoverageFront<PointSolution> coverageFront;
 
 	public DynamicMOCellBuilder(CrossoverOperator<S> crossoverOperator,
 	                            MutationOperator<S> mutationOperator,
-															Observable<AlgorithmObservedData> observable) {
+															Observable<AlgorithmObservedData> observable,CoverageFront<PointSolution> coverageFront) {
 		this.crossoverOperator = crossoverOperator ;
 		this.mutationOperator = mutationOperator;
 		this.maxEvaluations = 25000 ;
 		this.populationSize = 100 ;
+		this.coverageFront = coverageFront;
 		this.selectionOperator = new BinaryTournamentSelection<S>(new RankingAndCrowdingDistanceComparator<S>()) ;
-		neighborhood = new C9<S>((int)Math.sqrt(populationSize), (int)Math.sqrt(populationSize)) ;
-		evaluator = new SequentialSolutionListEvaluator<S>();
-		archive = new CrowdingDistanceArchive<>(populationSize) ;
+		this.neighborhood = new C9<S>((int)Math.sqrt(populationSize), (int)Math.sqrt(populationSize)) ;
+		this.evaluator = new SequentialSolutionListEvaluator<S>();
+		this.archive = new CrowdingDistanceArchive<>(populationSize) ;
+		this.autoUpdate = false;
 		this.observable = observable ;
 	}
 
@@ -101,8 +107,13 @@ public class DynamicMOCellBuilder<
 		return this;
 	}
 
+	public DynamicMOCellBuilder<S,P> setAutoUpdate(boolean autoUpdate) {
+		this.autoUpdate = autoUpdate;
+		return this;
+	}
+
 	public DynamicMOCell build(P problem) {
 		return new DynamicMOCell(problem, maxEvaluations, populationSize, archive, neighborhood,
-						crossoverOperator, mutationOperator, selectionOperator, evaluator, observable);
+						crossoverOperator, mutationOperator, selectionOperator, evaluator, observable,autoUpdate,coverageFront);
 	}
 }
