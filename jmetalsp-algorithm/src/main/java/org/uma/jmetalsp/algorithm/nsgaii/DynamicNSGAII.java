@@ -23,19 +23,20 @@ import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
 import org.uma.jmetal.qualityindicator.impl.InvertedGenerationalDistance;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.solution.Solution;
-import org.uma.jmetal.util.comparator.DominanceComparator;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetal.util.front.Front;
 import org.uma.jmetal.util.front.imp.ArrayFront;
 import org.uma.jmetal.util.point.PointSolution;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.DynamicProblem;
+import org.uma.jmetalsp.DynamicUpdate;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.KafkaBasedConsumer;
 import org.uma.jmetalsp.observer.impl.KafkaObservable;
 import org.uma.jmetalsp.problem.fda.FDA2;
+import org.uma.jmetalsp.qualityindicator.CoverageFront;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveFirstNSolutions;
@@ -62,6 +63,8 @@ public class DynamicNSGAII<S extends Solution<?>>
   private Comparator<S> dominanceComparator ;
   private Observable<AlgorithmObservedData> observable ;
   private List<S> lastReceivedFront;
+  private boolean autoUpdate;
+  private CoverageFront<PointSolution> coverageFront;
 
   public DynamicNSGAII(DynamicProblem<S, ?> problem, int maxEvaluations, int populationSize, int matingPoolSize,
                        int offspringPopulationSize, Comparator<S> dominanceComparator,
@@ -69,14 +72,16 @@ public class DynamicNSGAII<S extends Solution<?>>
                        MutationOperator<S> mutationOperator,
                        SelectionOperator<List<S>, S> selectionOperator,
                        SolutionListEvaluator<S> evaluator,
-                       Observable<AlgorithmObservedData> observable) {
+                       Observable<AlgorithmObservedData> observable, CoverageFront<PointSolution> coverageFront) {
 
     super(problem, maxEvaluations, populationSize, matingPoolSize, offspringPopulationSize,
             crossoverOperator,
             mutationOperator, selectionOperator, dominanceComparator, evaluator);
 
-    completedIterations = 0 ;
+    this.completedIterations = 0 ;
+    this.autoUpdate = false;
     this.observable = observable ;
+    this.coverageFront = coverageFront;
     this.restartStrategyForProblemChange = new RestartStrategy<>(
             new RemoveFirstNSolutions<S>(populationSize),
             new CreateNRandomSolutions<S>()) ;
@@ -89,11 +94,13 @@ public class DynamicNSGAII<S extends Solution<?>>
                        SelectionOperator<List<S>, S> selectionOperator,
                        SolutionListEvaluator<S> evaluator,
                        Comparator<S> dominanceComparator,
-                       Observable<AlgorithmObservedData> observable) {
+                       Observable<AlgorithmObservedData> observable, CoverageFront<PointSolution> coverageFront) {
     super(problem, maxEvaluations, populationSize,populationSize,populationSize, crossoverOperator, mutationOperator, selectionOperator, dominanceComparator,evaluator);
 
-    completedIterations = 0 ;
+    this.completedIterations = 0 ;
     this.observable = observable ;
+    this.autoUpdate = false;
+    this.coverageFront = coverageFront;
     this.restartStrategyForProblemChange = new RestartStrategy<>(
             new RemoveFirstNSolutions<S>(populationSize),
             new CreateNRandomSolutions<S>()) ;
@@ -107,7 +114,7 @@ public class DynamicNSGAII<S extends Solution<?>>
   @Override protected boolean isStoppingConditionReached() {
     if (evaluations >= maxEvaluations) {
 
-      double coverageValue=1.0;
+     /* double coverageValue=1.0;
       if (lastReceivedFront != null){
         Front referenceFront = new ArrayFront(lastReceivedFront);
 
@@ -133,6 +140,35 @@ public class DynamicNSGAII<S extends Solution<?>>
         algorithmData.put("algorithmName", getName());
         algorithmData.put("problemName", problem.getName());
         algorithmData.put("numberOfObjectives", problem.getNumberOfObjectives());
+
+        observable.notifyObservers(new AlgorithmObservedData((List<Solution<?>>) getPopulation(), algorithmData));
+      }*/
+      boolean coverage = false;
+      if (lastReceivedFront != null) {
+        Front referenceFront = new ArrayFront(lastReceivedFront);
+        coverageFront.updateFront(referenceFront);
+        List<PointSolution> pointSolutionList = new ArrayList<>();
+        List<S> list = getPopulation();
+        for (S s : list) {
+          PointSolution pointSolution = new PointSolution(s);
+          pointSolutionList.add(pointSolution);
+        }
+        coverage = coverageFront.isCoverage(pointSolutionList);
+
+      }
+
+      if (getDynamicProblem() instanceof DynamicUpdate && autoUpdate) {
+        ((DynamicUpdate) getDynamicProblem()).update();
+      }
+
+      if (coverage) {
+        observable.setChanged();
+        Map<String, Object> algorithmData = new HashMap<>();
+        algorithmData.put("numberOfIterations", completedIterations);
+        algorithmData.put("algorithmName", getName());
+        algorithmData.put("problemName", problem.getName());
+        algorithmData.put("numberOfObjectives", problem.getNumberOfObjectives());
+
 
         observable.notifyObservers(new AlgorithmObservedData((List<Solution<?>>) getPopulation(), algorithmData));
       }
@@ -197,9 +233,11 @@ public class DynamicNSGAII<S extends Solution<?>>
     MutationOperator<DoubleSolution> mutation =
             new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);
     SelectionOperator<List<DoubleSolution>, DoubleSolution> selection=new BinaryTournamentSelection<DoubleSolution>();;
-
+    InvertedGenerationalDistance<PointSolution> igd =
+            new InvertedGenerationalDistance<>();
+    CoverageFront<PointSolution> coverageFront = new CoverageFront<>(0.005,igd);
     DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData> algorithm =
-            new DynamicNSGAIIBuilder<>(crossover, mutation, new KafkaObservable<>(topicName, new AlgorithmObservedData()))
+            new DynamicNSGAIIBuilder<>(crossover, mutation, new KafkaObservable<>(topicName, new AlgorithmObservedData()),coverageFront)
                     .setMaxEvaluations(50000)
                     .setPopulationSize(100)
                     .build(problem);

@@ -7,9 +7,11 @@ import org.uma.jmetal.operator.SelectionOperator;
 import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
 import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
 import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
+import org.uma.jmetal.qualityindicator.impl.InvertedGenerationalDistance;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.comparator.DominanceComparator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
+import org.uma.jmetal.util.point.PointSolution;
 import org.uma.jmetalsp.*;
 import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAIIAVRO;
 import org.uma.jmetalsp.consumer.ChartConsumer;
@@ -23,6 +25,7 @@ import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.KafkaBasedConsumer;
 import org.uma.jmetalsp.observer.impl.KafkaObservable;
 import org.uma.jmetalsp.problem.fda.FDA2;
+import org.uma.jmetalsp.qualityindicator.CoverageFront;
 import org.uma.jmetalsp.serialization.algorithmdata.AlgorithmData;
 import org.uma.jmetalsp.spark.SparkStreamingDataSource;
 import org.uma.jmetalsp.spark.streamingdatasource.SimpleSparkStructuredKafkaStreamingCounterAVRO;
@@ -66,10 +69,13 @@ public class DynamicContinuousApplicationAVRO {
     MutationOperator<DoubleSolution> mutation =
             new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);
     SelectionOperator<List<DoubleSolution>, DoubleSolution> selection=new BinaryTournamentSelection<DoubleSolution>();
+    InvertedGenerationalDistance<PointSolution> igd =
+            new InvertedGenerationalDistance<>();
+    CoverageFront<PointSolution> coverageFront = new CoverageFront<>(0.005,igd);
     Observable<AlgorithmData> observable = new KafkaObservable<>("front","avsc/AlgorithmData.avsc");
     DynamicAlgorithm<List<DoubleSolution>, AlgorithmData> algorithm =
             new DynamicNSGAIIAVRO<DoubleSolution>(problem,250000, 100, crossover, mutation,
-                    selection, new SequentialSolutionListEvaluator<>(), new DominanceComparator<>(),observable);
+                    selection, new SequentialSolutionListEvaluator<>(), new DominanceComparator<>(),observable,coverageFront);
 
     algorithm.setRestartStrategy(new RestartStrategy<>(
             //new RemoveFirstNSolutions<>(50),

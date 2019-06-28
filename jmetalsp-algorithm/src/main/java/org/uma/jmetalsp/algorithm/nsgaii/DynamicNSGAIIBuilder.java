@@ -10,9 +10,11 @@ import org.uma.jmetal.util.comparator.DominanceComparator;
 import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
+import org.uma.jmetal.util.point.PointSolution;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observer.Observable;
+import org.uma.jmetalsp.qualityindicator.CoverageFront;
 
 import java.util.Comparator;
 import java.util.List;
@@ -32,9 +34,11 @@ public class DynamicNSGAIIBuilder<
 	private SolutionListEvaluator<S> evaluator;
 	private Observable<AlgorithmObservedData> observable ;
 	private Comparator<S> dominanceComparator;
+	private CoverageFront<PointSolution> coverageFront;
+	private boolean autoUpdate;
 	public DynamicNSGAIIBuilder(CrossoverOperator<S> crossoverOperator,
 								MutationOperator<S> mutationOperator,
-								Observable<AlgorithmObservedData> observable) {
+								Observable<AlgorithmObservedData> observable,CoverageFront<PointSolution> coverageFront) {
 		this.crossoverOperator = crossoverOperator ;
 		this.mutationOperator = mutationOperator;
 		this.maxEvaluations = 25000 ;
@@ -43,6 +47,7 @@ public class DynamicNSGAIIBuilder<
 		this.evaluator = new SequentialSolutionListEvaluator<S>();
 		this.observable = observable ;
 		this.dominanceComparator = new DominanceComparator<>();
+		this.coverageFront = coverageFront;
 	}
 
 	public DynamicNSGAIIBuilder<S,P> setMaxEvaluations(int maxEvaluations) {
@@ -108,8 +113,13 @@ public class DynamicNSGAIIBuilder<
 		return this;
 	}
 
+	public DynamicNSGAIIBuilder<S,P> setAutoUpdate(boolean autoUpdate) {
+		this.autoUpdate = autoUpdate;
+		return this;
+	}
+
 	public DynamicNSGAII<S> build(P problem) {
 		return new DynamicNSGAII(problem, maxEvaluations, populationSize, crossoverOperator, mutationOperator,
-				selectionOperator, evaluator, dominanceComparator,observable);
+				selectionOperator, evaluator, dominanceComparator,observable,coverageFront);
 	}
 }
