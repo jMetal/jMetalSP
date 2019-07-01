@@ -22,7 +22,7 @@ public class CoverageFront <S extends Solution<?>> {
         boolean result = coverage>coverageValue;
         if(result){
             lastFront = front;
-        }else {
+        }else if(lastFront!=null) {
             coverage = this.indicator.evaluate(lastFront) ;
             result = coverage>coverageValue;
             if(result){

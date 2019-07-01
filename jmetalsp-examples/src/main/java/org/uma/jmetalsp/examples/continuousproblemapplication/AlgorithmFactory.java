@@ -60,7 +60,7 @@ public class AlgorithmFactory {
         break;
       case "SMPSO":
         algorithm = new DynamicSMPSOBuilder<>(
-                mutation, new CrowdingDistanceArchive<>(100), new DefaultObservable<>())
+                mutation, new CrowdingDistanceArchive<>(100), new DefaultObservable<>(),coverageFront)
                 .setMaxIterations(500)
                 .setSwarmSize(100)
                 .build(problem);
@@ -70,7 +70,7 @@ public class AlgorithmFactory {
         referencePoint.add(0.5);
         referencePoint.add(0.5);
 
-        algorithm = new DynamicWASFGABuilder<>(crossover, mutation, referencePoint,0.005, new DefaultObservable<>())
+        algorithm = new DynamicWASFGABuilder<>(crossover, mutation, referencePoint,0.005, new DefaultObservable<>(),coverageFront)
                 .setMaxIterations(500)
                 .setPopulationSize(100)
                 .build(problem);
@@ -78,7 +78,7 @@ public class AlgorithmFactory {
 
 
       case "NSGAIII":
-        algorithm = (DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData>) new DynamicNSGAIIIBuilder<>(problem,new DefaultObservable<>())
+        algorithm = (DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData>) new DynamicNSGAIIIBuilder<>(problem,new DefaultObservable<>(),coverageFront)
                 .setCrossoverOperator(crossover)
                 .setMutationOperator(mutation)
                 .setSelectionOperator(selection)
@@ -92,7 +92,7 @@ public class AlgorithmFactory {
         interestPoint.add(0.5);
         double epsilon = 0.001D;
         algorithm = (DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData>)
-                new DynamicRNSGAIIBuilder<>(crossover, mutation, new DefaultObservable<>(),interestPoint,epsilon)
+                new DynamicRNSGAIIBuilder<>(crossover, mutation, new DefaultObservable<>(),interestPoint,epsilon,coverageFront)
                 .setMaxEvaluations(50000)
                 .setPopulationSize(100)
                 .build(problem);

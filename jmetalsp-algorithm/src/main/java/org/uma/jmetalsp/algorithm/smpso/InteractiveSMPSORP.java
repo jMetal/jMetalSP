@@ -12,12 +12,12 @@ import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.InteractiveAlgorithm;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class InteractiveSMPSORP extends SMPSORP implements InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> {
+public class InteractiveSMPSORP extends SMPSORP implements InteractiveAlgorithm<DoubleSolution, List<DoubleSolution>> {
     private DynamicProblem<DoubleSolution, ?> dynamicProblem;
+
     /**
      * Constructor
      *
@@ -51,7 +51,6 @@ public class InteractiveSMPSORP extends SMPSORP implements InteractiveAlgorithm<
     }
 
 
-
     @Override
     public void restart(RestartStrategy restartStrategy) {
         restartStrategy.restart(getSwarm(), getDynamicProblem());
@@ -83,6 +82,7 @@ public class InteractiveSMPSORP extends SMPSORP implements InteractiveAlgorithm<
             referencePointSolutions.add(refPoint);
         }
     }
+
     @Override
     public List<DoubleSolution> getPopulation() {
         return super.getSwarm();
@@ -95,8 +95,8 @@ public class InteractiveSMPSORP extends SMPSORP implements InteractiveAlgorithm<
         perturbation(super.getSwarm());
         evaluate(super.getSwarm());
         super.setSwarm(super.getSwarm());
-        updateLeaders(super.getSwarm()) ;
-        updateParticlesMemory(super.getSwarm()) ;
+        updateLeaders(super.getSwarm());
+        updateParticlesMemory(super.getSwarm());
         updateProgress();
 
     }
@@ -106,8 +106,8 @@ public class InteractiveSMPSORP extends SMPSORP implements InteractiveAlgorithm<
         setSwarm(createInitialSwarm());
         setSwarm(evaluateSwarm(getSwarm()));
         initializeVelocity(getSwarm());
-        initializeParticlesMemory(getSwarm()) ;
-        initializeLeader(getSwarm()) ;
+        initializeParticlesMemory(getSwarm());
+        initializeLeader(getSwarm());
         return super.getSwarm();
     }
 
@@ -119,11 +119,11 @@ public class InteractiveSMPSORP extends SMPSORP implements InteractiveAlgorithm<
     @Override
     public void updatePointOfInterest(List<Double> newReferencePoints) {
         referencePoints = new ArrayList<>();
-        int numberOfPoints= newReferencePoints.size()/getDynamicProblem().getNumberOfObjectives();
-        if(numberOfPoints==1){
-          referencePoints.add(newReferencePoints);
-        }else {
-            int i=0;
+        int numberOfPoints = newReferencePoints.size() / getDynamicProblem().getNumberOfObjectives();
+        if (numberOfPoints == 1) {
+            referencePoints.add(newReferencePoints);
+        } else {
+            int i = 0;
             while (i < newReferencePoints.size()) {
                 int j = 0;
                 List<Double> aux = new ArrayList<>();

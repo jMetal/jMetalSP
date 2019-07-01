@@ -16,9 +16,7 @@ package org.uma.jmetalsp.algorithm.smpso;
 import org.uma.jmetal.algorithm.multiobjective.smpso.SMPSO;
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.problem.DoubleProblem;
-import org.uma.jmetal.qualityindicator.impl.InvertedGenerationalDistance;
 import org.uma.jmetal.solution.DoubleSolution;
-import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.SolutionListUtils;
 import org.uma.jmetal.util.archive.BoundedArchive;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
@@ -27,8 +25,10 @@ import org.uma.jmetal.util.front.imp.ArrayFront;
 import org.uma.jmetal.util.point.PointSolution;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.DynamicProblem;
+import org.uma.jmetalsp.DynamicUpdate;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observer.Observable;
+import org.uma.jmetalsp.qualityindicator.CoverageFront;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveFirstNSolutions;
@@ -53,6 +53,8 @@ public class DynamicSMPSO extends SMPSO
   private Observable<AlgorithmObservedData> observable;
 
   private List<DoubleSolution> lastReceivedFront;
+  private boolean autoUpdate;
+  private CoverageFront<PointSolution> coverageFront;
   public DynamicSMPSO(DynamicProblem<DoubleSolution, ?> problem, int swarmSize, BoundedArchive<DoubleSolution> leaders,
                       MutationOperator<DoubleSolution> mutationOperator,
                       int maxIterations,
@@ -61,13 +63,15 @@ public class DynamicSMPSO extends SMPSO
                       double weightMin, double weightMax,
                       double changeVelocity1, double changeVelocity2,
                       SolutionListEvaluator<DoubleSolution> evaluator,
-                      Observable<AlgorithmObservedData> observable) {
+                      Observable<AlgorithmObservedData> observable,boolean autoUpdate, CoverageFront<PointSolution> coverageFront) {
     super((DoubleProblem) problem, swarmSize, leaders, mutationOperator, maxIterations, r1Min, r1Max, r2Min, r2Max,
             c1Min, c1Max, c2Min, c2Max, weightMin, weightMax, changeVelocity1, changeVelocity2, evaluator);
     this.problem = problem;
-    completedIterations = 0;
+    this.completedIterations = 0;
     this.evaluator = evaluator;
     this.observable = observable;
+    this.autoUpdate = autoUpdate;
+    this.coverageFront = coverageFront;
     this.restartStrategyForProblemChange = new RestartStrategy<>(
             new RemoveFirstNSolutions<>(swarmSize),
             new CreateNRandomSolutions<>()) ;
@@ -104,7 +108,7 @@ public class DynamicSMPSO extends SMPSO
   protected boolean isStoppingConditionReached() {
     if (getIterations() >= getMaxIterations()) {
 
-      double coverageValue=1.0;
+     /* double coverageValue=1.0;
       if (lastReceivedFront != null){
         Front referenceFront = new ArrayFront(lastReceivedFront);
 
@@ -136,6 +140,35 @@ public class DynamicSMPSO extends SMPSO
         }
         observable.notifyObservers(new AlgorithmObservedData(aux, algorithmData));
         //observable.notifyObservers(new AlgorithmObservedData(getResult(), algorithmData));
+      }*/
+      boolean coverage = false;
+      if (lastReceivedFront != null) {
+        Front referenceFront = new ArrayFront(lastReceivedFront);
+        coverageFront.updateFront(referenceFront);
+        List<PointSolution> pointSolutionList = new ArrayList<>();
+        List<DoubleSolution> list = getResult();
+        for (DoubleSolution s : list) {
+          PointSolution pointSolution = new PointSolution(s);
+          pointSolutionList.add(pointSolution);
+        }
+        coverage = coverageFront.isCoverage(pointSolutionList);
+
+      }
+
+      if (getDynamicProblem() instanceof DynamicUpdate && autoUpdate) {
+        ((DynamicUpdate) getDynamicProblem()).update();
+      }
+
+      if (coverage) {
+        observable.setChanged();
+        Map<String, Object> algorithmData = new HashMap<>();
+        algorithmData.put("numberOfIterations", completedIterations);
+        algorithmData.put("algorithmName", getName());
+        algorithmData.put("problemName", problem.getName());
+        algorithmData.put("numberOfObjectives", problem.getNumberOfObjectives());
+
+
+        observable.notifyObservers(new AlgorithmObservedData((List)getResult(), algorithmData));
       }
       lastReceivedFront=getResult();
       restart();

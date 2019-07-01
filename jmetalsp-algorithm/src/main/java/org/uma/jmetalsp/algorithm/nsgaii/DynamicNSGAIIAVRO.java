@@ -51,69 +51,112 @@ import java.util.List;
  * reused, and measures are used to allow external components to access the results of the
  * computation.
  *
- * @todo Explain the behaviour of the dynamic algorithm
- *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
+ * @todo Explain the behaviour of the dynamic algorithm
  */
 public class DynamicNSGAIIAVRO<S extends Solution<?>>
         extends NSGAII<S>
         implements DynamicAlgorithm<List<S>, AlgorithmData> {
 
-  private int completedIterations ;
-  private boolean stopAtTheEndOfTheCurrentIteration = false ;
-  private RestartStrategy<S> restartStrategyForProblemChange ;
-  private Comparator<S> dominanceComparator ;
-  private Observable<AlgorithmData> observable ;
-  private List<S> lastReceivedFront;
-  private boolean autoUpdate;
-  private CoverageFront<PointSolution> coverageFront;
-  public DynamicNSGAIIAVRO(DynamicProblem<S, ?> problem, int maxEvaluations, int populationSize, int matingPoolSize,
-                           int offspringPopulationSize, Comparator<S> dominanceComparator,
-                           CrossoverOperator<S> crossoverOperator,
-                           MutationOperator<S> mutationOperator,
-                           SelectionOperator<List<S>, S> selectionOperator,
-                           SolutionListEvaluator<S> evaluator,
-                           Observable<AlgorithmData> observable,CoverageFront<PointSolution> coverageFront) {
+    private int completedIterations;
+    private boolean stopAtTheEndOfTheCurrentIteration = false;
+    private RestartStrategy<S> restartStrategyForProblemChange;
+    private Comparator<S> dominanceComparator;
+    private Observable<AlgorithmData> observable;
+    private List<S> lastReceivedFront;
+    private boolean autoUpdate;
+    private CoverageFront<PointSolution> coverageFront;
 
-    super(problem, maxEvaluations, populationSize, matingPoolSize, offspringPopulationSize,
-            crossoverOperator,
-            mutationOperator, selectionOperator, dominanceComparator, evaluator);
+    public DynamicNSGAIIAVRO(DynamicProblem<S, ?> problem, int maxEvaluations, int populationSize, int matingPoolSize,
+                             int offspringPopulationSize, Comparator<S> dominanceComparator,
+                             CrossoverOperator<S> crossoverOperator,
+                             MutationOperator<S> mutationOperator,
+                             SelectionOperator<List<S>, S> selectionOperator,
+                             SolutionListEvaluator<S> evaluator,
+                             Observable<AlgorithmData> observable, boolean autoUpdate, CoverageFront<PointSolution> coverageFront) {
 
-    this.completedIterations = 0 ;
-    this.observable = observable ;
-    this.autoUpdate = false;
-    this.coverageFront = coverageFront;
-    this.restartStrategyForProblemChange = new RestartStrategy<>(
-            new RemoveFirstNSolutions<S>(populationSize),
-            new CreateNRandomSolutions<S>()) ;
-  }
+        super(problem, maxEvaluations, populationSize, matingPoolSize, offspringPopulationSize,
+                crossoverOperator,
+                mutationOperator, selectionOperator, dominanceComparator, evaluator);
+
+        this.completedIterations = 0;
+        this.observable = observable;
+        this.autoUpdate = autoUpdate;
+        this.coverageFront = coverageFront;
+        this.restartStrategyForProblemChange = new RestartStrategy<>(
+                new RemoveFirstNSolutions<S>(populationSize),
+                new CreateNRandomSolutions<S>());
+    }
 
 
-  public DynamicNSGAIIAVRO(DynamicProblem<S, ?> problem, int maxEvaluations, int populationSize,
-                           CrossoverOperator<S> crossoverOperator,
-                           MutationOperator<S> mutationOperator,
-                           SelectionOperator<List<S>, S> selectionOperator,
-                           SolutionListEvaluator<S> evaluator,
-                           Comparator<S> dominanceComparator,
-                           Observable<AlgorithmData> observable,CoverageFront<PointSolution> coverageFront) {
-    super(problem, maxEvaluations, populationSize,populationSize,populationSize, crossoverOperator, mutationOperator, selectionOperator, dominanceComparator,evaluator);
+    public DynamicNSGAIIAVRO(DynamicProblem<S, ?> problem, int maxEvaluations, int populationSize,
+                             CrossoverOperator<S> crossoverOperator,
+                             MutationOperator<S> mutationOperator,
+                             SelectionOperator<List<S>, S> selectionOperator,
+                             SolutionListEvaluator<S> evaluator,
+                             Comparator<S> dominanceComparator,
+                             Observable<AlgorithmData> observable, CoverageFront<PointSolution> coverageFront) {
+        super(problem, maxEvaluations, populationSize, populationSize, populationSize, crossoverOperator, mutationOperator, selectionOperator, dominanceComparator, evaluator);
 
-    this.completedIterations = 0 ;
-    this.observable = observable ;
-    this.autoUpdate = false;
-    this.coverageFront = coverageFront;
-    this.restartStrategyForProblemChange = new RestartStrategy<>(
-            new RemoveFirstNSolutions<S>(populationSize),
-            new CreateNRandomSolutions<S>()) ;
-  }
+        this.completedIterations = 0;
+        this.observable = observable;
+        this.autoUpdate = false;
+        this.coverageFront = coverageFront;
+        this.restartStrategyForProblemChange = new RestartStrategy<>(
+                new RemoveFirstNSolutions<S>(populationSize),
+                new CreateNRandomSolutions<S>());
+    }
 
-  @Override
-  public DynamicProblem<S, ?> getDynamicProblem() {
-    return (DynamicProblem<S, ?>) super.getProblem();
-  }
+    /**
+     * main() method to run the algorithm as a process
+     *
+     * @param args
+     */
+    public static void main(String[] args) {
+        String topicName = "prueba-solutionlist-topic-from-main";
 
-  @Override protected boolean isStoppingConditionReached() {
-    if (evaluations >= maxEvaluations) {
+        DynamicProblem<DoubleSolution, ObservedValue<Integer>> problem = new FDA2();
+
+        // STEP 2. Create the algorithm
+        CrossoverOperator<DoubleSolution> crossover = new SBXCrossover(0.9, 20.0);
+        MutationOperator<DoubleSolution> mutation =
+                new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);
+        SelectionOperator<List<DoubleSolution>, DoubleSolution> selection = new BinaryTournamentSelection<DoubleSolution>();
+        ;
+        InvertedGenerationalDistance<PointSolution> igd =
+                new InvertedGenerationalDistance<>();
+        CoverageFront<PointSolution> coverageFront = new CoverageFront<>(0.005, igd);
+        DynamicAlgorithm<List<DoubleSolution>, AlgorithmData> algorithm =
+                new DynamicNSGAIIBuilder(crossover, mutation, new KafkaObservable<>(topicName), coverageFront)
+                        .setMaxEvaluations(50000)
+                        .setPopulationSize(100)
+                        .build(problem);
+
+        algorithm.setRestartStrategy(new RestartStrategy<>(
+                //new RemoveFirstNSolutions<>(50),
+                //new RemoveNSolutionsAccordingToTheHypervolumeContribution<>(50),
+                //new RemoveNSolutionsAccordingToTheCrowdingDistance<>(50),
+                new RemoveNRandomSolutions(15),
+                new CreateNRandomSolutions<DoubleSolution>()));
+
+        //KafkaBasedConsumer<ObservedValue<Integer>> problemKafkaBasedConsumer =
+        //        new KafkaBasedConsumer<>("prueba-int-topic-from-main", problem, new ObservedValue<>()) ;
+
+        KafkaBasedConsumer<ObservedValue<Integer>> problemKafkaBasedConsumer =
+                new KafkaBasedConsumer<>("prueba-tsp-topic-from-main", problem, new ObservedValue<>(), "avsc/TSPMatrixData.avsc");
+        problemKafkaBasedConsumer.start();
+
+        algorithm.run();
+    }
+
+    @Override
+    public DynamicProblem<S, ?> getDynamicProblem() {
+        return (DynamicProblem<S, ?>) super.getProblem();
+    }
+
+    @Override
+    protected boolean isStoppingConditionReached() {
+        if (evaluations >= maxEvaluations) {
 
 
       /*Map<String, Object> algorithmData = new HashMap<>() ;
@@ -139,147 +182,104 @@ public class DynamicNSGAIIAVRO<S extends Solution<?>>
         }
         coverageValue = igd.evaluate(pointSolutionList);
       }*/
-      boolean coverage = false;
-      if (lastReceivedFront != null) {
-        Front referenceFront = new ArrayFront(lastReceivedFront);
-        coverageFront.updateFront(referenceFront);
-        List<PointSolution> pointSolutionList = new ArrayList<>();
-        List<S> list = getPopulation();
-        for (S s : list) {
-          PointSolution pointSolution = new PointSolution(s);
-          pointSolutionList.add(pointSolution);
+            boolean coverage = false;
+            if (lastReceivedFront != null) {
+                Front referenceFront = new ArrayFront(lastReceivedFront);
+                coverageFront.updateFront(referenceFront);
+                List<PointSolution> pointSolutionList = new ArrayList<>();
+                List<S> list = getPopulation();
+                for (S s : list) {
+                    PointSolution pointSolution = new PointSolution(s);
+                    pointSolutionList.add(pointSolution);
+                }
+                coverage = coverageFront.isCoverage(pointSolutionList);
+
+            }
+
+            if (getDynamicProblem() instanceof DynamicUpdate && autoUpdate) {
+                ((DynamicUpdate) getDynamicProblem()).update();
+            }
+
+
+            if (coverage) {
+                observable.setChanged();
+                AlgorithmData data = new AlgorithmData();
+                data.setAlgorithmName(this.getName());
+                data.setNumberOfIterations(completedIterations);
+                data.setProblemName(problem.getName());
+                data.setNumberOfObjectives(problem.getNumberOfObjectives());
+                data.setObjectives(getObjectives());
+                data.setVariables(getVariables());
+                data.setReferencePoints(new ArrayList<>());
+                observable.notifyObservers(data);
+            }
+            lastReceivedFront = getPopulation();
+            restart();
+            evaluator.evaluate(getPopulation(), getDynamicProblem());
+
+            initProgress();
+            completedIterations++;
         }
-        coverage = coverageFront.isCoverage(pointSolutionList);
-
-      }
-
-      if (getDynamicProblem() instanceof DynamicUpdate && autoUpdate) {
-        ((DynamicUpdate) getDynamicProblem()).update();
-      }
-
-
-
-      if (coverage) {
-        observable.setChanged() ;
-        AlgorithmData data = new AlgorithmData();
-        data.setAlgorithmName(this.getName());
-        data.setNumberOfIterations(completedIterations);
-        data.setProblemName(problem.getName());
-        data.setNumberOfObjectives(problem.getNumberOfObjectives());
-        data.setObjectives(getObjectives());
-        data.setVariables(getVariables());
-        data.setReferencePoints(new ArrayList<>());
-        observable.notifyObservers(data);
-      }
-      lastReceivedFront= getPopulation();
-      restart();
-      evaluator.evaluate(getPopulation(), getDynamicProblem()) ;
-
-      initProgress();
-      completedIterations++;
+        return stopAtTheEndOfTheCurrentIteration;
     }
-    return stopAtTheEndOfTheCurrentIteration ;
-  }
 
-
-  private List<List<Double>> getObjectives(){
-    List<List<Double>> objectives = new ArrayList<>();
-    for (S solution:getPopulation()) {
-      List<Double> objetivo = new ArrayList<>();
-      for (Double d:solution.getObjectives()){
-        objetivo.add(d);
-      }
-      objectives.add(objetivo);
+    private List<List<Double>> getObjectives() {
+        List<List<Double>> objectives = new ArrayList<>();
+        for (S solution : getPopulation()) {
+            List<Double> objetivo = new ArrayList<>();
+            for (Double d : solution.getObjectives()) {
+                objetivo.add(d);
+            }
+            objectives.add(objetivo);
+        }
+        return objectives;
     }
-    return objectives;
-  }
 
-  private List<List<Double>> getVariables(){
-    List<List<Double>> variables = new ArrayList<>();
-    for (S solution:getPopulation()) {
-      List<Double> variable = new ArrayList<>();
-      for (Double d:(List<Double>)solution.getVariables()){
-        variable.add(d);
-      }
-      variables.add(variable);
+    private List<List<Double>> getVariables() {
+        List<List<Double>> variables = new ArrayList<>();
+        for (S solution : getPopulation()) {
+            List<Double> variable = new ArrayList<>();
+            for (Double d : (List<Double>) solution.getVariables()) {
+                variable.add(d);
+            }
+            variables.add(variable);
+        }
+        return variables;
     }
-    return variables;
-  }
 
+    @Override
+    protected void updateProgress() {
+        if (getDynamicProblem().hasTheProblemBeenModified()) {
+            restart();
 
-  @Override protected void updateProgress() {
-    if (getDynamicProblem().hasTheProblemBeenModified()) {
-      restart();
-
-      evaluator.evaluate(getPopulation(), getDynamicProblem()) ;
-      getDynamicProblem().reset();
+            evaluator.evaluate(getPopulation(), getDynamicProblem());
+            getDynamicProblem().reset();
+        }
+        evaluations += getMaxPopulationSize();
     }
-    evaluations += getMaxPopulationSize() ;
-  }
 
-  @Override
-  public String getName() {
-    return "DynamicNSGAII";
-  }
+    @Override
+    public String getName() {
+        return "DynamicNSGAII";
+    }
 
-  @Override
-  public String getDescription() {
-    return "Dynamic version of algorithm NSGA-II";
-  }
+    @Override
+    public String getDescription() {
+        return "Dynamic version of algorithm NSGA-II";
+    }
 
-  @Override
-  public Observable<AlgorithmData> getObservable() {
-    return this.observable ;
-  }
+    @Override
+    public Observable<AlgorithmData> getObservable() {
+        return this.observable;
+    }
 
-  @Override
-  public void restart() {
-    this.restartStrategyForProblemChange.restart(getPopulation(), (DynamicProblem<S, ?>)getProblem());
-  }
+    @Override
+    public void restart() {
+        this.restartStrategyForProblemChange.restart(getPopulation(), (DynamicProblem<S, ?>) getProblem());
+    }
 
-  @Override
-  public void setRestartStrategy(RestartStrategy<?> restartStrategy) {
-    this.restartStrategyForProblemChange = (RestartStrategy<S>) restartStrategy;
-  }
-
-
-  /**
-   * main() method to run the algorithm as a process
-   * @param args
-   */
-  public static void main(String[] args) {
-    String topicName = "prueba-solutionlist-topic-from-main";
-
-    DynamicProblem<DoubleSolution, ObservedValue<Integer>> problem =  new FDA2();
-
-    // STEP 2. Create the algorithm
-    CrossoverOperator<DoubleSolution> crossover = new SBXCrossover(0.9, 20.0);
-    MutationOperator<DoubleSolution> mutation =
-            new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);
-    SelectionOperator<List<DoubleSolution>, DoubleSolution> selection=new BinaryTournamentSelection<DoubleSolution>();;
-    InvertedGenerationalDistance<PointSolution> igd =
-            new InvertedGenerationalDistance<>();
-    CoverageFront<PointSolution> coverageFront = new CoverageFront<>(0.005,igd);
-    DynamicAlgorithm<List<DoubleSolution>, AlgorithmData> algorithm =
-            new DynamicNSGAIIBuilder(crossover, mutation, new KafkaObservable<>(topicName),coverageFront)
-                    .setMaxEvaluations(50000)
-                    .setPopulationSize(100)
-                    .build(problem);
-
-    algorithm.setRestartStrategy(new RestartStrategy<>(
-            //new RemoveFirstNSolutions<>(50),
-            //new RemoveNSolutionsAccordingToTheHypervolumeContribution<>(50),
-            //new RemoveNSolutionsAccordingToTheCrowdingDistance<>(50),
-            new RemoveNRandomSolutions(15),
-            new CreateNRandomSolutions<DoubleSolution>()));
-
-    //KafkaBasedConsumer<ObservedValue<Integer>> problemKafkaBasedConsumer =
-    //        new KafkaBasedConsumer<>("prueba-int-topic-from-main", problem, new ObservedValue<>()) ;
-
-    KafkaBasedConsumer<ObservedValue<Integer>> problemKafkaBasedConsumer =
-            new KafkaBasedConsumer<>("prueba-tsp-topic-from-main", problem, new ObservedValue<>(),"avsc/TSPMatrixData.avsc") ;
-    problemKafkaBasedConsumer.start();
-
-    algorithm.run() ;
-  }
+    @Override
+    public void setRestartStrategy(RestartStrategy<?> restartStrategy) {
+        this.restartStrategyForProblemChange = (RestartStrategy<S>) restartStrategy;
+    }
 }

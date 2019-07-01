@@ -9,9 +9,11 @@ import org.uma.jmetal.problem.Problem;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
+import org.uma.jmetal.util.point.PointSolution;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observer.Observable;
+import org.uma.jmetalsp.qualityindicator.CoverageFront;
 
 import java.util.List;
 
@@ -26,13 +28,17 @@ public class DynamicNSGAIIIBuilder <
     private SelectionOperator<List<S>, S> selectionOperator ;
     private Observable<AlgorithmObservedData> observable;
     private SolutionListEvaluator<S> evaluator ;
-    public DynamicNSGAIIIBuilder(Problem<S> problem,Observable<AlgorithmObservedData> observable) {
+    private CoverageFront<PointSolution> coverageFront;
+    private boolean autoUpdate;
+    public DynamicNSGAIIIBuilder(Problem<S> problem,Observable<AlgorithmObservedData> observable,CoverageFront<PointSolution> coverageFront) {
         super(problem);
         this.problem = (DynamicProblem)problem;
         this.maxIterations = 250;
         this.populationSize = 100;
         this.evaluator = new SequentialSolutionListEvaluator<S>() ;
         this.observable = observable;
+        this.autoUpdate = false;
+        this.coverageFront = coverageFront;
     }
 
     @Override
@@ -68,6 +74,11 @@ public class DynamicNSGAIIIBuilder <
     @Override
     public NSGAIIIBuilder<S> setSolutionListEvaluator(SolutionListEvaluator<S> evaluator) {
         this.evaluator = evaluator;
+        return this;
+    }
+
+    public NSGAIIIBuilder<S> setAutoUpdate(boolean autoUpdate) {
+        this.autoUpdate = autoUpdate;
         return this;
     }
 
@@ -108,7 +119,7 @@ public class DynamicNSGAIIIBuilder <
 
     @Override
     public NSGAIII<S> build() {
-        return new DynamicNSGAIII<>(this,observable);
+        return new DynamicNSGAIII<>(this,observable,autoUpdate,coverageFront);
     }
 
 }

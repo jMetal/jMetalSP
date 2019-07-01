@@ -2,10 +2,12 @@ package org.uma.jmetalsp.examples.continuousproblemapplication;
 
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
+import org.uma.jmetal.qualityindicator.impl.InvertedGenerationalDistance;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.archivewithreferencepoint.ArchiveWithReferencePoint;
 import org.uma.jmetal.util.archivewithreferencepoint.impl.CrowdingDistanceArchiveWithReferencePoint;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
+import org.uma.jmetal.util.point.PointSolution;
 import org.uma.jmetalsp.*;
 import org.uma.jmetalsp.algorithm.indm2.InDM2;
 import org.uma.jmetalsp.algorithm.indm2.InDM2Builder;
@@ -21,6 +23,7 @@ import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
 import org.uma.jmetalsp.problem.fda.FDA2;
+import org.uma.jmetalsp.qualityindicator.CoverageFront;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNRandomSolutions;
@@ -75,14 +78,16 @@ public class DSMPSORunnerForContinuousProblems {
               new CrowdingDistanceArchiveWithReferencePoint<DoubleSolution>(
                       swarmSize/referencePoints.size(), referencePoints.get(i))) ;
     }
-
+    InvertedGenerationalDistance<PointSolution> igd =
+            new InvertedGenerationalDistance<>();
+    CoverageFront<PointSolution> coverageFront = new CoverageFront<>(0.005,igd);
 
    // CrossoverOperator<DoubleSolution> crossover = new SBXCrossover(0.9, 20.0);
    // InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> iWASFGA = new InteractiveWASFGA<>(problem,100,crossover,mutation,
    //    new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>()), new SequentialSolutionListEvaluator<>(),0.01,referencePoint );
 
     DynamicSMPSORP algorithm = new DynamicSMPSORPBuilder<>(
-            mutation,archivesWithReferencePoints,referencePoints,new DefaultObservable<>()).build(problem);
+            mutation,archivesWithReferencePoints,referencePoints,new DefaultObservable<>(),coverageFront).build(problem);
 
 
     algorithm.setRestartStrategy(new RestartStrategy<>(

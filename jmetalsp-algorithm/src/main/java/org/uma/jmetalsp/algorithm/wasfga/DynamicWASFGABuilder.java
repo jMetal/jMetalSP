@@ -8,9 +8,11 @@ import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
+import org.uma.jmetal.util.point.PointSolution;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observer.Observable;
+import org.uma.jmetalsp.qualityindicator.CoverageFront;
 
 import java.util.List;
 
@@ -34,12 +36,13 @@ public class DynamicWASFGABuilder<
   private int maxIterations;
   private int populationSize;
   private double epsilon;
-
+  private boolean autoUpdate;
+  private CoverageFront<PointSolution> coverageFront;
   public DynamicWASFGABuilder(CrossoverOperator<S> crossoverOperator,
                               MutationOperator<S> mutationOperator,
                               List<Double> referencePoint,
                               double epsilon,
-                              Observable<AlgorithmObservedData> observable) {
+                              Observable<AlgorithmObservedData> observable,CoverageFront<PointSolution> coverageFront) {
     this.crossover = crossoverOperator;
     this.mutation = mutationOperator;
     this.selection = new BinaryTournamentSelection<S>(new RankingAndCrowdingDistanceComparator<S>());
@@ -52,6 +55,8 @@ public class DynamicWASFGABuilder<
     this.observable = observable;
     this.referencePoint = referencePoint ;
     this.epsilon = epsilon;
+    this.autoUpdate = false;
+    this.coverageFront = coverageFront;
   }
 
   public DynamicWASFGABuilder<S, P> setCrossover(CrossoverOperator<S> crossover) {
@@ -109,10 +114,16 @@ public class DynamicWASFGABuilder<
     return this;
   }
 
+  public DynamicWASFGABuilder<S, P> setAutoUpdate(boolean autoUpdate) {
+    this.autoUpdate = autoUpdate;
+    return this;
+  }
+
   public DynamicWASFGA build(P problem) {
     mutationProbability = 1.0 / problem.getNumberOfVariables();
 
-    return new DynamicWASFGA(problem, populationSize, maxIterations, crossover, mutation, selection, evaluator,referencePoint,epsilon, observable);
+    return new DynamicWASFGA(problem, populationSize, maxIterations, crossover, mutation, selection, evaluator,
+            referencePoint,epsilon, observable,autoUpdate,coverageFront);
 
   }
 }

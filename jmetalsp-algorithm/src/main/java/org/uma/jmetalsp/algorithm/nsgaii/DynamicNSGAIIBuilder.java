@@ -23,103 +23,105 @@ import java.util.List;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class DynamicNSGAIIBuilder<
-		S extends Solution<?>,
-		P extends DynamicProblem<S, ?>>  {
+        S extends Solution<?>,
+        P extends DynamicProblem<S, ?>> {
 
-	private int maxEvaluations;
-	private int populationSize;
-	private CrossoverOperator<S> crossoverOperator;
-	private MutationOperator<S> mutationOperator;
-	private SelectionOperator<List<S>, S> selectionOperator;
-	private SolutionListEvaluator<S> evaluator;
-	private Observable<AlgorithmObservedData> observable ;
-	private Comparator<S> dominanceComparator;
-	private CoverageFront<PointSolution> coverageFront;
-	private boolean autoUpdate;
-	public DynamicNSGAIIBuilder(CrossoverOperator<S> crossoverOperator,
-								MutationOperator<S> mutationOperator,
-								Observable<AlgorithmObservedData> observable,CoverageFront<PointSolution> coverageFront) {
-		this.crossoverOperator = crossoverOperator ;
-		this.mutationOperator = mutationOperator;
-		this.maxEvaluations = 25000 ;
-		this.populationSize = 100 ;
-		this.selectionOperator = new BinaryTournamentSelection<S>(new RankingAndCrowdingDistanceComparator<S>()) ;
-		this.evaluator = new SequentialSolutionListEvaluator<S>();
-		this.observable = observable ;
-		this.dominanceComparator = new DominanceComparator<>();
-		this.coverageFront = coverageFront;
-	}
+    private int maxEvaluations;
+    private int populationSize;
+    private CrossoverOperator<S> crossoverOperator;
+    private MutationOperator<S> mutationOperator;
+    private SelectionOperator<List<S>, S> selectionOperator;
+    private SolutionListEvaluator<S> evaluator;
+    private Observable<AlgorithmObservedData> observable;
+    private Comparator<S> dominanceComparator;
+    private CoverageFront<PointSolution> coverageFront;
+    private boolean autoUpdate;
 
-	public DynamicNSGAIIBuilder<S,P> setMaxEvaluations(int maxEvaluations) {
-		if (maxEvaluations < 0) {
-			throw new JMetalException("maxEvaluations is negative: " + maxEvaluations);
-		}
-		this.maxEvaluations = maxEvaluations;
+    public DynamicNSGAIIBuilder(CrossoverOperator<S> crossoverOperator,
+                                MutationOperator<S> mutationOperator,
+                                Observable<AlgorithmObservedData> observable, CoverageFront<PointSolution> coverageFront) {
+        this.crossoverOperator = crossoverOperator;
+        this.mutationOperator = mutationOperator;
+        this.maxEvaluations = 25000;
+        this.populationSize = 100;
+        this.selectionOperator = new BinaryTournamentSelection<S>(new RankingAndCrowdingDistanceComparator<S>());
+        this.evaluator = new SequentialSolutionListEvaluator<S>();
+        this.observable = observable;
+        this.dominanceComparator = new DominanceComparator<>();
+        this.coverageFront = coverageFront;
+        this.autoUpdate = false;
+    }
 
-		return this;
-	}
+    public DynamicNSGAIIBuilder<S, P> setMaxEvaluations(int maxEvaluations) {
+        if (maxEvaluations < 0) {
+            throw new JMetalException("maxEvaluations is negative: " + maxEvaluations);
+        }
+        this.maxEvaluations = maxEvaluations;
 
-	public DynamicNSGAIIBuilder<S,P> setPopulationSize(int populationSize) {
-		if (populationSize < 0) {
-			throw new JMetalException("Population size is negative: " + populationSize);
-		}
+        return this;
+    }
 
-		this.populationSize = populationSize;
+    public DynamicNSGAIIBuilder<S, P> setPopulationSize(int populationSize) {
+        if (populationSize < 0) {
+            throw new JMetalException("Population size is negative: " + populationSize);
+        }
 
-		return this;
-	}
+        this.populationSize = populationSize;
 
-	public DynamicNSGAIIBuilder<S,P> setSelectionOperator(SelectionOperator<List<S>, S> selectionOperator) {
-		if (selectionOperator == null) {
-			throw new JMetalException("selectionOperator is null");
-		}
-		this.selectionOperator = selectionOperator;
+        return this;
+    }
 
-		return this;
-	}
+    public DynamicNSGAIIBuilder<S, P> setSelectionOperator(SelectionOperator<List<S>, S> selectionOperator) {
+        if (selectionOperator == null) {
+            throw new JMetalException("selectionOperator is null");
+        }
+        this.selectionOperator = selectionOperator;
 
-	public DynamicNSGAIIBuilder<S,P> setSolutionListEvaluator(SolutionListEvaluator<S> evaluator) {
-		if (evaluator == null) {
-			throw new JMetalException("evaluator is null");
-		}
-		this.evaluator = evaluator;
+        return this;
+    }
 
-		return this;
-	}
+    public DynamicNSGAIIBuilder<S, P> setSolutionListEvaluator(SolutionListEvaluator<S> evaluator) {
+        if (evaluator == null) {
+            throw new JMetalException("evaluator is null");
+        }
+        this.evaluator = evaluator;
 
-	public DynamicNSGAIIBuilder<S,P>  setCrossoverOperator(CrossoverOperator<S> crossoverOperator) {
-		this.crossoverOperator = crossoverOperator;
-		return this;
-	}
+        return this;
+    }
 
-	public DynamicNSGAIIBuilder<S,P>  setMutationOperator(MutationOperator<S> mutationOperator) {
-		this.mutationOperator = mutationOperator;
-		return this;
-	}
+    public DynamicNSGAIIBuilder<S, P> setCrossoverOperator(CrossoverOperator<S> crossoverOperator) {
+        this.crossoverOperator = crossoverOperator;
+        return this;
+    }
 
-	public DynamicNSGAIIBuilder<S,P>  setEvaluator(SolutionListEvaluator<S> evaluator) {
-		this.evaluator = evaluator;
-		return this;
-	}
+    public DynamicNSGAIIBuilder<S, P> setMutationOperator(MutationOperator<S> mutationOperator) {
+        this.mutationOperator = mutationOperator;
+        return this;
+    }
 
-	public DynamicNSGAIIBuilder<S,P>  setObservable(
-			Observable<AlgorithmObservedData> observable) {
-		this.observable = observable;
-		return this;
-	}
+    public DynamicNSGAIIBuilder<S, P> setEvaluator(SolutionListEvaluator<S> evaluator) {
+        this.evaluator = evaluator;
+        return this;
+    }
 
-	public DynamicNSGAIIBuilder<S,P>  setDominanceComparator(Comparator<S> dominanceComparator) {
-		this.dominanceComparator = dominanceComparator;
-		return this;
-	}
+    public DynamicNSGAIIBuilder<S, P> setObservable(
+            Observable<AlgorithmObservedData> observable) {
+        this.observable = observable;
+        return this;
+    }
 
-	public DynamicNSGAIIBuilder<S,P> setAutoUpdate(boolean autoUpdate) {
-		this.autoUpdate = autoUpdate;
-		return this;
-	}
+    public DynamicNSGAIIBuilder<S, P> setDominanceComparator(Comparator<S> dominanceComparator) {
+        this.dominanceComparator = dominanceComparator;
+        return this;
+    }
 
-	public DynamicNSGAII<S> build(P problem) {
-		return new DynamicNSGAII(problem, maxEvaluations, populationSize, crossoverOperator, mutationOperator,
-				selectionOperator, evaluator, dominanceComparator,observable,coverageFront);
-	}
+    public DynamicNSGAIIBuilder<S, P> setAutoUpdate(boolean autoUpdate) {
+        this.autoUpdate = autoUpdate;
+        return this;
+    }
+
+    public DynamicNSGAII<S> build(P problem) {
+        return new DynamicNSGAII(problem, maxEvaluations, populationSize, crossoverOperator, mutationOperator,
+                selectionOperator, evaluator, dominanceComparator, observable, autoUpdate, coverageFront);
+    }
 }
