@@ -195,7 +195,7 @@ public class DynamicNSGAII<S extends Solution<?>>
                     PointSolution pointSolution = new PointSolution(s);
                     pointSolutionList.add(pointSolution);
                 }
-                coverage = coverageFront.isCoverage(pointSolutionList);
+                coverage = coverageFront.isCoverageWithLast(pointSolutionList);
 
             }
 

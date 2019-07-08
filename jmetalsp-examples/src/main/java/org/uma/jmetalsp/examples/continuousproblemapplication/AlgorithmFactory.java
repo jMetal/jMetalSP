@@ -46,9 +46,11 @@ public class AlgorithmFactory {
 
     switch (algorithmName) {
       case "NSGAII":
+        coverageFront = new CoverageFront<>(0.05,igd);
         algorithm = new DynamicNSGAIIBuilder<>(crossover, mutation, new DefaultObservable<>(),coverageFront)
                 .setMaxEvaluations(50000)
                 .setPopulationSize(100)
+                .setAutoUpdate(false)
                 .build(problem);
         break;
 

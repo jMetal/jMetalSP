@@ -6,11 +6,11 @@ Please, note that jMetalSP is a project in continuous development. If you have a
 
 ## Current status
 We are currently working on a redesign of the framework with the following ideas in mind:
-* Spark is uncoupled in a separate module, so users only interested in non-Big Data dynamic optimization problems can use the core of jMetal without Spark.
+* Spark, Flink and Kafka are uncoupled in separate modules, so users only interested in non-Big Data dynamic optimization problems can use the core of jMetal without Spark.
 * The architecture is being refactored:
   * The have introduced the observer pattern to link the stream data sources and algorithm outputs (the observables) with the problems and data consumers (the observers).
   * Unnecessary classes (i.e. problem and algorithm builders) have been removed.
-  * Two different runtime systems can be used: plain Java and Java+Spark.
+  * Two different runtime systems can be used: plain Java, Java+Spark, Java+SparkStructured, Java+Flink and Java+KafkaStreams.
 * We are refactoring the example published in the MOD 2016 paper becase the original Web service to obtain traffic data has changed. 
 * Algorithms included: 
   * Dynamic versions of NSGA-II, NSGA-III, R-NSGA-II, MOCell, SMPSO
