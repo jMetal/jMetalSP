@@ -55,6 +55,7 @@ public class AlgorithmFactory {
         break;
 
       case "MOCell":
+        coverageFront = new CoverageFront<>(0.05,igd);
         algorithm = new DynamicMOCellBuilder<>(crossover, mutation, new DefaultObservable<>(),coverageFront)
                 .setMaxEvaluations(50000)
                 .setPopulationSize(100)
@@ -89,6 +90,7 @@ public class AlgorithmFactory {
 
         break;
       case "RNSGAII":
+        coverageFront = new CoverageFront<>(0.15,igd);
         List<Double> interestPoint = new ArrayList<>();
         interestPoint.add(0.5);
         interestPoint.add(0.5);

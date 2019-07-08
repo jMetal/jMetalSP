@@ -4,30 +4,23 @@ import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
 import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
-import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
 import org.uma.jmetal.qualityindicator.impl.InvertedGenerationalDistance;
 import org.uma.jmetal.solution.DoubleSolution;
-import org.uma.jmetal.solution.PermutationSolution;
 import org.uma.jmetal.util.archivewithreferencepoint.ArchiveWithReferencePoint;
 import org.uma.jmetal.util.archivewithreferencepoint.impl.CrowdingDistanceArchiveWithReferencePoint;
-import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetal.util.point.PointSolution;
 import org.uma.jmetalsp.*;
 import org.uma.jmetalsp.algorithm.indm2.InDM2;
 import org.uma.jmetalsp.algorithm.indm2.InDM2Builder;
-import org.uma.jmetalsp.algorithm.rnsgaii.InteractiveRNSGAII;
 import org.uma.jmetalsp.algorithm.smpso.InteractiveSMPSORP;
-import org.uma.jmetalsp.algorithm.wasfga.InteractiveWASFGA;
 import org.uma.jmetalsp.consumer.ChartInDM2Consumer;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.examples.streamingdatasource.ComplexStreamingDataSourceFromKeyboard;
-import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingCounterDataSource;
 import org.uma.jmetalsp.impl.DefaultRuntime;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
-import org.uma.jmetalsp.problem.df.*;
 import org.uma.jmetalsp.problem.fda.FDA2;
 import org.uma.jmetalsp.qualityindicator.CoverageFront;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
@@ -48,7 +41,7 @@ import java.util.List;
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class InDM2RunnerForContinuousProblems {
+public class InDM2RunnerForContinuousAutoUpdateProblems {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     // STEP 1. Create the problem
@@ -56,14 +49,7 @@ public class InDM2RunnerForContinuousProblems {
             //new DF1();
            new FDA2();
 
-    // STEP 2. Create and configure the algorithm
-  /*  List<Double> referencePoint = new ArrayList<>();
-    referencePoint.add(0.0);
-    referencePoint.add(0.0);
 
-    CrossoverOperator<DoubleSolution> crossover = new SBXCrossover(0.9, 20.0);
-    MutationOperator<DoubleSolution> mutation =
-            new PolynomialMutation(1.0 / problem.getNumberOfVariables(), 20.0);*/
 
     List<Double> referencePoint=Arrays.asList(0.0, 0.0);
     List<List<Double>> referencePoints;
@@ -88,8 +74,7 @@ public class InDM2RunnerForContinuousProblems {
 
 
     CrossoverOperator<DoubleSolution> crossover = new SBXCrossover(0.9, 20.0);
-//   InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> iWASFGA = new InteractiveWASFGA<>(problem,100,crossover,mutation,
- //      new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>()), new SequentialSolutionListEvaluator<>(),0.01,referencePoint );
+
 
     InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> iSMPSORP = new InteractiveSMPSORP(problem,
             swarmSize,
@@ -108,8 +93,6 @@ public class InDM2RunnerForContinuousProblems {
 
     double epsilon = 0.001D;
 
-  //InteractiveAlgorithm<DoubleSolution,List<DoubleSolution>> iRNSGAII = new InteractiveRNSGAII<>(problem,100,100,100,crossover,mutation,
-    //    new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>()), new SequentialSolutionListEvaluator<>(),referencePoint,epsilon );
 
 
     InvertedGenerationalDistance<PointSolution> igd =
@@ -118,6 +101,7 @@ public class InDM2RunnerForContinuousProblems {
     InDM2<DoubleSolution> algorithm = new InDM2Builder<>(iSMPSORP, new DefaultObservable<>(),coverageFront)
             .setMaxIterations(100000)
             .setPopulationSize(100)
+            .setAutoUpdate(true)
             .build(problem);
     int delay =5000;
     algorithm.setRestartStrategy(new RestartStrategy<>(
@@ -131,21 +115,19 @@ public class InDM2RunnerForContinuousProblems {
             new RemoveNRandomSolutions<>(50),
             new CreateNRandomSolutions<DoubleSolution>()));
 
-    // STEP 3. Create a streaming data source for the problem
-   StreamingDataSource<ObservedValue<Integer>> streamingDataSource =
-            new SimpleStreamingCounterDataSource(delay) ;
 
-    // STEP 4. Create a streaming data source for the algorithm and register
+
+    // STEP 3. Create a streaming data source for the algorithm and register
     StreamingDataSource<ObservedValue<List<Double>>> keyboardstreamingDataSource =
             new ComplexStreamingDataSourceFromKeyboard() ;
 
-    // STEP 5. Create the data consumers
+    // STEP 4. Create the data consumers
     DataConsumer<AlgorithmObservedData> localDirectoryOutputConsumer =
             new LocalDirectoryOutputConsumer<DoubleSolution>("outputdirectory-"+problem.getName()+"-"+algorithm.getName()+"-"+referenceName(referencePoint)) ;//algorithm
     DataConsumer<AlgorithmObservedData> chartConsumer =
             new ChartInDM2Consumer<DoubleSolution>(algorithm.getName(), referencePoint,problem.getNumberOfObjectives(),problem.getName()) ;
 
-    // STEP 6. Create the application and run
+    // STEP 5. Create the application and run
     JMetalSPApplication<
             DoubleSolution,
             DynamicProblem<DoubleSolution, ObservedValue<Integer>>,
@@ -154,7 +136,6 @@ public class InDM2RunnerForContinuousProblems {
     application = new JMetalSPApplication<>(problem,algorithm);
 
     application.setStreamingRuntime(new DefaultRuntime())
-            .addStreamingDataSource(streamingDataSource,problem)
             .addStreamingDataSource(keyboardstreamingDataSource,algorithm)
             .addAlgorithmDataConsumer(localDirectoryOutputConsumer)
             .addAlgorithmDataConsumer(chartConsumer)
