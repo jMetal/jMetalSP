@@ -11,7 +11,7 @@ We are currently working on a redesign of the framework with the following ideas
   * The have introduced the observer pattern to link the stream data sources and algorithm outputs (the observables) with the problems and data consumers (the observers).
   * Unnecessary classes (i.e. problem and algorithm builders) have been removed.
   * Five different runtime systems can be used: plain Java, Java+Spark, Java+SparkStructured, Java+Flink and Java+KafkaStreams.
-* We are refactoring the example published in the MOD 2016 paper becase the original Web service to obtain traffic data has changed. 
+* We are refactoring the example published in the MOD 2016 paper because the original Web service to obtain traffic data has changed. 
 * Algorithms included: 
   * Dynamic versions of NSGA-II, NSGA-III, R-NSGA-II, MOCell, SMPSO, SMPSO/RP, WASF-GA
   * Dynamic version of WASF-GA, algorithm including a preference articulation mechanism based on a reference point.
