@@ -84,16 +84,7 @@ public class DynamicContinuousApplicationAVRO {
             //new RemoveNRandomSolutions(50),
             new CreateNRandomSolutions<DoubleSolution>()));
 
-    // STEP 3. Create the streaming data source (only one in this example) and register the problem
-    /*String topic="counter";
-    Map<String,Object> kafkaParams = new HashMap<>();
-    kafkaParams.put("bootstrap.servers", "localhost:9092");
-    kafkaParams.put(ConsumerConfig.GROUP_ID_CONFIG, "DemoConsumer");
-    kafkaParams.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
-    kafkaParams.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "1000");
-    kafkaParams.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "30000");
-    kafkaParams.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.IntegerDeserializer");
-    kafkaParams.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.ByteArrayDeserializer");*/
+
 
     // STEP 3. Create the streaming data source (only one in this example) and register the problem
     StreamingDataSource<ObservedValue<Integer>> streamingDataSource =
