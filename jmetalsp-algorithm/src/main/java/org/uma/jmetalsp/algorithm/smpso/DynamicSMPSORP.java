@@ -213,7 +213,7 @@ public class DynamicSMPSORP extends SMPSORP
                             swarmSize / referencePoints.size(), referencePoints.get(i)));
         }
         initializeLeader(getSwarm());
-        referencePointSolutions = new ArrayList<>();
+        List<DoubleSolution>referencePointSolutions = new ArrayList<>();
         for (int i = 0; i < referencePoints.size(); i++) {
             DoubleSolution refPoint = getDynamicProblem().createSolution();
             for (int j = 0; j < referencePoints.get(0).size(); j++) {
@@ -222,6 +222,7 @@ public class DynamicSMPSORP extends SMPSORP
 
             referencePointSolutions.add(refPoint);
         }
+        this.setReferencePointSolutions(referencePointSolutions);
     }
 
     @Override
