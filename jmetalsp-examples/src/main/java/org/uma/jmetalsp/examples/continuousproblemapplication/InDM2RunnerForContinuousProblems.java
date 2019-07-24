@@ -66,7 +66,7 @@ public class InDM2RunnerForContinuousProblems {
             //new RemoveFirstNSolutions<>(50),
             //new RemoveNSolutionsAccordingToTheHypervolumeContribution<>(50),
             //new RemoveNSolutionsAccordingToTheCrowdingDistance<>(50),
-            new RemoveNRandomSolutions(50),
+            new RemoveNRandomSolutions<>(50),
             new CreateNRandomSolutions<DoubleSolution>()));
 
     algorithm.setRestartStrategyForReferencePointChange(new RestartStrategy<>(

@@ -15,6 +15,7 @@ import org.uma.jmetalsp.spark.SparkRuntime;
 import org.uma.jmetalsp.spark.streamingdatasource.SimpleSparkStreamingCounterDataSource;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
+import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNRandomSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNSolutionsAccordingToTheHypervolumeContribution;
 
 import java.io.IOException;
@@ -61,9 +62,9 @@ public class DynamicContinuousApplicationWithSpark {
 
     algorithm.setRestartStrategy(new RestartStrategy<>(
             //new RemoveFirstNSolutions<>(50),
-            new RemoveNSolutionsAccordingToTheHypervolumeContribution<>(50),
+            //new RemoveNSolutionsAccordingToTheHypervolumeContribution<>(50),
             //new RemoveNSolutionsAccordingToTheCrowdingDistance<>(50),
-            //new RemoveNRandomSolutions(50),
+            new RemoveNRandomSolutions(50),
             new CreateNRandomSolutions<DoubleSolution>()));
 
     // STEP 3. Create the streaming data source (only one in this example) and register the problem

@@ -68,10 +68,8 @@ public class TSPNYProvider extends Thread {
       String messageStr = json.toString();
 
       Future<RecordMetadata> send =
-
           producer.send(new ProducerRecord<Integer, String>
               (topic, count, messageStr));
-
       try {
         Thread.sleep(20000);
       } catch (InterruptedException e) {

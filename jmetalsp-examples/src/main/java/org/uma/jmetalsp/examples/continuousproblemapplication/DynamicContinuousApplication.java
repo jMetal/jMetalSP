@@ -9,6 +9,7 @@ import org.uma.jmetalsp.impl.DefaultRuntime;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.problem.fda.FDA2;
+import org.uma.jmetalsp.problem.fda.FDA3;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNRandomSolutions;
@@ -52,7 +53,7 @@ public class DynamicContinuousApplication {
 
     // STEP 3. Create the streaming data source (only one in this example)
     StreamingDataSource<ObservedValue<Integer>> streamingDataSource =
-            new SimpleStreamingCounterDataSource(2000) ;
+            new SimpleStreamingCounterDataSource(1000) ;
 
     // STEP 4. Create the data consumers and register into the algorithm
     DataConsumer<AlgorithmObservedData> localDirectoryOutputConsumer =
