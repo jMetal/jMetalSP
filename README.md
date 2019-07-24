@@ -6,18 +6,19 @@ Please, note that jMetalSP is a project in continuous development. If you have a
 
 ## Current status
 We are currently working on a redesign of the framework with the following ideas in mind:
-* Spark is uncoupled in a separate module, so users only interested in non-Big Data dynamic optimization problems can use the core of jMetal without Spark.
+* Spark, Flink and Kafka are uncoupled in separate modules, so users only interested in non-Big Data dynamic optimization problems can use the core of jMetal without Spark.
 * The architecture is being refactored:
   * The have introduced the observer pattern to link the stream data sources and algorithm outputs (the observables) with the problems and data consumers (the observers).
   * Unnecessary classes (i.e. problem and algorithm builders) have been removed.
-  * Two different runtime systems can be used: plain Java and Java+Spark.
-* We are refactoring the example published in the MOD 2016 paper becase the original Web service to obtain traffic data has changed. 
+  * Five different runtime systems can be used: plain Java, Java+Spark, Java+SparkStructured, Java+Flink and Java+KafkaStreams.
+* We are refactoring the example published in the MOD 2016 paper because the original Web service to obtain traffic data has changed. 
 * Algorithms included: 
-  * Dynamic versions of NSGA-II, NSGA-III, R-NSGA-II, MOCell, SMPSO
+  * Dynamic versions of NSGA-II, NSGA-III, R-NSGA-II, MOCell, SMPSO, SMPSO/RP, WASF-GA
   * Dynamic version of WASF-GA, algorithm including a preference articulation mechanism based on a reference point.
   * A new algorithm called InDM2 (Interactive Dynamic Multi-Objective Decision Making).
+  * Interactive versions of R-NSGA-II, SMPSO/RP,WASF-GA
 * A component to draw the Pareto front approximations in a chart during the algorithm execution.
-* Problems included: bi-objective TSP, FDA benchmark.
+* Problems included: bi-objective TSP, FDA benchmark, DF benchmark.
 
 
 ## Architecture
@@ -65,6 +66,21 @@ The following example applications are included in the current development versi
 * [`InDM2RunnerForContinuousProblems`](https://github.com/jMetal/jMetalSP/blob/master/jmetalsp-examples/src/main/java/org/uma/jmetalsp/examples/continuousproblemapplication/InDM2RunnerForContinuousProblems.java). This example, included in the paper published in SWEVO 2018, shows how to configure the InDM2 with Interactive R-NSGA-II and Interactive WASFGA algorithms to solve FDA problems.
 * [`InDM2RunnerForContinuousProblems3D`](https://github.com/jMetal/jMetalSP/blob/master/jmetalsp-examples/src/main/java/org/uma/jmetalsp/examples/continuousproblemapplication/InDM2RunnerForContinuousProblems3D.java). This example, included in the paper published in SWEVO 2018, shows how to configure the InDM2 with Interactive R-NSGA-II and Interactive WASFGA algorithms to solve FDA problems, showing results in a 3D plot.
 * [`InDM2RunnerForNYTSP`](https://github.com/jMetal/jMetalSP/blob/master/jmetalsp-examples/src/main/java/org/uma/jmetalsp/examples/dynamictsp/InDM2RunnerForNYTSP.java). This example, included in the paper to be presented in SWEVO 2018, shows how to configure the InDM2 with Interactive R-NSGA-II and Interactive WASFGA algorithms to solve TSP problem with traffic data from New York.
+* [`InDM2RunnerForContinuousAutoUpdateProblems`](https://github.com/jMetal/jMetalSP/blob/master/jmetalsp-examples/src/main/java/org/uma/jmetalsp/examples/continuousproblemapplication/InDM2RunnerForContinuousAutoUpdateProblems.java). This example is as InDM2RunnerForContinuousProblems but in this case the problem is updated after 25000 algorithm evaluations.
+* [`DynamicContinuousApplicationAVRO`](https://github.com/jMetal/jMetalSP/blob/master/jmetalsp-examples/src/main/java/org/uma/jmetalsp/examples/continuousproblemapplication/DynamicContinuousApplicationAVRO.java). Example of using NSGA-II, MOCell, SMPSO or WASF-GA to solve the FDA problems using the default streaming runtime, i.e. without Spark and AVRO is used for interchange communications.
+* [`DynamicContinuousApplicationFlink`](https://github.com/jMetal/jMetalSP/blob/master/jmetalsp-examples/src/main/java/org/uma/jmetalsp/examples/continuousproblemapplication/DynamicContinuousApplicationFlink.java). This example is the same that DynamicContinuousApplication but with Flink as streaming runtime.
+* [`DynamicContinuousApplicationFlinkkafka`](https://github.com/jMetal/jMetalSP/blob/master/jmetalsp-examples/src/main/java/org/uma/jmetalsp/examples/continuousproblemapplication/DynamicContinuousApplicationFlinkKafka.java). This example is the same that DynamicContinuousApplicationFlink but  using kafka for communicating components.
+* [`DynamicContinuousApplicationFlinkkafkaAVRO`](https://github.com/jMetal/jMetalSP/blob/master/jmetalsp-examples/src/main/java/org/uma/jmetalsp/examples/continuousproblemapplication/DynamicContinuousApplicationFlinkKafka.java). This example is the same that DynamicContinuousApplicationFlinkKafka but  using AVRO adn Kafka for communicating components.
+* [`DynamicContinuousApplicationWithSparkkafkaAVRO`](https://github.com/jMetal/jMetalSP/blob/master/jmetalsp-examples/src/main/java/org/uma/jmetalsp/examples/continuousproblemapplication/DynamicContinuousApplicationWithSparkKafkaAVRO.java). Example of using NSGA-II, MOCell, SMPSO or WASF-GA to solve the FDA problems using Spark and Kafka-AVRO for communicating components.
+* [`DSMPSORunnerForContinuousProblems`](https://github.com/jMetal/jMetalSP/blob/master/jmetalsp-examples/src/main/java/org/uma/jmetalsp/examples/continuousproblemapplication/DSMSPORunnerForContinuousProblems.java). This example, shows how to configure the Dynamic SMPSO to solve FDA problems.
+* [`RNSGAIIRunnerForContinuousProblems`](https://github.com/jMetal/jMetalSP/blob/master/jmetalsp-examples/src/main/java/org/uma/jmetalsp/examples/continuousproblemapplication/RNSGAIIRunnerForContinuousProblems.java). This example, shows how to configure the Dynamic R-NSGA-II to solve FDA problems.
+* [`SMPSORPRunnerForContinuousProblems`](https://github.com/jMetal/jMetalSP/blob/master/jmetalsp-examples/src/main/java/org/uma/jmetalsp/examples/continuousproblemapplication/SMSPORPRunnerForContinuousProblems.java). This example, shows how to configure the Dynamic SMPSO/RP to solve DF problems.
+
+
+
+
+ 
+
 
 ### How to execute the Spark example
 In order to run the example [`DynamicContinuousApplicationWithSpark`](https://github.com/jMetal/jMetalSP/blob/master/jmetalsp-examples/src/main/java/org/uma/jmetalsp/examples/continuousproblemapplication/DynamicContinuousApplicationWithSpark.java), it is necessary 
@@ -74,7 +90,7 @@ to run first the [`CounterProvider`](https://github.com/jMetal/jMetalSP/blob/mas
 To run the examples that do not use Spark you need:
 * Java JDK 8
 * Apache Maven
-* jMetal 5.5.2
+* jMetal 5.7
 
 To execute the codes with Spark:
 * Spark 2.3.0 or later

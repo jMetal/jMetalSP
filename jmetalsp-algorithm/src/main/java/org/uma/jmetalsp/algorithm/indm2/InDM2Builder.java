@@ -1,10 +1,12 @@
 package org.uma.jmetalsp.algorithm.indm2;
 
 import org.uma.jmetal.solution.Solution;
+import org.uma.jmetal.util.point.PointSolution;
 import org.uma.jmetalsp.DynamicProblem;
 import org.uma.jmetalsp.InteractiveAlgorithm;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observer.Observable;
+import org.uma.jmetalsp.qualityindicator.CoverageFront;
 
 import java.util.List;
 
@@ -21,15 +23,17 @@ public class InDM2Builder<
 
   private int maxIterations;
   private int populationSize;
-
+  private boolean autoUpdate;
+  private CoverageFront<PointSolution> coverageFront;
   public InDM2Builder(InteractiveAlgorithm<S,List<S>> interactiveAlgorithm,
-                      Observable<AlgorithmObservedData> observable) {
+                      Observable<AlgorithmObservedData> observable, CoverageFront<PointSolution> coverageFront) {
 
     this.interactiveAlgorithm = interactiveAlgorithm;
     this.maxIterations = 25000;
     this.populationSize = 100;
     this.observable = observable;
-
+    this.autoUpdate = false;
+    this.coverageFront = coverageFront;
   }
 
 
@@ -55,7 +59,10 @@ public class InDM2Builder<
     return this;
   }
 
-
+  public InDM2Builder<S, P>  setAutoUpdate(boolean autoUpdate) {
+    this.autoUpdate = autoUpdate;
+    return this;
+  }
 
   public InDM2<S> build(P problem) {
 
@@ -63,7 +70,7 @@ public class InDM2Builder<
      * Problem<S> problem, int populationSize, int maxEvaluations,InteractiveAlgorithm<S,List<S>> interactiveAlgorithm,
      *                Observable<AlgorithmObservedData<S>> observable
      */
-    return new InDM2(problem, populationSize, maxIterations, interactiveAlgorithm, observable);
+    return new InDM2(problem, populationSize, maxIterations, interactiveAlgorithm, observable,autoUpdate,coverageFront);
 
   }
 }

@@ -19,12 +19,17 @@ import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.SelectionOperator;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
+import org.uma.jmetal.util.front.Front;
+import org.uma.jmetal.util.front.imp.ArrayFront;
+import org.uma.jmetal.util.point.PointSolution;
 import org.uma.jmetalsp.DynamicAlgorithm;
 import org.uma.jmetalsp.DynamicProblem;
+import org.uma.jmetalsp.DynamicUpdate;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.Observer;
+import org.uma.jmetalsp.qualityindicator.CoverageFront;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveFirstNSolutions;
@@ -49,20 +54,27 @@ public class DynamicRNSGAII<S extends Solution<?>>
   private boolean stopAtTheEndOfTheCurrentIteration = false ;
   private RestartStrategy<S> restartStrategyForProblemChange ;
   private RestartStrategy<S> restartStrategyForReferencePointChange ;
-  Observable<AlgorithmObservedData> observable ;
+  private Observable<AlgorithmObservedData> observable ;
   //private Map<String,List> algorithmData;
   private Optional<List<S>> newReferencePoint ;
+  private List<S> lastReceivedFront;
+  private boolean autoUpdate;
+  private CoverageFront<PointSolution> coverageFront;
+
 
   public DynamicRNSGAII(DynamicProblem<S, ?> problem, int maxEvaluations, int populationSize,
+                        int matingPoolSize, int offspringPopulationSize,
                         CrossoverOperator<S> crossoverOperator,
                         MutationOperator<S> mutationOperator,
                         SelectionOperator<List<S>, S> selectionOperator,
                         SolutionListEvaluator<S> evaluator,
-                        Observable<AlgorithmObservedData> observable,List<Double> referencePoint, double epsilon) {
-    super(problem, maxEvaluations, populationSize, crossoverOperator, mutationOperator, selectionOperator, evaluator,referencePoint,epsilon);
+                        Observable<AlgorithmObservedData> observable,List<Double> referencePoint, double epsilon,boolean autoUpdate, CoverageFront<PointSolution> coverageFront) {
+    super(problem, maxEvaluations, populationSize, matingPoolSize,offspringPopulationSize, crossoverOperator, mutationOperator, selectionOperator, evaluator,referencePoint,epsilon);
     this.newReferencePoint = Optional.ofNullable(null);
     this.completedIterations = 0 ;
     this.observable = observable ;
+    this.autoUpdate = autoUpdate;
+    this.coverageFront = coverageFront;
     this.restartStrategyForProblemChange = new RestartStrategy<>(
             new RemoveFirstNSolutions<S>(populationSize),
             new CreateNRandomSolutions<S>()) ;
@@ -79,8 +91,8 @@ public class DynamicRNSGAII<S extends Solution<?>>
   }
 
   @Override protected boolean isStoppingConditionReached() {
-    if (evaluations >= maxEvaluations) {
-      observable.setChanged() ;
+    if (evaluations.get() >= maxEvaluations) {
+      /*observable.setChanged() ;
 
       Map<String, Object> algorithmData = new HashMap<>() ;
 
@@ -92,6 +104,41 @@ public class DynamicRNSGAII<S extends Solution<?>>
       observable.notifyObservers(new AlgorithmObservedData((List<Solution<?>>) getResult(), algorithmData));
 
 
+      restart();
+      evaluator.evaluate(getPopulation(), getDynamicProblem()) ;
+
+      initProgress();
+      completedIterations++;*/
+      boolean coverage = false;
+      if (lastReceivedFront != null) {
+        Front referenceFront = new ArrayFront(lastReceivedFront);
+        coverageFront.updateFront(referenceFront);
+        List<PointSolution> pointSolutionList = new ArrayList<>();
+        List<S> list = getResult();
+        for (S s : list) {
+          PointSolution pointSolution = new PointSolution(s);
+          pointSolutionList.add(pointSolution);
+        }
+        coverage = coverageFront.isCoverage(pointSolutionList);
+
+      }
+
+      if (getDynamicProblem() instanceof DynamicUpdate && autoUpdate) {
+        ((DynamicUpdate) getDynamicProblem()).update();
+      }
+
+      if (coverage) {
+        observable.setChanged();
+        Map<String, Object> algorithmData = new HashMap<>();
+        algorithmData.put("numberOfIterations", completedIterations);
+        algorithmData.put("algorithmName", getName());
+        algorithmData.put("problemName", problem.getName());
+        algorithmData.put("numberOfObjectives", problem.getNumberOfObjectives());
+
+
+        observable.notifyObservers(new AlgorithmObservedData((List<Solution<?>>) getResult(), algorithmData));
+      }
+      lastReceivedFront = getResult();
       restart();
       evaluator.evaluate(getPopulation(), getDynamicProblem()) ;
 
@@ -116,15 +163,18 @@ public class DynamicRNSGAII<S extends Solution<?>>
       restart() ;
       evaluator.evaluate(getPopulation(), getDynamicProblem()) ;
       newReferencePoint = Optional.ofNullable(null);
-      evaluations = 0 ;
+      evaluations.reset();
+      //evaluations = 0 ;
     } else if (getDynamicProblem().hasTheProblemBeenModified()) {
       this.restartStrategyForProblemChange.restart(getPopulation(), (DynamicProblem<S, ?>) getProblem());
       restart() ;
       evaluator.evaluate(getPopulation(), getDynamicProblem()) ;
       getDynamicProblem().reset();
-      evaluations = 0 ;
+      //evaluations = 0 ;
+      evaluations.reset();
     } else {
-      evaluations += getMaxPopulationSize() ;
+      //evaluations += getMaxPopulationSize() ;
+      evaluations.increment(maxPopulationSize);
     }
 
   }

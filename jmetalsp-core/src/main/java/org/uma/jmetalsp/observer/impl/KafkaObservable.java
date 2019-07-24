@@ -5,7 +5,7 @@ import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 import org.uma.jmetalsp.ObservedData;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.Observer;
-import org.uma.jmetalsp.util.serialization.DataSerializer;
+import org.uma.jmetalsp.serialization.DataSerializer;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -24,16 +24,31 @@ public class KafkaObservable<O extends ObservedData<?>> implements Observable<O>
   private Producer<Integer, byte[]> producerAVRO;
   private String pathAVRO;
   private DataSerializer serializer;
-  public KafkaObservable(String topicName, O observedDataObject) {
+  public KafkaObservable(String topicName) {
     observers = new HashSet<>();
     dataHasChanged = false;
     this.topicName = topicName;
 
     Properties properties = new Properties();
-    properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+    properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "192.168.227.26:9092");
     properties.put(ProducerConfig.CLIENT_ID_CONFIG, "DemoProducer");
-    properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
-    properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
+    properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.IntegerSerializer");
+    properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.ByteArraySerializer");
+
+
+    this.producer = new KafkaProducer<>(properties) ;
+  }
+  public KafkaObservable(String topicName,ObservedData o) {
+    observers = new HashSet<>();
+    dataHasChanged = false;
+    this.topicName = topicName;
+
+    Properties properties = new Properties();
+    properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "192.168.227.26:9092");
+    properties.put(ProducerConfig.CLIENT_ID_CONFIG, "DemoProducer");
+    properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.IntegerSerializer");
+    properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.ByteArraySerializer");
+
 
     this.producer = new KafkaProducer<>(properties) ;
   }
@@ -43,11 +58,14 @@ public class KafkaObservable<O extends ObservedData<?>> implements Observable<O>
     this.dataHasChanged = false;
     this.topicName = topicName;
     this.pathAVRO =pathAVRO;
+
     Properties properties = new Properties();
-    properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-    properties.put(ProducerConfig.CLIENT_ID_CONFIG, "DemoProducer");
-    properties.put("key.serializer", "org.apache.kafka.common.serialization.IntegerSerializer");
-    properties.put("value.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
+    properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "192.168.227.26:9092");//"192.168.48.222:29092"
+    //properties.put("metadata.broker.list", "192.168.48.222:29092");
+    properties.put(ProducerConfig.CLIENT_ID_CONFIG, "Algorithm-DataProducer");
+
+    properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.IntegerSerializer");
+    properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.ByteArraySerializer");
 
     this.producerAVRO = new KafkaProducer<>(properties) ;
     this.serializer = new DataSerializer();
@@ -67,15 +85,21 @@ public class KafkaObservable<O extends ObservedData<?>> implements Observable<O>
   @Override
   public void notifyObservers(O data) {
     if (dataHasChanged) {
-      System.out.println("Sending data") ;
+
       if(pathAVRO==null) {
         producer.send(new ProducerRecord<String, String>(topicName, "0", data.toJson()));
       }else{
-        byte [] aux= serializer.serializeMessage(data.getData(),pathAVRO);
+        byte [] aux=null;
+        if(data.getData()!=null) {
+           aux= serializer.serializeMessage(data.getData(), pathAVRO);
+        }else{
+            aux =serializer.serializeMessage(data, pathAVRO);
+        }
         int count = JMetalRandom.getInstance().nextInt(0,10000);
         Future<RecordMetadata> send =
                 producerAVRO.send(new ProducerRecord<Integer, byte[]>
                         (topicName, count, aux));
+        System.out.println("Sending data "+count) ;
       }
     }
     clearChanged();

@@ -15,7 +15,7 @@ public class KafkaRuntime implements StreamingRuntime {
     public KafkaRuntime(String topic){
         config = new Properties();
         config.put(StreamsConfig.APPLICATION_ID_CONFIG,"stream-pipe");
-        config.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG,"localhost:9092");
+        config.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG,"192.168.227.26:9092");
         config.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG,Serdes.Integer().getClass());
         config.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG,Serdes.String().getClass());
         streamsBuilder = new StreamsBuilder();

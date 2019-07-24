@@ -1,0 +1,7 @@
+{"namespace":"org.uma.jmetalsp.serialization.counter",
+    "type": "record",
+    "name": "Counter",
+    "fields":[
+        {"name": "value", "type":"int"}
+    ]
+}

@@ -91,8 +91,9 @@ public class JMetalSPApplication<
     }
     algorithmThread.start();
 
-    streamingRuntime.startStreamingDataSources(streamingDataSourceList);
-
+    if(streamingDataSourceList!=null && ! streamingDataSourceList.isEmpty()) {
+      streamingRuntime.startStreamingDataSources(streamingDataSourceList);
+    }
     for (Thread consumerThread : consumerThreadList) {
       consumerThread.join();
     }
