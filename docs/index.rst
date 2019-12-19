@@ -16,3 +16,6 @@ The current version is being under development in the master branch of the repos
     :caption: Index:
 
     installation.rst
+    howto.rst
+
+
