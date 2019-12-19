@@ -9,7 +9,6 @@ import org.uma.jmetalsp.impl.DefaultRuntime;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.problem.fda.FDA2;
-import org.uma.jmetalsp.problem.fda.FDA3;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNRandomSolutions;

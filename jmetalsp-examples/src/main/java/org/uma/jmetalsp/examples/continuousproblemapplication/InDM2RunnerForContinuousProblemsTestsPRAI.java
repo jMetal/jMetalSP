@@ -18,7 +18,6 @@ import org.uma.jmetalsp.algorithm.indm2.InDM2Builder;
 import org.uma.jmetalsp.algorithm.rnsgaii.InteractiveRNSGAII;
 import org.uma.jmetalsp.algorithm.smpso.InteractiveSMPSORP;
 import org.uma.jmetalsp.algorithm.wasfga.InteractiveWASFGA;
-import org.uma.jmetalsp.consumer.ChartInDM2Consumer;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.examples.streamingdatasource.ComplexStreamingDataSourceFromKeyboard;
 import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingCounterDataSource;

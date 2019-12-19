@@ -7,7 +7,6 @@ import org.uma.jmetalsp.consumer.ChartConsumer;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.flink.FlinkRuntime;
 import org.uma.jmetalsp.flink.streamingdatasource.SimpleFlinkKafkaStreamingCounterDataSource;
-import org.uma.jmetalsp.flink.streamingdatasource.SimpleFlinkStreamingCounterDataSource;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.problem.fda.FDA2;
@@ -16,9 +15,7 @@ import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNSolutionsAccordingToTheHypervolumeContribution;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 /**

@@ -1,8 +1,6 @@
 package org.uma.jmetalsp.examples.continuousproblemapplication;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.common.serialization.ByteArraySerializer;
-import org.apache.kafka.common.serialization.IntegerDeserializer;
 import org.apache.spark.SparkConf;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetalsp.DataConsumer;
@@ -16,7 +14,6 @@ import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.problem.fda.FDA2;
 import org.uma.jmetalsp.spark.SparkRuntime;
 import org.uma.jmetalsp.spark.SparkStreamingDataSource;
-import org.uma.jmetalsp.spark.streamingdatasource.SimpleSparkStreamingCounterDataSource;
 import org.uma.jmetalsp.spark.streamingdatasource.SimpleSparkStructuredKafkaStreamingCounterAVRO;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
@@ -26,7 +23,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * Example of jMetalSP application.

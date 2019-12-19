@@ -9,8 +9,6 @@ import org.uma.jmetalsp.flink.streamingdatasource.SimpleFlinkStreamingCounterDat
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.problem.fda.FDA2;
-import org.uma.jmetalsp.spark.SparkRuntime;
-import org.uma.jmetalsp.spark.streamingdatasource.SimpleSparkStreamingCounterDataSource;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNSolutionsAccordingToTheHypervolumeContribution;

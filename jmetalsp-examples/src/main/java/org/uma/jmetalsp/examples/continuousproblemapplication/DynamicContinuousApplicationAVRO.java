@@ -1,6 +1,5 @@
 package org.uma.jmetalsp.examples.continuousproblemapplication;
 
-import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.SelectionOperator;
@@ -14,12 +13,9 @@ import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetal.util.point.PointSolution;
 import org.uma.jmetalsp.*;
 import org.uma.jmetalsp.algorithm.nsgaii.DynamicNSGAIIAVRO;
-import org.uma.jmetalsp.consumer.ChartConsumer;
 import org.uma.jmetalsp.consumer.ChartConsumerAVRO;
-import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.examples.streamingdatasource.SimpleStreamingCounterDataSource;
 import org.uma.jmetalsp.impl.DefaultRuntime;
-import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.Observable;
 import org.uma.jmetalsp.observer.impl.KafkaBasedConsumer;
@@ -27,17 +23,12 @@ import org.uma.jmetalsp.observer.impl.KafkaObservable;
 import org.uma.jmetalsp.problem.fda.FDA2;
 import org.uma.jmetalsp.qualityindicator.CoverageFront;
 import org.uma.jmetalsp.serialization.algorithmdata.AlgorithmData;
-import org.uma.jmetalsp.spark.SparkStreamingDataSource;
-import org.uma.jmetalsp.spark.streamingdatasource.SimpleSparkStructuredKafkaStreamingCounterAVRO;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
-import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNRandomSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNSolutionsAccordingToTheHypervolumeContribution;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Example of jMetalSP application.

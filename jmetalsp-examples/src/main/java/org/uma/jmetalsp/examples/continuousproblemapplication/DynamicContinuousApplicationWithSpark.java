@@ -16,9 +16,7 @@ import org.uma.jmetalsp.spark.streamingdatasource.SimpleSparkStreamingCounterDat
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;
 import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNRandomSolutions;
-import org.uma.jmetalsp.util.restartstrategy.impl.RemoveNSolutionsAccordingToTheHypervolumeContribution;
 
-import java.io.IOException;
 import java.util.List;
 
 /**

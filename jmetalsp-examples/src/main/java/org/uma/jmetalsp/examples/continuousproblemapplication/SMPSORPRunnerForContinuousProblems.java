@@ -1,8 +1,6 @@
 package org.uma.jmetalsp.examples.continuousproblemapplication;
 
-import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
-import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
 import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
 import org.uma.jmetal.qualityindicator.impl.InvertedGenerationalDistance;
 import org.uma.jmetal.solution.DoubleSolution;
@@ -10,8 +8,6 @@ import org.uma.jmetal.util.archivewithreferencepoint.ArchiveWithReferencePoint;
 import org.uma.jmetal.util.archivewithreferencepoint.impl.CrowdingDistanceArchiveWithReferencePoint;
 import org.uma.jmetal.util.point.PointSolution;
 import org.uma.jmetalsp.*;
-import org.uma.jmetalsp.algorithm.rnsgaii.DynamicRNSGAII;
-import org.uma.jmetalsp.algorithm.rnsgaii.DynamicRNSGAIIBuilder;
 import org.uma.jmetalsp.algorithm.smpso.DynamicSMPSORP;
 import org.uma.jmetalsp.algorithm.smpso.DynamicSMPSORPBuilder;
 import org.uma.jmetalsp.consumer.ChartInDM2Consumer;
@@ -22,8 +18,7 @@ import org.uma.jmetalsp.impl.DefaultRuntime;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.ObservedValue;
 import org.uma.jmetalsp.observer.impl.DefaultObservable;
-import org.uma.jmetalsp.problem.df.*;
-import org.uma.jmetalsp.problem.fda.FDA2;
+import org.uma.jmetalsp.problem.df.DF9;
 import org.uma.jmetalsp.qualityindicator.CoverageFront;
 import org.uma.jmetalsp.util.restartstrategy.RestartStrategy;
 import org.uma.jmetalsp.util.restartstrategy.impl.CreateNRandomSolutions;

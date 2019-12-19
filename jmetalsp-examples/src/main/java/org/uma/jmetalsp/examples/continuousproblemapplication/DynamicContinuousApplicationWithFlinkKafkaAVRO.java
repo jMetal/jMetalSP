@@ -1,13 +1,11 @@
 package org.uma.jmetalsp.examples.continuousproblemapplication;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.common.serialization.IntegerDeserializer;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetalsp.*;
 import org.uma.jmetalsp.consumer.ChartConsumer;
 import org.uma.jmetalsp.consumer.LocalDirectoryOutputConsumer;
 import org.uma.jmetalsp.flink.FlinkRuntime;
-import org.uma.jmetalsp.flink.streamingdatasource.SimpleFlinkKafkaStreamingCounterDataSource;
 import org.uma.jmetalsp.flink.streamingdatasource.SimpleFlinkKafkaStreamingCounterDataSourceAVRO;
 import org.uma.jmetalsp.observeddata.AlgorithmObservedData;
 import org.uma.jmetalsp.observeddata.ObservedValue;
