@@ -88,8 +88,8 @@ The dynamic multi-objective runners in jMetalSP is similar to no dynamic runners
 
 There are a number of items to be considered:
 
-* In step 2 is created the dynamic algorithm, we set up the restart policies
-* Step 2.3 defines the threshold value used for indicating the difference between consecutives fronts, if the value calculated by the quality indicator the higher then the threshold then the front is printed in the chart visualizator. 
+* In step 2 is created the dynamic algorithm, we set up the restart policies.
+* In step 3 is defined the counter for updating the problem.
 * In step 2.4 we define an important variable from a point of view of the dynamic problem, thus with ``updateProblemByIterations`` we indicate whether the problem is updated following the number of iterations of the algorithm or with a external counter (as we will see in next code example).
 * Step 3 and step 4 configure the chart visualizator, The value ``80`` means the display delay in milliseconds.
 
