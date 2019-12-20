@@ -159,7 +159,8 @@ The next example, ``DynamicTSPWithSparkKafkaAVRO``, describes how to work with A
 
 
 .. code-block:: java
- 	public class DynamicTSPWithSparkKafkaAVRO {
+ 
+   public class DynamicTSPWithSparkKafkaAVRO {
 
   		public static void main(String[] args) throws IOException, InterruptedException {
    		// STEP 1. Create the problem
