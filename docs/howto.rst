@@ -155,83 +155,83 @@ The next example is ``DynamicContinuousApplicationWithSpark`` class where we hav
   }
 
 
-The next example. ``DynamicTSPWithSparkKafkaAVRO``,
+The next example, ``DynamicTSPWithSparkKafkaAVRO``, describes how to work with Apache Spark, Apache Kafka, Apache Avro and dynamic algorithm in jMetalSP.
 
 
 .. code-block:: java
-public class DynamicTSPWithSparkKafkaAVRO {
+ 	public class DynamicTSPWithSparkKafkaAVRO {
 
-  public static void main(String[] args) throws IOException, InterruptedException {
-   // STEP 1. Create the problem
-    DynamicProblem<PermutationSolution<Integer>, ObservedValue<TSPMatrixData>> problem;
+  		public static void main(String[] args) throws IOException, InterruptedException {
+   		// STEP 1. Create the problem
+    		DynamicProblem<PermutationSolution<Integer>, ObservedValue<TSPMatrixData>> problem;
 
-    problem = new MultiobjectiveTSPBuilderFromNYData("data/nyData.txt").build() ;
+    		problem = new MultiobjectiveTSPBuilderFromNYData("data/nyData.txt").build() ;
 
-    // STEP 2. Create the algorithm
-    CrossoverOperator<PermutationSolution<Integer>> crossover;
-    MutationOperator<PermutationSolution<Integer>> mutation;
-    SelectionOperator<List<PermutationSolution<Integer>>, PermutationSolution<Integer>> selection;
+   		 // STEP 2. Create the algorithm
+    		CrossoverOperator<PermutationSolution<Integer>> crossover;
+    		MutationOperator<PermutationSolution<Integer>> mutation;
+    		SelectionOperator<List<PermutationSolution<Integer>>, PermutationSolution<Integer>> selection;
 
-    crossover = new PMXCrossover(0.9);
+    		crossover = new PMXCrossover(0.9);
 
-    double mutationProbability = 0.2;
-    mutation = new PermutationSwapMutation<Integer>(mutationProbability);
+    		double mutationProbability = 0.2;
+    		mutation = new PermutationSwapMutation<Integer>(mutationProbability);
 
-    selection = new BinaryTournamentSelection<>(
-        new RankingAndCrowdingDistanceComparator<PermutationSolution<Integer>>());
+    		selection = new BinaryTournamentSelection<>(
+        	new RankingAndCrowdingDistanceComparator<PermutationSolution<Integer>>());
 
-    InvertedGenerationalDistance<PointSolution> igd =
-        new InvertedGenerationalDistance<>();
-    CoverageFront<PointSolution> coverageFront = new CoverageFront<>(0.005,igd);
-    DynamicAlgorithm<List<PermutationSolution<Integer>>, AlgorithmObservedData> algorithm;
-    algorithm = new DynamicNSGAIIBuilder<>(crossover, mutation, new DefaultObservable<>(),coverageFront)
-        .setMaxEvaluations(400000)
-        .setPopulationSize(100)
-        .setSelectionOperator(selection)
-        .build(problem);
+    		InvertedGenerationalDistance<PointSolution> igd =
+        	new InvertedGenerationalDistance<>();
+    		CoverageFront<PointSolution> coverageFront = new CoverageFront<>(0.005,igd);
+    		DynamicAlgorithm<List<PermutationSolution<Integer>>, AlgorithmObservedData> algorithm;
+    		algorithm = new DynamicNSGAIIBuilder<>(crossover, mutation, new DefaultObservable<>(),coverageFront)
+        	.setMaxEvaluations(400000)
+        	.setPopulationSize(100)
+        	.setSelectionOperator(selection)
+        	.build(problem);
 
-    // STEP 3. Create the streaming data source and register the problem
-    	String topic="tsp";
-    	Map<String,Object> kafkaParams = new HashMap<>();
-    	kafkaParams.put("bootstrap.servers", "localhost:9092");
-    	kafkaParams.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.IntegerDeserializer");
-    	kafkaParams.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.ByteArrayDeserializer");
-    	kafkaParams.put(ConsumerConfig.GROUP_ID_CONFIG, "DemoConsumer");
-    	kafkaParams.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
-    	kafkaParams.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "1000");
-    	kafkaParams.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "30000");
-    	SimpleSparkStructuredKafkaStreamingTSP streamingTSPSource = new SimpleSparkStructuredKafkaStreamingTSP(kafkaParams, topic);
+    		// STEP 3. Create the streaming data source and register the problem
+    		String topic="tsp";
+		Map<String,Object> kafkaParams = new HashMap<>();
+		kafkaParams.put("bootstrap.servers", "localhost:9092");
+		kafkaParams.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.IntegerDeserializer");
+		kafkaParams.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.ByteArrayDeserializer");
+		kafkaParams.put(ConsumerConfig.GROUP_ID_CONFIG, "DemoConsumer");
+		kafkaParams.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
+		kafkaParams.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "1000");
+		kafkaParams.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "30000");
+		SimpleSparkStructuredKafkaStreamingTSP streamingTSPSource = new SimpleSparkStructuredKafkaStreamingTSP(kafkaParams, topic);
 
-    SparkStreamingDataSource streamingDataSource =
-            new SimpleSparkStructuredKafkaStreamingCounterAVRO(kafkaParams,topic) ;
+	    SparkStreamingDataSource streamingDataSource =
+		    new SimpleSparkStructuredKafkaStreamingCounterAVRO(kafkaParams,topic) ;
 
-    // STEP 4. Create the data consumers and register into the algorithm
-    DataConsumer<AlgorithmObservedData> localDirectoryOutputConsumer =
-            new LocalDirectoryOutputConsumer<PermutationSolution<Integer>>("outputDirectory") ;
-    DataConsumer<AlgorithmObservedData> chartConsumer =
-            new ChartConsumer<PermutationSolution<Integer>>(algorithm.getName()) ;
+	    // STEP 4. Create the data consumers and register into the algorithm
+	    DataConsumer<AlgorithmObservedData> localDirectoryOutputConsumer =
+		    new LocalDirectoryOutputConsumer<PermutationSolution<Integer>>("outputDirectory") ;
+	    DataConsumer<AlgorithmObservedData> chartConsumer =
+		    new ChartConsumer<PermutationSolution<Integer>>(algorithm.getName()) ;
 
-    // STEP 5. Create the application and run
-    JMetalSPApplication<
-            PermutationSolution<Integer>,
-            DynamicProblem<PermutationSolution<Integer>, ObservedValue<PermutationSolution<Integer>>>,
-            DynamicAlgorithm<List<PermutationSolution<Integer>>, AlgorithmObservedData>> application;
+	    // STEP 5. Create the application and run
+	    JMetalSPApplication<
+		    PermutationSolution<Integer>,
+		    DynamicProblem<PermutationSolution<Integer>, ObservedValue<PermutationSolution<Integer>>>,
+		    DynamicAlgorithm<List<PermutationSolution<Integer>>, AlgorithmObservedData>> application;
 
-    application = new JMetalSPApplication<>();
+	    application = new JMetalSPApplication<>();
 
-    String sparkHomeDirectory =args[0];
-    SparkConf sparkConf = new SparkConf()
-            .setAppName("SparkApp")
-            .setSparkHome(sparkHomeDirectory)
-            .setMaster("local[4]") ;
-    application.setStreamingRuntime(new SparkRuntime(2,sparkConf))
-            .setProblem(problem)
-            .setAlgorithm(algorithm)
-            .addStreamingDataSource(streamingDataSource,problem)
-            .addAlgorithmDataConsumer(localDirectoryOutputConsumer)
-            .addAlgorithmDataConsumer(chartConsumer)
-            .run();
-  }
+	    String sparkHomeDirectory =args[0];
+	    SparkConf sparkConf = new SparkConf()
+		    .setAppName("SparkApp")
+		    .setSparkHome(sparkHomeDirectory)
+		    .setMaster("local[4]") ;
+	    application.setStreamingRuntime(new SparkRuntime(2,sparkConf))
+		    .setProblem(problem)
+		    .setAlgorithm(algorithm)
+		    .addStreamingDataSource(streamingDataSource,problem)
+		    .addAlgorithmDataConsumer(localDirectoryOutputConsumer)
+		    .addAlgorithmDataConsumer(chartConsumer)
+		    .run();
+	  }
 
 Interactive Algorithm
 ---------------------
