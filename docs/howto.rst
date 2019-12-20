@@ -156,6 +156,8 @@ The next example is ``DynamicContinuousApplicationWithSpark`` class where we hav
 
 
 The next example. ``DynamicTSPWithSparkKafkaAVRO``,
+
+
 .. code-block:: java
 public class DynamicTSPWithSparkKafkaAVRO {
 
