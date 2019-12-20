@@ -189,16 +189,16 @@ public class DynamicTSPWithSparkKafkaAVRO {
         .build(problem);
 
     // STEP 3. Create the streaming data source and register the problem
-    String topic="tsp";
-    Map<String,Object> kafkaParams = new HashMap<>();
-    kafkaParams.put("bootstrap.servers", "localhost:9092");
-    kafkaParams.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.IntegerDeserializer");
-    kafkaParams.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.ByteArrayDeserializer");
-    kafkaParams.put(ConsumerConfig.GROUP_ID_CONFIG, "DemoConsumer");
-    kafkaParams.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
-    kafkaParams.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "1000");
-    kafkaParams.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "30000");
-    SimpleSparkStructuredKafkaStreamingTSP streamingTSPSource = new SimpleSparkStructuredKafkaStreamingTSP(kafkaParams, topic);
+    	String topic="tsp";
+    	Map<String,Object> kafkaParams = new HashMap<>();
+    	kafkaParams.put("bootstrap.servers", "localhost:9092");
+    	kafkaParams.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.IntegerDeserializer");
+    	kafkaParams.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.ByteArrayDeserializer");
+    	kafkaParams.put(ConsumerConfig.GROUP_ID_CONFIG, "DemoConsumer");
+    	kafkaParams.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
+    	kafkaParams.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "1000");
+    	kafkaParams.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "30000");
+    	SimpleSparkStructuredKafkaStreamingTSP streamingTSPSource = new SimpleSparkStructuredKafkaStreamingTSP(kafkaParams, topic);
 
     SparkStreamingDataSource streamingDataSource =
             new SimpleSparkStructuredKafkaStreamingCounterAVRO(kafkaParams,topic) ;
