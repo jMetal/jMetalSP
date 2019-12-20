@@ -93,82 +93,148 @@ There are a number of items to be considered:
 * Step 4 configures the data consumer, in this case a chart visualizator, and directory consumer
 * Step 5 runs the application
 
-The next example is ``DynamicSMPSORunnerStreaming`` class where we have set a streaming counter for updating the dynamic problem. It is worth noticing that the value of ``updateProblemByIterations`` in this case is ``false`` because it is the counter who modifies the dynamic problem. In the step 4 is configured the streaming counter which create a new value every ``2000 miliseconds``.
+The next example is ``DynamicContinuousApplicationWithSpark`` class where we have set up Apache Spark as streaming data source in step 5. We specify the spark home directory and the urf of the master.
 
 .. code-block:: java
 
-   public static void main(String[] args) throws Exception {
+   public class DynamicContinuousApplicationWithSpark {
+
+  public static void main(String[] args) throws Exception {
+    if (args.length != 1) {
+      throw new Exception("Invalid number of arguments. " +
+              "Spark home directory needed") ;
+    }
+
+    String sparkHomeDirectory = args[0] ;
+
     // STEP 1. Create the problem
-    DynamicProblem<DoubleSolution, Integer> problem = new FDA2();
+    DynamicProblem<DoubleSolution, ObservedValue<Integer>> problem =
+            new FDA2();
 
     // STEP 2. Create the algorithm
-    DynamicAlgorithm<List<DoubleSolution>>  algorithm;
-    // STEP 2.1. Create the operators
-    
-    MutationOperator<DoubleSolution> mutation;
+    DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData> algorithm =
+            AlgorithmFactory.getAlgorithm("NSGAII", problem) ;
 
-    BoundedArchive<DoubleSolution> archive = new CrowdingDistanceArchive<DoubleSolution>(100) ;
+    algorithm.setRestartStrategy(new RestartStrategy<>(
+            //new RemoveFirstNSolutions<>(50),
+            //new RemoveNSolutionsAccordingToTheHypervolumeContribution<>(50),
+            //new RemoveNSolutionsAccordingToTheCrowdingDistance<>(50),
+            new RemoveNRandomSolutions(50),
+            new CreateNRandomSolutions<DoubleSolution>()));
 
-    double mutationProbability = 1.0 / problem.getNumberOfVariables() ;
-    double mutationDistributionIndex = 20.0 ;
-    mutation = new PolynomialMutation(mutationProbability, mutationDistributionIndex) ;
+    // STEP 3. Create the streaming data source (only one in this example) and register the problem
+    SimpleSparkStreamingCounterDataSource streamingDataSource =
+            new SimpleSparkStreamingCounterDataSource("streamingDataDirectory") ;
 
-    int swarmSize = 100;
-    int maxIterations = 250;
+    // STEP 4. Create the data consumers and register into the algorithm
+    DataConsumer<AlgorithmObservedData> localDirectoryOutputConsumer =
+            new LocalDirectoryOutputConsumer<DoubleSolution>("outputDirectory") ;
+    DataConsumer<AlgorithmObservedData> chartConsumer =
+            new ChartConsumer<DoubleSolution>(algorithm.getName()) ;
 
-    double r1Max = 1.0;
-    double r1Min = 0.0;
-    double r2Max = 1.0;
-    double r2Min = 0.0;
-    double  c1Max = 2.5;
-    double  c1Min = 1.5;
-    double  c2Max = 2.5;
-    double  c2Min = 1.5;
-    double  weightMax = 0.1;
-    double  weightMin = 0.1;
-    double  changeVelocity1 = -1;
-    double changeVelocity2 = -1;
+    // STEP 5. Create the application and run
+    JMetalSPApplication<
+            DoubleSolution,
+            DynamicProblem<DoubleSolution, ObservedValue<Integer>>,
+            DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData>> application;
 
-    // STEP 2.2. Create the quality indicator
-    InvertedGenerationalDistance<PointSolution> igd = new InvertedGenerationalDistance<>();
+    application = new JMetalSPApplication<>();
 
-    // STEP 2.3. Create the threshold for showing a changing in the Pareto front during the optimzation process
-    UpdateThreshold<PointSolution> updateThreshold = new UpdateThreshold<>(0.005, igd);
+    SparkConf sparkConf = new SparkConf()
+            .setAppName("SparkApp")
+            .setSparkHome(sparkHomeDirectory)
+            .setMaster("local[4]") ;
 
-   // STEP 2.4. Indicate whether the problem is updated automatically or not
-    boolean updateProblemByIterations = false;
-   // STEP 2.5. Create the evaluator
-    SolutionListEvaluator<DoubleSolution> evaluator = new SequentialSolutionListEvaluator<DoubleSolution>() ;
-
-    algorithm = new DynamicSMPSO(problem,swarmSize,archive,mutation,maxIterations,r1Min,r1Max,r2Min,r2Max,c1Min,
-            c1Max,c2Min,c2Max,weightMin,weightMax,changeVelocity1,changeVelocity2,evaluator,
-            new DefaultObservable<>("Dynamic SMSPO"),
-            updateThreshold,updateProblemByIterations);
+    application.setStreamingRuntime(new SparkRuntime(2, sparkConf))
+            .setProblem(problem)
+            .setAlgorithm(algorithm)
+            .addStreamingDataSource(streamingDataSource,problem)
+            .addAlgorithmDataConsumer(localDirectoryOutputConsumer)
+            .addAlgorithmDataConsumer(chartConsumer)
+            .run();
+  }
 
 
-   // STEP 3. Chart visualizator 
-    RunTimeForDynamicProblemsChartObserver<DoubleSolution> runTimeChartObserver =
-            new RunTimeForDynamicProblemsChartObserver<>("DynamicSMSPO", 80);
+The next example. ``DynamicTSPWithSparkKafkaAVRO``,
+.. code-block:: java
+public class DynamicTSPWithSparkKafkaAVRO {
 
-    // STEP 4. Streaming counter
-    StreamingDataSource<Integer> streamingDataSource = new SimpleStreamingCounterDataSource(2000,problem);
-    Thread thread =new Thread(streamingDataSource);
-    thread.start();
+  public static void main(String[] args) throws IOException, InterruptedException {
+   // STEP 1. Create the problem
+    DynamicProblem<PermutationSolution<Integer>, ObservedValue<TSPMatrixData>> problem;
 
-    Thread algorithmThread = new Thread(algorithm);
-    algorithmThread.join();
+    problem = new MultiobjectiveTSPBuilderFromNYData("data/nyData.txt").build() ;
 
-    // STEP 5. Register the chart visulizator in the problem in order to send the Pareto front
-    algorithm.getObservable().register(runTimeChartObserver);
+    // STEP 2. Create the algorithm
+    CrossoverOperator<PermutationSolution<Integer>> crossover;
+    MutationOperator<PermutationSolution<Integer>> mutation;
+    SelectionOperator<List<PermutationSolution<Integer>>, PermutationSolution<Integer>> selection;
 
-    // STEP 6. Execute the algorithm
-    algorithmThread.start();
- }
+    crossover = new PMXCrossover(0.9);
+
+    double mutationProbability = 0.2;
+    mutation = new PermutationSwapMutation<Integer>(mutationProbability);
+
+    selection = new BinaryTournamentSelection<>(
+        new RankingAndCrowdingDistanceComparator<PermutationSolution<Integer>>());
+
+    InvertedGenerationalDistance<PointSolution> igd =
+        new InvertedGenerationalDistance<>();
+    CoverageFront<PointSolution> coverageFront = new CoverageFront<>(0.005,igd);
+    DynamicAlgorithm<List<PermutationSolution<Integer>>, AlgorithmObservedData> algorithm;
+    algorithm = new DynamicNSGAIIBuilder<>(crossover, mutation, new DefaultObservable<>(),coverageFront)
+        .setMaxEvaluations(400000)
+        .setPopulationSize(100)
+        .setSelectionOperator(selection)
+        .build(problem);
+
+    // STEP 3. Create the streaming data source and register the problem
+    String topic="tsp";
+    Map<String,Object> kafkaParams = new HashMap<>();
+    kafkaParams.put("bootstrap.servers", "localhost:9092");
+    kafkaParams.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.IntegerDeserializer");
+    kafkaParams.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.ByteArrayDeserializer");
+    kafkaParams.put(ConsumerConfig.GROUP_ID_CONFIG, "DemoConsumer");
+    kafkaParams.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
+    kafkaParams.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "1000");
+    kafkaParams.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "30000");
+    SimpleSparkStructuredKafkaStreamingTSP streamingTSPSource = new SimpleSparkStructuredKafkaStreamingTSP(kafkaParams, topic);
+
+    SparkStreamingDataSource streamingDataSource =
+            new SimpleSparkStructuredKafkaStreamingCounterAVRO(kafkaParams,topic) ;
+
+    // STEP 4. Create the data consumers and register into the algorithm
+    DataConsumer<AlgorithmObservedData> localDirectoryOutputConsumer =
+            new LocalDirectoryOutputConsumer<PermutationSolution<Integer>>("outputDirectory") ;
+    DataConsumer<AlgorithmObservedData> chartConsumer =
+            new ChartConsumer<PermutationSolution<Integer>>(algorithm.getName()) ;
+
+    // STEP 5. Create the application and run
+    JMetalSPApplication<
+            PermutationSolution<Integer>,
+            DynamicProblem<PermutationSolution<Integer>, ObservedValue<PermutationSolution<Integer>>>,
+            DynamicAlgorithm<List<PermutationSolution<Integer>>, AlgorithmObservedData>> application;
+
+    application = new JMetalSPApplication<>();
+
+    String sparkHomeDirectory =args[0];
+    SparkConf sparkConf = new SparkConf()
+            .setAppName("SparkApp")
+            .setSparkHome(sparkHomeDirectory)
+            .setMaster("local[4]") ;
+    application.setStreamingRuntime(new SparkRuntime(2,sparkConf))
+            .setProblem(problem)
+            .setAlgorithm(algorithm)
+            .addStreamingDataSource(streamingDataSource,problem)
+            .addAlgorithmDataConsumer(localDirectoryOutputConsumer)
+            .addAlgorithmDataConsumer(chartConsumer)
+            .run();
+  }
 
 Interactive Algorithm
 ---------------------
 
-jMetal defines an interface for interactive algorithms, in this interface is described the method ``changeReferencePoints`` that is used for changing the reference points during the optimization process.
+jMetalSP defines an interface for interactive algorithms, in this interface is described the method ``changeReferencePoints`` that is used for changing the reference points during the optimization process.
  
 .. code-block:: java
 
