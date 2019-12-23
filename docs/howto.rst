@@ -10,7 +10,7 @@ Solving dynamic problems implies that metaheuristics must be adapted to detect c
 
 When dealing with multi-objective optimization problems, finding an approximation to the Pareto front of a multi-objective problem is only the first step of the optimization process. The second step is MCDM (multi-criteria decision making), and it is related to choosing which solution of that front is most adequate according to the requirements imposed by the decision maker (i.e., the final user, which is an expert in the problem domain). As the optimization can take a significant amount of time, the decision maker may be interested in indicating one or more preference regions of interest of the Pareto front instead of the full front. These regions can be indicated a priori (before running the optimization algorithm) or interactively (during the execution of the algorithm). In jMetal we focus on interactively algorithms.
 
-A current trend in multi-objective optimization is to deal with dynamic optimization problems and furthermore, including MCDM requirements. 
+A current trend in multi-objective optimization is to deal with dynamic optimization problems and furthermore, including MCDM requirements.
 jMetal includes dynamic multi-objective metaheuristics such as: DynamicNSGA-II, DynamicSMPSO and DynamicSMPSO-RP which is also able to take into account user preferences through reference points.
 
 
@@ -24,7 +24,7 @@ Dynamic Multi-objective Algorithm
 ---------------------------------
 
 In jMetalSP we define an interface for describing the main methods for a dynamic multi-objective algorithm. With the method ``restart()`` we indicate which is the restarting strategy in the dynamic  algorithm. Furthermore, the method ``getObservable()`` returns the ``Observable`` class that implements observer pattern.
-Although, when we develop a new dynamic algorithm based on an existed metaheuristics, e.g. DynamicNSGAII from NSGAII, we need to override at least two methods ``isStoppingConditionReached()`` for managing whether the algorithm is endless or not and ``updateProgress()`` method to know if problem parameter has changed. 
+Although, when we develop a new dynamic algorithm based on an existed metaheuristics, e.g. DynamicNSGAII from NSGAII, we need to override at least two methods ``isStoppingConditionReached()`` for managing whether the algorithm is endless or not and ``updateProgress()`` method to know if problem parameter has changed.
 
 .. code-block:: java
 
@@ -159,9 +159,19 @@ The next example is ``DynamicContinuousApplicationWithSpark`` class where we hav
 
 The next example, ``DynamicTSPWithSparkKafkaAVRO``, describes how to work with Apache Spark, Apache Kafka, Apache Avro and dynamic algorithm in jMetalSP.
 
+There are a number of items to be considered:
+
+* In step 2.2 is created the quality indicator for comparing fronts in order to show them in the chart visualizator. This is important because the dynamic algorithm is endless so, it is always calculating new fronts and this helps in the simplicity of the charts.
+* Step 2.3 defines the threshold value used for indicating the difference between consecutive fronts, if the value calculated by the quality indicator the higher then the threshold then the front is printed in the chart visualizator.
+* In step 2.4 we define an important variable from a point of view of the dynamic problem, thus with ``updateProblemByIterations`` we indicate whether the problem is updated following the number of iterations of the algorithm or with a external counter (as we will see in next code example).
+* Step 3 configures Apache kafka and the data source.
+* Step 4 set ups the chart visualizator.
+* Step 5 defines the streaming runtime and starts the execution.
+
+
 
 .. code-block:: java
- 
+
    public class DynamicTSPWithSparkKafkaAVRO {
 
      public static void main(String[] args) throws IOException, InterruptedException {
@@ -171,6 +181,7 @@ The next example, ``DynamicTSPWithSparkKafkaAVRO``, describes how to work with A
       problem = new MultiobjectiveTSPBuilderFromNYData("data/nyData.txt").build() ;
 
       // STEP 2. Create the algorithm
+      // STEP 2.1. Create the operators
       CrossoverOperator<PermutationSolution<Integer>> crossover;
       MutationOperator<PermutationSolution<Integer>> mutation;
       SelectionOperator<List<PermutationSolution<Integer>>, PermutationSolution<Integer>> selection;
@@ -182,9 +193,10 @@ The next example, ``DynamicTSPWithSparkKafkaAVRO``, describes how to work with A
 
       selection = new BinaryTournamentSelection<>(
         	new RankingAndCrowdingDistanceComparator<PermutationSolution<Integer>>());
-
+    // STEP 2.2. Create the quality indicator
       InvertedGenerationalDistance<PointSolution> igd =
         	new InvertedGenerationalDistance<>();
+          // STEP 2.3. Create the threshold for showing a changing in the Pareto front during the optimzation process
       CoverageFront<PointSolution> coverageFront = new CoverageFront<>(0.005,igd);
     		DynamicAlgorithm<List<PermutationSolution<Integer>>, AlgorithmObservedData> algorithm;
       algorithm = new DynamicNSGAIIBuilder<>(crossover, mutation, new DefaultObservable<>(),coverageFront)
@@ -236,11 +248,70 @@ The next example, ``DynamicTSPWithSparkKafkaAVRO``, describes how to work with A
 		    .run();
  }
 
+In case that we want to use Apache Flink, we only have to change in the application's configuration the Streaming runtime as we can see below:
+
+.. code-block:: java
+
+ public static void main(String[] args) throws IOException, InterruptedException {
+  // STEP 1. Create the problem
+  DynamicProblem<DoubleSolution, ObservedValue<Integer>> problem =
+          new FDA2();
+
+  // STEP 2. Create the algorithm
+  DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData> algorithm =
+          AlgorithmFactory.getAlgorithm("NSGAII", problem) ;
+
+  algorithm.setRestartStrategy(new RestartStrategy<>(
+          //new RemoveFirstNSolutions<>(50),
+          new RemoveNSolutionsAccordingToTheHypervolumeContribution<>(50),
+          //new RemoveNSolutionsAccordingToTheCrowdingDistance<>(50),
+          //new RemoveNRandomSolutions(50),
+          new CreateNRandomSolutions<DoubleSolution>()));
+
+  // STEP 3. Create the streaming data source (only one in this example) and register the problem
+  String topic="counter";
+  Properties kafkaParams = new Properties();
+  kafkaParams.put("bootstrap.servers", "192.168.227.26:9092");
+  kafkaParams.put(ConsumerConfig.GROUP_ID_CONFIG, "DemoConsumerFlinkAVRO");
+  kafkaParams.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
+  kafkaParams.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "1000");
+  kafkaParams.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "30000");
+  kafkaParams.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.IntegerDeserializer");
+  kafkaParams.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
+  StreamingDataSource streamingDataSource =
+          new SimpleFlinkKafkaStreamingCounterDataSourceAVRO(kafkaParams,topic,"avsc/Counter.avsc") ;
+
+  // STEP 4. Create the data consumers and register into the algorithm
+  DataConsumer<AlgorithmObservedData> localDirectoryOutputConsumer =
+          new LocalDirectoryOutputConsumer<DoubleSolution>("outputDirectory") ;
+  DataConsumer<AlgorithmObservedData> chartConsumer =
+          new ChartConsumer<DoubleSolution>(algorithm.getName()) ;
+
+  // STEP 5. Create the application and run
+  JMetalSPApplication<
+          DoubleSolution,
+          DynamicProblem<DoubleSolution, ObservedValue<Integer>>,
+          DynamicAlgorithm<List<DoubleSolution>, AlgorithmObservedData>> application;
+
+  application = new JMetalSPApplication<>();
+
+  application.setStreamingRuntime(new FlinkRuntime(1000))
+          .setProblem(problem)
+          .setAlgorithm(algorithm)
+          .addStreamingDataSource(streamingDataSource,problem)
+          .addAlgorithmDataConsumer(localDirectoryOutputConsumer)
+          .addAlgorithmDataConsumer(chartConsumer)
+          .run();
+ }
+ 
+
+Furthermore, if we use Kafka as streaming runtime, in the application's configuration, it must be declared as ``KafkaRuntime``.
+
 Interactive Algorithm
 ---------------------
 
 jMetalSP defines an interface for interactive algorithms, in this interface is described the method ``changeReferencePoints`` that is used for changing the reference points during the optimization process.
- 
+
 .. code-block:: java
 
  public interface InteractiveAlgorithm<S,R> extends Algorithm<R>{
@@ -270,7 +341,7 @@ Like in dynamic multi-objective  when we execute an interactive dynamic multi-ob
 
     List<ArchiveWithReferencePoint<DoubleSolution>> archivesWithReferencePoints = new ArrayList<>();
 
-   
+
     double mutationProbability = 1.0 / problem.getNumberOfVariables() ;
     double mutationDistributionIndex = 20.0 ;
     mutation = new PolynomialMutation(mutationProbability, mutationDistributionIndex) ;
@@ -313,7 +384,7 @@ Like in dynamic multi-objective  when we execute an interactive dynamic multi-ob
             new DefaultObservable<>("Dynamic SMSPO"),
             updateThreshold,updateProblemByIterations);
 
-    // STEP 3. Chart visualizator 
+    // STEP 3. Chart visualizator
     RunTimeForDynamicProblemsChartObserver<DoubleSolution> runTimeChartObserver =
             new RunTimeForDynamicProblemsChartObserver<>("DynamicSMSPO", 80);
     runTimeChartObserver.setReferencePointList(referencePoints);
@@ -338,7 +409,3 @@ Like in dynamic multi-objective  when we execute an interactive dynamic multi-ob
     // STEP 6. Execute the algorithm
     algorithmThread.start();
   }
-
-
-
-
