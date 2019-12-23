@@ -303,9 +303,9 @@ In case that we want to use Apache Flink, we only have to change in the applicat
           .addAlgorithmDataConsumer(chartConsumer)
           .run();
  }
- 
 
-Furthermore, if we use Kafka as streaming runtime, in the application's configuration, it must be declared as ``KafkaRuntime``.
+
+Furthermore, if we would like to use Kafka as streaming runtime, in the application's configuration, it must be declared as ``KafkaRuntime``.
 
 Interactive Algorithm
 ---------------------
