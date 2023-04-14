@@ -90,7 +90,7 @@
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20131018</version>
+            <version>20230227</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.flink/flink-avro -->
         <dependency>
